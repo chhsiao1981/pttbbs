@@ -143,7 +143,7 @@ def sep_main(content):
         return S_ERR, ('', '', '')
 
     main_content = re_match.group(1)
-    origin = '\xa1\xb0 \xb5o\xabH\xaf\xb8:' + re_match.group(2)
+    origin = origin_head + re_match.group(2)
     the_from = re_match.group(4)
 
     return S_OK, (main_content, origin, the_from)
