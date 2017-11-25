@@ -27,14 +27,14 @@ def sep_main_comments(content):
         group5: 第 0 個 comment-header
         group6: 第 0 個 comment-rest (no \r\n)
         group7: the rest of the comments (no last \r\n)
-    
+
     Args:
         content (str): original content
-    
+
     Returns:
         Error, (str, str, str, str, str): error-code, (main-content, origin, from, first-comment, rest-comments)
     '''
-    re_match = re.match(r'(.*)\r\n\xa1\xb0 \xb5o\xabH\xaf\xb8:([^\r\n]+)\r\n((.*?)\r\n)?(\x1b\[1;37m\xb1\xc0|\x1b\[1;31m\xbcN|\x1b\[1;31m\xa1\xf7|\xa1\xb0 \x1b\[1;32m[0-9A-Za-z]+\x1b\[0;32m:\xc2\xe0\xbf\xfd\xa6\xdc\xac\xdd\xaaO)(.*?)\r\n(.*)', content, re.M|re.S)
+    re_match = re.match(r'(.*)\r\n\xa1\xb0 \xb5o\xabH\xaf\xb8:([^\r\n]+)\r\n((.*?)\r\n)?(\x1b\[1;37m\xb1\xc0|\x1b\[1;31m\xbcN|\x1b\[1;31m\xa1\xf7|\xa1\xb0 \x1b\[1;32m[0-9A-Za-z]+\x1b\[0;32m:\xc2\xe0\xbf\xfd\xa6\xdc\xac\xdd\xaaO)(.*?)\r\n(.*)', content, re.M | re.S)
 
     if re_match is None:
         return S_ERR, ('', '', '', '', '')
@@ -55,14 +55,14 @@ def sep_main(content):
         group2: 發信站 content (no \r\n)
         group3: 文章網址 / 轉錄者 / ... (+ last \r\n)
         group4: 文章網址 / 轉錄者 / ... (no last \r\n)
-    
+
     Args:
         content (str): original content
-    
+
     Returns:
         Error, (str, str, str): error-code, (main-content, origin, from)
     """
-    re_match = re.match(r'(.*)\r\n\xa1\xb0 \xb5o\xabH\xaf\xb8:([^\r\n]+)\r\n((.*?)\r\n)?', content, re.M|re.S)
+    re_match = re.match(r'(.*)\r\n\xa1\xb0 \xb5o\xabH\xaf\xb8:([^\r\n]+)\r\n((.*?)\r\n)?', content, re.M | re.S)
 
     if re_match is None:
         return S_ERR, ('', '', '')
@@ -72,7 +72,6 @@ def sep_main(content):
     the_from = re_match.group(4)
 
     return S_OK, (main_content, origin, the_from)
-
 
 
 def _main():
@@ -90,7 +89,6 @@ def _main():
         if error:
             logging.error('unable to sep main')
             main_content = content
-
 
     out_filename = filename + '.out0.main'
     with open(out_filename, 'w') as f:
