@@ -1,13 +1,44 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# USAGE: sep_main_content_comments.py [in_filename]
+# https://github.com/ptt/pttbbs/issues/31
 #
-# Generate: .main: main-content (no last \r\n)
+# Goal: 根據目前所看到的文章們.
+#       contents 分成以下幾個部分:
+#        1. 本文
+#        2. comments
+#        3. comment-reply
+#       其中:
+#        1. 本文是指 "最後一個發信站之前" 都是本文
+#        2. comments: "推 / 噓 / -> / 轉錄至"
+#        3. comment-reply: 在 comments 之後. 有 poster 所做的以 edit 的方式做 reply
+#
+# 方式: 1. 找到最後一個發信站/from. 之前都是算本文. 之後算 comment-block
+#      2. 在本文裡分出 main, origin, from
+#      3. 在 comment-block 裡分出 comments 和 comment-reply
+#
+#
+# USAGE (python3): sep_main_content_comments.py [in_filename]
+#
+# Generate: .main0: main-content (no last \r\n)
 #           .origin: 發信站 (no \r\n)
 #           .from: 文章網址 / 轉錄者 / ... (no \r\n)
 #           .comment0: 第 0 個 comment (no \r\n)
-#           .comments: the rest of the comments (no last \r\n)
+#           .rest_comments: the rest of the comments (no last \r\n)
+#           .main: main0 + origin + from
+#           .comments: n_lines,strlen + str (include \0, no \r\n)
+#           .comment_reply: size + idx + str (include \0)
+# TODO: 1. 找出 main-content 裡有推 / 噓 / -> / 轉錄至 的文章們
+#          確認如此的 context 是否符合預期.
+#       2. UI: pmore 改成如果讀到 single-file: 先轉成 main-content / comments / comment-reply, 再換成新版 pmore.
+#       3. UI: 在用 E 時. 改為先選 block.
+#              然後如果是在 main-content 區.
+#              則只能編輯 main-content 區.
+#              如果是在 comment 區.
+#              只會選當下的 comment 做 reply.
+#              edit 完以後儲存以後.
+#              回到選 block 的功能.
+#              然後再按 esc 離開 edit.
 
 import sys
 import logging
