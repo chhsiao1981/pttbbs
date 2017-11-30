@@ -128,15 +128,30 @@ def integrate_main_content(main, origin, the_from):
     Returns:
         byte: main_content
     """
-    the_timestamp = _parse_main_content_timestamp(main)
+    the_timestamp = _parse_main_content_timestamp(main, origin, the_from)
 
     return main + b'\r\n' + origin + b'\r\n' + the_from, the_timestamp
 
 
-def _parse_main_content_timestamp(content):
+def _parse_main_content_timestamp(content, origin, the_from):
+    the_from_list = the_from.split(b'\n')
+    the_from_list = [each_from.strip() for each_from in the_from_list]
+    link_str = Big5('※ 文章網址')
+
+    for each_from in the_from_list:
+        re_match = re.match(b'^' + link_str + b':\s*(.*?)\s*$', each_from)
+        if re_match:
+            the_link_str = re_match.group(1).strip().decode('utf-8')
+            the_link_list = the_link_str.split('/')
+            the_filename = the_link_list[-1]
+            the_filename_list = the_filename.split('.')
+            the_timestamp = int(the_filename_list[1]) * 1000
+            return the_timestamp
+
     content_list = content.split(b'\n')
     content_list = content_list[:5]
     content_list = [each_content.strip() for each_content in content_list]
+
 
     time_str = Big5('時間')
     for each_content in content_list:
@@ -579,6 +594,8 @@ def _main():
         logging.error('unable to sep main-comments, assuming no comments')
 
     main_content, the_timestamp = integrate_main_content(the_main, origin, the_from)
+
+    logging.warning('guessed create timestamp: %s', timestamp_to_datetime(the_timestamp))
 
     error, (comments, comment_reply) = integrate_comment_block(first_comment, the_rest_comments, the_timestamp)
     if error:
