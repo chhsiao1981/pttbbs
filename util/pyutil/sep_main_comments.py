@@ -43,19 +43,37 @@
 import sys
 import logging
 import re
+import struct
+from datetime import datetime
+import calendar
+
+S_ERR = 1
 
 STATE_COMMENT_INIT = 1
 STATE_COMMENT_COMMENT = 2
 STATE_COMMENT_COMMENT_REPLY = 3
 
-S_ERR = 1
+RECTYPE_NONE = -1
+RECTYPE_GOOD = 0
+RECTYPE_BAD = 1
+RECTYPE_ARROW = 2
+RECTYPE_SIZE = 3
+RECTYPE_FORWARD = 4  # XXX HACK that RECTYPE_SIZE = 3
+
+
+def timestamp_to_datetime(the_timestamp, tz=8):
+    return datetime.utcfromtimestamp(the_timestamp / 1000 + tz * 3600)
+
+
+def datetime_to_timestamp(the_datetime, tz=8):
+    return (calendar.timegm(the_datetime.timetuple()) - tz * 3600) * 1000
 
 
 def Big5(content):
-    """Try to encode to big5 from utf-content
+    """Try to encode to big5 from unicode
 
     Args:
-        content (str): content with utf-8 encoding
+        content (str): content with unicode (const str)
 
     Returns:
         bytes: content with big-5 encoding
@@ -110,17 +128,35 @@ def integrate_main_content(main, origin, the_from):
     Returns:
         byte: main_content
     """
-    return main + b'\r\n' + origin + b'\r\n' + the_from
+    the_timestamp = _parse_main_content_timestamp(main)
+
+    return main + b'\r\n' + origin + b'\r\n' + the_from, the_timestamp
 
 
-def integrate_comment_block(first_comment, the_rest_comments):
+def _parse_main_content_timestamp(content):
+    content_list = content.split(b'\n')
+    content_list = content_list[:5]
+    content_list = [each_content.strip() for each_content in content_list]
+
+    time_str = Big5('時間')
+    for each_content in content_list:
+        re_match = re.match(b'^' + time_str + b':\s*(.*?)\s*$', each_content)
+        if re_match:
+            the_datetime_str = re.sub(b'\s+', b' ', re_match.group(1)).strip().decode('utf-8')
+            the_datetime = datetime.strptime(the_datetime_str, '%c')
+            return datetime_to_timestamp(the_datetime)
+
+    logging.error('unable to parse main-content time')
+
+    return datetime_to_timestamp(datetime(year=1998, month=1, day=1))
+
+
+def integrate_comment_block(first_comment, the_rest_comments, previous_post_time):
     all_comments = first_comment + b'\r\n' + the_rest_comments
 
     # get comment_list without \r\n and without tail empty 2 lines
     comment_list = all_comments.split(b'\n')
     comment_list = [each_comment[:-1] for each_comment in comment_list]
-    if not comment_list[-1]:
-        comment_list = comment_list[:-1]
     if not comment_list[-1]:
         comment_list = comment_list[:-1]
     if not comment_list[-1]:
@@ -132,21 +168,21 @@ def integrate_comment_block(first_comment, the_rest_comments):
     #     comment-reply append, comment-state as comment-reply
     comments = []
     comment_reply = []
-    previous_comment_post_time = 0
     state = STATE_COMMENT_INIT
 
     each_comment_reply_list = []
     for each_comment in comment_list:
-        error, (comment, username, post_time, the_type) = _parse_comment(each_comment)
+        error, (comment, username, post_time, the_type) = _parse_comment(each_comment, previous_post_time)
 
         # get comment
         if error is None:
-            comments.append({'comment': comment, 'username': username, 'ts': post_time, 'the_type': the_type})
-
             if each_comment_reply_list:
                 each_comment_reply = b'\r\n'.join(each_comment_reply_list)
-                comment_reply.append({'reply': each_comment_reply, 'comment_id': len(comments) - 1, 'ts': 0})
+                comment_reply.append({'reply': each_comment_reply, 'comment_id': max(len(comments) - 1, 0), 'ts': 0})
                 each_comment_reply_list = []
+
+            comments.append({'comment': comment, 'username': username, 'ts': post_time, 'the_type': the_type})
+            previous_post_time = post_time
 
             state = STATE_COMMENT_COMMENT
             continue
@@ -158,6 +194,184 @@ def integrate_comment_block(first_comment, the_rest_comments):
     return None, (comments, comment_reply)
 
 
+def _parse_comment(comment, previous_post_time):
+    """Summary
+
+    Args:
+        comment (TYPE): Description
+
+    Returns:
+        error, (bytes, bytes, int, int): error-code, (comment, username, post_time, the_type)
+    """
+
+    error, (comment_content, username, post_time, the_type) = _parse_comment_recommend(comment, previous_post_time)
+    if error is None:
+        return None, (comment_content, username, post_time, the_type)
+
+    error, (comment_content, username, post_time, the_type) = _parse_comment_boo(comment, previous_post_time)
+    if error is None:
+        return None, (comment_content, username, post_time, the_type)
+
+    error, (comment_content, username, post_time, the_type) = _parse_comment_comment(comment, previous_post_time)
+    if error is None:
+        return None, (comment_content, username, post_time, the_type)
+
+    error, (comment_content, username, post_time, the_type) = _parse_comment_forward(comment, previous_post_time)
+    if error is None:
+        return None, (comment_content, username, post_time, the_type)
+
+    return S_ERR, (b'', b'', 0, 0)
+
+
+def _parse_comment_recommend(comment, previous_post_time):
+    """Summary
+
+    Args:
+        comment (TYPE): Description
+        previous_post_time (TYPE): Description
+
+    Returns:
+        error, (bytes, bytes, int, int): error-code, (comment, username, post_time, the_type)
+    """
+    bright_white = Ctrl(b'\[1;37m')
+    yellow = Ctrl(b'\[33m')
+    color_reset = Ctrl(b'\[m')
+
+    username = b'[0-9A-Za-z]+'
+
+    recommend = Big5('推')
+    regex = bright_white + recommend + b' ' + yellow + b'(' + username + b')' + color_reset + yellow + b':(.*)'
+
+    re_match = re.match(regex, comment)
+    if re_match is None:
+        return S_ERR, (b'', b'', 0, 0)
+
+    username = re_match.group(1)
+    the_rest_comment = re_match.group(2)
+    post_time = _parse_post_time(the_rest_comment, previous_post_time)
+
+    return None, (comment, username, post_time, RECTYPE_GOOD)
+
+
+def _parse_comment_boo(comment, previous_post_time):
+    """Summary
+
+    Args:
+        comment (TYPE): Description
+        previous_post_time (TYPE): Description
+
+    Returns:
+        error, (bytes, bytes, int, int): error-code, (comment, username, post_time, the_type)
+    """
+    yellow = Ctrl(b'\[33m')
+    color_reset = Ctrl(b'\[m')
+
+    username = b'[0-9A-Za-z]+'
+
+    bright_red = Ctrl(b'\[1;31m')
+    boo = Big5('噓')
+    regex = bright_red + boo + b' ' + yellow + b'(' + username + b')' + color_reset + yellow + b':(.*)'
+
+    re_match = re.match(regex, comment)
+    if re_match is None:
+        return S_ERR, (b'', b'', 0, 0)
+
+    username = re_match.group(1)
+    the_rest_comment = re_match.group(2)
+    post_time = _parse_post_time(the_rest_comment, previous_post_time)
+
+    return None, (comment, username, post_time, RECTYPE_BAD)
+
+
+def _parse_comment_comment(comment, previous_post_time):
+    bright_red = Ctrl(b'\[1;31m')
+    yellow = Ctrl(b'\[33m')
+    color_reset = Ctrl(b'\[m')
+
+    username = b'[0-9A-Za-z]+'
+    comment = Big5('→')
+    regex = bright_red + comment + b' ' + yellow + b'(' + username + b')' + color_reset + yellow + b':(.*)'
+
+    re_match = re.match(regex, comment)
+    if re_match is None:
+        return S_ERR, (b'', b'', 0, 0)
+
+    username = re_match.group(1)
+    the_rest_comment = re_match.group(2)
+    post_time = _parse_post_time(the_rest_comment, previous_post_time)
+
+    return None, (comment, username, post_time, RECTYPE_ARROW)
+
+
+def _parse_comment_forward(comment, previous_post_time):
+    bright_green = Ctrl(b'\[1;32m')
+    green = Ctrl(b'\[0;32m')
+    forward_to = Big5('轉錄至看板')
+    username = b'[0-9A-Za-z]+'
+    regex = Big5('※') + b' ' + bright_green + b'(' + username + b')' + green + b':' + forward_to + b'(.*)'
+
+    re_match = re.match(regex, comment)
+    if re_match is None:
+        return S_ERR, (b'', b'', 0, 0)
+
+    username = re_match.group(1)
+    the_rest_comment = re_match.group(2)
+    post_time = _parse_post_time(the_rest_comment, previous_post_time)
+
+    return None, (comment, username, post_time, RECTYPE_FORWARD)
+
+
+def _parse_post_time(the_rest_comment, previous_post_time):
+    previous_datetime = timestamp_to_datetime(previous_post_time)
+
+    # MM/DD hh:mm
+    the_match = re.search(b'(\d{1,2})/(\d{1,2}) (\d{1,2}):(\d{1,2})\s*$', the_rest_comment)
+    if the_match:
+        month = int(the_match.group(1))
+        day = int(the_match.group(2))
+        hour = int(the_match.group(3))
+        minute = int(the_match.group(4))
+        return _parse_post_time_core(previous_datetime.year, month, day, hour, minute, previous_post_time)
+
+    # MM/DD hh:
+    the_match = re.search(b'(\d{1,2})/(\d{1,2}) (\d{1,2}):?\s*$', the_rest_comment)
+    if the_match:
+        month = int(the_match.group(1))
+        day = int(the_match.group(2))
+        hour = int(the_match.group(3))
+        minute = previous_datetime.minute if month == previous_datetime.month and day == previous_datetime.day and hour == previous_datetime.hour else 0
+        return _parse_post_time_core(previous_datetime.year, month, day, hour, minute, previous_post_time)
+
+    # MM/DD:
+    the_match = re.search(b'(\d{1,2})/(\d{1,2})\s*$', the_rest_comment)
+    if the_match:
+        month = int(the_match.group(1))
+        day = int(the_match.group(2))
+        hour = previous_datetime.hour if month == previous_datetime.month and day == previous_datetime.day else 0
+        minute = previous_datetime.minute if month == previous_datetime.month and day == previous_datetime.day and hour == previous_datetime.hour else 0
+        return _parse_post_time_core(previous_datetime.year, month, day, hour, minute, previous_post_time)
+
+    # MM:
+    the_match = re.search(b'(\d{1,2})/?\s*$', the_rest_comment)
+    if the_match:
+        month = int(the_match.group(1))
+        day = previous_datetime.day if month == previous_datetime.month else 1
+        hour = previous_datetime.hour if month == previous_datetime.month and day == previous_datetime.day else 0
+        minute = previous_datetime.minute if month == previous_datetime.month and day == previous_datetime.day and hour == previous_datetime.hour else 0
+        return _parse_post_time_core(previous_datetime.year, month, day, hour, minute, previous_post_time)
+
+    return previous_post_time + 1
+
+
+def _parse_post_time_core(year, month, day, hour, minute, previous_timestamp):
+    the_datetime = datetime(year=year, month=month, day=day, hour=hour, minute=minute)
+    the_timestamp = datetime_to_timestamp(the_datetime)
+    if the_timestamp > previous_timestamp:
+        return the_timestamp
+
+    return _parse_post_time_core(year + 1, month, day, hour, minute, previous_timestamp)
+
+
 def comments_to_file(comments):
     """Compile comments to file
 
@@ -167,7 +381,38 @@ def comments_to_file(comments):
     Returns:
         bytes: compiled content-in-file
     """
-    return b''
+    len_comments = len(comments)
+    b_len_comments = struct.pack('<L', len_comments)
+
+    results = b_len_comments
+    for each_comment in comments:
+        results += _comment_to_file(each_comment)
+
+    return results
+
+
+def _comment_to_file(comment):
+    """comple comment to stored in file
+
+    Args:
+        comment (dict): {comment, username, ts, the_type}
+
+    Returns:
+        bytes: compiled content-in-file
+    """
+
+    comment_content = comment.get('comment', b'')
+    username = comment.get('username', b'')
+    ts = comment.get('ts', 0)
+    the_type = comment.get('the_type', RECTYPE_NONE)
+    len_username = len(username)
+
+    b_the_type_ts_len_username = struct.pack('<BQB', the_type, ts, len_username)
+    the_length = len(b_the_type_ts_len_username) + len(username) + len(comment)
+    b_length = struct.pack('<L', the_length)
+    comment_on_file = b_length + b_the_type_ts_len_username + username + comment_content
+
+    return comment_on_file
 
 
 def comment_reply_to_file(comment_reply):
@@ -179,7 +424,39 @@ def comment_reply_to_file(comment_reply):
     Returns:
         (bytes, bytes): comment-reply-on-file, comment-reply-idx-on-flie
     """
-    return b'', b''
+    len_comment_reply = len(comment_reply)
+    b_len_comment_reply = struct.pack('<L', len_comment_reply)
+    results_comment_reply = b_len_comment_reply
+    results_idx = b_len_comment_reply
+    for each_comment_reply in comment_reply:
+        each_comment_reply_in_file, each_comment_reply_idx_in_file = _comment_reply_to_file(each_comment_reply, len(results_comment_reply))
+        results_comment_reply += each_comment_reply_in_file
+        results_idx += each_comment_reply_idx_in_file
+
+    return results_comment_reply, results_idx
+
+
+def _comment_reply_to_file(comment_reply, len_results_comment_reply):
+    """compile comment_reply to stored in file
+
+    Args:
+        comment_reply (dict): {reply, comment_id, ts}
+
+    Returns:
+        bytes, bytes: comment-reply-on-file, comment-reply-idx-on-file
+    """
+    reply = comment_reply.get('reply', b'')
+    comment_id = comment_reply.get('comment_id', 0)
+    ts = comment_reply.get('ts', 0)
+
+    b_comment_id_ts = struct.pack('<LQ', comment_id, ts)
+    the_length = len(reply) + len(b_comment_id_ts)
+    b_length = struct.pack('<L', the_length)
+    comment_reply_on_file = b_length + b_comment_id_ts + reply
+
+    comment_reply_idx_on_file = struct.pack('<LQ', comment_id, len_results_comment_reply)
+
+    return comment_reply_on_file, comment_reply_idx_on_file
 
 
 def _sep_main_comments_assuming_comments(content):
@@ -290,18 +567,6 @@ def _sep_main(content):
     return None, (the_main, origin, the_from)
 
 
-def _parse_comment(comment):
-    """Parse comment
-
-    Args:
-        comment (str): one-line comment
-
-    Returns:
-        Error, (str, str, str, str): error-code, (comment, username, post-time-in-millisecond, the_type)
-    """
-    return None, (b'', b'', b'', b'')
-
-
 def _main():
     filename = sys.argv[1]
 
@@ -313,9 +578,9 @@ def _main():
     if error:
         logging.error('unable to sep main-comments, assuming no comments')
 
-    main_content = integrate_main_content(the_main, origin, the_from)
+    main_content, the_timestamp = integrate_main_content(the_main, origin, the_from)
 
-    error, (comments, comment_reply) = integrate_comment_block(first_comment, the_rest_comments)
+    error, (comments, comment_reply) = integrate_comment_block(first_comment, the_rest_comments, the_timestamp)
     if error:
         logging.error('unable to integrate comment block')
 
