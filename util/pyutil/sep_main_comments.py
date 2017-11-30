@@ -44,7 +44,7 @@ import sys
 import logging
 import re
 import struct
-from datetime import datetime
+from datetime import datetime, timedelta
 import calendar
 
 S_ERR = 1
@@ -221,18 +221,22 @@ def _parse_comment(comment, previous_post_time):
 
     error, (comment_content, username, post_time, the_type) = _parse_comment_recommend(comment, previous_post_time)
     if error is None:
+        logging.warning('comment_content: %s post_time: %s', comment_content, timestamp_to_datetime(post_time))
         return None, (comment_content, username, post_time, the_type)
 
     error, (comment_content, username, post_time, the_type) = _parse_comment_boo(comment, previous_post_time)
     if error is None:
+        logging.warning('comment_content: %s post_time: %s', comment_content, timestamp_to_datetime(post_time))
         return None, (comment_content, username, post_time, the_type)
 
     error, (comment_content, username, post_time, the_type) = _parse_comment_comment(comment, previous_post_time)
     if error is None:
+        logging.warning('comment_content: %s post_time: %s', comment_content, timestamp_to_datetime(post_time))
         return None, (comment_content, username, post_time, the_type)
 
     error, (comment_content, username, post_time, the_type) = _parse_comment_forward(comment, previous_post_time)
     if error is None:
+        logging.warning('comment_content: %s post_time: %s', comment_content, timestamp_to_datetime(post_time))
         return None, (comment_content, username, post_time, the_type)
 
     return S_ERR, (b'', b'', 0, 0)
@@ -379,10 +383,27 @@ def _parse_post_time(the_rest_comment, previous_post_time):
 
 
 def _parse_post_time_core(year, month, day, hour, minute, previous_timestamp):
-    the_datetime = datetime(year=year, month=month, day=day, hour=hour, minute=minute)
+    logging.warning('year: %s month: %s day: %s hour: %s minute: %s previous_timestamp: %s', year, month, day, hour, minute, previous_timestamp)
+    error = None
+    try:
+        the_datetime = datetime(year=year, month=month, day=day, hour=hour, minute=minute, second=59)
+    except Exception as e:
+        logging.error('unable to do datetime: year: %s month: %s day: %s', year, month, day)
+        error = S_ERR
+
+    if error and month == 2 and day == 29:
+        return _parse_post_time_core(year + 1, month, day, hour, minute, previous_timestamp)
+
     the_timestamp = datetime_to_timestamp(the_datetime)
-    if the_timestamp > previous_timestamp:
+
+    previous_datetime = timestamp_to_datetime(previous_timestamp)
+    previous_datetime = previous_datetime + timedelta(microseconds=previous_datetime.microsecond)
+    previous_timestamp_by_second = datetime_to_timestamp(previous_datetime)
+    logging.warning('previous_datetime: %s the_datetime: %s the_timestamp: %s previous_timestamp_by_second: %s the_timestamp > previous_timestamp_by_second: %s', previous_datetime, the_datetime, the_timestamp, previous_timestamp_by_second, the_timestamp > previous_timestamp_by_second)
+    if the_timestamp > previous_timestamp_by_second:
         return the_timestamp
+    elif the_timestamp == previous_timestamp_by_second:
+        return previous_timestamp + 1
 
     return _parse_post_time_core(year + 1, month, day, hour, minute, previous_timestamp)
 
