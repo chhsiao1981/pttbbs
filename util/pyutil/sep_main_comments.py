@@ -303,6 +303,15 @@ def _parse_comment_boo(comment, previous_post_time):
 
 
 def _parse_comment_comment(comment, previous_post_time):
+    """Summary
+    
+    Args:
+        comment (TYPE): Description
+        previous_post_time (TYPE): Description
+    
+    Returns:
+        TYPE: Description
+    """
     bright_red = Ctrl(b'\[1;31m')
     yellow = Ctrl(b'\[33m')
     color_reset = Ctrl(b'\[m')
@@ -323,6 +332,15 @@ def _parse_comment_comment(comment, previous_post_time):
 
 
 def _parse_comment_forward(comment, previous_post_time):
+    """Summary
+    
+    Args:
+        comment (TYPE): Description
+        previous_post_time (TYPE): Description
+    
+    Returns:
+        TYPE: Description
+    """
     bright_green = Ctrl(b'\[1;32m')
     green = Ctrl(b'\[0;32m')
     forward_to = Big5('轉錄至看板')
@@ -341,6 +359,15 @@ def _parse_comment_forward(comment, previous_post_time):
 
 
 def _parse_post_time(the_rest_comment, previous_post_time):
+    """Summary
+    
+    Args:
+        the_rest_comment (TYPE): Description
+        previous_post_time (TYPE): Description
+    
+    Returns:
+        TYPE: Description
+    """
     previous_datetime = timestamp_to_datetime(previous_post_time)
 
     # MM/DD hh:mm
@@ -383,6 +410,19 @@ def _parse_post_time(the_rest_comment, previous_post_time):
 
 
 def _parse_post_time_core(year, month, day, hour, minute, previous_timestamp):
+    """Summary
+    
+    Args:
+        year (TYPE): Description
+        month (TYPE): Description
+        day (TYPE): Description
+        hour (TYPE): Description
+        minute (TYPE): Description
+        previous_timestamp (TYPE): Description
+    
+    Returns:
+        TYPE: Description
+    """
     logging.warning('year: %s month: %s day: %s hour: %s minute: %s previous_timestamp: %s', year, month, day, hour, minute, previous_timestamp)
     error = None
     try:
