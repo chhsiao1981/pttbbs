@@ -18,6 +18,40 @@
 #      3. 在 comment-block 裡分出 comments 和 comment-reply
 #
 #
+# Format:
+#      comments:
+#          version                   (unsigned char, 1 byte)
+#          n-comments                (unsigned char, 4 bytes)
+#
+#      For each comment:
+#          length                    (unsigned int, 4 bytes)
+#          the_type                  (unsigned char, 1 byte)
+#          timestamp                 (unsigned long long, 8 bytes)
+#          len-username              (unsigned char, 1 byte)
+#          username                  (unsigned char[])
+#          comment-content           (unsigned char[])
+#
+#      comment-reply:
+#          version                   (unsigned char, 1 byte)
+#          n-comment-reply           (unsigned int, 4 bytes)
+#          each-comment-reply        (comment-reply[])
+#
+#      For each comment-reply:
+#          length-in-byte            (unsigned int, 4 bytes) (not include these 4 bytes)
+#          comment_id                (unsigned int, 4 bytes)
+#          timestamp                 (unsigned long long, 8 bytes)
+#          comments                  (unsigned char[])
+#
+#     comment-reply.idx:
+#          version                   (unsigned char, 1 byte)
+#          n-comment-reply           (unsigned int, 4 bytes)
+#          each-comment-reply.idx    (comment-reply.idx[])
+#
+#     For each comment-reply.idx:
+#          comment-id                (unsigned int, 4 bytes)
+#          offset                    (unsigned int, 4 bytes)
+#
+#
 # USAGE (python3): sep_main_content_comments.py [in_filename]
 #
 # Generate: .main0: main-content (no last \r\n)
@@ -48,6 +82,8 @@ from datetime import datetime, timedelta
 import calendar
 
 S_ERR = 1
+
+VERSION = 1
 
 STATE_COMMENT_INIT = 1
 STATE_COMMENT_COMMENT = 2
@@ -451,6 +487,11 @@ def _parse_post_time_core(year, month, day, hour, minute, previous_timestamp):
 def comments_to_file(comments):
     """Compile comments to file
 
+       comments:
+           version                   (unsigned char, 1 byte)
+           n-comments                (unsigned char, 4 bytes)
+           comments                  (comment[])
+
     Args:
         comments (list): [{'comment', 'username', 'ts', 'the_type'}]
 
@@ -458,9 +499,9 @@ def comments_to_file(comments):
         bytes: compiled content-in-file
     """
     len_comments = len(comments)
-    b_len_comments = struct.pack('<L', len_comments)
+    b_version_len_comments = struct.pack('<BL', VERSION, len_comments)
 
-    results = b_len_comments
+    results = b_version_len_comments
     for each_comment in comments:
         results += _comment_to_file(each_comment)
 
@@ -469,6 +510,14 @@ def comments_to_file(comments):
 
 def _comment_to_file(comment):
     """comple comment to stored in file
+
+       comment:
+           length                    (unsigned int, 4 bytes)
+           the_type                  (unsigned char, 1 byte)
+           timestamp                 (unsigned long long, 8 bytes)
+           len-username              (unsigned char, 1 byte)
+           username                  (unsigned char[])
+           comment-content           (unsigned char[])
 
     Args:
         comment (dict): {comment, username, ts, the_type}
@@ -494,6 +543,26 @@ def _comment_to_file(comment):
 def comment_reply_to_file(comment_reply):
     """Compile lists of comment-reply to file (comment-reply-on-file and comment-reply-idx-on-file)
 
+       comment-reply:
+            version                   (unsigned char, 1 byte)
+            n-comment-reply           (unsigned int, 4 bytes)
+            each-comment-reply        (comment-reply[])
+
+       For each comment-reply:
+            length-in-byte            (unsigned int, 4 bytes) (not include these 4 bytes)
+            comment_id                (unsigned int, 4 bytes)
+            timestamp                 (unsigned long long, 8 bytes)
+            comments                  (unsigned char[])
+
+       comment-reply.idx:
+            version                   (unsigned char, 1 byte)
+            n-comment-reply           (unsigned int, 4 bytes)
+            each-comment-reply.idx    (comment-reply.idx[])
+
+       For each comment-reply.idx:
+            comment-id                (unsigned int, 4 bytes)
+            offset                    (unsigned int, 4 bytes)
+
     Args:
         comment_reply (list): [{reply, comment_id, ts}]
 
@@ -501,9 +570,9 @@ def comment_reply_to_file(comment_reply):
         (bytes, bytes): comment-reply-on-file, comment-reply-idx-on-flie
     """
     len_comment_reply = len(comment_reply)
-    b_len_comment_reply = struct.pack('<L', len_comment_reply)
-    results_comment_reply = b_len_comment_reply
-    results_idx = b_len_comment_reply
+    b_version_len_comment_reply = struct.pack('<BL', VERSION, len_comment_reply)
+    results_comment_reply = b_version_len_comment_reply
+    results_idx = b_version_len_comment_reply
     for each_comment_reply in comment_reply:
         each_comment_reply_in_file, each_comment_reply_idx_in_file = _comment_reply_to_file(each_comment_reply, len(results_comment_reply))
         results_comment_reply += each_comment_reply_in_file
@@ -530,7 +599,7 @@ def _comment_reply_to_file(comment_reply, len_results_comment_reply):
     b_length = struct.pack('<L', the_length)
     comment_reply_on_file = b_length + b_comment_id_ts + reply
 
-    comment_reply_idx_on_file = struct.pack('<LQ', comment_id, len_results_comment_reply)
+    comment_reply_idx_on_file = struct.pack('<LL', comment_id, len_results_comment_reply)
 
     return comment_reply_on_file, comment_reply_idx_on_file
 
