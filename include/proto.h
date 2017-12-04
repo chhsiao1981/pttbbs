@@ -226,6 +226,10 @@ void auto_backup(void);
 void restore_backup(void);
 const char *ask_tmpbuf(int y);
 
+/* edit3 */
+int migrate_vedit3(const char *fpath, int saveheader, char save_title[STRLEN], int flags);
+int vedit3(const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply, int saveheader, char save_title[STRLEN], int flags);
+
 /* emaildb */
 #ifdef USE_EMAILDB
 int emaildb_check_email (const char *email);
@@ -444,6 +448,10 @@ void ZA_Drop(void);
 int m_sob(void);
 void m_sob_brd(char *bname,char *fromdir);
 #endif
+
+/* migrate_merge3 */
+int migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply);
+int merge_3to1(const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply, const char *fpath);
 
 /* pager */
 int more(const char *fpath, int promptend);
