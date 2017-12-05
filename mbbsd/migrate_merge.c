@@ -12,9 +12,94 @@
 int
 migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply)
 {
-    return -1;
+    int fo, fo2, fo3;
+    int fi = open(fpath, O_RDONLY);
+    int offset_origin = migrate_1to3_get_offset_origin(fi);
+    int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin, offset_comments);
+    int state = MIGRATE_STATE_INIT;
+    int current_buf_offset = 0;
+    int bytes;
+    int bytes_in_line = 0;
+    int line_offset = 0;
+
+    char buf[MIGRATE_MERGE_BUF_SIZE];
+    char *p_buf = NULL;
+
+    // main
+    fo = OpenCreate(fpath_main, O_WRONLY | O_TRUNC);
+    if (fo < 0) {
+        close(fi);
+        return -1;
+    }
+
+    lseek(fi, 0, SEEK_SET);
+    while (offset_comments > 0 && (bytes = read(fi, buf, sizeof(buf))) > 0) {
+        n -= bytes;
+        if (n < 0) bytes += n;
+        write(fo, buf, bytes);
+    }
+
+    close(fo);
+
+    // fi is expected to be in the end of the main.
+
+    // comment and comment-reply
+    fo2 = OpenCreate(fpath_comments, O_WRONLY | O_TRUNC);
+    if (fo2 < 0) {
+        close(fi);
+        return -1;
+    }
+    fo3 = OpenCreate(fpath_comment_reply, O_WRONLY | O_TRUNC);
+    if (fo3 < 0) {
+        close(fo2);
+        close(fi);
+        return -1;
+    }
+
+    while (bytes = read(fi, buf, sizeof(buf)) > 0) {
+        for (current_buf_offset = 0, p_buf = buf; current_buf_offset < bytes; p_buf += bytes_in_line, current_buf_offset += bytes_in_line, p_line = line) {
+
+            error_code = migrate_1to3_get_line(p_buf, current_buf_offset, p_line, &bytes_in_line);
+            if (error_code) {
+                break;
+            }
+
+            state = migrate_1to3_op_by_state(state, line, fo2, fo3);
+        }
+    }
+    // last line
+    if (line_offset) state = migrate_1to3_op_by_state(state, line, fo2, fo3);
+
+    close(fo2);
+    close(fo3);
+    close(fi);
+
+    return 0;
 }
 
+int
+migrate_1to3_get_offset_origin(int fd)
+{
+
+}
+
+int
+migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
+{
+
+}
+
+int
+migrate_1to3_get_line(char *buf, int current_buf_offset, int bytes_buf, char *line, int *bytes_in_line)
+{
+
+}
+
+int
+migrate_1to3_op_by_state(int state, char *line, int fo_comments, int fo_comment_reply)
+{
+
+}
 /**
  * @brief [brief description]
  * @details [long description]
@@ -78,8 +163,8 @@ merge_3to1(const char *fpath_main, const char *fpath_comments, const char *fpath
         }
     }
 
-    if(fi2 >= 0) close(fi2);
-    if(fi3 >= 0) close(fi3);
+    if (fi2 >= 0) close(fi2);
+    if (fi3 >= 0) close(fi3);
     close(fo);
 
     return 0;
