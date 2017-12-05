@@ -21,10 +21,11 @@
 # Format:
 #      comments:
 #          version                   (unsigned char, 1 byte)
-#          n-comments                (unsigned char, 4 bytes)
+#          n-comments                (unsigned int, 4 bytes)
+#          comments                  (comment[])
 #
 #      For each comment:
-#          length                    (unsigned int, 4 bytes)
+#          length                    (unsigned char, 1 byte) (not include this byte)
 #          the_type                  (unsigned char, 1 byte)
 #          timestamp                 (unsigned long long, 8 bytes)
 #          len-username              (unsigned char, 1 byte)
@@ -37,7 +38,7 @@
 #          each-comment-reply        (comment-reply[])
 #
 #      For each comment-reply:
-#          length-in-byte            (unsigned int, 4 bytes) (not include these 4 bytes)
+#          length-in-byte            (unsigned short, 2 bytes) (not include these 2 bytes)
 #          comment_id                (unsigned int, 4 bytes)
 #          timestamp                 (unsigned long long, 8 bytes)
 #          comments                  (unsigned char[])
@@ -489,7 +490,7 @@ def comments_to_file(comments):
 
        comments:
            version                   (unsigned char, 1 byte)
-           n-comments                (unsigned char, 4 bytes)
+           n-comments                (unsigned int, 4 bytes)
            comments                  (comment[])
 
     Args:
@@ -512,7 +513,7 @@ def _comment_to_file(comment):
     """comple comment to stored in file
 
        comment:
-           length                    (unsigned int, 4 bytes)
+           length                    (unsigned char, 1 byte)
            the_type                  (unsigned char, 1 byte)
            timestamp                 (unsigned long long, 8 bytes)
            len-username              (unsigned char, 1 byte)
@@ -533,8 +534,8 @@ def _comment_to_file(comment):
     len_username = len(username)
 
     b_the_type_ts_len_username = struct.pack('<BQB', the_type, ts, len_username)
-    the_length = len(b_the_type_ts_len_username) + len(username) + len(comment)
-    b_length = struct.pack('<L', the_length)
+    the_length = len(b_the_type_ts_len_username) + len(username) + len(comment_content)
+    b_length = struct.pack('<B', the_length)
     comment_on_file = b_length + b_the_type_ts_len_username + username + comment_content
 
     return comment_on_file
@@ -549,7 +550,7 @@ def comment_reply_to_file(comment_reply):
             each-comment-reply        (comment-reply[])
 
        For each comment-reply:
-            length-in-byte            (unsigned int, 4 bytes) (not include these 4 bytes)
+            length-in-byte            (unsigned short, 2 bytes) (not include these 2 bytes)
             comment_id                (unsigned int, 4 bytes)
             timestamp                 (unsigned long long, 8 bytes)
             comments                  (unsigned char[])
@@ -596,7 +597,7 @@ def _comment_reply_to_file(comment_reply, len_results_comment_reply):
 
     b_comment_id_ts = struct.pack('<LQ', comment_id, ts)
     the_length = len(reply) + len(b_comment_id_ts)
-    b_length = struct.pack('<L', the_length)
+    b_length = struct.pack('<H', the_length)
     comment_reply_on_file = b_length + b_comment_id_ts + reply
 
     comment_reply_idx_on_file = struct.pack('<LL', comment_id, len_results_comment_reply)
