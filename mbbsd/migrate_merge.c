@@ -33,13 +33,13 @@ merge_3to1(const char *fpath_main, const char *fpath_comments, const char *fpath
     unsigned int n_comment_reply;
     int next_comment_reply_id;
     unsigned short comment_reply_bytes;
-
+    char *comment_reply;
     unsigned int iterated_comment_reply = 0;
 
     char buf[MIGRATE_MERGE_BUF_SIZE];
 
     // open fo
-    fo = OpenCreate(dst, O_WRONLY | O_TRUNC)
+    fo = OpenCreate(fpath, O_WRONLY | O_TRUNC)
          if (fo < 0) return -1;
 
     // copy fpath_main to fpath

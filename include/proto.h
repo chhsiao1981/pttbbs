@@ -516,12 +516,12 @@ int othello_main(void);
 int main_railway(void);
 
 /* post3 */
-unsigned int fget_n_comments(FILE *f_comments);
-unsigned char fget_next_comment(FILE *f_comment, char *buf);
+unsigned int fget_n_comments(int fd_comments);
+unsigned char fget_next_comment(int fd_comment, char *buf);
 
-unsigned int fget_n_comment_reply(FILE *f_comment_reply);
-unsigned int fpeek_next_comment_reply_id(FILE *f_comment_reply);
-unsigned short fget_next_comment_reply(FILE *f_comment_reply, char **buf);
+unsigned int fget_n_comment_reply(int fd_comment_reply);
+unsigned int fpeek_next_comment_reply_id(int fd_comment_reply);
+unsigned short fget_next_comment_reply(int fd_comment_reply, char **buf);
 
 /* read */
 void i_read(int cmdmode, const char *direct, void (*dotitle)(), void (*doentry)(), const onekey_t *rcmdlist, int bidcache);
