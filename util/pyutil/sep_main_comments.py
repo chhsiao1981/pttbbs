@@ -21,7 +21,7 @@
 # Format:
 #      comments:
 #          version                   (unsigned char, 1 byte)
-#          n-comments                (unsigned int, 4 bytes)
+#          n-comments                (int, 4 bytes)
 #          comments                  (comment[])
 #
 #      For each comment:
@@ -34,22 +34,22 @@
 #
 #      comment-reply:
 #          version                   (unsigned char, 1 byte)
-#          n-comment-reply           (unsigned int, 4 bytes)
+#          n-comment-reply           (int, 4 bytes)
 #          each-comment-reply        (comment-reply[])
 #
 #      For each comment-reply:
 #          length-in-byte            (unsigned short, 2 bytes) (not include these 2 bytes)
-#          comment_id                (unsigned int, 4 bytes)
+#          comment_id                (int, 4 bytes)
 #          timestamp                 (unsigned long long, 8 bytes)
 #          comments                  (unsigned char[])
 #
 #     comment-reply.idx:
 #          version                   (unsigned char, 1 byte)
-#          n-comment-reply           (unsigned int, 4 bytes)
+#          n-comment-reply           (int, 4 bytes)
 #          each-comment-reply.idx    (comment-reply.idx[])
 #
 #     For each comment-reply.idx:
-#          comment-id                (unsigned int, 4 bytes)
+#          comment-id                (int, 4 bytes)
 #          offset                    (unsigned int, 4 bytes)
 #
 #
@@ -490,7 +490,7 @@ def comments_to_file(comments):
 
        comments:
            version                   (unsigned char, 1 byte)
-           n-comments                (unsigned int, 4 bytes)
+           n-comments                (int, 4 bytes)
            comments                  (comment[])
 
     Args:
@@ -500,7 +500,7 @@ def comments_to_file(comments):
         bytes: compiled content-in-file
     """
     len_comments = len(comments)
-    b_version_len_comments = struct.pack('<BL', VERSION, len_comments)
+    b_version_len_comments = struct.pack('<Bi', VERSION, len_comments)
 
     results = b_version_len_comments
     for each_comment in comments:
@@ -546,22 +546,22 @@ def comment_reply_to_file(comment_reply):
 
        comment-reply:
             version                   (unsigned char, 1 byte)
-            n-comment-reply           (unsigned int, 4 bytes)
+            n-comment-reply           (int, 4 bytes)
             each-comment-reply        (comment-reply[])
 
        For each comment-reply:
             length-in-byte            (unsigned short, 2 bytes) (not include these 2 bytes)
-            comment_id                (unsigned int, 4 bytes)
+            comment_id                (int, 4 bytes)
             timestamp                 (unsigned long long, 8 bytes)
             comments                  (unsigned char[])
 
        comment-reply.idx:
             version                   (unsigned char, 1 byte)
-            n-comment-reply           (unsigned int, 4 bytes)
+            n-comment-reply           (int, 4 bytes)
             each-comment-reply.idx    (comment-reply.idx[])
 
        For each comment-reply.idx:
-            comment-id                (unsigned int, 4 bytes)
+            comment-id                (int, 4 bytes)
             offset                    (unsigned int, 4 bytes)
 
     Args:
@@ -571,7 +571,7 @@ def comment_reply_to_file(comment_reply):
         (bytes, bytes): comment-reply-on-file, comment-reply-idx-on-flie
     """
     len_comment_reply = len(comment_reply)
-    b_version_len_comment_reply = struct.pack('<BL', VERSION, len_comment_reply)
+    b_version_len_comment_reply = struct.pack('<Bi', VERSION, len_comment_reply)
     results_comment_reply = b_version_len_comment_reply
     results_idx = b_version_len_comment_reply
     for each_comment_reply in comment_reply:
@@ -595,12 +595,12 @@ def _comment_reply_to_file(comment_reply, len_results_comment_reply):
     comment_id = comment_reply.get('comment_id', 0)
     ts = comment_reply.get('ts', 0)
 
-    b_comment_id_ts = struct.pack('<LQ', comment_id, ts)
+    b_comment_id_ts = struct.pack('<iQ', comment_id, ts)
     the_length = len(reply) + len(b_comment_id_ts)
     b_length = struct.pack('<H', the_length)
     comment_reply_on_file = b_length + b_comment_id_ts + reply
 
-    comment_reply_idx_on_file = struct.pack('<LL', comment_id, len_results_comment_reply)
+    comment_reply_idx_on_file = struct.pack('<iI', comment_id, len_results_comment_reply)
 
     return comment_reply_on_file, comment_reply_idx_on_file
 
