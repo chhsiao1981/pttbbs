@@ -30,6 +30,7 @@ unsigned char
 fget_next_comment(int fd_comments, char *buf)
 {
     unsigned char len;
+    unsigned char len_username;
     unsigned char len_comments;
 
     read(fd_comments, &len, sizeof(unsigned char));
@@ -76,7 +77,7 @@ fpeek_next_comment_reply_id(int fd_comment_reply)
 
     read(fd_comment_reply, &len, sizeof(unsigned short));
     read(fd_comment_reply, &comment_id, sizeof(unsigned int));
-    lseek(fd_comments_reply, -COMMENT_REPLY_OFFSET_TIMESTAMP, SEEK_CUR);
+    lseek(fd_comment_reply, -COMMENT_REPLY_OFFSET_TIMESTAMP, SEEK_CUR);
 
     return comment_id;
 }
@@ -94,8 +95,6 @@ unsigned short
 fget_next_comment_reply(int fd_comment_reply, char **buf)
 {
     unsigned short len;
-    unsigned int comment_id;
-    unsigned long long the_timestamp;
     unsigned short len_buf;
 
     read(fd_comment_reply, &len, sizeof(unsigned short));
