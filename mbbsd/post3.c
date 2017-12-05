@@ -86,7 +86,7 @@ fpeek_next_comment_reply_id(FILE *f_comment_reply)
  * @details [long description]
  * 
  * @param f_comment_reply [description]
- * @param buf [description]
+ * @param buf * XXX malloc in the function, require free outside the function.
  * 
  * @return [description]
  */
