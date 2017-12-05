@@ -280,6 +280,21 @@
 #define TYPEAHEAD_STDIN	(0)
 
 /* ----------------------------------------------------- */
+/* migrate_merge                                         */
+/* ----------------------------------------------------- */
+#define UNSIGNED_CHAR_BUF_SIZE 256
+
+/* ----------------------------------------------------- */
+/* post3                                                 */
+/* ----------------------------------------------------- */
+#define COMMENT_OFFSET_LEN_USERNAME 10
+#define COMMENT_OFFSET_USERNAME 12
+
+#define COMMENT_REPLY_OFFSET_TIMESTMP 12
+#define COMMENT_REPLY_OFFSET_REPLY 14
+
+
+/* ----------------------------------------------------- */
 /* Constants                                             */
 /* ----------------------------------------------------- */
 #define DAY_SECONDS	    (86400)
