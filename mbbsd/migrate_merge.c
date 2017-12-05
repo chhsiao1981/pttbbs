@@ -34,7 +34,7 @@ merge_3to1(const char *fpath_main, const char *fpath_comments, const char *fpath
     int next_comment_reply_id;
     unsigned short comment_reply_bytes;
 
-    int iterated_comment_reply = 0;
+    unsigned int iterated_comment_reply = 0;
 
     char buf[MIGRATE_MERGE_BUF_SIZE];
 
