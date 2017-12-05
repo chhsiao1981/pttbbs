@@ -517,7 +517,7 @@ int main_railway(void);
 
 /* post3 */
 int fget_n_comments(int fd_comments);
-unsigned char fget_next_comment(int fd_comment, char *buf);
+unsigned char fget_next_comment(int fd_comments, char *buf);
 
 int fget_n_comment_reply(int fd_comment_reply);
 int fpeek_next_comment_reply_id(int fd_comment_reply);

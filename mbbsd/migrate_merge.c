@@ -34,7 +34,7 @@ merge_3to1(const char *fpath_main, const char *fpath_comments, const char *fpath
     int next_comment_reply_id;
     unsigned short comment_reply_bytes;
     char *comment_reply;
-    unsigned int iterated_comment_reply = 0;
+    int iterated_comment_reply = 0;
 
     char buf[MIGRATE_MERGE_BUF_SIZE];
 
@@ -62,7 +62,7 @@ merge_3to1(const char *fpath_main, const char *fpath_comments, const char *fpath
 
     next_comment_reply_id = n_comment_reply ? fpeek_next_comment_reply_id(fi3) : -1;
 
-    for (unsigned int i = 0; i < n_comments; i++) {
+    for (int i = 0; i < n_comments; i++) {
         comment_bytes = fget_next_comment(fi2, buf);
         write(fo, buf, comment_bytes);
 

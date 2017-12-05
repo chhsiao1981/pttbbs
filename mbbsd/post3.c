@@ -27,7 +27,7 @@ fget_n_comments(int fd_comments)
  * @return length of the buffer. (\r\n not included)
  */
 unsigned char
-fget_next_comment(int fd_comment, char *buf)
+fget_next_comment(int fd_comments, char *buf)
 {
     unsigned char len;
     unsigned char len_comments;
