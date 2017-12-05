@@ -12,7 +12,7 @@
 int
 migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply)
 {
-
+    return -1;
 }
 
 /**
@@ -27,10 +27,10 @@ int
 merge_3to1(const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply, const char *fpath)
 {
     int fi, fi2, fi3, fo, bytes;
-    unsigned int n_comments;
+    int n_comments;
     unsigned char comment_bytes;
 
-    unsigned int n_comment_reply;
+    int n_comment_reply;
     int next_comment_reply_id;
     unsigned short comment_reply_bytes;
     char *comment_reply;
@@ -39,8 +39,8 @@ merge_3to1(const char *fpath_main, const char *fpath_comments, const char *fpath
     char buf[MIGRATE_MERGE_BUF_SIZE];
 
     // open fo
-    fo = OpenCreate(fpath, O_WRONLY | O_TRUNC)
-         if (fo < 0) return -1;
+    fo = OpenCreate(fpath, O_WRONLY | O_TRUNC);
+    if (fo < 0) return -1;
 
     // copy fpath_main to fpath
     fi = open(fpath_main, O_RDONLY);
@@ -49,17 +49,20 @@ merge_3to1(const char *fpath_main, const char *fpath_comments, const char *fpath
         return -1;
     }
 
-    while ((bytes = read(fi, buf, sizeo(buf))) > 0) write(fo, buf, bytes);
+    while ((bytes = read(fi, buf, sizeof(buf))) > 0) write(fo, buf, bytes);
 
     close(fi);
 
     // comments and comment_reply
+    fi2 = open(fpath_comments, O_RDONLY);
+    fi3 = open(fpath_comment_reply, O_RDONLY);
+
     n_comments = fi2 < 0 ? 0 : fget_n_comments(fi2);
     n_comment_reply = fi3 < 0 ? 0 : fget_n_comment_reply(fi3);
 
     next_comment_reply_id = n_comment_reply ? fpeek_next_comment_reply_id(fi3) : -1;
 
-    for (int i = 0; i < n_comments; i++) {
+    for (unsigned int i = 0; i < n_comments; i++) {
         comment_bytes = fget_next_comment(fi2, buf);
         write(fo, buf, comment_bytes);
 
@@ -75,8 +78,8 @@ merge_3to1(const char *fpath_main, const char *fpath_comments, const char *fpath
         }
     }
 
-    close(fi2);
-    close(fi3);
+    if(fi2 >= 0) close(fi2);
+    if(fi3 >= 0) close(fi3);
     close(fo);
 
     return 0;

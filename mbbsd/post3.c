@@ -7,7 +7,7 @@
  * @param f_comments fp of the comments, should be in the beginning of the FILE.
  * @return number of comments
  */
-unsigned int
+int
 fget_n_comments(int fd_comments)
 {
     unsigned char v;
@@ -50,7 +50,7 @@ fget_next_comment(int fd_comment, char *buf)
  * @param f_comment_reply [description]
  * @return [description]
  */
-unsigned int
+int
 fget_n_comment_reply(int fd_comment_reply)
 {
     unsigned char v;
@@ -68,7 +68,7 @@ fget_n_comment_reply(int fd_comment_reply)
  * @param f_comment_reply [description]
  * @return [description]
  */
-unsigned int
+int
 fpeek_next_comment_reply_id(int fd_comment_reply)
 {
     unsigned short len;
