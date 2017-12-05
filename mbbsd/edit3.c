@@ -39,6 +39,8 @@ migrate_vedit3(const char *fpath, int saveheader, char save_title[STRLEN], int f
 
     // merge
     merge_3To1(fpath_main, fpath_comments, fpath_comment_reply, fpath);
+
+    return 0;
 }
 
 /**
@@ -56,5 +58,5 @@ migrate_vedit3(const char *fpath, int saveheader, char save_title[STRLEN], int f
 int 
 vedit3(const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply, int saveheader, char save_title[STRLEN], int flags)
 {
-
+    return -1;
 }
