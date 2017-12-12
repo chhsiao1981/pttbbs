@@ -2,9 +2,9 @@
 #include "bbs.h"
 
 TEST(migrate_merge, migrate_1to3_get_line) {
-    char buf[] = "testtesttest\r\n";
-    char buf2[] = "testtest\r\ntesttesttest";
-    char buf3[] = "testtest\r\ntesttesttest\r\n";
+    char buf[] = "testtesttest\r\n\0";
+    char buf2[] = "testtest\r\ntesttesttest\0";
+    char buf3[] = "testtest\r\ntesttesttest\r\n\0";
     char line[MIGRATE_MERGE_BUF_SIZE];
     int bytes_in_new_line;
 
