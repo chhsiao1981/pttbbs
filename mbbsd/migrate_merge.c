@@ -239,6 +239,12 @@ migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *
 {
     int i;
 
+    // check the end of buf
+    if(current_buf_offset >= bytes_buf) {
+        *bytes_in_new_line = 0;
+        return -1;
+    }
+
     // init p_buf offset
     p_buf += current_buf_offset;
 
@@ -260,11 +266,6 @@ migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *
         }
 
         *p_line++ = *p_buf++;
-    }
-
-    if(i >= bytes_buf) {
-        bytes_in_new_line = 0;
-        return -1;
     }
 
     // last char
