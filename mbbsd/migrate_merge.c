@@ -237,6 +237,9 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
 int
 migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *p_line, int offset_line, int *bytes_in_new_line)
 {
+    int i;
+
+    // init p_buf offset
     p_buf += current_buf_offset;
 
     // check bytes in line and in buf.
@@ -247,7 +250,7 @@ migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *
     }
 
     // check bytes in buf.
-    for (int i = current_buf_offset; i < bytes_buf - 1; i++) {
+    for (i = current_buf_offset; i < bytes_buf - 1; i++) {
         if (*p_buf == '\r' && *(p_buf + 1) == '\n') {
             *p_line = '\r';
             *(p_line + 1) = '\n';
@@ -257,6 +260,11 @@ migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *
         }
 
         *p_line++ = *p_buf++;
+    }
+
+    if(i >= bytes_buf) {
+        bytes_in_new_line = 0;
+        return -1;
     }
 
     // last char
