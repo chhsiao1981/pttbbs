@@ -31,6 +31,8 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
 
     char *p_line = line;
     int bytes_in_new_line = 0;
+    int n_main = 0;
+    int error_code = MIGRATE_S_OK;
 
     // main
     fo_main = OpenCreate(fpath_main, O_WRONLY | O_TRUNC);
@@ -40,15 +42,17 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
     }
 
     lseek(fi, 0, SEEK_SET);
-    while (offset_comments > 0 && (bytes = read(fi, buf, sizeof(buf))) > 0) {
-        n -= bytes;
-        if (n < 0) bytes += n;
+    n_main = offset_comments;
+    while (n_main > 0 && (bytes = read(fi, buf, sizeof(buf))) > 0) {
+        n_main -= bytes;
+        if (n_main < 0) bytes += n_main;
         write(fo_main, buf, bytes);
     }
 
     close(fo_main);
 
     // fi is expected to be in the end of the main.
+    lseek(fi, offset_comments, SEEK_SET);
 
     // comment and comment-reply
     fo_comments = OpenCreate(fpath_comments, O_WRONLY | O_TRUNC);
@@ -130,7 +134,9 @@ migrate_1to3_get_offset_origin(int fd)
     char *p_line = line;
     int bytes_in_new_line = 0;
 
-    while (bytes = read(fd, buf, sizeof(buf)) > 0) {
+    int error_code = MIGRATE_S_OK;
+
+    while ((bytes = read(fd, buf, sizeof(buf))) > 0) {
         for (current_buf_offset = 0, p_buf = buf; current_buf_offset < bytes; p_buf += bytes_in_new_line, current_buf_offset += bytes_in_new_line) {
 
             error_code = migrate_1to3_get_line(p_buf, current_buf_offset, bytes, p_line, bytes_in_line, &bytes_in_new_line);
@@ -176,10 +182,12 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
     char *p_line = line;
     int bytes_in_new_line = 0;
 
+    int error_code = MIGRATE_S_OK;
+
     // start with origin
     lseek(fd, offset_origin, SEEK_SET);
 
-    while (bytes = read(fd, buf, sizeof(buf)) > 0) {
+    while ((bytes = read(fd, buf, sizeof(buf))) > 0) {
         for (current_buf_offset = 0, p_buf = buf; current_buf_offset < bytes; p_buf += bytes_in_new_line, current_buf_offset += bytes_in_new_line) {
 
             error_code = migrate_1to3_get_line(p_buf, current_buf_offset, bytes, p_line, bytes_in_line, &bytes_in_new_line);

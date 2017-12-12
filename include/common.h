@@ -286,6 +286,12 @@
 #define MIGRATE_HEADER_ORIGIN "¡° µo«H¯¸:"
 #define LEN_MIGRATE_HEADER_ORIGIN 10
 
+#define MIGRATE_STATE_INIT 0
+
+
+
+#define MIGRATE_S_OK 0
+
 /* ----------------------------------------------------- */
 /* post3                                                 */
 /* ----------------------------------------------------- */
