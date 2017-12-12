@@ -36,7 +36,7 @@ TEST(migrate_merge, migrate_1to3_get_line) {
     EXPECT_EQ(0, migrate_1to3_get_line(buf3, 10, 24, line, 0, &bytes_in_new_line));
     printf("bytes_in_new_line: %d line: %s|\n", bytes_in_new_line, line);
     EXPECT_EQ(14, bytes_in_new_line);
-    EXPECT_EQ(0, strncmp(line, "testtesttest\n\n", 14));
+    EXPECT_EQ(0, strncmp(line, "testtesttest\r\n", 14));
 }
 
 int main(int argc, char **argv) {
