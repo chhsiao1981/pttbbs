@@ -239,7 +239,7 @@ migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *
 {
     p_buf += current_buf_offset;
 
-    printf("p_buf: %s", p_buf);
+    fprintf(stderr, "p_buf: %s", p_buf);
 
     // check bytes in line and in buf.
     if (offset_line && p_line[-1] == '\r' && p_buf[0] == '\n') {
