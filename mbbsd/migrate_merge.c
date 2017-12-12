@@ -15,7 +15,7 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
     int fo_main, fo_comments, fo_comment_reply;
     int fi = open(fpath, O_RDONLY);
     int offset_origin = migrate_1to3_get_offset_origin(fi);
-    int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin, offset_comments);
+    int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
     int state = MIGRATE_STATE_INIT;
 
     char buf[MIGRATE_MERGE_BUF_SIZE];
@@ -86,7 +86,7 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
      *
      *
      *****/
-    while (bytes = read(fi, buf, sizeof(buf)) > 0) {
+    while ((bytes = read(fi, buf, sizeof(buf))) > 0) {
         for (current_buf_offset = 0, p_buf = buf; current_buf_offset < bytes; p_buf += bytes_in_new_line, current_buf_offset += bytes_in_new_line) {
 
             error_code = migrate_1to3_get_line(p_buf, current_buf_offset, bytes, p_line, bytes_in_line, &bytes_in_new_line);
@@ -135,6 +135,7 @@ migrate_1to3_get_offset_origin(int fd)
     int bytes_in_new_line = 0;
 
     int error_code = MIGRATE_S_OK;
+    int current_offset = 0;
 
     while ((bytes = read(fd, buf, sizeof(buf))) > 0) {
         for (current_buf_offset = 0, p_buf = buf; current_buf_offset < bytes; p_buf += bytes_in_new_line, current_buf_offset += bytes_in_new_line) {
@@ -201,10 +202,10 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
             if (!bytes_in_line) break;
 
             // MAIN-OP
-            if (migrate_1to3_is_recommend_line(line)) return line_offset;
-            if (migrate_1to3_is_boo_line(line)) return line_offset;
-            if (migrate_1to3_is_comment_line(line)) return line_offset;
-            if (migrate_1to3_is_forward_line(line)) return line_offset;
+            if (migrate_1to3_is_recommend_line(line, bytes_in_line)) return line_offset;
+            if (migrate_1to3_is_boo_line(line, bytes_in_line)) return line_offset;
+            if (migrate_1to3_is_comment_line(line, bytes_in_line)) return line_offset;
+            if (migrate_1to3_is_forward_line(line, bytes_in_line)) return line_offset;
 
             // reset line
             line_offset += bytes_in_line;
@@ -215,10 +216,10 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
     }
     // last line
     if (bytes_in_line) {
-        if (migrate_1to3_is_recommend_line(line)) return line_offset;
-        if (migrate_1to3_is_boo_line(line)) return line_offset;
-        if (migrate_1to3_is_comment_line(line)) return line_offset;
-        if (migrate_1to3_is_forward_line(line)) return line_offset;
+        if (migrate_1to3_is_recommend_line(line, bytes_in_line)) return line_offset;
+        if (migrate_1to3_is_boo_line(line, bytes_in_line)) return line_offset;
+        if (migrate_1to3_is_comment_line(line, bytes_in_line)) return line_offset;
+        if (migrate_1to3_is_forward_line(line, bytes_in_line)) return line_offset;
     }
 
     return -1;
@@ -240,14 +241,14 @@ int
 migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *p_line, int offset_line, int *bytes_in_new_line)
 {
     // check bytes in line and in buf.
-    if (bytes_in_line && p_line[-1] == '\r' && p_buf[0] == '\n') {
+    if (offset_line && p_line[-1] == '\r' && p_buf[0] == '\n') {
         *p_line = '\n';
         *bytes_in_new_line = 1;
         return 0;
     }
 
     // check bytes in buf.
-    for (int i = current_buf_offset, i < bytes_buf - 1; i++) {
+    for (int i = current_buf_offset; i < bytes_buf - 1; i++) {
         if (*p_buf == '\r' && *(p_buf + 1) == '\n') {
             *p_line = '\r';
             *(p_line + 1) = '\n';
@@ -290,7 +291,7 @@ migrate_1to3_is_forward_line(char *line, int len_line)
 }
 
 int
-migrate_1to3_op_by_state(int state, char *line, int fo_comments, int fo_comment_reply)
+migrate_1to3_op_by_state(int state, char *line, int len_line, int fo_comments, int fo_comment_reply)
 {
     return 0;
 }
