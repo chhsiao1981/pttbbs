@@ -86,7 +86,7 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
      *
      *****/
     while ((bytes = read(fi, buf, sizeof(buf))) > 0) {
-        for (current_buf_offset = 0, current_buf_offset < bytes; current_buf_offset += bytes_in_new_line) {
+        for (current_buf_offset = 0; current_buf_offset < bytes; current_buf_offset += bytes_in_new_line) {
 
             error_code = migrate_1to3_get_line(buf, current_buf_offset, bytes, p_line, bytes_in_line, &bytes_in_new_line);
             if (error_code) {
@@ -136,7 +136,7 @@ migrate_1to3_get_offset_origin(int fd)
     int current_offset = 0;
 
     while ((bytes = read(fd, buf, sizeof(buf))) > 0) {
-        for (current_buf_offset = 0, current_buf_offset < bytes; current_buf_offset += bytes_in_new_line) {
+        for (current_buf_offset = 0; current_buf_offset < bytes; current_buf_offset += bytes_in_new_line) {
 
             error_code = migrate_1to3_get_line(buf, current_buf_offset, bytes, p_line, bytes_in_line, &bytes_in_new_line);
             if (error_code) {
