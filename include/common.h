@@ -283,6 +283,8 @@
 /* migrate_merge                                         */
 /* ----------------------------------------------------- */
 #define MIGRATE_MERGE_BUF_SIZE 8192
+#define MIGRATE_HEADER_ORIGIN "¡° µo«H¯¸:"
+#define LEN_MIGRATE_HEADER_ORIGIN 10
 
 /* ----------------------------------------------------- */
 /* post3                                                 */
