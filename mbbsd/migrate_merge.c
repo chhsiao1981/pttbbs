@@ -23,7 +23,6 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
 
     int bytes;
 
-    char *p_buf = NULL;
     int current_buf_offset = 0;
 
     int line_offset = 0;
@@ -87,9 +86,9 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
      *
      *****/
     while ((bytes = read(fi, buf, sizeof(buf))) > 0) {
-        for (current_buf_offset = 0, p_buf = buf; current_buf_offset < bytes; p_buf += bytes_in_new_line, current_buf_offset += bytes_in_new_line) {
+        for (current_buf_offset = 0, current_buf_offset < bytes; current_buf_offset += bytes_in_new_line) {
 
-            error_code = migrate_1to3_get_line(p_buf, current_buf_offset, bytes, p_line, bytes_in_line, &bytes_in_new_line);
+            error_code = migrate_1to3_get_line(buf, current_buf_offset, bytes, p_line, bytes_in_line, &bytes_in_new_line);
             if (error_code) {
                 p_line += bytes_in_new_line;
                 bytes_in_line += bytes_in_new_line;
@@ -125,7 +124,6 @@ migrate_1to3_get_offset_origin(int fd)
 
     int bytes;
 
-    char *p_buf = NULL;
     int current_buf_offset = 0;
 
     int line_offset = 0;
@@ -138,9 +136,9 @@ migrate_1to3_get_offset_origin(int fd)
     int current_offset = 0;
 
     while ((bytes = read(fd, buf, sizeof(buf))) > 0) {
-        for (current_buf_offset = 0, p_buf = buf; current_buf_offset < bytes; p_buf += bytes_in_new_line, current_buf_offset += bytes_in_new_line) {
+        for (current_buf_offset = 0, current_buf_offset < bytes; current_buf_offset += bytes_in_new_line) {
 
-            error_code = migrate_1to3_get_line(p_buf, current_buf_offset, bytes, p_line, bytes_in_line, &bytes_in_new_line);
+            error_code = migrate_1to3_get_line(buf, current_buf_offset, bytes, p_line, bytes_in_line, &bytes_in_new_line);
             if (error_code) {
                 p_line += bytes_in_new_line;
                 bytes_in_line += bytes_in_new_line;
@@ -174,7 +172,6 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
 
     int bytes;
 
-    char *p_buf = NULL;
     int current_buf_offset = 0;
 
     int line_offset = 0;
@@ -189,9 +186,9 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
     lseek(fd, offset_origin, SEEK_SET);
 
     while ((bytes = read(fd, buf, sizeof(buf))) > 0) {
-        for (current_buf_offset = 0, p_buf = buf; current_buf_offset < bytes; p_buf += bytes_in_new_line, current_buf_offset += bytes_in_new_line) {
+        for (current_buf_offset = 0; current_buf_offset < bytes; current_buf_offset += bytes_in_new_line) {
 
-            error_code = migrate_1to3_get_line(p_buf, current_buf_offset, bytes, p_line, bytes_in_line, &bytes_in_new_line);
+            error_code = migrate_1to3_get_line(buf, current_buf_offset, bytes, p_line, bytes_in_line, &bytes_in_new_line);
             if (error_code) {
                 p_line += bytes_in_new_line;
                 bytes_in_line += bytes_in_new_line;
@@ -240,6 +237,8 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
 int
 migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *p_line, int offset_line, int *bytes_in_new_line)
 {
+    p_buf += current_buf_offset;
+
     // check bytes in line and in buf.
     if (offset_line && p_line[-1] == '\r' && p_buf[0] == '\n') {
         *p_line = '\n';
