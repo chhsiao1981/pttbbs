@@ -50,7 +50,7 @@ TEST(migrate_merge, migrate_1to3_get_line_4) {
     // test from middle of the buf. and with ending.
     bzero(line, sizeof(line));
     line[0] = '\r';
-    EXPECT_EQ(0, migrate_1to3_get_line(buf, 10, 24, line, 1, &bytes_in_new_line));
+    EXPECT_EQ(0, migrate_1to3_get_line(buf, 0, 15, line, 1, &bytes_in_new_line));
     EXPECT_EQ(1, bytes_in_new_line);
     EXPECT_EQ(0, strncmp(line, "\r\n", 2));
 }
