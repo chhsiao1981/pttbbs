@@ -28,7 +28,6 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
     int line_offset = 0;
     int bytes_in_line = 0;
 
-    char *p_line = line;
     int bytes_in_new_line = 0;
     int n_main = 0;
     int error_code = MIGRATE_S_OK;
@@ -69,15 +68,12 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
     /*****
      * Definition of the variables:
      *     bytes: total-bytes read from the fi.
-     *
-     *     p_buf: pointer of the buf
      *     current_buf_offset: the offset of the p_buf in the buf
      *
      *     line: the complete line.
      *     line_offset: offset of the line[0] in fi.
      *     bytes_in_line: length of the line.
      *
-     *     p_line: pointer of the line.
      *     bytes_in_new_line: retreived new bytes to the line from migrate_1to3_get_line.
      *
      * Process:
@@ -88,26 +84,24 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
     while ((bytes = read(fi, buf, sizeof(buf))) > 0) {
         for (current_buf_offset = 0; current_buf_offset < bytes; current_buf_offset += bytes_in_new_line) {
 
-            error_code = migrate_1to3_get_line(buf, current_buf_offset, bytes, p_line, bytes_in_line, &bytes_in_new_line);
+            error_code = migrate_1to3_get_line(buf, current_buf_offset, bytes, line, bytes_in_line, &bytes_in_new_line);
+            bytes_in_line += bytes_in_new_line;
             if (error_code) {
-                p_line += bytes_in_new_line;
-                bytes_in_line += bytes_in_new_line;
                 break;
             }
-            bytes_in_line += bytes_in_new_line;
 
             // MAIN-OP
             state = migrate_1to3_op_by_state(state, line, bytes_in_line, fo_comments, fo_comment_reply);
 
             // reset line
             line_offset += bytes_in_line;
-
-            p_line = line;
             bytes_in_line = 0;
         }
     }
     // last line
-    if (bytes_in_line) state = migrate_1to3_op_by_state(state, line, bytes_in_line, fo_comments, fo_comment_reply);
+    if (bytes_in_line) {
+        state = migrate_1to3_op_by_state(state, line, bytes_in_line, fo_comments, fo_comment_reply);
+    }
 
     close(fo_comments);
     close(fo_comment_reply);
@@ -129,30 +123,41 @@ migrate_1to3_get_offset_origin(int fd)
     int line_offset = 0;
     int bytes_in_line = 0;
 
-    char *p_line = line;
     int bytes_in_new_line = 0;
 
     int error_code = MIGRATE_S_OK;
     int current_offset = 0;
 
+    /*****
+     * Definition of the variables:
+     *     bytes: total-bytes read from the fi.
+     *     current_buf_offset: the offset of the p_buf in the buf
+     *
+     *     line: the complete line.
+     *     line_offset: offset of the line[0] in fi.
+     *     bytes_in_line: length of the line.
+     *
+     *     bytes_in_new_line: retreived new bytes to the line from migrate_1to3_get_line.
+     *
+     * Process:
+     *     each for-loop correctly get a complete line. XXX assuming each line does not exceed MIGRATE_MERGE_BUF_SIZE
+     *
+     *
+     *****/
     while ((bytes = read(fd, buf, sizeof(buf))) > 0) {
         for (current_buf_offset = 0; current_buf_offset < bytes; current_buf_offset += bytes_in_new_line) {
 
-            error_code = migrate_1to3_get_line(buf, current_buf_offset, bytes, p_line, bytes_in_line, &bytes_in_new_line);
+            error_code = migrate_1to3_get_line(buf, current_buf_offset, bytes, bytes_in_line, &bytes_in_new_line);
+            bytes_in_line += bytes_in_new_line;
             if (error_code) {
-                p_line += bytes_in_new_line;
-                bytes_in_line += bytes_in_new_line;
                 break;
             }
-            bytes_in_line += bytes_in_new_line;
 
             // MAIN-OP
             if (!strncmp(line, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN)) current_offset = line_offset;
 
             // reset line
             line_offset += bytes_in_line;
-
-            p_line = line;
             bytes_in_line = 0;
         }
     }
@@ -177,7 +182,6 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
     int line_offset = 0;
     int bytes_in_line = 0;
 
-    char *p_line = line;
     int bytes_in_new_line = 0;
 
     int error_code = MIGRATE_S_OK;
@@ -185,18 +189,30 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
     // start with origin
     lseek(fd, offset_origin, SEEK_SET);
 
+    /*****
+     * Definition of the variables:
+     *     bytes: total-bytes read from the fi.
+     *     current_buf_offset: the offset of the p_buf in the buf
+     *
+     *     line: the complete line.
+     *     line_offset: offset of the line[0] in fi.
+     *     bytes_in_line: length of the line.
+     *
+     *     bytes_in_new_line: retreived new bytes to the line from migrate_1to3_get_line.
+     *
+     * Process:
+     *     each for-loop correctly get a complete line. XXX assuming each line does not exceed MIGRATE_MERGE_BUF_SIZE
+     *
+     *
+     *****/
     while ((bytes = read(fd, buf, sizeof(buf))) > 0) {
         for (current_buf_offset = 0; current_buf_offset < bytes; current_buf_offset += bytes_in_new_line) {
 
-            error_code = migrate_1to3_get_line(buf, current_buf_offset, bytes, p_line, bytes_in_line, &bytes_in_new_line);
+            error_code = migrate_1to3_get_line(buf, current_buf_offset, bytes, line, bytes_in_line, &bytes_in_new_line);
+            bytes_in_line += bytes_in_new_line;
             if (error_code) {
-                p_line += bytes_in_new_line;
-                bytes_in_line += bytes_in_new_line;
                 break;
             }
-            bytes_in_line += bytes_in_new_line;
-
-            if (!bytes_in_line) break;
 
             // MAIN-OP
             if (migrate_1to3_is_recommend_line(line, bytes_in_line)) return line_offset;
@@ -206,8 +222,6 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
 
             // reset line
             line_offset += bytes_in_line;
-
-            p_line = line;
             bytes_in_line = 0;
         }
     }
@@ -232,7 +246,7 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
  * @param p_line Starting point of the line.
  * @param bytes_in_line Offset of the line.
  * @param bytes_in_new_line To be obtained bytes in new extracted line.
- * @return Error state: 0: ok. -1: not complete
+ * @return Error
  */
 int
 migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *p_line, int offset_line, int *bytes_in_new_line)
@@ -242,7 +256,8 @@ migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *
     // check the end of buf
     if(current_buf_offset >= bytes_buf) {
         *bytes_in_new_line = 0;
-        return -1;
+
+        return MIGRATE_S_ERR;
     }
 
     // init p_buf offset
@@ -253,7 +268,8 @@ migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *
     if (offset_line && p_line[-1] == '\r' && p_buf[0] == '\n') {
         *p_line = '\n';
         *bytes_in_new_line = 1;
-        return 0;
+
+        return MIGRATE_S_OK;
     }
 
     // check bytes in buf.
@@ -263,7 +279,7 @@ migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *
             *(p_line + 1) = '\n';
             *bytes_in_new_line = i - current_buf_offset + 1 + 1;
 
-            return 0;
+            return MIGRATE_S_OK;
         }
 
         *p_line++ = *p_buf++;
@@ -272,7 +288,8 @@ migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *
     // last char
     *p_line++ = *p_buf++;
     *bytes_in_new_line = bytes_buf - current_buf_offset;
-    return -1;
+
+    return MIGRATE_S_ERR;
 }
 
 int
