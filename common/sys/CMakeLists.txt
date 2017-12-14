@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 2.6.4)
 
-target_include_directories(${PROJECT_SOURCE_DIR}/common/sys)
-
 set(SRC
     daemon.c
     file.c
@@ -28,5 +26,7 @@ add_custom_command(
     COMMAND big5_gen.py > big5.c
     DEPENDS big5data.tar.bz2 big5_gen.py
     )
+
+target_include_directories(big5.c ${PROJECT_SOURCE_DIR}/common/sys)
 
 add_library(cmsys ${SRC})
