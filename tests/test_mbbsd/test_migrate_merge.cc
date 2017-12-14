@@ -1,6 +1,18 @@
 #include "gtest/gtest.h"
 #include "bbs.h"
 
+// XXX refer to bbs.c
+enum {
+    RECTYPE_GOOD,
+    RECTYPE_BAD,
+    RECTYPE_ARROW,
+
+    RECTYPE_SIZE,
+    RECTYPE_MAX     = RECTYPE_SIZE-1,
+    RECTYPE_DEFAULT = RECTYPE_GOOD, // match traditional user behavior
+};
+
+
 TEST(migrate_merge, migrate_1to3_get_line_from_start_with_ending) {
     char buf[] = "testtesttest\r\n\0";
     char line[MIGRATE_MERGE_BUF_SIZE];
@@ -62,7 +74,7 @@ TEST(migrate_merge, migrate_1to3_is_recommend_line_not_match) {
 
     FormatCommentString(buf, MIGRATE_MERGE_BUF_SIZE, RECTYPE_GOOD, "testid", 20, "testmsg", "02/10");
 
-    EXPECT_EQ(YES, migrate_1to3_is_recommend_line(buf, bytes_in_line));
+    EXPECT_EQ(YEA, migrate_1to3_is_recommend_line(buf, bytes_in_line));
 }
 
 TEST(migrate_merge, migrate_1to3_is_recommend_line_not_match) {

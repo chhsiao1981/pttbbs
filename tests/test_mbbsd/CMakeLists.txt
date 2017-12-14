@@ -6,11 +6,11 @@ add_executable(test_dummy
 
 target_link_libraries(test_dummy gtest gtest_main cmbbs cmsys osdep)
 
-file(GLOB OBJS ${PROJECT_SOURCE_DIR}/mbbsd)
+file(GLOB MBBSD_SRC ${PROJECT_SOURCE_DIR}/mbbsd/*.c)
 
 add_executable(test_migrate_merge
     test_migrate_merge.cc
-    ${OBJS}
+    ${MBBSD_SRC}
     )
 
 target_link_libraries(test_migrate_merge gtest gtest_main cmbbs cmsys osdep)
