@@ -73,7 +73,7 @@ TEST(migrate_merge, migrate_1to3_is_recommend_line_match) {
     int bytes_in_line = 20;
 
     FormatCommentString(buf, MIGRATE_MERGE_BUF_SIZE, RECTYPE_GOOD, "testid", 20, "testmsg", "02/10");
-    printf("buf: %s", buf);
+    printf("buf: %s GOOD: %d BAD %d ARROW: %d", buf, RECTYPE_GOOD, RECTYPE_BAD, RECTYPE_ARROW);
 
     EXPECT_EQ(YEA, migrate_1to3_is_recommend_line(buf, bytes_in_line));
 }
