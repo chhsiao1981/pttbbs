@@ -26,7 +26,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/big5data.tar.bz2 ${CMAKE_CURRENT_BINA
 
 add_custom_command(
     OUTPUT big5.c
-    COMMAND big5_gen.py > big5.c
+    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/big5_gen.py > big5.c
     DEPENDS big5data.tar.bz2 big5_gen.py
     )
 
