@@ -3,7 +3,7 @@
 /**
  * XXX refer to FormatCommentString in comments.c
  */
-char MIGRATE_RECOMMEND_HEADER[] = ANSI_COLOR(1;37) "±À" ANSI_COLOR(33)
+char MIGRATE_RECOMMEND_HEADER[] = ANSI_COLOR(1;37) "±À" ANSI_COLOR(33);
 char MIGRATE_BOO_HEADER[] = ANSI_COLOR(1;31) "¼N" ANSI_COLOR(33);
 char MIGRATE_COMMENT_HEADER[] = ANSI_COLOR(1;31) "¡÷" ANSI_COLOR(33);
 int MIGRATE_LEN_COMMENT_HEADER = 15;
@@ -155,7 +155,7 @@ migrate_1to3_get_offset_origin(int fd)
     while ((bytes = read(fd, buf, sizeof(buf))) > 0) {
         for (current_buf_offset = 0; current_buf_offset < bytes; current_buf_offset += bytes_in_new_line) {
 
-            error_code = migrate_1to3_get_line(buf, current_buf_offset, bytes, bytes_in_line, &bytes_in_new_line);
+            error_code = migrate_1to3_get_line(buf, current_buf_offset, bytes, line, bytes_in_line, &bytes_in_new_line);
             bytes_in_line += bytes_in_new_line;
             if (error_code) {
                 break;

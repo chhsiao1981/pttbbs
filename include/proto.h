@@ -454,7 +454,7 @@ void m_sob_brd(char *bname,char *fromdir);
 int migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply);
 int migrate_1to3_get_offset_origin(int fd);
 int migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin);
-int migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *p_line, int offset_line, int *bytes_in_new_line);
+int migrate_1to3_get_line(char *buf, int current_buf_offset, int bytes_buf, char *line, int offset_line, int *bytes_in_new_line);
 int migrate_1to3_is_recommend_line(char *line, int len_line);
 int migrate_1to3_is_boo_line(char *line, int len_line);
 int migrate_1to3_is_comment_line(char *line, int len_line);
