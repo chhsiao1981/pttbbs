@@ -27,6 +27,6 @@ add_custom_command(
     DEPENDS big5data.tar.bz2 big5_gen.py
     )
 
-target_include_directories(big5.c ${PROJECT_SOURCE_DIR}/common/sys)
+add_library(cmsys ${SRC} big5.c)
 
-add_library(cmsys ${SRC})
+target_include_directories(cmsys ${PROJECT_SOURCE_DIR}/common/sys)
