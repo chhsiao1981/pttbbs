@@ -1,6 +1,14 @@
 #include "bbs.h"
 
 /**
+ * XXX refer to FormatCommentString in comments.c
+ */
+char MIGRATE_RECOMMEND_HEADER[] = ANSI_COLOR(1;37) "±À" ANSI_COLOR(33)
+char MIGRATE_BOO_HEADER[] = ANSI_COLOR(1;31) "¼N" ANSI_COLOR(33);
+char MIGRATE_COMMENT_HEADER[] = ANSI_COLOR(1;31) "¡÷" ANSI_COLOR(33);
+int MIGRATE_LEN_COMMENT_HEADER = 15;
+
+/**
  * @brief [brief description]
  * @details [long description]
  *
@@ -295,19 +303,25 @@ migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *
 int
 migrate_1to3_is_recommend_line(char *line, int len_line)
 {
-    return 0;
+    if(len_line > MIGRATE_LEN_COMMENT_HEADER) return NA;
+
+    return !strncmp(line, MIGRATE_RECOMMEND_HEADER, MIGRATE_LEN_COMMENT_HEADER);
 }
 
 int
 migrate_1to3_is_boo_line(char *line, int len_line)
 {
-    return 0;
+    if(len_line > MIGRATE_LEN_COMMENT_HEADER) return NA;
+
+    return !strncmp(line, MIGRATE_BOO_HEADER, MIGRATE_LEN_COMMENT_HEADER);
 }
 
 int
 migrate_1to3_is_comment_line(char *line, int len_line)
 {
-    return 0;
+    if(len_line > MIGRATE_LEN_COMMENT_HEADER) return NA;
+
+    return !strncmp(line, MIGRATE_COMMENT_HEADER, MIGRATE_LEN_COMMENT_HEADER);
 }
 
 int
