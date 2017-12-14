@@ -23,7 +23,7 @@ set(SRC
 
 add_custom_command(
     OUTPUT big5.c
-    COMMAND ${PROJECT_SOURCE_DIR}/common/sys/big5_gen.py > big5.c
+    COMMAND cd ${PROJECT_SOURCE_DIR}/common/sys && ./big5_gen.py > big5.c
     DEPENDS big5data.tar.bz2 big5_gen.py
     )
 
