@@ -21,6 +21,9 @@ set(SRC
     thttp.c
     )
 
+configure_file(big5_gen.py big5_gen.py COPYONLY)
+configure_file(big5data.tar.bz2 big5data.tar.bz2 COPYONLY)
+
 add_custom_command(
     OUTPUT big5.c
     COMMAND big5_gen.py > big5.c
