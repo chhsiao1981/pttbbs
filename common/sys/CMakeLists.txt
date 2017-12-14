@@ -21,8 +21,8 @@ set(SRC
     thttp.c
     )
 
-configure_file(big5_gen.py big5_gen.py COPYONLY)
-configure_file(big5data.tar.bz2 big5data.tar.bz2 COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/big5_gen.py ${CMAKE_CURRENT_BINARY_DIR}/big5_gen.py COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/big5data.tar.bz2 ${CMAKE_CURRENT_BINARY_DIR}/big5data.tar.bz2 COPYONLY)
 
 add_custom_command(
     OUTPUT big5.c
