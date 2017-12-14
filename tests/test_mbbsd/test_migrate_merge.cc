@@ -68,7 +68,7 @@ TEST(migrate_merge, migrate_1to3_get_line_with_r_in_line) {
     EXPECT_EQ(0, strncmp(line, "\r\n", 2));
 }
 
-TEST(migrate_merge, migrate_1to3_is_recommend_line_not_match) {
+TEST(migrate_merge, migrate_1to3_is_recommend_line_match) {
     char buf[MIGRATE_MERGE_BUF_SIZE];
     int bytes_in_line = 20;
 
