@@ -12,4 +12,4 @@ add_executable(test_migrate_merge
     ${PROJECT_SOURCE_DIR}/mbbsd/comments.o
     )
 
-target_link_libraries(test_migrate_merge gtest gtest_main PRIVATE cmbbs PRIVATE cmsys PRIVATE osdep)
+target_link_libraries(test_migrate_merge gtest gtest_main cmbbs cmsys osdep)
