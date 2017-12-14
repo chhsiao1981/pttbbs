@@ -289,7 +289,7 @@
 #define MIGRATE_STATE_INIT 0
 
 #define MIGRATE_S_OK 0
-#define MIGRATE_S_ERR 1
+#define MIGRATE_S_ERR -1
 
 /* ----------------------------------------------------- */
 /* post3                                                 */
