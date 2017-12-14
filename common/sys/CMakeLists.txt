@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.6.4)
 
+target_include_directories(${PROJECT_SOURCE_DIR}/common/sys)
+
 set(SRC
     daemon.c
     file.c
