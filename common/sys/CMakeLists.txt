@@ -28,5 +28,3 @@ add_custom_command(
     )
 
 add_library(cmsys ${SRC} big5.c)
-
-target_include_directories(cmsys ${PROJECT_SOURCE_DIR}/common/sys)
