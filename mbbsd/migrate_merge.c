@@ -8,6 +8,14 @@ char MIGRATE_BOO_HEADER[] = ANSI_COLOR(1;31) "¼N " ANSI_COLOR(33);
 char MIGRATE_COMMENT_HEADER[] = ANSI_COLOR(1;31) "¡÷ " ANSI_COLOR(33);
 int MIGRATE_LEN_COMMENT_HEADER = 15;
 
+char MIGRATE_FORWARD_HEADER0[] = ANSI_COLOR(32) '¡° ' ANSI_COLOR(1;32);
+int MIGRATE_LEN_FORWARD_HEADER0 = 15;
+char MIGRATE_FORWARD_HEADER1[] = ANSI_COLOR(0;32) ':Âà¿ı¦Ü';
+int MIGRATE_LEN_FORWARD_HEADER1 = 14;
+int MIGRATE_LEN_FORWARD_HEADER = 33;
+// XXX hack for IDLEN
+int MIGRATE_MAX_FORWARD_HEADER = 41;
+
 /**
  * @brief [brief description]
  * @details [long description]
@@ -262,7 +270,7 @@ migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *
     int i;
 
     // check the end of buf
-    if(current_buf_offset >= bytes_buf) {
+    if (current_buf_offset >= bytes_buf) {
         *bytes_in_new_line = 0;
 
         return MIGRATE_S_ERR;
@@ -303,8 +311,7 @@ migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *
 int
 migrate_1to3_is_recommend_line(char *line, int len_line)
 {
-    if(len_line < MIGRATE_LEN_COMMENT_HEADER) return NA;
-    for(int i = 0; i < MIGRATE_LEN_COMMENT_HEADER; i++) printf("recommend: (%d/%d)\n", i, MIGRATE_RECOMMEND_HEADER[i]);
+    if (len_line < MIGRATE_LEN_COMMENT_HEADER) return NA;
 
     return !strncmp(line, MIGRATE_RECOMMEND_HEADER, MIGRATE_LEN_COMMENT_HEADER);
 }
@@ -312,8 +319,7 @@ migrate_1to3_is_recommend_line(char *line, int len_line)
 int
 migrate_1to3_is_boo_line(char *line, int len_line)
 {
-    if(len_line < MIGRATE_LEN_COMMENT_HEADER) return NA;
-    for(int i = 0; i < MIGRATE_LEN_COMMENT_HEADER; i++) printf("boo: (%d/%d)\n", i, MIGRATE_BOO_HEADER[i]);
+    if (len_line < MIGRATE_LEN_COMMENT_HEADER) return NA;
 
     return !strncmp(line, MIGRATE_BOO_HEADER, MIGRATE_LEN_COMMENT_HEADER);
 }
@@ -321,16 +327,39 @@ migrate_1to3_is_boo_line(char *line, int len_line)
 int
 migrate_1to3_is_comment_line(char *line, int len_line)
 {
-    if(len_line < MIGRATE_LEN_COMMENT_HEADER) return NA;
-    for(int i = 0; i < MIGRATE_LEN_COMMENT_HEADER; i++) printf("comment: (%d/%d)\n", i, MIGRATE_COMMENT_HEADER[i]);
+    if (len_line < MIGRATE_LEN_COMMENT_HEADER) return NA;
 
     return !strncmp(line, MIGRATE_COMMENT_HEADER, MIGRATE_LEN_COMMENT_HEADER);
 }
 
+/**
+ * @brief
+ * @details refer to bbs.c line: 2258 (snprintf in cross_post)
+ *
+ * @param line [description]
+ * @param len_line [description]
+ */
 int
 migrate_1to3_is_forward_line(char *line, int len_line)
 {
-    return 0;
+    int i;
+    char *p_line;
+
+    if (len_line < MIGRATE_LEN_FORWARD_HEADER) return NA;
+    if (strncmp(line, MIGRATE_FORWARD_HEADER0, MIGRATE_LEN_FORWARD_HEADER0)) return NA;
+
+    p_line = line + MIGRATE_LEN_FORWARD_HEADER0;
+    loop_i = len_line < MIGRATE_MAX_FORWARD_HEADER ? len_line : MIGRATE_MAX_FORWARD_HEADER;
+    for (i = MIGRATE_LEN_FORWARD_HEADER0, p_line = line + MIGRATE_LEN_FORWARD_HEADER0; i < loop_i; i++, p_line++) {
+        if (!migrate_is_username_char(*p_line))
+            return !strncmp(p_line, MIGRATE_FORWARD_HEADER1, MIGRATE_LEN_FORWARD_HEADER1);
+    }
+    return NA;
+}
+
+int
+migrate_is_username_char(char ch) {
+    return isalnum(ch);
 }
 
 int
