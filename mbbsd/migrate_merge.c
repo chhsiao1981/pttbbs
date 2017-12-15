@@ -352,14 +352,14 @@ migrate_1to3_is_forward_line(char *line, int len_line)
     p_line = line + MIGRATE_LEN_FORWARD_HEADER0;
     loop_i = len_line < MIGRATE_MAX_FORWARD_HEADER ? len_line : MIGRATE_MAX_FORWARD_HEADER;
     for (i = MIGRATE_LEN_FORWARD_HEADER0, p_line = line + MIGRATE_LEN_FORWARD_HEADER0; i < loop_i; i++, p_line++) {
-        if (!migrate_is_username_char(*p_line))
+        if (!migrate_1to3_is_username_char(*p_line))
             return !strncmp(p_line, MIGRATE_FORWARD_HEADER1, MIGRATE_LEN_FORWARD_HEADER1);
     }
     return NA;
 }
 
 int
-migrate_is_username_char(char ch) {
+migrate_1to3_is_username_char(char ch) {
     return isalnum(ch);
 }
 

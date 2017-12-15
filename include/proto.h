@@ -459,6 +459,7 @@ int migrate_1to3_is_recommend_line(char *line, int len_line);
 int migrate_1to3_is_boo_line(char *line, int len_line);
 int migrate_1to3_is_comment_line(char *line, int len_line);
 int migrate_1to3_is_forward_line(char *line, int len_line);
+int migrate_1to3_is_username_char(char ch);
 int migrate_1to3_op_by_state(int state, char *line, int len_line, int fo_comments, int fo_comment_reply);
 
 int merge_3to1(const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply, const char *fpath);
