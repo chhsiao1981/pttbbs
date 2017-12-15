@@ -3,9 +3,9 @@
 /**
  * XXX refer to FormatCommentString in comments.c
  */
-char MIGRATE_RECOMMEND_HEADER[] = ANSI_COLOR(1;37) "±À" ANSI_COLOR(33);
-char MIGRATE_BOO_HEADER[] = ANSI_COLOR(1;31) "¼N" ANSI_COLOR(33);
-char MIGRATE_COMMENT_HEADER[] = ANSI_COLOR(1;31) "¡÷" ANSI_COLOR(33);
+char MIGRATE_RECOMMEND_HEADER[] = ANSI_COLOR(1;37) "Â±Ã€" ANSI_COLOR(33);
+char MIGRATE_BOO_HEADER[] = ANSI_COLOR(1;31) "Â¼N" ANSI_COLOR(33);
+char MIGRATE_COMMENT_HEADER[] = ANSI_COLOR(1;31) "Â¡Ã·" ANSI_COLOR(33);
 int MIGRATE_LEN_COMMENT_HEADER = 15;
 
 /**
@@ -304,6 +304,8 @@ int
 migrate_1to3_is_recommend_line(char *line, int len_line)
 {
     if(len_line < MIGRATE_LEN_COMMENT_HEADER) return NA;
+
+    for(int i = 0; i < MIGRATE_LEN_COMMENT_HEADER; i++) printf("line: (%d/%d)\n", i, line[i]);
 
     return !strncmp(line, MIGRATE_RECOMMEND_HEADER, MIGRATE_LEN_COMMENT_HEADER);
 }
