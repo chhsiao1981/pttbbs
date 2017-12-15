@@ -343,6 +343,7 @@ int
 migrate_1to3_is_forward_line(char *line, int len_line)
 {
     int i;
+    int loop_i;
     char *p_line;
 
     if (len_line < MIGRATE_LEN_FORWARD_HEADER) return NA;
