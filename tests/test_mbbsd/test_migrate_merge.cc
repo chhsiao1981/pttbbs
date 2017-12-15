@@ -142,7 +142,7 @@ TEST(migrate_merge, migrate_1to3_is_forward_line_match) {
     int bytes_in_line = 20;
 
     snprintf(buf, sizeof(buf),
-        // ANSI_COLOR(32) <- system will add green
+        ANSI_COLOR(32)
         "¡° " ANSI_COLOR(1;32) "%s"
         ANSI_COLOR(0;32) ":Âà¿ý¦Ü"
         "%s" ANSI_RESET "%*s%s\n" ,
