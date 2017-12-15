@@ -70,12 +70,12 @@ TEST(migrate_merge, migrate_1to3_get_line_with_r_in_line) {
 
 TEST(migrate_merge, migrate_1to3_is_recommend_line_match) {
     char buf[MIGRATE_MERGE_BUF_SIZE];
-    int bytes_in_line = 20;
+    int bytes_in_line = 0;
 
     FormatCommentString(buf, MIGRATE_MERGE_BUF_SIZE, RECTYPE_GOOD, "testid", 20, "testmsg", "02/10");
     printf("buf: %s\n", buf);
     for(int i = 0; i < strlen(buf); i++) printf("buf: (%d/%d)\n", i, buf[i]);
-
+    bytes_in_line = strlen(buf);
     EXPECT_NE(NA, migrate_1to3_is_recommend_line(buf, bytes_in_line));
 }
 
@@ -93,12 +93,12 @@ TEST(migrate_merge, migrate_1to3_is_recommend_line_not_enough_length) {
 
 TEST(migrate_merge, migrate_1to3_is_boo_line_match) {
     char buf[MIGRATE_MERGE_BUF_SIZE];
-    int bytes_in_line = 20;
+    int bytes_in_line = 0;
 
     FormatCommentString(buf, MIGRATE_MERGE_BUF_SIZE, RECTYPE_BAD, "testid", 20, "testmsg", "02/10");
     printf("buf: %s\n", buf);
     for(int i = 0; i < strlen(buf); i++) printf("buf: (%d/%d)\n", i, buf[i]);
-
+    bytes_in_line = strlen(buf);
     EXPECT_NE(NA, migrate_1to3_is_boo_line(buf, bytes_in_line));
 }
 
@@ -116,12 +116,12 @@ TEST(migrate_merge, migrate_1to3_is_boo_line_not_enough_length) {
 
 TEST(migrate_merge, migrate_1to3_is_comment_line_match) {
     char buf[MIGRATE_MERGE_BUF_SIZE];
-    int bytes_in_line = 20;
+    int bytes_in_line = 0;
 
     FormatCommentString(buf, MIGRATE_MERGE_BUF_SIZE, RECTYPE_ARROW, "testid", 20, "testmsg", "02/10");
     printf("buf: %s\n", buf);
     for(int i = 0; i < strlen(buf); i++) printf("buf: (%d/%d)\n", i, buf[i]);
-
+    bytes_in_line = strlen(buf);
     EXPECT_NE(NA, migrate_1to3_is_comment_line(buf, bytes_in_line));
 }
 
@@ -139,7 +139,7 @@ TEST(migrate_merge, migrate_1to3_is_comment_line_not_enough_length) {
 
 TEST(migrate_merge, migrate_1to3_is_forward_line_match) {
     char buf[MIGRATE_MERGE_BUF_SIZE];
-    int bytes_in_line = 20;
+    int bytes_in_line = 0;
 
     snprintf(buf, sizeof(buf),
         ANSI_COLOR(32)
@@ -149,6 +149,7 @@ TEST(migrate_merge, migrate_1to3_is_forward_line_match) {
         "testid", "´ú¸Õ¬ÝªO", 2, "",
         "");
     printf("buf: %s\n", buf);
+    bytes_in_line = strlen(buf);
     for(int i = 0; i < strlen(buf); i++) printf("buf: (%d/%d)\n", i, buf[i]);
 
     EXPECT_NE(NA, migrate_1to3_is_forward_line(buf, bytes_in_line));
