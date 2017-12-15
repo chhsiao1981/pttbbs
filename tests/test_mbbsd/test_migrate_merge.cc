@@ -137,6 +137,36 @@ TEST(migrate_merge, migrate_1to3_is_comment_line_not_enough_length) {
     EXPECT_EQ(NA, migrate_1to3_is_comment_line(buf, bytes_in_line));
 }
 
+TEST(migrate_merge, migrate_1to3_is_forward_line_match) {
+    char buf[MIGRATE_MERGE_BUF_SIZE];
+    int bytes_in_line = 20;
+
+    snprintf(buf, sizeof(buf),
+        // ANSI_COLOR(32) <- system will add green
+        "※ " ANSI_COLOR(1;32) "%s"
+        ANSI_COLOR(0;32) ":轉錄至"
+        "%s" ANSI_RESET "%*s%s\n" ,
+        "testid", "測試看板", 2, "",
+        "");
+    printf("buf: %s\n", buf);
+    for(int i = 0; i < strlen(buf); i++) printf("buf: (%d/%d)\n", i, buf[i]);
+
+    EXPECT_NE(NA, migrate_1to3_is_forward_line(buf, bytes_in_line));
+}
+
+TEST(migrate_merge, migrate_1to3_is_forward_line_not_match) {
+    char buf[] = "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttest";
+    int bytes_in_line = 64;
+    EXPECT_EQ(NA, migrate_1to3_is_forward_line(buf, bytes_in_line));
+}
+
+TEST(migrate_merge, migrate_1to3_is_forward_line_not_enough_length) {
+    char buf[] = "testtesttest";
+    int bytes_in_line = 12;
+    EXPECT_EQ(NA, migrate_1to3_is_forward_line(buf, bytes_in_line));
+}
+
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
