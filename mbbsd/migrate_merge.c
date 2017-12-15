@@ -304,6 +304,7 @@ int
 migrate_1to3_is_recommend_line(char *line, int len_line)
 {
     if(len_line < MIGRATE_LEN_COMMENT_HEADER) return NA;
+    for(int i = 0; i < MIGRATE_LEN_COMMENT_HEADER; i++) printf("line: (%d/%d)\n", i, line[i]);
 
     return !strncmp(line, MIGRATE_RECOMMEND_HEADER, MIGRATE_LEN_COMMENT_HEADER);
 }
@@ -312,6 +313,7 @@ int
 migrate_1to3_is_boo_line(char *line, int len_line)
 {
     if(len_line < MIGRATE_LEN_COMMENT_HEADER) return NA;
+    for(int i = 0; i < MIGRATE_LEN_COMMENT_HEADER; i++) printf("line: (%d/%d)\n", i, line[i]);
 
     return !strncmp(line, MIGRATE_BOO_HEADER, MIGRATE_LEN_COMMENT_HEADER);
 }
@@ -320,6 +322,7 @@ int
 migrate_1to3_is_comment_line(char *line, int len_line)
 {
     if(len_line < MIGRATE_LEN_COMMENT_HEADER) return NA;
+    for(int i = 0; i < MIGRATE_LEN_COMMENT_HEADER; i++) printf("line: (%d/%d)\n", i, line[i]);
 
     return !strncmp(line, MIGRATE_COMMENT_HEADER, MIGRATE_LEN_COMMENT_HEADER);
 }
