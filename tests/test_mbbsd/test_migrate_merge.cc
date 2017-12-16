@@ -212,6 +212,96 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin3) {
     close(fi);
 }
 
+TEST(migrate_merge, migrate_1to3_get_offset_origin4) {
+    int fi = OpenCreate("tests/test_data/original_post.4.txt", O_RDONLY);
+    printf("fi: %d\n", fi);
+    int offset = migrate_1to3_get_offset_origin(fi);
+    printf("offset: %d", offset);
+    int bytes;
+    char buf[MIGRATE_MERGE_BUF_SIZE];
+
+    lseek(fi, offset, SEEK_SET);
+    bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
+
+    close(fi);
+}
+
+TEST(migrate_merge, migrate_1to3_get_offset_origin5) {
+    int fi = OpenCreate("tests/test_data/original_post.5.txt", O_RDONLY);
+    printf("fi: %d\n", fi);
+    int offset = migrate_1to3_get_offset_origin(fi);
+    printf("offset: %d", offset);
+    int bytes;
+    char buf[MIGRATE_MERGE_BUF_SIZE];
+
+    lseek(fi, offset, SEEK_SET);
+    bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
+
+    close(fi);
+}
+
+TEST(migrate_merge, migrate_1to3_get_offset_origin6) {
+    int fi = OpenCreate("tests/test_data/original_post.6.txt", O_RDONLY);
+    printf("fi: %d\n", fi);
+    int offset = migrate_1to3_get_offset_origin(fi);
+    printf("offset: %d", offset);
+    int bytes;
+    char buf[MIGRATE_MERGE_BUF_SIZE];
+
+    lseek(fi, offset, SEEK_SET);
+    bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
+
+    close(fi);
+}
+
+TEST(migrate_merge, migrate_1to3_get_offset_origin7) {
+    int fi = OpenCreate("tests/test_data/original_post.7.txt", O_RDONLY);
+    printf("fi: %d\n", fi);
+    int offset = migrate_1to3_get_offset_origin(fi);
+    printf("offset: %d", offset);
+    int bytes;
+    char buf[MIGRATE_MERGE_BUF_SIZE];
+
+    lseek(fi, offset, SEEK_SET);
+    bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
+
+    close(fi);
+}
+
+TEST(migrate_merge, migrate_1to3_get_offset_origin8) {
+    int fi = OpenCreate("tests/test_data/original_post.8.txt", O_RDONLY);
+    printf("fi: %d\n", fi);
+    int offset = migrate_1to3_get_offset_origin(fi);
+    printf("offset: %d", offset);
+    int bytes;
+    char buf[MIGRATE_MERGE_BUF_SIZE];
+
+    lseek(fi, offset, SEEK_SET);
+    bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
+
+    close(fi);
+}
+
+TEST(migrate_merge, migrate_1to3_get_offset_origin9) {
+    int fi = OpenCreate("tests/test_data/original_post.9.txt", O_RDONLY);
+    printf("fi: %d\n", fi);
+    int offset = migrate_1to3_get_offset_origin(fi);
+    printf("offset: %d", offset);
+    int bytes;
+    char buf[MIGRATE_MERGE_BUF_SIZE];
+
+    lseek(fi, offset, SEEK_SET);
+    bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
+
+    close(fi);
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
