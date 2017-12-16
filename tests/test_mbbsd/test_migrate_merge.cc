@@ -8,7 +8,7 @@ enum {
     RECTYPE_ARROW,
 
     RECTYPE_SIZE,
-    RECTYPE_MAX     = RECTYPE_SIZE-1,
+    RECTYPE_MAX     = RECTYPE_SIZE - 1,
     RECTYPE_DEFAULT = RECTYPE_GOOD, // match traditional user behavior
 };
 
@@ -74,7 +74,7 @@ TEST(migrate_merge, migrate_1to3_is_recommend_line_match) {
 
     FormatCommentString(buf, MIGRATE_MERGE_BUF_SIZE, RECTYPE_GOOD, "testid", 20, "testmsg", "02/10");
     printf("buf: %s\n", buf);
-    for(int i = 0; i < strlen(buf); i++) printf("buf: (%d/%d)\n", i, buf[i]);
+    for (int i = 0; i < strlen(buf); i++) printf("buf: (%d/%d)\n", i, buf[i]);
     bytes_in_line = strlen(buf);
     EXPECT_NE(NA, migrate_1to3_is_recommend_line(buf, bytes_in_line));
 }
@@ -97,7 +97,7 @@ TEST(migrate_merge, migrate_1to3_is_boo_line_match) {
 
     FormatCommentString(buf, MIGRATE_MERGE_BUF_SIZE, RECTYPE_BAD, "testid", 20, "testmsg", "02/10");
     printf("buf: %s\n", buf);
-    for(int i = 0; i < strlen(buf); i++) printf("buf: (%d/%d)\n", i, buf[i]);
+    for (int i = 0; i < strlen(buf); i++) printf("buf: (%d/%d)\n", i, buf[i]);
     bytes_in_line = strlen(buf);
     EXPECT_NE(NA, migrate_1to3_is_boo_line(buf, bytes_in_line));
 }
@@ -120,7 +120,7 @@ TEST(migrate_merge, migrate_1to3_is_comment_line_match) {
 
     FormatCommentString(buf, MIGRATE_MERGE_BUF_SIZE, RECTYPE_ARROW, "testid", 20, "testmsg", "02/10");
     printf("buf: %s\n", buf);
-    for(int i = 0; i < strlen(buf); i++) printf("buf: (%d/%d)\n", i, buf[i]);
+    for (int i = 0; i < strlen(buf); i++) printf("buf: (%d/%d)\n", i, buf[i]);
     bytes_in_line = strlen(buf);
     EXPECT_NE(NA, migrate_1to3_is_comment_line(buf, bytes_in_line));
 }
@@ -142,15 +142,15 @@ TEST(migrate_merge, migrate_1to3_is_forward_line_match) {
     int bytes_in_line = 0;
 
     snprintf(buf, sizeof(buf),
-        ANSI_COLOR(32)
-        "※ " ANSI_COLOR(1;32) "%s"
-        ANSI_COLOR(0;32) ":轉錄至"
-        "%s" ANSI_RESET "%*s%s\n" ,
-        "testid", "測試看板", 2, "",
-        "");
+             ANSI_COLOR(32)
+             MIGRATE_HEADER_FORWARD0 ANSI_COLOR(1;32) "%s"
+             ANSI_COLOR(0;32) MIGRATE_HEADER_FORWARD1
+             "%s" ANSI_RESET "%*s%s\n" ,
+             "testid", "test-board", 2, "",
+             "");
     printf("buf: %s\n", buf);
     bytes_in_line = strlen(buf);
-    for(int i = 0; i < strlen(buf); i++) printf("buf: (%d/%d)\n", i, buf[i]);
+    for (int i = 0; i < strlen(buf); i++) printf("buf: (%d/%d)\n", i, buf[i]);
 
     EXPECT_NE(NA, migrate_1to3_is_forward_line(buf, bytes_in_line));
 }
@@ -171,8 +171,13 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin) {
     int fi = OpenCreate("tests/test_data/original_post.1.txt", O_RDONLY);
     printf("fi: %d\n", fi);
     int offset = migrate_1to3_get_offset_origin(fi);
-    close(fi);
     printf("offset: %d", offset);
+
+    lseek(fi, offset, SEEK_SET);
+    bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
+
+    close(fi);
 }
 
 int main(int argc, char **argv) {
