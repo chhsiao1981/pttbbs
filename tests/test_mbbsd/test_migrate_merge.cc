@@ -172,6 +172,8 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin) {
     printf("fi: %d\n", fi);
     int offset = migrate_1to3_get_offset_origin(fi);
     printf("offset: %d", offset);
+    int bytes;
+    char buf[MIGRATE_MERGE_BUF_SIZE];
 
     lseek(fi, offset, SEEK_SET);
     bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
