@@ -9,3 +9,10 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/original_post.6.txt ${CMAKE_CURRENT_B
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/original_post.7.txt ${CMAKE_CURRENT_BINARY_DIR}/original_post.7.txt COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/original_post.8.txt ${CMAKE_CURRENT_BINARY_DIR}/original_post.8.txt COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/original_post.9.txt ${CMAKE_CURRENT_BINARY_DIR}/original_post.9.txt COPYONLY)
+
+file(GLOB TEST_DATA_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.txt)
+
+add_custom_target(done 
+    COMMAND touch done
+    DEPENDS ${TEST_DATA_FILES}
+    )
