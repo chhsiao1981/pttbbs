@@ -3,14 +3,14 @@
 /**
  * XXX refer to FormatCommentString in comments.c
  */
-char MIGRATE_RECOMMEND_HEADER[] = ANSI_COLOR(1;37) "±À " ANSI_COLOR(33);
-char MIGRATE_BOO_HEADER[] = ANSI_COLOR(1;31) "¼N " ANSI_COLOR(33);
-char MIGRATE_COMMENT_HEADER[] = ANSI_COLOR(1;31) "¡÷ " ANSI_COLOR(33);
+char MIGRATE_RECOMMEND_HEADER[] = ANSI_COLOR(1;37) MIGRATE_HEADER_RECOMMEND ANSI_COLOR(33);
+char MIGRATE_BOO_HEADER[] = ANSI_COLOR(1;31) MIGRATE_HEADER_BOO ANSI_COLOR(33);
+char MIGRATE_COMMENT_HEADER[] = ANSI_COLOR(1;31) MIGRATE_HEADER_COMMENT ANSI_COLOR(33);
 int MIGRATE_LEN_COMMENT_HEADER = 15;
 
-char MIGRATE_FORWARD_HEADER0[] = ANSI_COLOR(32) "¡° " ANSI_COLOR(1;32);
+char MIGRATE_FORWARD_HEADER0[] = ANSI_COLOR(32) MIGRATE_HEADER_FORWARD0 ANSI_COLOR(1;32);
 int MIGRATE_LEN_FORWARD_HEADER0 = 15;
-char MIGRATE_FORWARD_HEADER1[] = ANSI_COLOR(0;32) ":Âà¿ý¦Ü";
+char MIGRATE_FORWARD_HEADER1[] = ANSI_COLOR(0;32) MIGRATE_HEADER_FORWARD1;
 int MIGRATE_LEN_FORWARD_HEADER1 = 14;
 int MIGRATE_LEN_FORWARD_HEADER = 33;
 // XXX hack for IDLEN
@@ -145,7 +145,7 @@ migrate_1to3_get_offset_origin(int fd)
     int current_offset = 0;
 
     /*****
-     * Definition of the variables:
+     * Definition of the variables:,
      *     bytes: total-bytes read from the fi.
      *     current_buf_offset: the offset of the p_buf in the buf
      *
@@ -176,6 +176,7 @@ migrate_1to3_get_offset_origin(int fd)
 
             // reset line
             line_offset += bytes_in_line;
+            bzero(line, sizeof(char) * bytes_in_line);
             bytes_in_line = 0;
         }
     }

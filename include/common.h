@@ -284,6 +284,11 @@
 /* ----------------------------------------------------- */
 #define MIGRATE_MERGE_BUF_SIZE 8192
 #define MIGRATE_HEADER_ORIGIN "※ 發信站:"
+#define MIGRATE_HEADER_RECOMMEND "推 "
+#define MIGRATE_HEADER_BOO "噓 "
+#define MIGRATE_HEADER_COMMENT "→ "
+#define MIGRATE_HEADER_FORWARD0 "※ "
+#define MIGRATE_HEADER_FORWARD1 ":轉錄至"
 #define LEN_MIGRATE_HEADER_ORIGIN 10
 
 #define MIGRATE_STATE_INIT 0
