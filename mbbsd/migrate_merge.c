@@ -172,7 +172,7 @@ migrate_1to3_get_offset_origin(int fd)
             // MAIN-OP
             if (!strncmp(line, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN)) current_offset = line_offset;
 
-            printf("line: %sline_offset: %d current_offset: %d", line, line_offset, current_offset);
+            printf("line: %sline_offset: %d current_offset: %d\n", line, line_offset, current_offset);
 
             // reset line
             line_offset += bytes_in_line;
@@ -182,7 +182,7 @@ migrate_1to3_get_offset_origin(int fd)
     // last line
     if (bytes_in_line) {
         if (!strncmp(line, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN)) current_offset = line_offset;
-        printf("line: %sline_offset: %d current_offset: %d", line, line_offset, current_offset);
+        printf("line: %sline_offset: %d current_offset: %d\n", line, line_offset, current_offset);
     }
 
     return current_offset;
