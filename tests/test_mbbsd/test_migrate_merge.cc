@@ -167,6 +167,12 @@ TEST(migrate_merge, migrate_1to3_is_forward_line_not_enough_length) {
     EXPECT_EQ(NA, migrate_1to3_is_forward_line(buf, bytes_in_line));
 }
 
+TEST(migrate_merge, migrate_1to3_get_offset_origin) {
+    int fi = OpenCreate("test_data/original_post.1.txt", O_RDONLY);
+    int offset = migrate_1to3_get_offset_origin(fi);
+    close(fi);
+    printf("offset: %d", offset);
+}
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
