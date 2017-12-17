@@ -505,7 +505,7 @@ int
 migrate_1to3_op_by_state_reply(char *line, int len_line, char *reply_buffer, int *len_reply_buffer, CommentsHeader *p_comments_header, CommentReplyHeader *p_comment_reply_header, CommentReplyIdxHeader *p_comment_reply_idx_header, int fo_comments, int fo_comment_reply, int fo_comment_reply_idx)
 {
     if(migrate_1to3_is_comments_line(line, len_line)) {
-        migrate_1to3_set_reply_buffer_to_comment_reply(reply_buffer, len_reply_buffer, p_comments_header, p_comments_header, p_comment_reply_idx_header, fo_comment_reply, fo_comment_reply_idx);
+        migrate_1to3_set_reply_buffer_to_comment_reply(reply_buffer, *len_reply_buffer, p_comments_header, p_comments_header, p_comment_reply_idx_header, fo_comment_reply, fo_comment_reply_idx);
         return MIGRATE_STATE_COMMENT;
     }
     else {
@@ -518,7 +518,7 @@ int
 migrate_1to3_op_by_state_end(char *line, int len_line, char *reply_buffer, int *len_reply_buffer, CommentsHeader *p_comments_header, CommentReplyHeader *p_comment_reply_header, CommentReplyIdxHeader *p_comment_reply_idx_header, int fo_comments, int fo_comment_reply, int fo_comment_reply_idx)
 {
     if(*len_reply_buffer) {
-        migrate_1to3_set_reply_buffer_to_comment_reply(reply_buffer, len_reply_buffer, p_comments_header, p_comment_reply_header, p_comment_reply_idx_header, fo_comment_reply, fo_comment_reply_idx);
+        migrate_1to3_set_reply_buffer_to_comment_reply(reply_buffer, *len_reply_buffer, p_comments_header, p_comment_reply_header, p_comment_reply_idx_header, fo_comment_reply, fo_comment_reply_idx);
     }
 
     return MIGRATE_STATE_END;
