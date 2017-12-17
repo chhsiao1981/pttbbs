@@ -20,6 +20,7 @@ migrate_vedit3(const char *fpath, int saveheader, char save_title[STRLEN], int f
     char fpath_main[PATHLEN];
     char fpath_comments[PATHLEN];
     char fpath_comment_reply[PATHLEN];
+    char fpath_comment_reply_idx[PATHLEN];
     int len_fpath = strlen(fpath);
     int ret;
 
@@ -27,13 +28,15 @@ migrate_vedit3(const char *fpath, int saveheader, char save_title[STRLEN], int f
     strncpy(fpath_main, fpath, len_fpath);
     strncpy(fpath_comments, fpath, len_fpath);
     strncpy(fpath_comment_reply, fpath, len_fpath);
+    strncpy(fpath_comment_reply_idx, fpath, len_fpath);
 
     strcpy(fpath_main + len_fpath, ".main");
     strcpy(fpath_comments + len_fpath, ".comments");
     strcpy(fpath_comment_reply + len_fpath, ".reply");
+    strcpy(fpath_comment_reply_idx + len_fpath, ".reply_idx");
 
     // migrate
-    migrate_1to3(fpath, fpath_main, fpath_comments, fpath_comment_reply);
+    migrate_1to3(fpath, fpath_main, fpath_comments, fpath_comment_reply, fpath_comment_reply_idx);
 
     // vedit3
     vedit3(fpath_main, fpath_comments, fpath_comment_reply, saveheader, save_title, flags);
