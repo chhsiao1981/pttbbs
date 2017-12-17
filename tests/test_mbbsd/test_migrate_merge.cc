@@ -521,6 +521,10 @@ TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin9) {
     EXPECT_NE(NA, migrate_1to3_is_comment_line(line, bytes_in_new_line));
 }
 
+TEST(migrate_merge, migrate_1to3) {
+    migrate_1to3("tests/test_data/original_post.1.txt", "tests/test_data/original_post.1.txt.main", "tests/test_data/original_post.1.txt.comments", "tests/test_data/original_post.1.txt.reply", "tests/test_data/original_post.1.txt.reply_idx");
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
