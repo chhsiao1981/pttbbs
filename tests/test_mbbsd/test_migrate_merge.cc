@@ -178,9 +178,9 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin) {
     lseek(fi, offset, SEEK_SET);
     bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
     close(fi);
-}
-    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
 
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
+}
  
 
 TEST(migrate_merge, migrate_1to3_get_offset_origin2) {
