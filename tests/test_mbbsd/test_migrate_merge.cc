@@ -323,7 +323,7 @@ TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin) {
 
     bzero(line, sizeof(line));    
     lseek(fi, offset_comments, SEEK_SET);
-    bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
+    bytes = read(fi, buf, MIGRATE_MERGE_BUF_SIZE);
 
     migrate_1to3_get_line(buf, 0, bytes, line, 0, &bytes_in_new_line);
     close(fi);
