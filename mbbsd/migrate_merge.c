@@ -26,9 +26,9 @@ int MIGRATE_MAX_FORWARD_HEADER = 41;
  * @param fpath_comment_reply [description]
  */
 int
-migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply)
+migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply, char *fpath_comment_reply_idx)
 {
-    int fo_main, fo_comments, fo_comment_reply;
+    int fo_main, fo_comments, fo_comment_reply, fo_comment_reply_idx;
     int fi = open(fpath, O_RDONLY);
     int offset_origin = migrate_1to3_get_offset_origin(fi);
     int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
@@ -36,6 +36,9 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
 
     char buf[MIGRATE_MERGE_BUF_SIZE];
     char line[MIGRATE_MERGE_BUF_SIZE];
+
+    char reply_buffer[MIGRATE_MERGE_BUF_SIZE];
+    int len_reply_buffer = 0;
 
     int bytes;
 
@@ -47,6 +50,12 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
     int bytes_in_new_line = 0;
     int n_main = 0;
     int error_code = MIGRATE_S_OK;
+
+    CommentsHeader comments_header;
+    CommentReplyHeader comment_reply_header;
+    CommentReplyIdxHeader comment_reply_idx_header;
+
+    bzero(reply_buffer, sizeof(reply_buffer));
 
     // main
     fo_main = OpenCreate(fpath_main, O_WRONLY | O_TRUNC);
@@ -81,6 +90,14 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
         return -1;
     }
 
+    fo_comment_reply_idx = OpenCreate(fpath_comment_reply_idx, O_WRONLY | O_TRUNC);
+    if (fo_comment_reply_idx < 0) {
+        close(fo_comments);
+        close(fo_comment_reply);
+        close(fi);
+        return -1;
+    }
+
     /*****
      * Definition of the variables:
      *     bytes: total-bytes read from the fi.
@@ -97,6 +114,7 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
      *
      *
      *****/
+    bzero(line, sizeof(line));
     while ((bytes = read(fi, buf, sizeof(buf))) > 0) {
         for (current_buf_offset = 0; current_buf_offset < bytes; current_buf_offset += bytes_in_new_line) {
 
@@ -107,20 +125,26 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
             }
 
             // MAIN-OP
-            state = migrate_1to3_op_by_state(state, line, bytes_in_line, fo_comments, fo_comment_reply);
+            state = migrate_1to3_op_by_state(state, line, bytes_in_line, reply_buffer, &len_reply_buffer, &comments_header, &comment_reply_header, &comment_reply_idx_header, fo_comments, fo_comment_reply, fo_comment_reply_idx);
 
             // reset line
             line_offset += bytes_in_line;
+            bzero(line, sizeof(char) * bytes_in_line);
             bytes_in_line = 0;
         }
     }
     // last line
     if (bytes_in_line) {
-        state = migrate_1to3_op_by_state(state, line, bytes_in_line, fo_comments, fo_comment_reply);
+        state = migrate_1to3_op_by_state(state, line, bytes_in_line, reply_buffer, &len_reply_buffer, &comments_header, &comment_reply_header, &comment_reply_idx_header, fo_comments, fo_comment_reply, fo_comment_reply_idx);
     }
+
+    state = MIGRATE_STATE_END;
+
+    state = migrate_1to3_op_by_state(state, line, bytes_in_line, reply_buffer, &len_reply_buffer, &comments_header, &comment_reply_header, &comment_reply_idx_header, fo_comments, fo_comment_reply, fo_comment_reply_idx);
 
     close(fo_comments);
     close(fo_comment_reply);
+    close(fo_comment_reply_idx);
     close(fi);
 
     return 0;
@@ -242,13 +266,11 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
             printf("line: %sline_offset: %d\n", line, line_offset);
 
             // MAIN-OP
-            if (migrate_1to3_is_recommend_line(line, bytes_in_line)) return line_offset;
-            if (migrate_1to3_is_boo_line(line, bytes_in_line)) return line_offset;
-            if (migrate_1to3_is_comment_line(line, bytes_in_line)) return line_offset;
-            if (migrate_1to3_is_forward_line(line, bytes_in_line)) return line_offset;
+            if (migrate_1to3_is_comments_line(line, bytes_in_line)) return line_offset;
 
             // reset line
             line_offset += bytes_in_line;
+            bzero(line, sizeof(char) * bytes_in_line);
             bytes_in_line = 0;
         }
     }
@@ -256,10 +278,7 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
     if (bytes_in_line) {
         printf("line: %sline_offset: %d\n", line, line_offset);
 
-        if (migrate_1to3_is_recommend_line(line, bytes_in_line)) return line_offset;
-        if (migrate_1to3_is_boo_line(line, bytes_in_line)) return line_offset;
-        if (migrate_1to3_is_comment_line(line, bytes_in_line)) return line_offset;
-        if (migrate_1to3_is_forward_line(line, bytes_in_line)) return line_offset;
+        if (migrate_1to3_is_comments_line(line, bytes_in_line)) return line_offset;
     }
 
     return -1;
@@ -322,6 +341,12 @@ migrate_1to3_get_line(char *p_buf, int current_buf_offset, int bytes_buf, char *
 }
 
 int
+migrate_1to3_is_comments_line(char *line, int len_line)
+{
+    return migrate_1to3_is_recommend_line(line, len_line) || migrate_1to3_is_boo_line(line, len_line) || migrate_1to3_is_comment_line(line, len_line) || migrate_1to3_is_forward_line(line, len_line);
+}
+
+int
 migrate_1to3_is_recommend_line(char *line, int len_line)
 {
     if (len_line < MIGRATE_LEN_COMMENT_HEADER) return NA;
@@ -372,13 +397,192 @@ migrate_1to3_is_forward_line(char *line, int len_line)
 }
 
 int
+migrate_1to3_is_edit_line(char *line, len_line)
+{
+    return NA;
+}
+
+int
+migrate_1to3_is_forward_from_mailbox(char *line, len_line)
+{
+    return NA;
+}
+
+int
 migrate_1to3_is_username_char(char ch) {
     return isalnum(ch);
 }
 
+/**
+ * @brief determine the state of line and do the corresponding op.
+ * @details determine the state of the line based on current state and the line.
+ *          STATE_INIT
+ *          STATE_COMMENT
+ *          STATE_REPLY
+ *          STATE_END
+ *          STATE_ERROR
+ *          
+ *          if state is in STATE_COMMENT:
+ *              if line is comments:
+ *                  1. set line to new comments
+ *                  2. state is in STATE_COMMENT
+ *              else
+ *                  1. set line into reply-buffer
+ *                  2. state is in STATE_REPLY
+ *          if state is in STATE_IS_REPLY:
+ *              if line is comments:
+ *                  1. set reply-buffer to the corresponding comment.
+ *                  2. set line to new comments.
+ *                  3. state is in STATE_COMMENT
+ *              else:
+ *                  1. set line to reply-buffer
+ *                  2. state is in STATE_REPLY
+ *          if state is STATE_INIT:
+ *              if line is comments:
+ *                  1. set line to new comments
+ *                  2. state is in STATE_COMMENT
+ *              else:
+ *                  return error    
+ *          if state is STATE_END:
+ *              if reply-buffer:
+ *                  set reply-buffer to the corresponding comment.
+ *              set fo_comments_header and fo_comment_reply_header.
+ *          
+ * 
+ * @param state [description]
+ * @param line [description]
+ * @param len_line [description]
+ * @param fo_comments [description]
+ * @param fo_comment_reply [description]
+ */
 int
-migrate_1to3_op_by_state(int state, char *line, int len_line, int fo_comments, int fo_comment_reply)
+migrate_1to3_op_by_state(int state, char *line, int len_line, char *reply_buffer, int *len_reply_buffer, CommentsHeader *p_comments_header, CommentReplyHeader *p_comment_reply_header, CommentReplyIdxHeader *p_comment_reply_idx_header, int fo_comments, int fo_comment_reply, int fo_comment_reply_idx)
+{    
+    int new_state;
+    switch(state) {
+    case MIGRATE_STATE_INIT:
+        new_state = migrate_1to3_op_by_state_init(line, len_line, reply_buffer, len_reply_buffer, p_comments_header, p_comment_reply_header, p_comment_reply_idx_header, fo_comments, fo_comment_reply, fo_comment_reply_idx);
+        break;
+    case MIGRATE_STATE_COMMENT:
+        new_state = migrate_1to3_op_by_state_comment(line, len_line, reply_buffer, len_reply_buffer, p_comments_header, p_comment_reply_header, p_comment_reply_idx, header, fo_comments, fo_comment_reply, fo_comment_reply_idx);
+        break;
+    case MIGRATE_STATE_REPLY:
+        new_state = migrate_1to3_op_by_state_reply(line, len_line, reply_buffer, len_reply_buffer, p_comments_header, p_comment_reply_header, p_comment_reply_idx_header, fo_comments, fo_comment_reply, fo_comment_reply_idx);
+        break;
+    case MIGRATE_STATE_END:
+        new_state = migrate_1to3_op_by_state_end(line, len_line, reply_buffer, len_reply_buffer, p_comments_header, p_comment_reply_header, p_comment_reply_idx_header, fo_comments, fo_comment_reply, fo_comment_reply_idx);
+        break;
+    }
+    return state;
+}
+
+
+int
+migrate_1to3_op_by_state_init(char *line, int len_line, char *reply_buffer, int *len_reply_buffer, CommentsHeader *p_comments_header, CommentReplyHeader *p_comment_reply_header, CommentReplyIdxHeader *p_comment_reply_idx_header, int fo_comments, int fo_comment_reply, int fo_comment_reply_idx)
 {
+    if(migrate_1to3_is_comments_line(line)) {
+        migrate_1to3_set_new_comment(line, len_line, p_comments_header, fo_comments);
+        return MIGRATE_STATE_COMMENT;
+    }
+    else
+        return MIGRATE_S_ERR;
+}
+
+int
+migrate_1to3_op_by_state_comment(char *line, int len_line, char *reply_buffer, int *len_reply_buffer, CommentsHeader *p_comments_header, CommentReplyHeader *p_comment_reply_header, CommentReplyIdxHeader *p_comment_reply_idx_header, int fo_comments, int fo_comment_reply, int fo_comment_reply_idx)
+{
+    if(migrate_1to3_is_comments_line(line)) {
+        migrate_1to3_set_new_comment(line, len_line, p_comments_header, fo_comments);
+        return MIGRATE_STATE_COMMENT;
+    }
+    else {
+        migrate_1to3_set_reply_buffer(line, len_line, reply_buffer, len_reply_buffer);
+        return MIGRATE_STATE_REPLY;
+    }
+}
+
+int
+migrate_1to3_op_by_state_reply(char *line, int len_line, char *reply_buffer, int *len_reply_buffer, CommentsHeader *p_comments_header, CommentReplyHeader *p_comment_reply_header, CommentReplyIdxHeader *p_comment_reply_idx_header, int fo_comments, int fo_comment_reply, int fo_comment_reply_idx)
+{
+    if(migrate_1to3_is_comments_line(line)) {
+        migrate_1to3_set_reply_buffer_to_comment_reply(reply_buffer, len_reply_buffer, p_comments_header, p_comments_header, p_comment_reply_idx_header, fo_comment_reply, fo_comment_reply_idx);
+        return MIGRATE_STATE_COMMENT;
+    }
+    else {
+        migrate_1to3_set_reply_buffer(line, len_line, reply_buffer, len_reply_buffer);
+        return MIGRATE_STATE_REPLY;
+    }
+}
+
+int
+migrate_1to3_op_by_state_end(char *line, int len_line, char *reply_buffer, int *len_reply_buffer, CommentsHeader *p_comments_header, CommentReplyHeader *p_comment_reply_header, CommentReplyIdxHeader *p_comment_reply_idx_header, int fo_comments, int fo_comment_reply, int fo_comment_reply_idx)
+{
+    if(*len_reply_buffer) {
+        migrate_1to3_set_reply_buffer_to_comment_reply(reply_buffer, len_reply_buffer, p_comments_header, p_comment_reply_header, p_comment_reply_idx_header, fo_comment_reply, fo_comment_reply_idx);
+    }
+
+    return MIGRATE_STATE_END;
+}
+
+int
+migrate_1to3_set_new_comment(char *line, int len_line, CommentsHeader *p_comments_header, int fo_comments)
+{
+    // the_size
+    int the_size = (int)sizeof(int) + len_line;
+    write(fo_comments, &the_size, sizeof(int));
+
+    // the_comments
+    write(fo_comments, line, len_line);
+    p_comments_header->n_comments++;
+    p_comments_header->the_size += len_line;
+
+    return 0;
+}
+
+int
+migrate_1to3_set_reply_buffer(char *line, int len_line, char *reply_buffer, int *len_reply_buffer)
+{
+    len_line = len_line + *len_reply_buffer < MIGRATE_MERGE_BUF_SIZE ? len_line : (MIGRATE_MERGE_BUF_SIZE - *len_reply_buffer);
+    if(len_line <= 0) return MIGRATE_S_ERR;
+
+    reply_buffer += *len_reply_buffer;
+    memcpy(reply_buffer, line, len_line);
+    *len_reply_buffer += len_line;
+
+    return 0;
+}
+
+int
+migrate_1to3_set_reply_buffer_to_comment_reply(char *reply_buffer, int len_reply_buffer, CommentsHeader *p_comments_header, CommentReplyHeader *p_comment_reply_header, CommentReplyIdxHeader *p_comment_reply_idx_header, int fo_comment_reply, int fo_comment_reply_idx)
+{
+    /**
+     * comment-reply-idx
+     */
+    p_comment_reply_idx_header->n_comment_reply++;
+    p_comment_reply_idx_header->the_size += 8;
+
+    // comment-id
+    write(fo_comment_reply_idx, &p_comments_header->n_comments, sizeof(int));
+    // comment-reply offset
+    write(fo_comment_reply_idx, &p_comment_reply_header->the_size, sizeof(int));
+
+
+    /**
+     * comment-reply
+     */
+    int the_size = (int)sizeof(int) + (int)sizeof(int) + len_reply_buffer;
+
+    // the_size
+    write(fo_comment_reply, &the_size, sizeof(int));
+
+    // comment-id
+    write(fo_comment_reply, &p_comments_header->n_comments, sizeof(int));
+
+    write(fo_comment_reply, reply_buffer, len_reply_buffer);
+
+    p_comment_reply_header->n_comment_reply++;
+    p_comment_reply_header->the_size += the_size;
+
     return 0;
 }
 
