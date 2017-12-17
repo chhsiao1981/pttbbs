@@ -144,7 +144,7 @@ migrate_1to3_get_offset_origin(int fd)
     int error_code = MIGRATE_S_OK;
     int current_offset = 0;
 
-    bzero(line, sizeof(char) * bytes_in_line);
+    bzero(line, sizeof(line));
     /*****
      * Definition of the variables:,
      *     bytes: total-bytes read from the fi.
@@ -206,6 +206,9 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
     int bytes_in_new_line = 0;
 
     int error_code = MIGRATE_S_OK;
+
+    //init line
+    bzero(line, sizeof(line));
 
     // start with origin
     lseek(fd, offset_origin, SEEK_SET);
