@@ -525,6 +525,38 @@ TEST(migrate_merge, migrate_1to3) {
     migrate_1to3("tests/test_data/original_post.1.txt", "tests/test_data/original_post.1.txt.main", "tests/test_data/original_post.1.txt.comments", "tests/test_data/original_post.1.txt.reply", "tests/test_data/original_post.1.txt.reply_idx");
 }
 
+TEST(migrate_merge, migrate_1to3) {
+    migrate_1to3("tests/test_data/original_post.2.txt", "tests/test_data/original_post.2.txt.main", "tests/test_data/original_post.2.txt.comments", "tests/test_data/original_post.2.txt.reply", "tests/test_data/original_post.2.txt.reply_idx");
+}
+
+TEST(migrate_merge, migrate_1to3) {
+    migrate_1to3("tests/test_data/original_post.3.txt", "tests/test_data/original_post.3.txt.main", "tests/test_data/original_post.3.txt.comments", "tests/test_data/original_post.3.txt.reply", "tests/test_data/original_post.3.txt.reply_idx");
+}
+
+TEST(migrate_merge, migrate_1to3) {
+    migrate_1to3("tests/test_data/original_post.4.txt", "tests/test_data/original_post.4.txt.main", "tests/test_data/original_post.4.txt.comments", "tests/test_data/original_post.4.txt.reply", "tests/test_data/original_post.4.txt.reply_idx");
+}
+
+TEST(migrate_merge, migrate_1to3) {
+    migrate_1to3("tests/test_data/original_post.5.txt", "tests/test_data/original_post.5.txt.main", "tests/test_data/original_post.5.txt.comments", "tests/test_data/original_post.5.txt.reply", "tests/test_data/original_post.5.txt.reply_idx");
+}
+
+TEST(migrate_merge, migrate_1to3) {
+    migrate_1to3("tests/test_data/original_post.6.txt", "tests/test_data/original_post.6.txt.main", "tests/test_data/original_post.6.txt.comments", "tests/test_data/original_post.6.txt.reply", "tests/test_data/original_post.6.txt.reply_idx");
+}
+
+TEST(migrate_merge, migrate_1to3) {
+    migrate_1to3("tests/test_data/original_post.7.txt", "tests/test_data/original_post.7.txt.main", "tests/test_data/original_post.7.txt.comments", "tests/test_data/original_post.7.txt.reply", "tests/test_data/original_post.7.txt.reply_idx");
+}
+
+TEST(migrate_merge, migrate_1to3) {
+    migrate_1to3("tests/test_data/original_post.8.txt", "tests/test_data/original_post.8.txt.main", "tests/test_data/original_post.8.txt.comments", "tests/test_data/original_post.8.txt.reply", "tests/test_data/original_post.8.txt.reply_idx");
+}
+
+TEST(migrate_merge, migrate_1to3) {
+    migrate_1to3("tests/test_data/original_post.9.txt", "tests/test_data/original_post.9.txt.main", "tests/test_data/original_post.9.txt.comments", "tests/test_data/original_post.9.txt.reply", "tests/test_data/original_post.9.txt.reply_idx");
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
