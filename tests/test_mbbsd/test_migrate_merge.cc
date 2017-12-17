@@ -318,12 +318,19 @@ TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin) {
 
     int bytes;
     char buf[MIGRATE_MERGE_BUF_SIZE];
+    char line[MIGRATE_MERGE_BUF_SIZE];
+    int bytes_in_new_line;
 
+    bzero(line, sizeof(line));    
     lseek(fi, offset_comments, SEEK_SET);
     bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
+
+    migrate_1to3_get_line(buf, 0, bytes, line, 0, &bytes_in_new_line);
     close(fi);
 
-    EXPECT_NE(NA, migrate_1to3_is_recommend_line(buf, 80));
+    printf("line: %s", line);
+
+    EXPECT_NE(NA, migrate_1to3_is_recommend_line(line, bytes_in_new_line));
 }
 
 int main(int argc, char **argv) {
