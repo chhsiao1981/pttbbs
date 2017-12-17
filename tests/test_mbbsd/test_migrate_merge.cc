@@ -142,7 +142,7 @@ TEST(migrate_merge, migrate_1to3_is_forward_line_match) {
     int bytes_in_line = 0;
 
     snprintf(buf, sizeof(buf),
-             ANSI_COLOR(32)
+             // ANSI_COLOR(32)  // XXX no green in the beginning, system add automatically.
              MIGRATE_HEADER_FORWARD0 ANSI_COLOR(1;32) "%s"
              ANSI_COLOR(0;32) MIGRATE_HEADER_FORWARD1
              "%s" ANSI_RESET "%*s%s\n" ,
