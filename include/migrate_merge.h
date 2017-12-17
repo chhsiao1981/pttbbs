@@ -37,7 +37,7 @@ typedef struct {
     int offset_comment_reply;
 } CommentReplyIdx;
 
-int migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply, const char *fpath_comment_reply_idx)
+int migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply, const char *fpath_comment_reply_idx);
 
 
 int migrate_1to3_get_offset_origin(int fd);
