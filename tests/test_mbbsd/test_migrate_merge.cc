@@ -387,6 +387,72 @@ TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin3) {
     EXPECT_NE(NA, migrate_1to3_is_forward_line(line, bytes_in_new_line));
 }
 
+TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin4) {
+    int fi = OpenCreate("tests/test_data/original_post.4.txt", O_RDONLY);
+    int offset0 = lseek(fi, 0, SEEK_CUR);
+    printf("fi: %d offset0: %d\n", fi, offset0);
+    int offset_origin = migrate_1to3_get_offset_origin(fi);
+    printf("offset_origin: %d\n", offset_origin);
+    int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
+
+    printf("offset_comments: %d\n", offset_comments);
+}
+
+TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin5) {
+    int fi = OpenCreate("tests/test_data/original_post.5.txt", O_RDONLY);
+    int offset0 = lseek(fi, 0, SEEK_CUR);
+    printf("fi: %d offset0: %d\n", fi, offset0);
+    int offset_origin = migrate_1to3_get_offset_origin(fi);
+    printf("offset_origin: %d\n", offset_origin);
+    int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
+
+    printf("offset_comments: %d\n", offset_comments);
+}
+
+TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin6) {
+    int fi = OpenCreate("tests/test_data/original_post.6.txt", O_RDONLY);
+    int offset0 = lseek(fi, 0, SEEK_CUR);
+    printf("fi: %d offset0: %d\n", fi, offset0);
+    int offset_origin = migrate_1to3_get_offset_origin(fi);
+    printf("offset_origin: %d\n", offset_origin);
+    int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
+
+    printf("offset_comments: %d\n", offset_comments);
+}
+
+TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin7) {
+    int fi = OpenCreate("tests/test_data/original_post.7.txt", O_RDONLY);
+    int offset0 = lseek(fi, 0, SEEK_CUR);
+    printf("fi: %d offset0: %d\n", fi, offset0);
+    int offset_origin = migrate_1to3_get_offset_origin(fi);
+    printf("offset_origin: %d\n", offset_origin);
+    int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
+
+    printf("offset_comments: %d\n", offset_comments);
+}
+
+TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin8) {
+    int fi = OpenCreate("tests/test_data/original_post.8.txt", O_RDONLY);
+    int offset0 = lseek(fi, 0, SEEK_CUR);
+    printf("fi: %d offset0: %d\n", fi, offset0);
+    int offset_origin = migrate_1to3_get_offset_origin(fi);
+    printf("offset_origin: %d\n", offset_origin);
+    int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
+
+    printf("offset_comments: %d\n", offset_comments);
+}
+
+TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin9) {
+    int fi = OpenCreate("tests/test_data/original_post.9.txt", O_RDONLY);
+    int offset0 = lseek(fi, 0, SEEK_CUR);
+    printf("fi: %d offset0: %d\n", fi, offset0);
+    int offset_origin = migrate_1to3_get_offset_origin(fi);
+    printf("offset_origin: %d\n", offset_origin);
+    int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
+
+    printf("offset_comments: %d\n", offset_comments);
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
