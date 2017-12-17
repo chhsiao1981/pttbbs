@@ -328,7 +328,7 @@ TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin) {
     migrate_1to3_get_line(buf, 0, bytes, line, 0, &bytes_in_new_line);
     close(fi);
 
-    printf("line: %s", line);
+    printf("bytes_in_new_line: %d line: %s", bytes_in_new_line, line);
 
     EXPECT_NE(NA, migrate_1to3_is_recommend_line(line, bytes_in_new_line));
 }
