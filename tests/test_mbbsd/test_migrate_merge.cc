@@ -304,7 +304,8 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin9) {
 
 TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin) {
     int fi = OpenCreate("tests/test_data/original_post.1.txt", O_RDONLY);
-    printf("fi: %d\n", fi);
+    int offset0 = lseek(fi, 0, SEEK_CUR);
+    printf("fi: %d offset0: %d\n", fi, offset0);
     int offset_origin = migrate_1to3_get_offset_origin(fi);
     printf("offset_origin: %d\n", offset_origin);
     int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
