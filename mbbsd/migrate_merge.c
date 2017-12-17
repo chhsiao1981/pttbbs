@@ -26,7 +26,7 @@ int MIGRATE_MAX_FORWARD_HEADER = 41;
  * @param fpath_comment_reply [description]
  */
 int
-migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply, char *fpath_comment_reply_idx)
+migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_comments, const char *fpath_comment_reply, const char *fpath_comment_reply_idx)
 {
     int fo_main, fo_comments, fo_comment_reply, fo_comment_reply_idx;
     int fi = open(fpath, O_RDONLY);
