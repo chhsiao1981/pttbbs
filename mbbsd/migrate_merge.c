@@ -51,9 +51,9 @@ migrate_1to3(const char *fpath, const char *fpath_main, const char *fpath_commen
     int n_main = 0;
     int error_code = MIGRATE_S_OK;
 
-    CommentsHeader comments_header;
-    CommentReplyHeader comment_reply_header;
-    CommentReplyIdxHeader comment_reply_idx_header;
+    CommentsHeader comments_header = {0, 0, sizeof(unsigned char) + sizeof(int) + sizeof(int)};
+    CommentReplyHeader comment_reply_header = {0, 0, sizeof(unsigned char) + sizeof(int) + sizeof(int)};
+    CommentReplyIdxHeader comment_reply_idx_header = {0, 0, sizeof(unsigned char) + sizeof(int) + sizeof(int)};
 
     bzero(reply_buffer, sizeof(reply_buffer));
 
@@ -473,7 +473,8 @@ migrate_1to3_op_by_state(int state, char *line, int len_line, char *reply_buffer
         new_state = migrate_1to3_op_by_state_end(line, len_line, reply_buffer, len_reply_buffer, p_comments_header, p_comment_reply_header, p_comment_reply_idx_header, fo_comments, fo_comment_reply, fo_comment_reply_idx);
         break;
     }
-    return state;
+    printf("line: %slen_line: %dstate: %d new_state: %d reply_buffer: %s len_reply_buffer: %d n-comments: %d comments-size: %d, n-comment-reply: %d comment-reply-size: %d n-comment-reply-idx: %d comment-reply-idx-size: %d\n", line, len_line, state, new_state, reply_buffer, *len_reply_buffer, p_comments_header->n_comments, p_comments_header->the_size, p_comment_reply_header->n_comment_reply, p_comment_reply_header->the_size, p_comment_reply_idx_header->n_comment_reply, p_comment_reply_idx_header->the_size);
+    return new_state;
 }
 
 
@@ -582,6 +583,8 @@ migrate_1to3_set_reply_buffer_to_comment_reply(char *reply_buffer, int len_reply
 
     p_comment_reply_header->n_comment_reply++;
     p_comment_reply_header->the_size += the_size;
+
+    bzero(reply_buffer, sizeof(char) * len_reply_buffer);
 
     return 0;
 }
