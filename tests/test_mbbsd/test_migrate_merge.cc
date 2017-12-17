@@ -311,13 +311,6 @@ TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin) {
 
     printf("offset_comments: %s\n", offset_comments);
 
-    int bytes;
-    char buf[MIGRATE_MERGE_BUF_SIZE];
-
-    lseek(fi, offset, SEEK_SET);
-    bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
-    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
-
     close(fi);
 }
 
