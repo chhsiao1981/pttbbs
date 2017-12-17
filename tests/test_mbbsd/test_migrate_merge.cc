@@ -302,6 +302,25 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin9) {
     close(fi);
 }
 
+TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin) {
+    int fi = OpenCreate("tests/test_data/original_post.1.txt", O_RDONLY);
+    printf("fi: %d\n", fi);
+    int offset_origin = migrate_1to3_get_offset_origin(fi);
+
+    int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
+
+    printf("offset_comments: %s\n", offset_comments);
+
+    int bytes;
+    char buf[MIGRATE_MERGE_BUF_SIZE];
+
+    lseek(fi, offset, SEEK_SET);
+    bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
+
+    close(fi);
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

@@ -199,7 +199,7 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
 
     int current_buf_offset = 0;
 
-    int line_offset = 0;
+    int line_offset = offset_origin;
     int bytes_in_line = 0;
 
     int bytes_in_new_line = 0;
@@ -234,6 +234,8 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
                 break;
             }
 
+            printf("line: %sline_offset: %d\n", line, line_offset);
+
             // MAIN-OP
             if (migrate_1to3_is_recommend_line(line, bytes_in_line)) return line_offset;
             if (migrate_1to3_is_boo_line(line, bytes_in_line)) return line_offset;
@@ -247,6 +249,8 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
     }
     // last line
     if (bytes_in_line) {
+        printf("line: %sline_offset: %d\n", line, line_offset);
+
         if (migrate_1to3_is_recommend_line(line, bytes_in_line)) return line_offset;
         if (migrate_1to3_is_boo_line(line, bytes_in_line)) return line_offset;
         if (migrate_1to3_is_comment_line(line, bytes_in_line)) return line_offset;
