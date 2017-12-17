@@ -177,10 +177,11 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin) {
 
     lseek(fi, offset, SEEK_SET);
     bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
-    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
-
     close(fi);
 }
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
+
+ 
 
 TEST(migrate_merge, migrate_1to3_get_offset_origin2) {
     int fi = OpenCreate("tests/test_data/original_post.2.txt", O_RDONLY);
@@ -192,9 +193,10 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin2) {
 
     lseek(fi, offset, SEEK_SET);
     bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
+    close(fi);
+
     EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
 
-    close(fi);
 }
 
 TEST(migrate_merge, migrate_1to3_get_offset_origin3) {
@@ -207,9 +209,10 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin3) {
 
     lseek(fi, offset, SEEK_SET);
     bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
+    close(fi);
+
     EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
 
-    close(fi);
 }
 
 TEST(migrate_merge, migrate_1to3_get_offset_origin4) {
@@ -222,9 +225,10 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin4) {
 
     lseek(fi, offset, SEEK_SET);
     bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
+    close(fi);
+
     EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
 
-    close(fi);
 }
 
 TEST(migrate_merge, migrate_1to3_get_offset_origin5) {
@@ -237,9 +241,9 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin5) {
 
     lseek(fi, offset, SEEK_SET);
     bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
-    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
-
     close(fi);
+
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
 }
 
 TEST(migrate_merge, migrate_1to3_get_offset_origin6) {
@@ -252,9 +256,9 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin6) {
 
     lseek(fi, offset, SEEK_SET);
     bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
-    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
-
     close(fi);
+
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
 }
 
 TEST(migrate_merge, migrate_1to3_get_offset_origin7) {
@@ -267,9 +271,9 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin7) {
 
     lseek(fi, offset, SEEK_SET);
     bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
-    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
-
     close(fi);
+
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
 }
 
 TEST(migrate_merge, migrate_1to3_get_offset_origin8) {
@@ -282,9 +286,9 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin8) {
 
     lseek(fi, offset, SEEK_SET);
     bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
-    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
-
     close(fi);
+
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
 }
 
 TEST(migrate_merge, migrate_1to3_get_offset_origin9) {
@@ -297,9 +301,9 @@ TEST(migrate_merge, migrate_1to3_get_offset_origin9) {
 
     lseek(fi, offset, SEEK_SET);
     bytes = read(fi, buf, LEN_MIGRATE_HEADER_ORIGIN);
-    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
-
     close(fi);
+
+    EXPECT_NE(NA, !strncmp(buf, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN));
 }
 
 TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin) {

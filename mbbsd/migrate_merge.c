@@ -173,7 +173,7 @@ migrate_1to3_get_offset_origin(int fd)
             // MAIN-OP
             if (!strncmp(line, MIGRATE_HEADER_ORIGIN, LEN_MIGRATE_HEADER_ORIGIN)) current_offset = line_offset;
 
-            printf("line: %sline_offset: %d current_offset: %d\n", line, line_offset, current_offset);
+            printf("line: %sbytes_in_line: %dline_offset: %d current_offset: %d\n", line, bytes_in_line, line_offset, current_offset);
 
             // reset line
             line_offset += bytes_in_line;
@@ -232,6 +232,7 @@ migrate_1to3_get_offset_comments_from_origin(int fd, int offset_origin)
             error_code = migrate_1to3_get_line(buf, current_buf_offset, bytes, line, bytes_in_line, &bytes_in_new_line);
             bytes_in_line += bytes_in_new_line;
             if (error_code) {
+                printf("not reading end of line: line: %s\n", line);
                 break;
             }
 
