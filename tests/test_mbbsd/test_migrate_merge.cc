@@ -396,6 +396,22 @@ TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin4) {
     int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
 
     printf("offset_comments: %d\n", offset_comments);
+
+    int bytes;
+    char buf[MIGRATE_MERGE_BUF_SIZE];
+    char line[MIGRATE_MERGE_BUF_SIZE];
+    int bytes_in_new_line;
+
+    bzero(line, sizeof(line));    
+    lseek(fi, offset_comments, SEEK_SET);
+    bytes = read(fi, buf, MIGRATE_MERGE_BUF_SIZE);
+
+    migrate_1to3_get_line(buf, 0, bytes, line, 0, &bytes_in_new_line);
+    close(fi);
+
+    printf("bytes_in_new_line: %d line: %s", bytes_in_new_line, line);
+
+    EXPECT_NE(NA, migrate_1to3_is_boo_line(line, bytes_in_new_line));
 }
 
 TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin5) {
@@ -407,6 +423,8 @@ TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin5) {
     int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
 
     printf("offset_comments: %d\n", offset_comments);
+
+    EXPECT_EQ(-1, offset_comments);
 }
 
 TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin6) {
@@ -418,6 +436,22 @@ TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin6) {
     int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
 
     printf("offset_comments: %d\n", offset_comments);
+
+    int bytes;
+    char buf[MIGRATE_MERGE_BUF_SIZE];
+    char line[MIGRATE_MERGE_BUF_SIZE];
+    int bytes_in_new_line;
+
+    bzero(line, sizeof(line));    
+    lseek(fi, offset_comments, SEEK_SET);
+    bytes = read(fi, buf, MIGRATE_MERGE_BUF_SIZE);
+
+    migrate_1to3_get_line(buf, 0, bytes, line, 0, &bytes_in_new_line);
+    close(fi);
+
+    printf("bytes_in_new_line: %d line: %s", bytes_in_new_line, line);
+
+    EXPECT_NE(NA, migrate_1to3_is_comment_line(line, bytes_in_new_line));
 }
 
 TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin7) {
@@ -429,6 +463,8 @@ TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin7) {
     int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
 
     printf("offset_comments: %d\n", offset_comments);
+
+    EXPECT_EQ(-1, offset_comments);
 }
 
 TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin8) {
@@ -440,6 +476,22 @@ TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin8) {
     int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
 
     printf("offset_comments: %d\n", offset_comments);
+
+    int bytes;
+    char buf[MIGRATE_MERGE_BUF_SIZE];
+    char line[MIGRATE_MERGE_BUF_SIZE];
+    int bytes_in_new_line;
+
+    bzero(line, sizeof(line));    
+    lseek(fi, offset_comments, SEEK_SET);
+    bytes = read(fi, buf, MIGRATE_MERGE_BUF_SIZE);
+
+    migrate_1to3_get_line(buf, 0, bytes, line, 0, &bytes_in_new_line);
+    close(fi);
+
+    printf("bytes_in_new_line: %d line: %s", bytes_in_new_line, line);
+
+    EXPECT_NE(NA, migrate_1to3_is_comment_line(line, bytes_in_new_line));
 }
 
 TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin9) {
@@ -451,6 +503,22 @@ TEST(migrate_merge, migrate_1to3_get_offset_comments_from_origin9) {
     int offset_comments = migrate_1to3_get_offset_comments_from_origin(fi, offset_origin);
 
     printf("offset_comments: %d\n", offset_comments);
+
+    int bytes;
+    char buf[MIGRATE_MERGE_BUF_SIZE];
+    char line[MIGRATE_MERGE_BUF_SIZE];
+    int bytes_in_new_line;
+
+    bzero(line, sizeof(line));    
+    lseek(fi, offset_comments, SEEK_SET);
+    bytes = read(fi, buf, MIGRATE_MERGE_BUF_SIZE);
+
+    migrate_1to3_get_line(buf, 0, bytes, line, 0, &bytes_in_new_line);
+    close(fi);
+
+    printf("bytes_in_new_line: %d line: %s", bytes_in_new_line, line);
+
+    EXPECT_NE(NA, migrate_1to3_is_comment_line(line, bytes_in_new_line));
 }
 
 int main(int argc, char **argv) {
