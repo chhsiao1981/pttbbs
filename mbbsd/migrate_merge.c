@@ -397,13 +397,13 @@ migrate_1to3_is_forward_line(char *line, int len_line)
 }
 
 int
-migrate_1to3_is_edit_line(char *line, len_line)
+migrate_1to3_is_edit_line(char *line, int len_line)
 {
     return NA;
 }
 
 int
-migrate_1to3_is_forward_from_mailbox(char *line, len_line)
+migrate_1to3_is_forward_from_mailbox(char *line, int len_line)
 {
     return NA;
 }
