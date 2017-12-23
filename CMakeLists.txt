@@ -5,6 +5,7 @@ project(pttbbs)
 message(STATUS "CMAKE_SYSTEM: ${CMAKE_SYSTEM}")
 message(STATUS "CMAKE_SYSTEM_NAME: ${CMAKE_SYSTEM_NAME}")
 message(STATUS "CMAKE_SYSTEM_VERSION: ${CMAKE_SYSTEM_VERSION}")
+message(STATUS "CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
 
 # configure_file(pttbbs.cmake.conf pttbbs.conf)
 
