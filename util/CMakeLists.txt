@@ -82,16 +82,15 @@ set(PROGS
     timecap_expire.sh
     )
 
-foreach(fn MBBSD_OBJS)
-    set(obj "${CMAKE_CURRENT_BINARY_DIR}/util_${fn}.o")
-    add_custom_command(OUTPUT ${obj}
-        COMMAND ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -D_BBS_UTIL_C_ -o ${obj} ${PROJECT_SOURCE_DIR}/mbbsd/${fn}.c
-        )    
-endforeach()
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/util_var.o
+    COMMAND ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -D_BBS_UTIL_C_ -c -o ${CMAKE_CURRENT_BINARY_DIR}/util_var.o ${PROJECT_SOURCE_DIR}/mbbsd/var.c
+    DEPENDS ${PROJECT_SOURCE_DIR}/mbbsd/var.c
+    )
 
 foreach(prog ${CPROG_WITH_UTIL})
     add_executable(${prog}
         ${prog}.c
+        util_var.o
         )
-    target_link_libraries(${prog} ${LDLIBS} ${UTIL_OBJS})
+    target_link_libraries(${prog} ${LDLIBS})
 endforeach()
