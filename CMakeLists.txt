@@ -79,7 +79,7 @@ endif()
 message("CMAKE_C_FLAGS: ${CMAKE_C_FLAGS} CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 
 # LIBS
-set(LDLIBS "${LDLIBS} cmsys cmbbs osdep")
+set(LDLIBS "cmsys cmbbs osdep ${LDLIBS}")
 
 # No-fork
 if(${NO_FORK})
