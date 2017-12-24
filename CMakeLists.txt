@@ -12,6 +12,8 @@ if("${BBSHOME}" STREQUAL "")
     set(BBSHOME /home/bbs)
 endif()
 
+set(CMAKE_C_COMPILER ccache cclang)
+
 # Command build flags
 set(PTT_WARN "-W -Wall -Wunused -Wno-missing-field-initializers")
 set(PTT_CFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DIR}/include")
