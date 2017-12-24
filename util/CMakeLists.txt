@@ -93,7 +93,7 @@ set_source_files_properties(${UTILSRCS}
     COMPILE_FLAGS -D_BBS_UTIL_C_
 )
 
-add_library(utilvar
+add_library(utilvar STATIC
     ${UTILSRCS}
     )
 
