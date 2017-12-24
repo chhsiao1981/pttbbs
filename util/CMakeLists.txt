@@ -84,5 +84,4 @@ foreach(prog CPROG_WITH_UTIL)
         ${prog}.c
         )
     target_link_libraries(${prog} ${LDLIBS})
-
-endforeach(CPROG_WITH_UTIL)
+endforeach()
