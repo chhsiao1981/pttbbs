@@ -85,17 +85,20 @@ set(PROGS
     )
 
 foreach(src MBBSD_SRCS)
-    set(obj ${CMAKE_CURRENT_BINARY_DIR}/util_${src}.o)
+    set(obj util_${src}.o)
     add_custom_command(OUTPUT ${obj}
         COMMAND ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -D_BBS_UTIL_C_ -c -o ${obj} ${PROJECT_SOURCE_DIR}/mbbsd/${src}.c
         DEPENDS ${PROJECT_SOURCE_DIR}/mbbsd/${src}.c
         )
 endforeach()
 
+add_custom_target(UTIL_OBJS
+    DEPENDS ${UTIL_OBJS}
+    )
+
 foreach(prog ${CPROG_WITH_UTIL})
     add_executable(${prog}
         ${prog}.c
-        ${UTIL_OBJS}
         )
     target_link_libraries(${prog} ${LDLIBS})
 endforeach()
@@ -103,13 +106,13 @@ endforeach()
 foreach(prog ${CPP_WITH_UTIL})
     add_executable(${prog}
         ${prog}.cc
-        ${UTIL_OBJS}
         )
     target_link_libraries(${prog} ${LDLIBS})
     set_source_files_properties(${prog}.cc
         PROPERTIES
         LANGUAGE CXX
         )
+    add_dependencies(UTIL_OBJS)
 endforeach()
 
 foreach(prog ${CPROGR_WITHOUT_UTIL})
