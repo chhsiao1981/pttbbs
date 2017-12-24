@@ -106,6 +106,10 @@ foreach(prog ${CPP_WITH_UTIL})
         ${UTIL_OBJS}
         )
     target_link_libraries(${prog} ${LDLIBS})
+    set_source_files_properties(${prog}.cc
+        PROPERTIES
+        LANGUAGE CXX
+        )
 endforeach()
 
 foreach(prog ${CPROGR_WITHOUT_UTIL})
