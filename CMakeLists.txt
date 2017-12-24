@@ -12,6 +12,7 @@ if("${BBSHOME}" STREQUAL "")
     set(BBSHOME /home/bbs)
 endif()
 
+message(STATUS "CMAKE_C_COMPILER: ${CMAKE_C_COMPILER} CMAKE_C_LINK_EXECUTABLE: ${CMAKE_C_LINK_EXECUTABLE}")
 set(CMAKE_C_COMPILER ccache cclang)
 
 # Command build flags
