@@ -82,7 +82,9 @@ set(PROGS
 
 foreach(src ${UTILSRCS})
     string(REGEX REPLACE "^util_" "" mbbsd_src ${src})
-    file(COPY ${PROJECT_SOURCE_DIR}/mbbsd/${mbbsd_src} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+    add_custom_command(OUTPUT ${src}
+        COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/mbbsd/${mbbsd_src} ${src}
+        )
 endforeach()
 
 set_source_files_properties(${UTILSRCS}
@@ -94,21 +96,21 @@ set_source_files_properties(${UTILSRCS}
 foreach(prog ${CPROG_WITH_UTIL})
     add_executable(${prog}
         ${prog}.c
+        ${UTILSRCS}
         )
     target_link_libraries(${prog} ${LDLIBS})
-    add_dependencies(${prog} TARGET_UTIL_OBJS)
 endforeach()
 
 foreach(prog ${CPP_WITH_UTIL})
     add_executable(${prog}
         ${prog}.cc
+        ${UTILSRCS}
         )
     target_link_libraries(${prog} ${LDLIBS})
     set_source_files_properties(${prog}.cc
         PROPERTIES
         LANGUAGE CXX
         )
-    add_dependencies(${prog} TARGET_UTIL_OBJS)
 endforeach()
 
 foreach(prog ${CPROGR_WITHOUT_UTIL})
