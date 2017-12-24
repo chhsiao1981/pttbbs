@@ -3,8 +3,12 @@ cmake_minimum_required(VERSION 2.6.4)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPTTBBS_UTIL")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(BBSBASE "${PROJECT_SOURCE_DIR}/include/var.h")
-set(UTIL_SRCS
-    util_var.c
+set(UTIL_OBJS
+    util_var.o
+    )
+
+set(MBBSD_OBJS
+    var
     )
 
 set(CPROG_WITH_UTIL
@@ -78,10 +82,16 @@ set(PROGS
     timecap_expire.sh
     )
 
-foreach(prog CPROG_WITH_UTIL)
+foreach(fn MBBSD_OBJS)
+    set(obj "${CMAKE_CURRENT_BINARY_DIR}/util_${fn}.o")
+    add_custom_command(OUTPUT ${obj}
+        COMMAND ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -D_BBS_UTIL_C_ -o ${obj} ${PROJECT_SOURCE_DIR}/mbbsd/${fn}.c
+        )    
+endforeach()
+
+foreach(prog ${CPROG_WITH_UTIL})
     add_executable(${prog}
-        ${UTIL_SRCS}
         ${prog}.c
         )
-    target_link_libraries(${prog} ${LDLIBS})
+    target_link_libraries(${prog} ${LDLIBS} ${UTIL_OBJS})
 endforeach()
