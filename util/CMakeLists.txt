@@ -92,7 +92,7 @@ foreach(src MBBSD_SRCS)
         )
 endforeach()
 
-add_custom_target(UTIL_OBJS
+add_custom_target(UTIL_OBJS ALL
     DEPENDS ${UTIL_OBJS}
     )
 

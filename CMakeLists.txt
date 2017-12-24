@@ -138,9 +138,9 @@ add_custom_target(VAR_H ALL
 
 set(LDLIBS ${LDLIBS} cmbbs cmsys osdep)
 
-message(STATUS "before remove empty: LDLIBS: ${LDLIBS}")
-list(REMOVE_ITEM LDLIBS "")
-message(STATUS "after remove empty: LDLIBS: ${LDLIBS}")
+# message(STATUS "before remove empty: LDLIBS: ${LDLIBS}")
+# list(REMOVE_ITEM LDLIBS "")
+# message(STATUS "after remove empty: LDLIBS: ${LDLIBS}")
 
 ##########
 # sub-dirs
