@@ -101,6 +101,7 @@ foreach(prog ${CPROG_WITH_UTIL})
         ${prog}.c
         )
     target_link_libraries(${prog} ${LDLIBS})
+    add_dependencies(${prog} UTIL_OBJS)
 endforeach()
 
 foreach(prog ${CPP_WITH_UTIL})
@@ -112,7 +113,7 @@ foreach(prog ${CPP_WITH_UTIL})
         PROPERTIES
         LANGUAGE CXX
         )
-    add_dependencies(UTIL_OBJS)
+    add_dependencies(${prog} UTIL_OBJS)
 endforeach()
 
 foreach(prog ${CPROGR_WITHOUT_UTIL})
