@@ -32,7 +32,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
     set(PTT_CFLAGS "${PTT_CFLAGS} -I/opt/local/include -I/usr/local/opt/ncurses/include -DNEED_SETPROCTITLE")
     set(PTT_CXXFLAGS "${PTT_CXXFLAGS} -I/opt/local/include -I/usr/local/opt/ncurses/include")
     set(PTT_LDFLAGS "${PTT_LDFLAGS} -L/usr/local/opt/ncurses/lib")
-    set(PTT_LDLIBS iconv ${CURSES_LIBRARIES}
+    set(PTT_LDLIBS iconv ${CURSES_LIBRARIES})
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
     set(PTT_CFLAGS "${PTT_CFLAGS} -I/usr/local/include")
     set(PTT_CXXFLAGS "${PTT_CXXFLAGS} -I/usr/local/include")
