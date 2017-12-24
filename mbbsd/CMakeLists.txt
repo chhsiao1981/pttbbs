@@ -109,6 +109,17 @@ set(TESTSZSRCS
     testsz.c
     )
 
+if(${DIET})
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L${PROJECT_SOURCE_DIR}/common/diet")
+    set(LDLIBS ${LDLIBS} "diet")
+    set(DIETCC "diet -Os")
+endif()
+
+# reduce .bss align overhead
+if(!${DEBUG} && ${CMAKE_SYSTEM_NAME} != "Darwin")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--sort-common")
+endif()
+
 # bbslua
 if(${USE_BBSLUA})
     if(${CMAKE_SYSTEM_NAME} == "FreeBSD")

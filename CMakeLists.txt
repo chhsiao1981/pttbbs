@@ -20,7 +20,7 @@ set(PTT_CFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DI
 set(PTT_CXXFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DIR}/include")
 set(PTT_LDFLAGS "-Wl,--as-needed")
 
-if(${CMAKE_C_COMPILER_ID} MATCHES "Clang")
+if(${CMAKE_C_COMPILER_ID} MATCHES "")
     message(STATUS "using clang")
     set(PTT_CFLAGS "${PTT_CFLAGS} -Qunused-arguments -Wno-parentheses-equality -fcolor-diagnostics -Wno-invalid-source-encoding")
 endif()
@@ -64,12 +64,14 @@ if(${GDB})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 ${PTT_CXXFLAGS}")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O0 ${PTT_LDFLAGS}")
     # set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} -O0 ${PTT_LDFLAGS}")
+    SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
     set(LDLIBS ${PTT_LDLIBS})
 else()
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Os ${PTT_CFLAGS} ${EXT_CFLAGS}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Os ${PTT_CXXFLAGS} ${EXT_CXXFLAGS}")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Os ${PTT_LDFLAGS}")
     # set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} -O0 ${PTT_LDFLAGS}")
+    SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
     set(LDLIBS ${PTT_LDLIBS})
 
     if(${OMITFP})
@@ -78,8 +80,6 @@ else()
     endif()
 endif()
 
-message("CMAKE_C_FLAGS: ${CMAKE_C_FLAGS} CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
-
 # No-fork
 if(${NO_FORK})
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DNO_FORK")
@@ -87,9 +87,16 @@ if(${NO_FORK})
 endif()
 
 # libevent
-set(LIBEVET_CFLAGS "pkg-config --cflags libevent")
-set(LIBEVENT_LIBS_L "pkg-config --libs-only-L libevent")
-set(LIBEVENT_LIBS_l "pkg-config --libs-only-l libevent")
+set(LIBEVENT_CFLAGS "pkg-config --cflags libevent")
+execute_process(COMMAND pkg-config --cflags libevent
+    OUTPUT_VARIABLE LIBEVENT_CFLAGS
+    )
+execute_process(COMMAND pkg-config --libs-only-L libevent
+    OUTPUT_VARIABLE LIBEVENT_LIBS_L
+    )
+execute_process(COMMAND pkg-config --libs-only-l libevent
+    OUTPUT_VARIABLE LIBEVENT_LIBS_l
+    )
 
 ##########
 # for pttbbs.conf
@@ -131,13 +138,13 @@ add_custom_target(VAR_H ALL
 
 set(LDLIBS ${LDLIBS} cmbbs cmsys osdep)
 
+message(STATUS "before remove empty: LDLIBS: ${LDLIBS}")
 list(REMOVE_ITEM LDLIBS "")
+message(STATUS "after remove empty: LDLIBS: ${LDLIBS}")
 
 ##########
 # sub-dirs
 ##########
-
-message(STATUS "after remove empty: LDLIBS: ${LDLIBS}")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 add_subdirectory(common)
