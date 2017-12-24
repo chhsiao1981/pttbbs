@@ -4,7 +4,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPTTBBS_UTIL")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(BBSBASE "${PROJECT_SOURCE_DIR}/include/var.h")
 set(UTIL_OBJS
-    util_var.o
+    util_var.c.o
     )
 
 set(MBBSD_SRCS
@@ -85,14 +85,14 @@ set(PROGS
     )
 
 foreach(src MBBSD_SRCS)
-    set(obj util_${src}.o)
+    set(obj util_${src}.c.o)
     add_custom_command(OUTPUT ${obj}
         COMMAND ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -D_BBS_UTIL_C_ -c -o ${obj} ${PROJECT_SOURCE_DIR}/mbbsd/${src}.c
         DEPENDS ${PROJECT_SOURCE_DIR}/mbbsd/${src}.c
         )
 endforeach()
 
-add_custom_target(UTIL_OBJS ALL
+add_custom_target(TARGET_UTIL_OBJS ALL
     DEPENDS ${UTIL_OBJS}
     )
 
@@ -101,7 +101,7 @@ foreach(prog ${CPROG_WITH_UTIL})
         ${prog}.c
         )
     target_link_libraries(${prog} ${LDLIBS})
-    add_dependencies(${prog} UTIL_OBJS)
+    add_dependencies(${prog} TARGET_UTIL_OBJS)
 endforeach()
 
 foreach(prog ${CPP_WITH_UTIL})
@@ -113,7 +113,7 @@ foreach(prog ${CPP_WITH_UTIL})
         PROPERTIES
         LANGUAGE CXX
         )
-    add_dependencies(${prog} UTIL_OBJS)
+    add_dependencies(${prog} TARGET_UTIL_OBJS)
 endforeach()
 
 foreach(prog ${CPROGR_WITHOUT_UTIL})

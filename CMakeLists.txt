@@ -20,7 +20,7 @@ set(PTT_CFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DI
 set(PTT_CXXFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DIR}/include")
 set(PTT_LDFLAGS "-Wl,--as-needed")
 
-if(${CMAKE_C_COMPILER_ID} MATCHES "")
+if(${CMAKE_C_COMPILER_ID} MATCHES "Clang")
     message(STATUS "using clang")
     set(PTT_CFLAGS "${PTT_CFLAGS} -Qunused-arguments -Wno-parentheses-equality -fcolor-diagnostics -Wno-invalid-source-encoding")
 endif()
