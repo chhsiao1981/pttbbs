@@ -133,7 +133,6 @@ add_custom_target(VAR_H ALL
 ##########
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-
 add_subdirectory(common)
 add_subdirectory(mbbsd)
 add_subdirectory(util)

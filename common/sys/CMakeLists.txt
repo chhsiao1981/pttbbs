@@ -28,3 +28,4 @@ add_custom_command(OUTPUT big5.c
     )
 
 add_library(cmsys STATIC ${SYS_SRCS})
+link_directories(${CMAKE_CURRENT_BINARY_DIR})

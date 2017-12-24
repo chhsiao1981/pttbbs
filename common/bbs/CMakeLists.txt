@@ -15,3 +15,4 @@ set(CMBBS_SRCS
     )
 
 add_library(cmbbs STATIC ${CMBBS_SRCS})
+link_directories(${CMAKE_CURRENT_BINARY_DIR})
