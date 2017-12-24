@@ -125,7 +125,7 @@ add_custom_target(VAR_H ALL
     DEPENDS ${PROJECT_SOURCE_DIR}/include/var.h)
 
 # LIBS
-set(LDLIBS ${LDLIBS} cmsys cmbbs osdep)
+set(LDLIBS cmsys cmbbs osdep ${LDLIBS})
 
 ##########
 # sub-dirs
