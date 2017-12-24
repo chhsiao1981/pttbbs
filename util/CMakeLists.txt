@@ -93,20 +93,22 @@ set_source_files_properties(${UTILSRCS}
     COMPILE_FLAGS -D_BBS_UTIL_C_
 )
 
+add_library(utilvar
+    ${UTILSRCS}
+    )
+
 foreach(prog ${CPROG_WITH_UTIL})
     add_executable(${prog}
         ${prog}.c
-        ${UTILSRCS}
         )
-    target_link_libraries(${prog} ${LDLIBS})
+    target_link_libraries(${prog} ${LDLIBS} utilvar)
 endforeach()
 
 foreach(prog ${CPP_WITH_UTIL})
     add_executable(${prog}
         ${prog}.cc
-        ${UTILSRCS}
         )
-    target_link_libraries(${prog} ${LDLIBS})
+    target_link_libraries(${prog} ${LDLIBS} utilvar)
     set_source_files_properties(${prog}.cc
         PROPERTIES
         LANGUAGE CXX
