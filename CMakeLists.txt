@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6.4)
 
-project(pttbbs)
+project(pttbbs C)
 
 message(STATUS "CMAKE_SYSTEM: ${CMAKE_SYSTEM}")
 message(STATUS "CMAKE_SYSTEM_NAME: ${CMAKE_SYSTEM_NAME}")
@@ -16,8 +16,8 @@ message(STATUS "CMAKE_C_COMPILER: ${CMAKE_C_COMPILER} CMAKE_C_LINK_EXECUTABLE: $
 
 # Command build flags
 set(PTT_WARN "-W -Wall -Wunused -Wno-missing-field-initializers")
-set(PTT_CFLAGS "${PTT_WARN} -pipe -I${CMAKE_SOURCE_DIR}/include")
-set(PTT_CXXFLAGS "${PTT_WARN} -pipe -I${CMAKE_SOURCE_DIR}/include")
+set(PTT_CFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DIR}/include")
+set(PTT_CXXFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DIR}/include")
 set(PTT_LDFLAGS "-Wl,--as-needed")
 
 if(${CMAKE_C_COMPILER_ID} MATCHES "Clang")
@@ -118,7 +118,7 @@ endif()
 
 message(STATUS "SHM_MB_SIZE: ${SHM_MB_SIZE}")
 
-configure_file(pttbbs.cmake.conf ${CMAKE_SOURCE_DIR}/pttbbs.conf @ONLY)
+configure_file(pttbbs.cmake.conf ${CMAKE_SOURCE_DIR}/pttbbs.conf)
 
 ##########
 # var.h
