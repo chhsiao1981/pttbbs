@@ -12,8 +12,9 @@ if("${BBSHOME}" STREQUAL "")
     set(BBSHOME /home/bbs)
 endif()
 
-message(STATUS "CMAKE_C_COMPILER: ${CMAKE_C_COMPILER} CMAKE_C_LINK_EXECUTABLE: ${CMAKE_C_LINK_EXECUTABLE}")
 set(CMAKE_C_COMPILER ccache cclang)
+
+message(STATUS "CMAKE_C_COMPILER: ${CMAKE_C_COMPILER} CMAKE_C_LINK_EXECUTABLE: ${CMAKE_C_LINK_EXECUTABLE}")
 
 # Command build flags
 set(PTT_WARN "-W -Wall -Wunused -Wno-missing-field-initializers")
