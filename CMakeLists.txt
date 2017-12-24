@@ -135,7 +135,6 @@ set(LDLIBS ${LDLIBS} cmbbs cmsys osdep)
 
 list(REMOVE_ITEM LDLIBS "")
 
-
 ##########
 # sub-dirs
 ##########
