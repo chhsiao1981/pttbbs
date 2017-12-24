@@ -12,9 +12,7 @@ if("${BBSHOME}" STREQUAL "")
     set(BBSHOME /home/bbs)
 endif()
 
-set(CMAKE_C_COMPILER clang)
-
-message(STATUS "CMAKE_C_COMPILER: ${CMAKE_C_COMPILER} CMAKE_C_LINK_EXECUTABLE: ${CMAKE_C_LINK_EXECUTABLE}")
+message(STATUS "CMAKE_C_COMPILER: ${CMAKE_C_COMPILER} CMAKE_C_LINK_EXECUTABLE: ${CMAKE_C_LINK_EXECUTABLE} CMAKE_C_COMPILER_ID: ${CMAKE_C_COMPILER_ID}")
 
 # Command build flags
 set(PTT_WARN "-W -Wall -Wunused -Wno-missing-field-initializers")
@@ -22,7 +20,7 @@ set(PTT_CFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DI
 set(PTT_CXXFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DIR}/include")
 set(PTT_LDFLAGS "-Wl,--as-needed")
 
-if(${CLANG})
+if(${CMAKE_C_COMPILER_ID} MATCHES "Clang")
     message(STATUS "using clang")
     set(PTT_CFLAGS "${PTT_CFLAGS} -Qunused-arguments -Wno-parentheses-equality -fcolor-diagnostics -Wno-invalid-source-encoding")
 endif()

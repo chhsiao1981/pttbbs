@@ -47,7 +47,6 @@ set(CPROG_WITH_UTIL
     useractive_munin
     shmctl
     bbsmail
-    cleanpasswd
     )
 
 set(CPP_WITH_UTIL
