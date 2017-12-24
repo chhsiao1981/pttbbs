@@ -126,7 +126,7 @@ add_custom_target(VAR_H ALL
 
 # LIBS
 set(LDLIBS "${LDLIBS} cmsys cmbbs osdep")
-string(STRIP "${LDLIBS}", LDLIBS)
+string(STRIP "${LDLIBS}" LDLIBS)
 
 ##########
 # sub-dirs
