@@ -90,6 +90,10 @@ foreach(src MBBSD_SRCS)
         COMMAND ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -D_BBS_UTIL_C_ -c -o ${obj} ${PROJECT_SOURCE_DIR}/mbbsd/${src}.c
         DEPENDS ${PROJECT_SOURCE_DIR}/mbbsd/${src}.c
         )
+    set_source_files_properties(${obj}
+        PROPERTIES
+        GENERATED TRUE
+        )
 endforeach()
 
 add_custom_target(TARGET_UTIL_OBJS ALL
