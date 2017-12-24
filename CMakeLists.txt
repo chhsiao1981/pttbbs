@@ -20,7 +20,7 @@ message("CURSES_LIBRARIES: ${CURSES_LIBRARIES}")
 set(PTT_WARN "-W -Wall -Wunused -Wno-missing-field-initializers")
 set(PTT_CFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DIR}/include")
 set(PTT_CXXFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DIR}/include")
-set(PTT_LDFLAGS "-Wl")
+set(PTT_LDFLAGS "-Wl,--as-needed")
 
 if(${CLANG})
     message(STATUS "using clang")
