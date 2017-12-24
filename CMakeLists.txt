@@ -12,6 +12,9 @@ if("${BBSHOME}" STREQUAL "")
     set(BBSHOME /home/bbs)
 endif()
 
+# LIBS
+set(LDLIBS "cmsys cmbbs osdep")
+
 # Command build flags
 set(PTT_WARN "-W -Wall -Wunused -Wno-missing-field-initializers")
 set(PTT_CFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DIR}/include")
@@ -62,13 +65,13 @@ if(${GDB})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 ${PTT_CXXFLAGS}")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O0 ${PTT_LDFLAGS}")
     # set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} -O0 ${PTT_LDFLAGS}")
-    set(LDLIBS ${PTT_LDLIBS})
+    set(LDLIBS "${LDLIBS} ${PTT_LDLIBS}")
 else()
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Os ${PTT_CFLAGS} ${EXT_CFLAGS}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Os ${PTT_CXXFLAGS} ${EXT_CXXFLAGS}")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O0 ${PTT_LDFLAGS}")
     # set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} -O0 ${PTT_LDFLAGS}")
-    set(LDLIBS "${PTT_LDLIBS}")
+    set(LDLIBS "${LDLIBS} ${PTT_LDLIBS}")
 
     if(${OMITFP})
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fomit-frame-pointer")
@@ -77,9 +80,6 @@ else()
 endif()
 
 message("CMAKE_C_FLAGS: ${CMAKE_C_FLAGS} CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
-
-# LIBS
-set(LDLIBS "cmsys cmbbs osdep ${LDLIBS}")
 
 # No-fork
 if(${NO_FORK})
