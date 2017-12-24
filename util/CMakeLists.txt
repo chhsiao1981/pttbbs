@@ -3,12 +3,8 @@ cmake_minimum_required(VERSION 2.6.4)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPTTBBS_UTIL")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(BBSBASE "${PROJECT_SOURCE_DIR}/include/var.h")
-set(UTIL_OBJS
-    util_var.c.o
-    )
-
-set(MBBSD_SRCS
-    var
+set(UTILSRCS
+    util_var.c
     )
 
 set(CPROG_WITH_UTIL
@@ -84,24 +80,15 @@ set(PROGS
     timecap_expire.sh
     )
 
-foreach(obj ${UTIL_OBJS})
-    string(REGEX REPLACE "^util_" "" src ${obj})
-    string(REGEX REPLACE ".o$" "" src ${src})
-    message(STATUS "obj: ${obj} src: ${src} CMAKE_C_COMPILER: ${CMAKE_C_COMPILER}")
-    add_custom_command(OUTPUT ${obj}
-        COMMAND ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -D_BBS_UTIL_C_ -c -o ${CMAKE_CURRENT_BINARY_DIR}/util_var.c.o ${PROJECT_SOURCE_DIR}/mbbsd/${src}
-        DEPENDS ${PROJECT_SOURCE_DIR}/mbbsd/${src}
-    )
+foreach(src ${UTILSRCS})
+    string(REGEX REPLACE "^util_" "" mbbsd_src ${src})
+    file(COPY ${PROJECT_SOURCE_DIR}/mbbsd/${mbbsd_src} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endforeach()
 
-add_custom_target(TARGET_UTIL_OBJS ALL
-    DEPENDS ${UTIL_OBJS}
-    )
-
-set_source_files_properties(${UTIL_OBJS}
+set_source_files_properties(${UTILSRCS}
     PROPERTIES
-    EXTERNAL_OBJECT true
     GENERATED TRUE
+    COMPILE_FLAGS -D_BBS_UTIL_C_
 )
 
 foreach(prog ${CPROG_WITH_UTIL})

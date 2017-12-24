@@ -16,8 +16,8 @@ message(STATUS "CMAKE_C_COMPILER: ${CMAKE_C_COMPILER} CMAKE_C_LINK_EXECUTABLE: $
 
 # Command build flags
 set(PTT_WARN "-W -Wall -Wunused -Wno-missing-field-initializers")
-set(PTT_CFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DIR}/include")
-set(PTT_CXXFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DIR}/include")
+set(PTT_CFLAGS "${PTT_WARN} -pipe -I${CMAKE_SOURCE_DIR}/include")
+set(PTT_CXXFLAGS "${PTT_WARN} -pipe -I${CMAKE_SOURCE_DIR}/include")
 set(PTT_LDFLAGS "-Wl,--as-needed")
 
 if(${CMAKE_C_COMPILER_ID} MATCHES "Clang")
@@ -118,14 +118,14 @@ endif()
 
 message(STATUS "SHM_MB_SIZE: ${SHM_MB_SIZE}")
 
-configure_file(pttbbs.cmake.conf ${CMAKE_SOURCE_DIR}/pttbbs.conf)
+configure_file(pttbbs.cmake.conf ${CMAKE_SOURCE_DIR}/pttbbs.conf @ONLY)
 
 ##########
 # var.h
 ##########
 
 add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/include/var.h
-    COMMAND perl ARGS ${PROJECT_SOURCE_DIR}/util/parsevar.pl < ${CMAKE_SOURCE_DIR}/mbbsd/var.c > ${CMAKE_SOURCE_DIR}/include/var.h
+    COMMAND perl ${PROJECT_SOURCE_DIR}/util/parsevar.pl < ${CMAKE_SOURCE_DIR}/mbbsd/var.c > ${CMAKE_SOURCE_DIR}/include/var.h
     DEPENDS ${PROJECT_SOURCE_DIR}/mbbsd/var.c
     )
 
