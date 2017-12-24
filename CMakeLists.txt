@@ -12,10 +12,6 @@ if("${BBSHOME}" STREQUAL "")
     set(BBSHOME /home/bbs)
 endif()
 
-find_package(curses REQUIRED)
-
-message("CURSES_LIBRARIES: ${CURSES_LIBRARIES}")
-
 # Command build flags
 set(PTT_WARN "-W -Wall -Wunused -Wno-missing-field-initializers")
 set(PTT_CFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DIR}/include")
@@ -29,6 +25,10 @@ endif()
 
 # Platform specific build flags
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+    find_package(curses REQUIRED)
+
+    set(PTT_LDFLAGS "-Wl")
+
     set(PTT_CFLAGS "${PTT_CFLAGS} -I/opt/local/include -I/usr/local/opt/ncurses/include -DNEED_SETPROCTITLE")
     set(PTT_CXXFLAGS "${PTT_CXXFLAGS} -I/opt/local/include -I/usr/local/opt/ncurses/include")
     set(PTT_LDFLAGS "${PTT_LDFLAGS} -L/usr/local/opt/ncurses/lib")
