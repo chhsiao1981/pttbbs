@@ -59,11 +59,7 @@ set(CPROG_WITHOUT_UTIL
     bbsctl
     )
 
-set(PROGS
-    ${CPROG_WITH_UTIL}
-    ${CPROG_WITHOUT_UTIL}
-    ${CPP_WITH_UTIL}
-    shmctl
+set(COPY_FILES
     backpasswd.sh
     mailog.sh
     openticket.sh
@@ -79,6 +75,12 @@ set(PROGS
     rebuildaloha.pl
     timecap_expire.sh
     )
+
+add_custom_target(PROGS
+    DEPENDS ${CPROG_WITH_UTIL} ${CPROG_WITHOUT_UTIL} ${CPP_WITH_UTIL} ${COPY_FILES}
+    )
+
+file(COPY ${COPY_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 foreach(src ${UTILSRCS})
     string(REGEX REPLACE "^util_" "" mbbsd_src ${src})
