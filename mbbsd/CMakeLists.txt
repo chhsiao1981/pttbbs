@@ -132,6 +132,8 @@ else()
     set(SRCS ${SRCS} screen.c)
 endif()
 
+message(STATUS "LDLIBS: ${LDLIBS}")
+
 add_executable(testsz 
     ${TESTSZSRCS}
     )
