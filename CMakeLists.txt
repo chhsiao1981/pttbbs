@@ -12,9 +12,6 @@ if("${BBSHOME}" STREQUAL "")
     set(BBSHOME /home/bbs)
 endif()
 
-# LIBS
-set(LDLIBS "cmsys cmbbs osdep")
-
 # Command build flags
 set(PTT_WARN "-W -Wall -Wunused -Wno-missing-field-initializers")
 set(PTT_CFLAGS "${PTT_WARN} -pipe -DBBSHOME='\"${BBSHOME}\"' -I${CMAKE_SOURCE_DIR}/include")
@@ -127,6 +124,9 @@ add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/include/var.h
 add_custom_target(VAR_H ALL
     DEPENDS ${PROJECT_SOURCE_DIR}/include/var.h)
 
+# LIBS
+set(LDLIBS "${LDLIBS} cmsys cmbbs osdep")
+string(STRIP "${LDLIBS}", LDLIBS)
 
 ##########
 # sub-dirs
