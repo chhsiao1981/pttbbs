@@ -84,13 +84,10 @@ set(PROGS
     timecap_expire.sh
     )
 
-foreach(src MBBSD_SRCS)
-    set(obj util_${src}.c.o)
-    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${obj}
-        COMMAND ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -D_BBS_UTIL_C_ -c -o ${CMAKE_CURRENT_BINARY_DIR}/util/${obj} ${PROJECT_SOURCE_DIR}/mbbsd/${src}.c
-        DEPENDS ${PROJECT_SOURCE_DIR}/mbbsd/${src}.c
-        )
-endforeach()
+add_custom_command(OUTPUT util_var.c.o
+    COMMAND ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -D_BBS_UTIL_C_ -c -o ${CMAKE_CURRENT_BINARY_DIR}/util_var.c.o ${PROJECT_SOURCE_DIR}/mbbsd/${src}.c
+    DEPENDS ${PROJECT_SOURCE_DIR}/mbbsd/${src}.c
+)
 
 add_custom_target(TARGET_UTIL_OBJS ALL
     DEPENDS ${UTIL_OBJS}
@@ -98,6 +95,7 @@ add_custom_target(TARGET_UTIL_OBJS ALL
 
 set_source_files_properties(${UTIL_OBJS}
     PROPERTIES
+    EXTERNAL_OBJECT true
     GENERATED TRUE
 )
 
