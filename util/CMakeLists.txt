@@ -84,10 +84,15 @@ set(PROGS
     timecap_expire.sh
     )
 
-add_custom_command(OUTPUT util_var.c.o
-    COMMAND ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -D_BBS_UTIL_C_ -c -o ${CMAKE_CURRENT_BINARY_DIR}/util_var.c.o ${PROJECT_SOURCE_DIR}/mbbsd/${src}.c
-    DEPENDS ${PROJECT_SOURCE_DIR}/mbbsd/${src}.c
-)
+foreach(obj ${UTIL_OBJS})
+    string(REGEX REPLACE "^util_" "" src ${obj})
+    string(REGEX REPLACE ".o$" "" src ${src})
+    message(STATUS "obj: ${obj} src: ${src} CMAKE_C_COMPILER: ${CMAKE_C_COMPILER}")
+    add_custom_command(OUTPUT ${obj}
+        COMMAND ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -D_BBS_UTIL_C_ -c -o ${CMAKE_CURRENT_BINARY_DIR}/util_var.c.o ${PROJECT_SOURCE_DIR}/mbbsd/${src}
+        DEPENDS ${PROJECT_SOURCE_DIR}/mbbsd/${src}
+    )
+endforeach()
 
 add_custom_target(TARGET_UTIL_OBJS ALL
     DEPENDS ${UTIL_OBJS}

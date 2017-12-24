@@ -125,7 +125,7 @@ configure_file(pttbbs.cmake.conf ${CMAKE_SOURCE_DIR}/pttbbs.conf)
 ##########
 
 add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/include/var.h
-    COMMAND perl ${PROJECT_SOURCE_DIR}/util/parsevar.pl < ${CMAKE_SOURCE_DIR}/mbbsd/var.c > ${CMAKE_SOURCE_DIR}/include/var.h
+    COMMAND perl ARGS ${PROJECT_SOURCE_DIR}/util/parsevar.pl < ${CMAKE_SOURCE_DIR}/mbbsd/var.c > ${CMAKE_SOURCE_DIR}/include/var.h
     DEPENDS ${PROJECT_SOURCE_DIR}/mbbsd/var.c
     )
 
