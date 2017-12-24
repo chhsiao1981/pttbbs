@@ -112,7 +112,6 @@ elseif(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ia64")
 endif()
 
 message(STATUS "SHM_MB_SIZE: ${SHM_MB_SIZE}")
-message("LDFLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
 
 configure_file(pttbbs.cmake.conf ${CMAKE_SOURCE_DIR}/pttbbs.conf)
 
@@ -129,8 +128,19 @@ add_custom_target(VAR_H ALL
     DEPENDS ${PROJECT_SOURCE_DIR}/include/var.h)
 
 ##########
+# LDLIBS
+##########
+
+set(LDLIBS ${LDLIBS} cmbbs cmsys osdep)
+
+list(REMOVE_ITEM LDLIBS "")
+
+
+##########
 # sub-dirs
 ##########
+
+message(STATUS "after remove empty: LDLIBS: ${LDLIBS}")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 add_subdirectory(common)

@@ -141,4 +141,4 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/vers.c
     DEPENDS ${PROJECT_SOURCE_DIR}/util/newvers.sh
     )
 add_executable(mbbsd vers.c ${SRCS})
-target_link_libraries(mbbsd cmsys cmbbs osdep ${LDLIBS})
+target_link_libraries(mbbsd ${LDLIBS})
