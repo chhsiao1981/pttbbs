@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6.4)
+cmake_minimum_required(VERSION 3.0.2)
 
 set(OSDEP_SRCS
     cpuload.c
@@ -9,4 +9,3 @@ set(OSDEP_SRCS
     )
 
 add_library(osdep STATIC ${OSDEP_SRCS})
-link_directories(${CMAKE_CURRENT_BINARY_DIR})

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6.4)
+cmake_minimum_required(VERSION 3.0.2)
 
 set(CORESRCS
     bbs.c
@@ -23,8 +23,11 @@ set(ACCSRCS
     emaildb.c
     )
 
-set(NETSRCS
+set(MBBSDSRC
     mbbsd.c
+    )
+
+set(NETSRCS
     io.c
     term.c
     telnet.c
@@ -96,6 +99,7 @@ set(SRCS
     ${CORESRCS}
     ${ABUSESRCS}
     ${ACCSRCS}
+    ${MBBSDSRC}
     ${NETSRCS}
     ${TALKSRCS}
     ${UTILSRCS}
@@ -110,26 +114,33 @@ set(TESTSZSRCS
     )
 
 if(${DIET})
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L${PROJECT_SOURCE_DIR}/common/diet")
-    set(LDLIBS ${LDLIBS} "diet")
+    set(LDLIBS ${LDLIBS} diet)
     set(DIETCC "diet -Os")
 endif()
 
 # reduce .bss align overhead
-if(NOT (${DEBUG}) AND NOT (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin"))
+if(NOT "${DEBUG}" AND NOT ("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin"))
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--sort-common")
 endif()
 
 # bbslua
 if(${USE_BBSLUA})
-    if(${CMAKE_SYSTEM_NAME} == "FreeBSD")
+    if("${CMAKE_SYSTEM_NAME}" STREQUAL "FreeBSD")
         set(LUA_PKG_NAME "lua-5.1")
         set(LDLIBS "${LDLIBS} -Wl,--no-as-needed")
+    elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+        set(LUA_PKG_NAME "lua")
     else()
         set(LUA_PKG_NAME "lua5.1")
     endif()
-    execute_process(COMMAND ${CMAKE_COMMAND} -E pkg-config --cflags "${LUA_PKG_NAME}" OUTPUT_VARIABLE LUA_CFLAGS)
-    execute_process(COMMAND ${CMAKE_COMMAND} -E pkg-config --libs "${LUA_PKG_NAME}" OUTPUT_VARIABLE LUA_LIBS)
+    execute_process(COMMAND pkg-config --cflags "${LUA_PKG_NAME}" 
+        OUTPUT_VARIABLE LUA_CFLAGS
+        )
+    execute_process(COMMAND pkg-config --libs "${LUA_PKG_NAME}"
+        OUTPUT_VARIABLE LUA_LIBS
+        )
+    string(STRIP ${LUA_CFLAGS} LUA_CFLAGS)
+    string(STRIP ${LUA_LIBS} LUA_LIBS)
 
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${LUA_CFLAGS}")
     set(LDLIBS "${LDLIBS} ${LUA_LIBS}")
@@ -147,9 +158,15 @@ add_executable(testsz
     ${TESTSZSRCS}
     )
 
-add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/vers.c
+add_custom_command(OUTPUT vers.c
     COMMAND sh ${PROJECT_SOURCE_DIR}/util/newvers.sh
     DEPENDS ${PROJECT_SOURCE_DIR}/util/newvers.sh
     )
-add_executable(mbbsd vers.c ${SRCS})
+
+set_source_files_properties(${MBBSDSRC}
+    PROPERTIES
+    COMPILE_DEFINITIONS CMAKE_C_COMPILER="${DIETCC} ${CMAKE_C_COMPILER}"
+    )
+
+add_executable(mbbsd vers.c ${SRCS} ${MBBSDOBJ})
 target_link_libraries(mbbsd ${LDLIBS})

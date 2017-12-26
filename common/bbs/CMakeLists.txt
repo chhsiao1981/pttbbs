@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6.4)
+cmake_minimum_required(VERSION 3.0.2)
 
 set(CMBBS_SRCS
     log.c
@@ -15,3 +15,4 @@ set(CMBBS_SRCS
     )
 
 add_library(cmbbs STATIC ${CMBBS_SRCS})
+add_dependencies(cmbbs VAR_H)

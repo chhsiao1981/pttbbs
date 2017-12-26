@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6.4)
+cmake_minimum_required(VERSION 3.0.2)
 
 set(SYS_SRCS
     daemon.c
@@ -21,10 +21,13 @@ set(SYS_SRCS
     thttp.c
     )
 
+##########
+# big5.c
+##########
 file(COPY big5data.tar.bz2 DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_custom_command(OUTPUT big5.c
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/big5_gen.py > ${CMAKE_CURRENT_BINARY_DIR}/big5.c
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/big5_gen.py > big5.c
     )
 
 add_library(cmsys STATIC ${SYS_SRCS})

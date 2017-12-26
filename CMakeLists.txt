@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6.4)
+cmake_minimum_required(VERSION 3.0.2)
 
 project(pttbbs)
 
@@ -8,6 +8,15 @@ message(STATUS "CMAKE_SYSTEM_VERSION: ${CMAKE_SYSTEM_VERSION}")
 message(STATUS "CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
 message(STATUS "CMAKE_C_COMPILER: ${CMAKE_C_COMPILER}")
 message(STATUS "CMAKE_C_COMPILER_ID: ${CMAKE_C_COMPILER_ID}")
+
+##########
+# options
+##########
+
+option(USE_BBSLUA "Use bbslua" OFF)
+option(USE_PFTERM "Use pfterm" OFF)
+option(USE_NIOS "Use nios" OFF)
+option(CONVERT "Use convert" OFF)
 
 ##########
 # pttbbs.cmake
