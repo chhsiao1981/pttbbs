@@ -192,17 +192,24 @@ add_custom_command(OUTPUT vers.c
 # mbbsd.c
 ##########
 
-add_custom_target(MBBSDC
-    DEPENDS ${MBBSDSRC}
-    )
-
-if(${DIET})
-    set_target_properties(MBBSDSRC
-        PROPERTIES
-        RULE_LAUNCH_COMPILE ${DIETCC}
-        )
+# XXX hack for FLAGS
+string(REPLACE " " ";" FLAGS ${CMAKE_C_FLAGS})
+if(("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin") AND NOT ("${CMAKE_OSX_SYSROOT}" STREQUAL ""))
+    set(FLAGS ${FLAGS} -isysroot ${CMAKE_OSX_SYSROOT})
 endif()
 
+message(STATUS "FLAGS for mbbsd: ${FLAGS}")
+add_custom_command(OUTPUT ${MBBSDOBJ}
+    COMMAND ${DIETCC} ${CMAKE_C_COMPILER} ${FLAGS} -o ${MBBSDOBJ} -c ${CMAKE_CURRENT_SOURCE_DIR}/${MBBSDSRC}
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${MBBSDSRC}
+    )
+
+set_source_files_properties(${MBBSDOBJ}
+    PROPERTIES
+    EXTERNAL_OBJECT TRUE
+    GENERATED TRUE
+    )
+
 link_directories(${CMAKE_BINARY_DIR}/common/diet)
-add_executable(mbbsd vers.c ${SRCS} ${MBBSDC})
+add_executable(mbbsd vers.c ${SRCS} ${MBBSDOBJ})
 target_link_libraries(mbbsd ${LDLIBS})
