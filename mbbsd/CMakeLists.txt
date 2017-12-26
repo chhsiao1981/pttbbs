@@ -103,7 +103,6 @@ set(SRCS
     ${CORESRCS}
     ${ABUSESRCS}
     ${ACCSRCS}
-    ${MBBSDSRC}
     ${NETSRCS}
     ${TALKSRCS}
     ${UTILSRCS}
