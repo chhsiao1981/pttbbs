@@ -217,7 +217,7 @@ set_source_files_properties(${MBBSDOBJ}
     GENERATED TRUE
     )
 
-# DIET
+# add executable with DIET
 if(${DIET})
     add_executable(mbbsd vers.c ${SRCS} ${MBBSDOBJ})
 else()
