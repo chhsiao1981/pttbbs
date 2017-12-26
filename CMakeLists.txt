@@ -31,7 +31,6 @@ message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 option(USE_BBSLUA "Use bbslua" OFF)
 option(USE_PFTERM "Use pfterm" OFF)
 option(USE_NIOS "Use nios" OFF)
-option(CONVERT "Use convert" OFF)
 
 ##########
 # pttbbs.cmake
