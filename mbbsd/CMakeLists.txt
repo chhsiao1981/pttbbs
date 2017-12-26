@@ -198,7 +198,10 @@ if(("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin") AND NOT ("${CMAKE_OSX_SYSROOT}" ST
     set(FLAGS ${FLAGS} -isysroot ${CMAKE_OSX_SYSROOT})
 endif()
 
-message(STATUS "FLAGS for mbbsd: ${FLAGS}")
+# XXX hack for DIETCC
+string(REPLACE " " ";" DIETCC "${DIETCC}")
+
+message(STATUS "FLAGS for mbbsd: ${FLAGS} DIETCC: ${DIETCC}")
 add_custom_command(OUTPUT ${MBBSDOBJ}
     COMMAND ${DIETCC} ${CMAKE_C_COMPILER} ${FLAGS} -o ${MBBSDOBJ} -c ${CMAKE_CURRENT_SOURCE_DIR}/${MBBSDSRC}
     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${MBBSDSRC}
