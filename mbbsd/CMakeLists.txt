@@ -192,17 +192,17 @@ add_custom_command(OUTPUT vers.c
 # mbbsd.c
 ##########
 
-add_library(${MBBSDOBJ} STATIC
-    ${MBBSDSRC}
+add_custom_target(MBBSDC
+    DEPENDS ${MBBSDSRC}
     )
 
 if(${DIET})
-    set_target_properties(${MBBSDOBJ}
+    set_target_properties(MBBSDSRC
         PROPERTIES
         RULE_LAUNCH_COMPILE ${DIETCC}
         )
 endif()
 
 link_directories(${CMAKE_BINARY_DIR}/common/diet)
-add_executable(mbbsd vers.c ${SRCS})
-target_link_libraries(mbbsd ${LDLIBS} ${MBBSDOBJ})
+add_executable(mbbsd vers.c ${SRCS} ${MBBSDC})
+target_link_libraries(mbbsd ${LDLIBS})
