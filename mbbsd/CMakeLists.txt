@@ -172,7 +172,7 @@ add_custom_command(OUTPUT vers.c
     DEPENDS ${PROJECT_SOURCE_DIR}/util/newvers.sh
     )
 
-add_library(${MBBSDOBJ})
+add_library(${MBBSDOBJ}
     ${MBBSDSRC}
     )
 
