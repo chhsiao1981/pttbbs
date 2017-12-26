@@ -114,7 +114,7 @@ set(TESTSZSRCS
     )
 
 if(${DIET})
-    set(LDLIBS ${LDLIBS} diet)
+    set(LDLIBS ${LDLIBS} cmdiet)
     set(DIETCC "diet -Os")
 endif()
 
@@ -139,8 +139,8 @@ if(${USE_BBSLUA})
     execute_process(COMMAND pkg-config --libs "${LUA_PKG_NAME}"
         OUTPUT_VARIABLE LUA_LIBS
         )
-    string(STRIP ${LUA_CFLAGS} LUA_CFLAGS)
-    string(STRIP ${LUA_LIBS} LUA_LIBS)
+    string(STRIP "${LUA_CFLAGS}" LUA_CFLAGS)
+    string(STRIP "${LUA_LIBS}" LUA_LIBS)
 
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${LUA_CFLAGS}")
     set(LDLIBS "${LDLIBS} ${LUA_LIBS}")
