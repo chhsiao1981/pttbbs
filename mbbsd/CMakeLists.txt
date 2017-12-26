@@ -168,6 +168,6 @@ set_source_files_properties(${MBBSDSRC}
     COMPILE_DEFINITIONS CMAKE_C_COMPILER="${DIETCC} ${CMAKE_C_COMPILER}"
     )
 
+link_directories(${CMAKE_BINRARY_DIR}/common/diet)
 add_executable(mbbsd vers.c ${SRCS} ${MBBSDOBJ})
 target_link_libraries(mbbsd ${LDLIBS})
-link_directories(${CMAKE_BINRARY_DIR}/common/diet)
