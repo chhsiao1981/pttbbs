@@ -9,3 +9,4 @@ set(OSDEP_SRCS
     )
 
 add_library(osdep STATIC ${OSDEP_SRCS})
+link_directories(${CMAKE_BINARY_DIR})
