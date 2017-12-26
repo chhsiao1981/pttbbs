@@ -170,3 +170,4 @@ set_source_files_properties(${MBBSDSRC}
 
 add_executable(mbbsd vers.c ${SRCS} ${MBBSDOBJ})
 target_link_libraries(mbbsd ${LDLIBS})
+link_directories(${CMAKE_BINRARY_DIR}/common/diet)
