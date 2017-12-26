@@ -134,7 +134,7 @@ string(STRIP "${LIBEVENT_LIBS_l}" LIBEVENT_LIBS_l)
 # LDLIBS
 ##########
 
-set(LDLIBS ${LDLIBS} cmbbs cmsys osdep cmdiet)
+set(LDLIBS ${LDLIBS} cmbbs cmsys osdep)
 
 ##########
 # var.h
