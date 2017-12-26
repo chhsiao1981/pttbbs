@@ -189,7 +189,7 @@ add_custom_command(OUTPUT vers.c
     )
 
 ##########
-# mbbsd.c
+# mbbsd.o
 ##########
 
 # XXX hack for FLAGS
@@ -201,9 +201,13 @@ endif()
 # XXX hack for DIETCC
 string(REPLACE " " ";" DIETCC "${DIETCC}")
 
-message(STATUS "FLAGS for mbbsd: ${FLAGS} DIETCC: ${DIETCC}")
+# XXX hack for rule_launch_compile
+get_property(RULE_LAUNCH_COMPILE GLOBAL PROPERTY RULE_LAUNCH_COMPILE)
+
+message(STATUS "FLAGS for mbbsd.o: ${FLAGS} DIETCC: ${DIETCC} RULE_LAUNCH_COMPILE: ${RULE_LAUNCH_COMPILE}")
+
 add_custom_command(OUTPUT ${MBBSDOBJ}
-    COMMAND ${DIETCC} ${CMAKE_C_COMPILER} ${FLAGS} -o ${MBBSDOBJ} -c ${CMAKE_CURRENT_SOURCE_DIR}/${MBBSDSRC}
+    COMMAND ${DIETCC} ${RULE_LAUNCH_COMPILE} ${CMAKE_C_COMPILER} ${FLAGS} -o ${MBBSDOBJ} -c ${CMAKE_CURRENT_SOURCE_DIR}/${MBBSDSRC}
     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${MBBSDSRC}
     )
 
@@ -213,5 +217,10 @@ set_source_files_properties(${MBBSDOBJ}
     GENERATED TRUE
     )
 
-add_executable(mbbsd vers.c ${SRCS} ${MBBSDOBJ})
+# DIET
+if(${DIET})
+    add_executable(mbbsd vers.c ${SRCS} ${MBBSDOBJ})
+else()
+    add_executable(mbbsd vers.c ${SRCS} ${MBBSDSRC})
+endif()
 target_link_libraries(mbbsd ${LDLIBS})

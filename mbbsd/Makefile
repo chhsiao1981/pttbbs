@@ -28,6 +28,8 @@ OBJS:=	admin.o assess.o edit.o xyz.o var.o vote.o voteboard.o comments.o \
 # special library (DIET) configuration
 #######################################################################
 
+echo "DIET: ${DIET}"
+
 .if defined(DIET)
 LDFLAGS+=	-L$(SRCROOT)/common/diet
 LDLIBS+=	-ldiet
