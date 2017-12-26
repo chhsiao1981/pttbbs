@@ -120,11 +120,6 @@ set(TESTSZSRCS
 if(${DIET})
     set(LDLIBS ${LDLIBS} cmdiet)
     set(DIETCC "diet -Os")
-    set_target_properties(${MBBSDOBJ}
-        PROPERTIES
-        RULE_LAUNCH_COMPILE "diet"
-        )
-
 endif()
 
 # reduce .bss align overhead
@@ -175,6 +170,13 @@ add_custom_command(OUTPUT vers.c
 add_library(${MBBSDOBJ}
     ${MBBSDSRC}
     )
+
+if(${DIET})
+    set_target_properties(${MBBSDOBJ}
+        PROPERTIES
+        RULE_LAUNCH_COMPILE ${DIETCC}
+        )
+endif()
 
 link_directories(${CMAKE_BINARY_DIR}/common/diet)
 add_executable(mbbsd vers.c ${SRCS})
