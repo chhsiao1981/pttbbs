@@ -16,4 +16,4 @@ set(CMBBS_SRCS
 
 add_library(cmbbs STATIC ${CMBBS_SRCS})
 add_dependencies(cmbbs VAR_H)
-link_directories(${CMAKE_BINARY_DIR})
+link_directories(${CMAKE_CURRENT_BINARY_DIR})

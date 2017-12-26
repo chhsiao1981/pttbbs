@@ -213,6 +213,5 @@ set_source_files_properties(${MBBSDOBJ}
     GENERATED TRUE
     )
 
-link_directories(${CMAKE_BINARY_DIR}/common/diet)
 add_executable(mbbsd vers.c ${SRCS} ${MBBSDOBJ})
 target_link_libraries(mbbsd ${LDLIBS})

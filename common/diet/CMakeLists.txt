@@ -7,4 +7,4 @@ set(DIET_SRCS
     )
 
 add_library(cmdiet STATIC ${DIET_SRCS})
-link_directories(${CMAKE_BINARY_DIR})
+link_directories(${CMAKE_CURRENT_BINARY_DIR})
