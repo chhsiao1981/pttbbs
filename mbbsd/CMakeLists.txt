@@ -116,17 +116,28 @@ set(TESTSZSRCS
     testsz.c
     )
 
+##########
+# diet
+# XXX also in mbbsd.c
+##########
+
 if(${DIET})
     set(LDLIBS ${LDLIBS} cmdiet)
     set(DIETCC "diet -Os")
 endif()
 
+##########
 # reduce .bss align overhead
+##########
+
 if(NOT "${DEBUG}" AND NOT ("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin"))
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--sort-common")
 endif()
 
+##########
 # bbslua
+##########
+
 if(${USE_BBSLUA})
     if("${CMAKE_SYSTEM_NAME}" STREQUAL "FreeBSD")
         set(LUA_PKG_NAME "lua-5.1")
@@ -150,23 +161,38 @@ if(${USE_BBSLUA})
     set(SRCS ${SRCS} bbslua.c bbsluaext.c)
 endif()
 
+##########
 # pfterm
+##########
+
 if(${USE_PFTERM})
     set(SRCS ${SRCS} pfterm.c)
 else()
     set(SRCS ${SRCS} screen.c)
 endif()
 
+##########
+# testsz
+##########
+
 add_executable(testsz 
     ${TESTSZSRCS}
     )
+
+##########
+# vers.c
+##########
 
 add_custom_command(OUTPUT vers.c
     COMMAND sh ${PROJECT_SOURCE_DIR}/util/newvers.sh
     DEPENDS ${PROJECT_SOURCE_DIR}/util/newvers.sh
     )
 
-add_library(${MBBSDOBJ}
+##########
+# mbbsd.c
+##########
+
+add_library(${MBBSDOBJ} STATIC
     ${MBBSDSRC}
     )
 
