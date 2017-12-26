@@ -163,11 +163,11 @@ add_custom_command(OUTPUT vers.c
     DEPENDS ${PROJECT_SOURCE_DIR}/util/newvers.sh
     )
 
-set_source_files_properties(${MBBSDSRC}
+set_source_files_properties(mbbsd.c
     PROPERTIES
-    COMPILE_DEFINITIONS CMAKE_C_COMPILER="${DIETCC} ${CMAKE_C_COMPILER}"
+    RULE_LAUNCH_COMPILE "diet"
     )
 
 link_directories(${CMAKE_BINARY_DIR}/common/diet)
-add_executable(mbbsd vers.c ${SRCS} ${MBBSDOBJ})
+add_executable(mbbsd vers.c ${SRCS})
 target_link_libraries(mbbsd ${LDLIBS})
