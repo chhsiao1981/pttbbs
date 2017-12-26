@@ -126,9 +126,9 @@ execute_process(COMMAND pkg-config --libs-only-L libevent
 execute_process(COMMAND pkg-config --libs-only-l libevent
     OUTPUT_VARIABLE LIBEVENT_LIBS_l
     )
-string(STRIP ${LIBEVENT_CFLAGS} LIBEVENT_CFLAGS)
-string(STRIP ${LIBEVENT_LIBS_L} LIBEVENT_LIBS_L)
-string(STRIP ${LIBEVENT_LIBS_l} LIBEVENT_LIBS_l)
+string(STRIP "${LIBEVENT_CFLAGS}" LIBEVENT_CFLAGS)
+string(STRIP "${LIBEVENT_LIBS_L}" LIBEVENT_LIBS_L)
+string(STRIP "${LIBEVENT_LIBS_l}" LIBEVENT_LIBS_l)
 
 ##########
 # LDLIBS
