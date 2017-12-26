@@ -66,6 +66,10 @@ configure_file(pttbbs.cmake.conf ${CMAKE_SOURCE_DIR}/pttbbs.conf @ONLY)
 ##########
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
+link_directories(${CMAKE_BINARY_DIR}/common/bbs)
+link_directories(${CMAKE_BINARY_DIR}/common/sys)
+link_directories(${CMAKE_BINARY_DIR}/common/osdep)
+link_directories(${CMAKE_BINARY_DIR}/common/diet)
 add_subdirectory(common)
 add_subdirectory(mbbsd)
 add_subdirectory(util)
