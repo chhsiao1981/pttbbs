@@ -1,10 +1,11 @@
 # $Id$
 
+SRCROOT:= ../..
+
 ##########
 # started from mbbsd Makefile
 ##########
 
-SRCROOT:= ../..
 .include "$(SRCROOT)/mbbsd/Makefile"
 
 ##########
@@ -35,9 +36,7 @@ $(fn): $(OBJS) $(fn).o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(fn) $(MBBSD_OBJS) $(LDLIBS) $(fn).o
 .endfor
 
-all: myall
-
-myall: $(TEST_PROGS)
+test: $(TEST_PROGS)
 
 clean: myclean
 

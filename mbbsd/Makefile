@@ -115,13 +115,13 @@ mbbsd.o: mbbsd.c $(SRCROOT)/include/var.h
 ctags:
 	ctags *.c $(SRCROOT)/include/*.h $(SRCROOT)/common/sys/*.c $(SRCROOT)/common/bbs/*.c
 
-test: $(PROG)
-	killall -TERM testmbbsd || true
-	sleep 1
-	killall -9 testmbbsd || true
-	cp mbbsd testmbbsd
-	./testmbbsd -d -p9000
-	rm -f testmbbsd
+# test: $(PROG)
+#	killall -TERM testmbbsd || true
+#	sleep 1
+#	killall -9 testmbbsd || true
+#	cp mbbsd testmbbsd
+#	./testmbbsd -d -p9000
+#	rm -f testmbbsd
 
 install: $(PROG)
 	install -d $(BBSHOME)/bin/
