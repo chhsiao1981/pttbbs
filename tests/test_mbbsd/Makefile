@@ -14,6 +14,12 @@ SRCROOT:= ../..
 SRCROOT:= ../..
 BBSCONF:= $(SRCROOT)/pttbbs.conf
 
+# XXX hack for mbbsd flags
+USE_BBSLUA!=  	sh -c '${DEF_CMD}"USE_BBSLUA" ${BBSCONF} ${DEF_YES}'
+USE_PFTERM!=	sh -c '${DEF_CMD}"USE_PFTERM" ${BBSCONF} ${DEF_YES}'
+USE_NIOS!=	sh -c '${DEF_CMD}"USE_NIOS"   ${BBSCONF} ${DEF_YES}'
+USE_CONVERT!=	sh -c '${DEF_CMD}"CONVERT"    ${BBSCONF} ${DEF_YES}'
+
 .for obj in $(OBJS)
 MBBSD_OBJS = $(MBBSD_OBJS) $(SRCROOT)/mbbsd/$(obj)
 .endfor
