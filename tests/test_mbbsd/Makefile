@@ -1,8 +1,17 @@
 # $Id$
 
-SRCROOT:= ../..
-.include "$(SRCROOT)/pttbbs.mk"
+##########
+# started from mbbsd Makefile
+##########
+
 .include "$(SRCROOT)/mbbsd/Makefile"
+
+##########
+# test
+##########
+
+SRCROOT:= ../..
+BBSCONF:= $(SRCROOT)/pttbbs.conf
 
 .for obj in $(OBJS)
 MBBSD_OBJS = $(MBBSD_OBJS) $(SRCROOT)/mbbsd/$(obj)
