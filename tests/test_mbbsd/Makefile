@@ -37,5 +37,7 @@ $(fn): $(OBJS) $(fn).o
 
 override all: $(TEST_PROGS)
 
-override clean:
+clean: myclean
+
+myclean:
 	rm -f *.o $(PROGS)
