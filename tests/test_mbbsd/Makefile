@@ -4,6 +4,7 @@
 # started from mbbsd Makefile
 ##########
 
+SRCROOT:= ../..
 .include "$(SRCROOT)/mbbsd/Makefile"
 
 ##########
