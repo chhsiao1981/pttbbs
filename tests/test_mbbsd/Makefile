@@ -28,7 +28,7 @@ $(fn): $(OBJS) $(fn).o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(fn) $(MBBSD_OBJS) $(LDLIBS) $(fn).o
 .endfor
 
-all: $(TEST_PROGS)
+override all: $(TEST_PROGS)
 
-clean:
+override clean:
 	rm -f *.o $(PROGS)
