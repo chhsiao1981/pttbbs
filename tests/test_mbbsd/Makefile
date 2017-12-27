@@ -13,8 +13,8 @@ $(fn): $(OBJS) $(fn).o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(fn) $(OBJS) $(LDLIBS) $(fn).o
 .endfor
 
-.cc.o:
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+# .cc.o:
+#	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 all: $(PROGS)
 
