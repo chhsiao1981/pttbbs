@@ -2,21 +2,24 @@
 
 SRCROOT:= ../..
 .include "$(SRCROOT)/pttbbs.mk"
+.include "$(SRCROOT)/mbbsd/Makefile"
 
-PROGS = test_dummy
+.for obj in $(OBJS)
+MBBSD_OBJS = $(MBBSD_OBJS) $(SRCROOT)/mbbsd/$(obj)
+.endfor
+
+TEST_PROGS = test_dummy
 
 TEST_OBJS = test_dummy.o
 
-.for fn in $(PROGS)
+.for fn in $(TEST_PROGS)
 $(fn): $(OBJS) $(fn).o
-	@echo OBJS- $(OBJS)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(fn) $(OBJS) $(LDLIBS) $(fn).o
+	@echo OBJS: $(OBJS)
+	@echo MBBSD_OBJS: $(MBBSD_OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(fn) $(MBBSD_OBJS) $(LDLIBS) $(fn).o
 .endfor
 
-# .cc.o:
-#	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-all: $(PROGS)
+all: $(TEST_PROGS)
 
 clean:
 	rm -f *.o $(PROGS)
