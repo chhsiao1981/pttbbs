@@ -31,7 +31,7 @@ TEST_PROGS = test_dummy
 TEST_OBJS = test_dummy.o
 
 .for fn in $(TEST_PROGS)
-$(fn): $(OBJS) $(fn).o
+$(fn): $(MBBSD_OBJS) $(fn).o
 	@echo OBJS: $(OBJS)
 	@echo MBBSD_OBJS: $(MBBSD_OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(fn) $(MBBSD_OBJS) $(LDLIBS) $(fn).o
