@@ -4,8 +4,6 @@
 # use googletest as test-framework
 ##########
 
-.if .defined(GTEST_DIR)
-
 SRCROOT:= ../..
 .include "$(SRCROOT)/pttbbs.mk"
 
@@ -61,12 +59,16 @@ gtest_main.a : gtest-all.o gtest_main.o
 $(fn): $(MBBSD_OBJS) $(fn).o gtest_main.a
 	@echo OBJS: $(OBJS)
 	@echo MBBSD_OBJS: $(MBBSD_OBJS)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDLIBS) -lpthread -o $(fn) $(MBBSD_OBJS)  $(bfn).o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDLIBS) -lpthread -o $(fn) $(MBBSD_OBJS) $(fn).o
 .endfor
 
 all: $(TEST_PROGS)
 
-clean:
-	rm -f *.o $(TEST_PROGS)
+.else
+
+all:
 
 .endif
+
+clean:
+	rm -f *.o gtest.a gtest_main.a $(TEST_PROGS)
