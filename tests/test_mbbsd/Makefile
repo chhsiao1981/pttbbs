@@ -1,6 +1,6 @@
 # $Id$
 
-.if .defined(GTEST_DIR)
+.if defined(GTEST_DIR)
 ##########
 # use googletest as test-framework
 ##########
