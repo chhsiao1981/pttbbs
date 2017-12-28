@@ -23,7 +23,7 @@ USE_NIOS!=	sh -c '${DEF_CMD}"USE_NIOS"   ${BBSCONF} ${DEF_YES}'
 USE_CONVERT!=	sh -c '${DEF_CMD}"CONVERT"    ${BBSCONF} ${DEF_YES}'
 
 .for obj in $(OBJS)
-MBBSD_OBJS = $(MBBSD_OBJS) $(SRCROOT)/mbbsd/$(obj)
+MBBSD_OBJS += $(SRCROOT)/mbbsd/$(obj)
 .endfor
 
 TEST_PROGS = test_dummy
