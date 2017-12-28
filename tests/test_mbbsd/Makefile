@@ -34,7 +34,7 @@ ARFLAGS:=     rv
 ##########
 
 .for obj in $(OBJS)
-.if $(obj) != "mbbsd.o"
+.if $(obj) != "mbbsd.o" && $(obj) != "admin.o" && $(obj) != "xyz.o" && $(obj) != "bbs.o" && $(obj) != "board.o" && $(obj) != "user.o" && $(obj) != "register.o" && $(obj) != "io.o" && $(obj) != "telnet.o" && $(obj) != "talk.o" && $(obj) != "menu.o"  && $(obj) != "ordersong.o"
 MBBSD_OBJS+= $(SRCROOT)/mbbsd/$(obj)
 .endif
 .endfor
