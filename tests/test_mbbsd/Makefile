@@ -58,7 +58,7 @@ gtest_main.a : gtest-all.o gtest_main.o
 # all
 ##########
 .for fn in $(TEST_PROGS)
-$(fn): $(MBBSD_OBJS) $(fn).o gtest_main.a gtest
+$(fn): $(MBBSD_OBJS) $(fn).o gtest_main.a
 	@echo OBJS: $(OBJS)
 	@echo MBBSD_OBJS: $(MBBSD_OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDLIBS) -lpthread -o $(fn) $(MBBSD_OBJS)  $(bfn).o
