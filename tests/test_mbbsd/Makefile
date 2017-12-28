@@ -38,7 +38,10 @@ $(fn): $(OBJS) $(fn).o
 
 test: $(TEST_PROGS)
 
-.undef(clean)
+.if .target(all)
+	@echo "target-all set"
+.endif
+
 clean: myclean
 
 myclean:
