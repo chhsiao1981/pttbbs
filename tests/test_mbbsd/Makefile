@@ -1,26 +1,35 @@
 # $Id$
 
+##########
+# use googletest as test-framework
+##########
+
+.if .defined(GTEST_DIR)
+
 SRCROOT:= ../..
-
-##########
-# started from mbbsd Makefile
-##########
-
 .include "$(SRCROOT)/pttbbs.mk"
+
+##########
+# include mbbsd Makefile
+##########
+
 .include "$(SRCROOT)/mbbsd/mbbsdvars.mk"
+
+##########
+# gtest
+##########
+
+CPPFLAGS += -isystem $(GTEST_DIR)/include
+CXXFLAGS += -g -Wall -Wextra -pthread
+
+GTEST_HEADERS = /usr/include/gtest/*.h \
+                /usr/include/gtest/internal/*.h
+
+GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)                
 
 ##########
 # test
 ##########
-
-SRCROOT:= ../..
-
-# XXX hack for mbbsd vars
-BBSCONF:= $(SRCROOT)/pttbbs.conf
-USE_BBSLUA!=  	sh -c '${DEF_CMD}"USE_BBSLUA" ${BBSCONF} ${DEF_YES}'
-USE_PFTERM!=	sh -c '${DEF_CMD}"USE_PFTERM" ${BBSCONF} ${DEF_YES}'
-USE_NIOS!=	sh -c '${DEF_CMD}"USE_NIOS"   ${BBSCONF} ${DEF_YES}'
-USE_CONVERT!=	sh -c '${DEF_CMD}"CONVERT"    ${BBSCONF} ${DEF_YES}'
 
 .for obj in $(OBJS)
 MBBSD_OBJS += $(SRCROOT)/mbbsd/$(obj)
@@ -28,16 +37,20 @@ MBBSD_OBJS += $(SRCROOT)/mbbsd/$(obj)
 
 TEST_PROGS = test_dummy
 
-TEST_OBJS = test_dummy.o
-
 .for fn in $(TEST_PROGS)
 $(fn): $(MBBSD_OBJS) $(fn).o
 	@echo OBJS: $(OBJS)
 	@echo MBBSD_OBJS: $(MBBSD_OBJS)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(fn) $(MBBSD_OBJS) $(LDLIBS) $(fn).o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDLIBS) -lpthread -o $(fn) $(MBBSD_OBJS)  $(bfn).o
 .endfor
+
+.SUFFIXES: .cc .o
+.cc.o:	$(SRCROOT)/include/var.h $(GTEST_SRCS_)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
 all: $(TEST_PROGS)
 
 clean:
 	rm -f *.o $(TEST_PROGS)
+
+.endif
