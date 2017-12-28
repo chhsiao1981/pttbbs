@@ -36,6 +36,7 @@ ARFLAGS:=     rv
 .for obj in $(OBJS)
 MBBSD_OBJS+= $(SRCROOT)/mbbsd/$(obj)
 .endfor
+MBBSD_VERSC= $(SRCROOT)/mbbsd/vers.c
 
 TEST_PROGS= test_dummy
 
@@ -59,7 +60,7 @@ gtest_main.a: gtest-all.o gtest_main.o
 ##########
 .for fn in $(TEST_PROGS)
 $(fn): $(MBBSD_OBJS) $(fn).o gtest_main.a
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(fn) $(MBBSD_OBJS) $(fn).o gtest_main.a $(LDLIBS) -lpthread 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(fn) ${MBBSD_VERSC} $(MBBSD_OBJS) $(fn).o gtest_main.a $(LDLIBS) -lpthread 
 .endfor
 
 all: $(TEST_PROGS)
