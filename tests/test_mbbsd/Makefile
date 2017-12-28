@@ -38,7 +38,7 @@ $(fn): $(OBJS) $(fn).o
 
 test: $(TEST_PROGS)
 
-#undef clean
+.undef(clean)
 clean: myclean
 
 myclean:
