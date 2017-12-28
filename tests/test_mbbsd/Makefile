@@ -1,5 +1,6 @@
 # $Id$
 
+.if .defined(GTEST_DIR)
 ##########
 # use googletest as test-framework
 ##########
@@ -61,6 +62,12 @@ $(fn): $(MBBSD_OBJS) $(fn).o gtest_main.a
 .endfor
 
 all: $(TEST_PROGS)
+
+.else
+
+all:
+
+.endif
 
 clean:
 	rm -f *.o gtest.a gtest_main.a $(TEST_PROGS)
