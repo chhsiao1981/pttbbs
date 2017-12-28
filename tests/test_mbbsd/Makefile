@@ -6,6 +6,7 @@ SRCROOT:= ../..
 # started from mbbsd Makefile
 ##########
 
+.include "$(SRCROOT)/pttbbs.mk"
 .include "$(SRCROOT)/mbbsd/mbbsdvars.mk"
 
 ##########
