@@ -34,7 +34,9 @@ ARFLAGS:=     rv
 ##########
 
 .for obj in $(OBJS)
+.if $(obj) != "mbbsd.o"
 MBBSD_OBJS+= $(SRCROOT)/mbbsd/$(obj)
+.endif
 .endfor
 MBBSD_VERSC= $(SRCROOT)/mbbsd/vers.c
 
