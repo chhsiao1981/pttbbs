@@ -33,6 +33,8 @@ ARFLAGS:=     rv
 # test
 ##########
 
+# XXX hack due to there is main in mbbsd.o,
+#     and many .o depends on functions mbbsd.o
 .for obj in $(OBJS)
 .if $(obj) != "mbbsd.o" && $(obj) != "admin.o" && $(obj) != "xyz.o" && $(obj) != "bbs.o" && $(obj) != "board.o" && $(obj) != "user.o" && $(obj) != "register.o" && $(obj) != "io.o" && $(obj) != "telnet.o" && $(obj) != "talk.o" && $(obj) != "menu.o"  && $(obj) != "ordersong.o"
 MBBSD_OBJS+= $(SRCROOT)/mbbsd/$(obj)
