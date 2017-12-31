@@ -39,7 +39,10 @@ typedef struct UUID {
     unsigned char id[16];
 } UUID;
 
-// XXX always update main first, and then update main-header.
+/**********
+ * Main
+ * XXX always update main first, and then update main-header.
+ **********/
 typedef struct MainHeader {
     unsigned char version;
 
@@ -83,6 +86,9 @@ typedef struct MainContent {
     char buf_block[MAX_BUF_BLOCK + 1];
 } MainContent;
 
+/**********
+ * Comments
+ **********/
 typedef struct Comment {
     unsigned char version;
 
@@ -107,7 +113,10 @@ typedef struct Comment {
     char buf[MAX_BUF_COMMENT + 1];
 } Comment;
 
-// XXX always update comment-reply first, and then update comment-reply-header.
+/**********
+ * CommentReply
+ * XXX always update comment-reply first, and then update comment-reply-header.
+ **********/
 typedef struct CommentReplyHeader {
     unsigned char version;
 
@@ -139,7 +148,7 @@ typedef struct CommentReplyContent {
     UUID comment_reply_id;
 
     int block_id;
-    
+
     int len_block;
     int n_line;
 
@@ -156,55 +165,60 @@ int n_line_post(UUID main_id);
 /**********
  * Main
  **********/
-int create_main(char *title, char *poster, unsigned char *ip, unsigned char *origin, unsigned char *web_link, int len, char *content, UUID *the_id, aidu_t *aid);
+int create_main(char *title, char *poster, unsigned char *ip, unsigned char *origin, unsigned char *web_link, int len, char *content, UUID *main_id, aidu_t *aid);
 
-int len_main(UUID the_id);
+int len_main(UUID main_id);
 int len_main_by_aid(aidu_t aid);
 
-int n_line_main(UUID the_id);
+int n_line_main(UUID main_id);
 int n_line_main_by_aid(aidu_t aid);
 
-int read_main(UUID the_id, int block_id, int max_n_main, int *n_read_main, Main *main);
-int read_main_by_aid(aidu_t aid, int block_id, int max_n_main, int *n_read_main, Main *main);
+int read_main_header(UUID main_id, MainHeader *main_header);
+int read_main_header_by_aid(aidu_t aid, MainHeader *main);
+int read_main_contents(UUID main_content_id, int block_id, int max_n_main_content, int *n_read_main_content, MainContent *main_content);
 
-int check_main(UUID the_id);
-int check_main_by_aid(aidu_t aid);
+int check_main(UUID main_id);
 
-int update_main(UUID the_id, char *updater, unsigned char *ip, int len, char *content);
+int update_main(UUID main_id, char *updater, unsigned char *ip, int len, char *content);
 int update_main_by_aid(aidu_t aid, char *updater, unsigned char *ip, int len, char *content);
 
-int delete_main(UUID the_id, char *updater, unsigned char *ip);
+int delete_main(UUID main_id, char *updater, unsigned char *ip);
 int delete_main_by_aid(aidu_t aid, char *updater, unsigned char *ip);
 
 /**********
  * Comments
  **********/
-int create_comment(UUID main_id, char *poster, unsigned char *ip, int len, char *content, UUID *uuid);
+int create_comment(UUID main_id, char *poster, unsigned char *ip, int len, char *content, UUID *comment_id);
 
 int count_karma_by_main(UUID main_id);
 int len_comments_by_main(UUID main_id);
+int n_line_comments_by_main(UUID main_id);
 int read_comments_by_main(UUID main_id, time4_t create_timestamp, char *poster, int max_n_comments, int *n_read_comments, Comment *comments);
 int read_comments_by_main_aid(aidu_t aid, time4_t create_timestamp, char *poster, int max_n_comments, int *n_read_comments, Comment *comments);
 
-int update_comment(UUID the_id, char *updater, unsigned char *ip, int len, char *content);
+int update_comment(UUID comment_id, char *updater, unsigned char *ip, int len, char *content);
 
 int delete_comment(UUID the_id, char *updater, unsigned char *ip);
 
 /**********
  * CommentReply
  **********/
-int create_comment_reply(UUID main_id, UUID comment_id, char *poster, unsigned char *ip, int len, char *content, UUID *uuid);
+int create_comment_reply(UUID main_id, UUID comment_id, char *poster, unsigned char *ip, int len, char *content, UUID *comment_reply_id);
 
 int len_comment_reply_by_main(UUID main_id);
+
 int n_line_comment_reply_by_main(UUID main_id);
 int n_line_comment_reply_by_comment(UUID comment_id);
 int n_line_comment_reply_by_comment_reply(UUID comment_reply_id);
 
-int read_comment_reply_header_by_comment(UUID comment_id);
-int read_comment_reply_by_comment(UUID comment_id);
+int read_comment_reply_header_by_comment(UUID comment_id, CommentReplyHeader *comment_reply_header);
+int read_comment_reply_header_by_comment_reply_id(UUID comment_reply_id, CommentReplyHeader *comment_reply_header);
+int read_comment_reply_contents(UUID comment_reply_content_id, int block_id, int max_n_comment_reply_content, int *n_read_comment_reply_content, CommentReplyContent * comment_reply_content);
 
-int update_comment_reply(UUID the_id, char *updater, unsigned char *ip, int len, char *content);
+int check_comment_reply(UUID comment_reply_id);
 
-int delete_comment(UUID the_id, char *updater, unsigned char *ip);
+int update_comment_reply(UUID comment_reply_id, char *updater, unsigned char *ip, int len, char *content);
+
+int delete_comment(UUID comment_reply_id, char *updater, unsigned char *ip);
 
 #endif
