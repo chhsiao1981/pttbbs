@@ -206,21 +206,28 @@ get_property(RULE_LAUNCH_COMPILE GLOBAL PROPERTY RULE_LAUNCH_COMPILE)
 
 message(STATUS "FLAGS for mbbsd.o: ${FLAGS} DIETCC: ${DIETCC} RULE_LAUNCH_COMPILE: ${RULE_LAUNCH_COMPILE}")
 
-add_custom_command(OUTPUT ${MBBSDOBJ}
+string(REPLACE ".c" ".o" obj ${MBBSDSRC})
+add_custom_command(OUTPUT ${obj}
     COMMAND ${DIETCC} ${RULE_LAUNCH_COMPILE} ${CMAKE_C_COMPILER} ${FLAGS} -o ${MBBSDOBJ} -c ${CMAKE_CURRENT_SOURCE_DIR}/${MBBSDSRC}
     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${MBBSDSRC}
     )
+list(APPEND MBBSD_OBJS ${obj})
 
-set_source_files_properties(${MBBSDOBJ}
+foreach(src ${SRCS})
+    string(REPLACE ".c" ".o" obj ${src})
+    add_custom_command(OUTPUT ${obj}
+        COMMAND ${RULE_LAUNCH_COMPILE} ${CMAKE_C_COMPILER} ${FLAGS} -o ${obj} -c ${CMAKE_CURRENT_SOURCE_DIR}/${src}
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${src}
+        )
+    list(APPEND MBBSD_OBJS ${obj})
+endforeach()
+
+set_source_files_properties(${MBBSD_OBJS}
     PROPERTIES
     EXTERNAL_OBJECT TRUE
     GENERATED TRUE
     )
 
 # add executable with DIET
-if(${DIET})
-    add_executable(mbbsd vers.c ${SRCS} ${MBBSDOBJ})
-else()
-    add_executable(mbbsd vers.c ${SRCS} ${MBBSDSRC})
-endif()
+add_executable(mbbsd vers.c ${MBBSDOBJS})
 target_link_libraries(mbbsd ${LDLIBS})

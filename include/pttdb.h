@@ -59,10 +59,10 @@ typedef struct MainHeader {
 
     char poster[IDLEN + 1];
     unsigned char ip[IPV4LEN + 1];
-    time4_t create_timestamp;
+    time8_t create_milli_timestamp;
     char updater[IDLEN + 1];
     unsigned char update_ip[IPV4LEN + 1];
-    time4_t update_timestamp;
+    time8_t update_milli_timestamp;
 
     char origin[MAX_ORIGIN_LEN + 1];
     char web_link[MAX_WEB_LINK + 1];
@@ -159,8 +159,8 @@ typedef struct CommentReplyContent {
 /**********
  * Post
  **********/
-int len_post(UUID main_id);
-int n_line_post(UUID main_id);
+int len_post(UUID main_id, int *len);
+int n_line_post(UUID main_id, int *n_line);
 
 /**********
  * Main
