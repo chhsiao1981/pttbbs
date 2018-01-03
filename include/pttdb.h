@@ -2,12 +2,36 @@
 #ifndef PTTDB_H
 #define PTTDB_H
 
+#include <stdlib.h>
+#include <sys/time.h>
+#include <mongoc.h>
+
 #include "pttstruct.h"
+#include "ptterr.h"
+#include "osdep.h"
+
+#define UUIDLEN 16
 
 #define MAX_ORIGIN_LEN 20
 #define MAX_WEB_LINK 50
+#define MAX_BUF_SIZE 8192
 #define MAX_BUF_BLOCK 8192
 #define MAX_BUF_COMMENT 256
+
+#define MONGO_MAIN_NAME "main"
+#define MONGO_MAIN_CONTENT_NAME "main_content"
+
+// XXX hack for time64_t and UUID
+typedef long long int time64_t;
+typedef unsigned char UUID[UUIDLEN];
+
+enum {
+    MONGO_MAIN,
+    MONGO_MAIN_CONTENT,
+
+    N_MONGO_COLLECTIONS,
+};
+
 
 enum {
     RECTYPE_GOOD,
@@ -35,10 +59,6 @@ enum {
     LIVE_STATUS_DELETED,
 };
 
-typedef struct UUID {
-    unsigned char id[16];
-} UUID;
-
 /**********
  * Main
  * XXX always update main first, and then update main-header.
@@ -59,10 +79,10 @@ typedef struct MainHeader {
 
     char poster[IDLEN + 1];
     unsigned char ip[IPV4LEN + 1];
-    time8_t create_milli_timestamp;
+    time64_t create_milli_timestamp;
     char updater[IDLEN + 1];
     unsigned char update_ip[IPV4LEN + 1];
-    time8_t update_milli_timestamp;
+    time64_t update_milli_timestamp;
 
     char origin[MAX_ORIGIN_LEN + 1];
     char web_link[MAX_WEB_LINK + 1];
@@ -104,10 +124,10 @@ typedef struct Comment {
 
     char poster[IDLEN + 1];
     unsigned char ip[IPV4LEN + 1];
-    time4_t create_timestamp;
+    time64_t create_milli_timestamp;
     char updater[IDLEN + 1];
     unsigned char update_ip[IPV4LEN + 1];
-    time4_t update_timestamp;
+    time64_t update_milli_timestamp;
 
     int len;
     char buf[MAX_BUF_COMMENT + 1];
@@ -133,10 +153,10 @@ typedef struct CommentReplyHeader {
 
     char poster[IDLEN + 1];
     unsigned char ip[IPV4LEN + 1];
-    time4_t create_timestamp;
+    time64_t create_milli_timestamp;
     char updater[IDLEN + 1];
     unsigned char update_ip[IPV4LEN + 1];
-    time4_t update_timestamp;
+    time64_t update_milli_timestamp;
 
     int n_total_line;
     int n_total_block;    
@@ -157,16 +177,45 @@ typedef struct CommentReplyContent {
 
 
 /**********
+ * Milli-timestamp
+ **********/
+Err get_milli_timestamp(time64_t *milli_timestamp);
+
+/**********
+ * UUID
+ **********/
+Err gen_uuid(UUID uuid);
+Err gen_uuid_with_db(int collection, UUID uuid);
+Err gen_content_uuid_with_db(int collection, UUID uuid);
+Err _serialize_uuid_bson(UUID uuid, bson_t *uuid_bson);
+Err _serialize_content_uuid_bson(UUID uuid, int block_id, bson_t *uuid_bson);
+
+/**********
+ * Mongo
+ **********/
+Err init_mongo_global();
+Err free_mongo_global();
+Err init_mongo_collections();
+Err free_mongo_collections();
+
+Err db_set_if_not_exists(int collection, bson_t *key);
+Err db_update_one(int collection, bson_t *key, bson_t *val);
+
+Err _bson_get_value_int32(bson_t *b, char *name, int *value);
+
+/**********
  * Post
  **********/
-int len_post(UUID main_id, int *len);
-int n_line_post(UUID main_id, int *n_line);
+/*
+Err n_line_post(UUID main_id, int *n_line);
+*/
 
 /**********
  * Main
  **********/
-int create_main(char *title, char *poster, unsigned char *ip, unsigned char *origin, unsigned char *web_link, int len, char *content, UUID *main_id, aidu_t *aid);
+Err create_main_from_fd(char *title, char *poster, unsigned char *ip, unsigned char *origin, unsigned char *web_link, int len, char *content, UUID *main_id, aidu_t *aid);
 
+/*
 int len_main(UUID main_id);
 int len_main_by_aid(aidu_t aid);
 
@@ -184,10 +233,22 @@ int update_main_by_aid(aidu_t aid, char *updater, unsigned char *ip, int len, ch
 
 int delete_main(UUID main_id, char *updater, unsigned char *ip);
 int delete_main_by_aid(aidu_t aid, char *updater, unsigned char *ip);
+*/
+
+Err _split_main_contents(int fd_content, int len, UUID main_id, UUID content_id, int *n_line, int *n_block);
+Err _split_main_contents_core(char *line, int bytes_in_line, MainContent *main_content_block, int *n_line, int *n_block);
+Err _split_main_contents_init_main_content(MainContent *main_content_block, UUID main_id, UUID content_id, int block_id);
+
+Err _split_main_contents_save_main_content_block(MainContent *main_content_block);
+
+Err _serialize_main_bson(MainHeader *main_header, bson_t *main_bson);
+
+Err _serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main_content_block_bson);
 
 /**********
  * Comments
  **********/
+/*
 int create_comment(UUID main_id, char *poster, unsigned char *ip, int len, char *content, UUID *comment_id);
 
 int count_karma_by_main(UUID main_id);
@@ -199,10 +260,12 @@ int read_comments_by_main_aid(aidu_t aid, time4_t create_timestamp, char *poster
 int update_comment(UUID comment_id, char *updater, unsigned char *ip, int len, char *content);
 
 int delete_comment(UUID the_id, char *updater, unsigned char *ip);
+*/
 
 /**********
  * CommentReply
  **********/
+/*
 int create_comment_reply(UUID main_id, UUID comment_id, char *poster, unsigned char *ip, int len, char *content, UUID *comment_reply_id);
 
 int len_comment_reply_by_main(UUID main_id);
@@ -220,5 +283,6 @@ int check_comment_reply(UUID comment_reply_id);
 int update_comment_reply(UUID comment_reply_id, char *updater, unsigned char *ip, int len, char *content);
 
 int delete_comment(UUID comment_reply_id, char *updater, unsigned char *ip);
+*/
 
 #endif
