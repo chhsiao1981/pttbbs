@@ -138,6 +138,7 @@ set(LDLIBS ${LDLIBS} cmbbs cmsys osdep libmongoc-1.0 libbson-1.0)
 
 include_directories("/usr/include/libmongoc-1.0")
 include_directories("/usr/include/libbson-1.0")
+link_directories("/usr/local/lib")
 
 ##########
 # var.h
