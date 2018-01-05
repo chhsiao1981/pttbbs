@@ -134,7 +134,7 @@ string(STRIP "${LIBEVENT_LIBS_l}" LIBEVENT_LIBS_l)
 # LDLIBS
 ##########
 
-set(LDLIBS ${LDLIBS} cmbbs cmsys osdep)
+set(LDLIBS ${LDLIBS} cmbbs cmsys osdep libmongoc-1.0 libbson-1.0)
 
 ##########
 # var.h

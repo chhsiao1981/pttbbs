@@ -20,6 +20,8 @@ add_executable(test_dummy
 
 target_link_libraries(test_dummy gtest gtest_main ${LDLIBS})
 
+include_directories("/usr/include/libmongoc-1.0")
+
 add_executable(test_pttdb
     test_pttdb.cc
     ${CMAKE_SOURCE_DIR}/mbbsd/pttdb.c
