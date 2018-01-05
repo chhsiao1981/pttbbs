@@ -59,6 +59,8 @@ init_mongo_collections() {
     MONGO_COLLECTIONS[MONGO_MAIN] = mongo_client_get_collection(MONGO_POST_DBNAME, MONGO_MAIN_NAME);
     MONGO_COLLECTIONS[MONGO_MAIN_CONTENT] = mongo_client_get_collection(MONGO_POST_DBNAME, MONGO_MAIN_CONTENT_NAME);
 
+    MONGO_COLLECTIONS[MONGO_TEST] = mongo_client_get_collection(MONGO_TEST_DBNAME, MONGO_TEST_NAME);
+
     return S_OK;
 }
 

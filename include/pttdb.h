@@ -18,8 +18,16 @@
 #define MAX_BUF_BLOCK 8192
 #define MAX_BUF_COMMENT 256
 
+// Mongo Post
+#define MONGO_POST_DBNAME "post"
+
 #define MONGO_MAIN_NAME "main"
 #define MONGO_MAIN_CONTENT_NAME "main_content"
+
+// Mongo Test
+#define MONGO_TEST_DBNAME "test"
+
+#define MONGO_TEST_NAME "test"
 
 // XXX hack for time64_t and UUID
 typedef long long int time64_t;
@@ -28,6 +36,8 @@ typedef unsigned char UUID[UUIDLEN];
 enum {
     MONGO_MAIN,
     MONGO_MAIN_CONTENT,
+
+    MONGO_TEST,
 
     N_MONGO_COLLECTIONS,
 };
