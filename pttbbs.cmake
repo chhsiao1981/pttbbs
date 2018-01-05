@@ -134,7 +134,7 @@ string(STRIP "${LIBEVENT_LIBS_l}" LIBEVENT_LIBS_l)
 # LDLIBS
 ##########
 
-set(LDLIBS ${LDLIBS} cmbbs cmsys osdep libmongoc-1.0 libbson-1.0)
+set(LDLIBS ${LDLIBS} cmbbs cmsys osdep mongoc-1.0 bson-1.0)
 
 include_directories("/usr/include/libmongoc-1.0")
 include_directories("/usr/include/libbson-1.0")
