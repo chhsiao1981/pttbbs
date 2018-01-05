@@ -16,7 +16,13 @@ set_source_files_properties(${MBBSD_OBJS}
 
 add_executable(test_dummy
     test_dummy.cc
-    ${MBBSD_OBJS}
     )
 
 target_link_libraries(test_dummy gtest gtest_main ${LDLIBS})
+
+add_executable(test_pttdb
+    test_pttdb.cc
+    ${CMAKE_SOURCE_DIR}/mbbsd/pttdb.c
+    )
+
+target_link_libraries(test_pttdb gtest gtest_main ${LDLIBS})
