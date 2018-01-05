@@ -229,5 +229,5 @@ set_source_files_properties(${MBBSD_OBJS}
     )
 
 # add executable with DIET
-add_executable(mbbsd vers.c ${MBBSDOBJS})
+add_executable(mbbsd vers.c ${MBBSD_OBJS})
 target_link_libraries(mbbsd ${LDLIBS})
