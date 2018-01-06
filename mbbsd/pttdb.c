@@ -610,7 +610,7 @@ _split_main_contents(int fd_content, int len, UUID main_id, UUID content_id, int
     }
     // last block
     if(main_content_block.n_line) {
-        error_code = _split_main_contents_save_main_content_block(main_content_block);
+        error_code = _split_main_contents_save_main_content_block(&main_content_block);
         if(error_code) {
             return error_code;
         }
