@@ -10,6 +10,8 @@
 #define MAX_BUF_BLOCK 8192
 #define MAX_BUF_COMMENT 256
 
+#define N_GEN_UUID_WITH_DB 10
+
 // Mongo Post
 #define MONGO_POST_DBNAME "post"
 
