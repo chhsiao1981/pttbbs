@@ -189,10 +189,6 @@ add_custom_command(OUTPUT vers.c
 ##########
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-link_directories(${CMAKE_BINARY_DIR}/common/bbs)
-link_directories(${CMAKE_BINARY_DIR}/common/sys)
-link_directories(${CMAKE_BINARY_DIR}/common/osdep)
-link_directories(${CMAKE_BINARY_DIR}/common/diet)
 
 include_directories("/usr/include/libmongoc-1.0")
 include_directories("/usr/include/libbson-1.0")
