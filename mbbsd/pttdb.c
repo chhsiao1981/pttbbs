@@ -296,7 +296,7 @@ gen_uuid(UUID uuid) {
     _uuid[6] &= 0x0f;
     _uuid[6] |= 0x60;
 
-    b64_ntop(_uuid, _UUIDLEN, uuid, UUIDLEN);
+    b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
 
     return S_OK;
 }
