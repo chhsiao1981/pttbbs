@@ -2,14 +2,6 @@
 #ifndef PTTDB_H
 #define PTTDB_H
 
-#include <stdlib.h>
-#include <sys/time.h>
-#include <mongoc.h>
-
-#include "pttstruct.h"
-#include "ptterr.h"
-#include "osdep.h"
-
 #define UUIDLEN 16
 
 #define MAX_ORIGIN_LEN 20

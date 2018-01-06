@@ -12,5 +12,5 @@ TEST(pttdb, serialize_uuid_bson) {
 
     bson_destroy(&uuid_bson);
 
-    EXPECT_EQ(err, S_OK);
+    EXPECT_EQ(error, S_OK);
 }

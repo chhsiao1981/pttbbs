@@ -30,6 +30,8 @@ extern "C" {
 #include <sys/mman.h>
 #include <sys/shm.h>
 #include <sys/sem.h>
+#include <sys/time.h>
+#include <mongoc.h>
 
 /* our header */
 #include "config.h"
@@ -57,7 +59,7 @@ extern "C" {
 #include "fnv_hash.h"
 
 #include "pttdb.h"
-#include "err.h"
+#include "ptterr.h"
 
 #ifdef ASSESS
     #include "assess.h"

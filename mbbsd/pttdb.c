@@ -1,4 +1,4 @@
-#include "pttdb.h"
+#include "bbs.h"
 
 /**********
  * Globally Available
