@@ -198,15 +198,16 @@ link_directories("/usr/local/lib")
 # mbbsd.o
 ##########
 
+# XXX hack for INCLUDES
+get_directory_property(INCLUDE_DIRECTORIES INCLUDE_DIRECTORIES)
+string(REPLACE ";" ";-I" INCLUDE_DIRECTORIES ${INCLUDE_DIRECTORIES})
+set(INCLUDE_DIRECTORIES "-I${INCLUDE_DIRECTORIES}")
+
 # XXX hack for FLAGS
-string(REPLACE " " ";" FLAGS ${CMAKE_C_FLAGS})
+string(REPLACE " " ";" FLAGS ${CMAKE_C_FLAGS} ${INCLUDE_DIRECTORIES})
 if(("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin") AND NOT ("${CMAKE_OSX_SYSROOT}" STREQUAL ""))
     set(FLAGS ${FLAGS} -isysroot ${CMAKE_OSX_SYSROOT})
 endif()
-
-# XXX hack for INCLUDES
-get_directory_property(INCLUDE_DIRECTORIES INCLUDE_DIRECTORIES)
-get_source_file_property(COMPILE_FLAGS mbbsd.c COMPILE_FLAGS)
 
 # XXX hack for DIETCC
 string(REPLACE " " ";" DIETCC "${DIETCC}")
