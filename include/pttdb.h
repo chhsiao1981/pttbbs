@@ -217,7 +217,7 @@ Err n_line_post(UUID main_id, int *n_line);
 /**********
  * Main
  **********/
-Err create_main_from_fd(char *title, char *poster, unsigned char *ip, unsigned char *origin, unsigned char *web_link, int len, char *content, UUID *main_id, aidu_t *aid);
+Err create_main_from_fd(aidu_t aid, char *title, char *poster, unsigned char *ip, unsigned char *origin, unsigned char *web_link, int len, int fd_content, UUID main_id);
 
 /*
 int len_main(UUID main_id);
