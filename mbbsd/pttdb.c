@@ -402,7 +402,7 @@ _serialize_content_uuid_bson(UUID uuid, int block_id, bson_t *uuid_bson) {
     bool bson_status = bson_append_binary(uuid_bson, "the_id", -1, BSON_SUBTYPE_BINARY, uuid, UUIDLEN);
     if (!bson_status) return S_ERR;
 
-    bool bson_status = bson_append_binary(uuid_bson, "block_id", -1, BSON_SUBTYPE_BINARY, block_id, sizeof(int));
+    bson_status = bson_append_binary(uuid_bson, "block_id", -1, BSON_SUBTYPE_BINARY, block_id, sizeof(int));
     if (!bson_status) return S_ERR;
 
     return S_OK;
