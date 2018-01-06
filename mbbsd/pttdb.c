@@ -628,6 +628,8 @@ _split_main_contents(int fd_content, int len, UUID main_id, UUID content_id, int
  */
 Err
 _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID content_id, MainContent *main_content_block, int *n_line, int *n_block) {
+    Err error_code;
+
     //1 more line
     *n_line++;
 
