@@ -23,10 +23,6 @@ set(ACCSRCS
     emaildb.c
     )
 
-set(MBBSDOBJ
-    mbbsd.o
-    )
-
 set(MBBSDSRC
     mbbsd.c
     )
@@ -208,7 +204,7 @@ message(STATUS "FLAGS for mbbsd.o: ${FLAGS} DIETCC: ${DIETCC} RULE_LAUNCH_COMPIL
 
 string(REPLACE ".c" ".o" obj ${MBBSDSRC})
 add_custom_command(OUTPUT ${obj}
-    COMMAND ${DIETCC} ${RULE_LAUNCH_COMPILE} ${CMAKE_C_COMPILER} ${FLAGS} -o ${MBBSDOBJ} -c ${CMAKE_CURRENT_SOURCE_DIR}/${MBBSDSRC}
+    COMMAND ${DIETCC} ${RULE_LAUNCH_COMPILE} ${CMAKE_C_COMPILER} ${FLAGS} -o ${obj} -c ${CMAKE_CURRENT_SOURCE_DIR}/${MBBSDSRC}
     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${MBBSDSRC}
     )
 list(APPEND MBBSD_OBJS ${obj})
@@ -223,7 +219,7 @@ foreach(src ${SRCS})
     list(APPEND MBBSD_OBJS ${obj})
 endforeach()
 
-message(STATUS "SRCS: ${SRCS} MBBSD_OBJS: ${MBBSD_OBJS}")
+message(STATUS "SRCS: ${SRCS} MBBSD_OBJS: ${MBBSD_OBJS} CMAKE_INCLUDE_PATH: ${CMAKE_INCLUDE_PATH}")
 
 set_source_files_properties(${MBBSD_OBJS}
     PROPERTIES
