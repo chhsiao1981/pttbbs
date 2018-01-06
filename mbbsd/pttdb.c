@@ -324,7 +324,7 @@ gen_uuid_with_db(int collection, UUID uuid) {
             continue;
         }
 
-        error_code = db_set_if_not_exists(collection, &uuid_bson, &uuid_bson);
+        error_code = db_set_if_not_exists(collection, &uuid_bson);
         bson_destroy(&uuid_bson);
 
         if (!error_code) {
@@ -361,7 +361,7 @@ gen_content_uuid_with_db(int collection, UUID uuid) {
             continue;
         }
 
-        error_code = db_set_if_not_exists(collection, &uuid_bson, &uuid_bson);
+        error_code = db_set_if_not_exists(collection, &uuid_bson);
         bson_destroy(&uuid_bson);
 
         if (!error_code) {
