@@ -6,7 +6,7 @@ TEST(pttdb, serialize_uuid_bson) {
     bzero(uuid, sizeof(UUID));
 
     bson_t uuid_bson;
-    bson_init(&uuid);
+    bson_init(&uuid_bson);
     
     Err error = _serialize_uuid_bson(uuid, &uuid_bson);
 
