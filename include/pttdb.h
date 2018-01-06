@@ -29,7 +29,6 @@
 typedef long long int time64_t;
 typedef unsigned char UUID[UUIDLEN];
 typedef unsigned char _UUID[_UUIDLEN];
-typedef unsigned char _UUID_b64[_UUIDB64LEN];
 
 enum {
     MONGO_MAIN,
