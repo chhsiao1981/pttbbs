@@ -1,4 +1,4 @@
-#include "pttutil.h"
+#include "bbs.h"
 
 /**
  * @brief Try to get a line (ending with \r\n) from buffer.

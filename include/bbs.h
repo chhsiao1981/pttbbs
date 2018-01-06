@@ -59,6 +59,7 @@ extern "C" {
 #include "proto.h"
 #include "fnv_hash.h"
 
+#include "pttutil.h"
 #include "ptterr.h"
 #include "pttdb.h"
 
