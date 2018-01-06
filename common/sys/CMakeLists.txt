@@ -26,6 +26,11 @@ set(SYS_SRCS
 ##########
 file(COPY big5data.tar.bz2 DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
+include_directories("/usr/include/libmongoc-1.0")
+include_directories("/usr/include/libbson-1.0")
+link_directories("/usr/local/lib")
+
+
 add_custom_command(OUTPUT big5.c
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/big5_gen.py > big5.c
     )
