@@ -44,16 +44,16 @@ enum {
 
 
 enum {
-    RECTYPE_GOOD,
-    RECTYPE_BAD,
-    RECTYPE_ARROW,
-    RECTYPE_SIZE,
+    COMMENTTYPE_GOOD,
+    COMMENTTYPE_BAD,
+    COMMENTTYPE_ARROW,
+    COMMENTTYPE_SIZE,
 
-    RECTYPE_FORWARD,                       // hack for forward
-    RECTYPE_OTHER,                         // hack for other
+    COMMENTTYPE_FORWARD,                       // hack for forward
+    COMMENTTYPE_OTHER,                         // hack for other
 
-    RECTYPE_MAX     = RECTYPE_SIZE-1,
-    RECTYPE_DEFAULT = RECTYPE_GOOD,
+    COMMENTTYPE_MAX     = COMMENTTYPE_SIZE-1,
+    COMMENTTYPE_DEFAULT = COMMENTTYPE_GOOD,
 };
 
 enum {
