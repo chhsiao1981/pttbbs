@@ -358,7 +358,7 @@ gen_content_uuid_with_db(int collection, UUID uuid) {
         }
 
         bson_init(&uuid_bson);
-        error_code = _serialize_content_uuid_bson(uuid, 0, &uuid_bson);
+        error_code = _serialize_content_uuid_bson(uuid, MONGO_THE_ID, 0, &uuid_bson);
         if (error_code) {
             bson_destroy(&uuid_bson);
             continue;
