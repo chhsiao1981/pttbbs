@@ -215,12 +215,15 @@ list(APPEND MBBSD_OBJS ${obj})
 
 foreach(src ${SRCS})
     string(REPLACE ".c" ".o" obj ${src})
+    message("obj: ${obj} src: ${src}")
     add_custom_command(OUTPUT ${obj}
         COMMAND ${RULE_LAUNCH_COMPILE} ${CMAKE_C_COMPILER} ${FLAGS} -o ${obj} -c ${CMAKE_CURRENT_SOURCE_DIR}/${src}
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${src}
         )
     list(APPEND MBBSD_OBJS ${obj})
 endforeach()
+
+message("SRCS: ${SRCS} MBBSD_OBJS: ${MBBSD_OBJS}")
 
 set_source_files_properties(${MBBSD_OBJS}
     PROPERTIES
