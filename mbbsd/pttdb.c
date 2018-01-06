@@ -525,7 +525,7 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, unsigned char *ip, un
     }
 
     bson_init(&main_id_bson);
-    error_code = _serialize_uuid_bson(main_id, &main_id_bson);
+    error_code = _serialize_uuid_bson(main_id, MONGO_THE_ID, &main_id_bson);
     if (error_code) {
         bson_destroy(&main_bson);
         bson_destroy(&main_id_bson);
