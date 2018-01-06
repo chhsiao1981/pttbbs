@@ -185,16 +185,6 @@ add_custom_command(OUTPUT vers.c
     )
 
 ##########
-# include / link
-##########
-
-include_directories(${PROJECT_SOURCE_DIR}/include)
-
-include_directories("/usr/include/libmongoc-1.0")
-include_directories("/usr/include/libbson-1.0")
-link_directories("/usr/local/lib")
-
-##########
 # mbbsd.o
 ##########
 
