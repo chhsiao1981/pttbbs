@@ -106,16 +106,16 @@ foreach(prog ${CPROG_WITH_UTIL})
     target_link_libraries(${prog} ${LDLIBS} utilvar)
 endforeach()
 
-foreach(prog ${CPP_WITH_UTIL})
-    add_executable(${prog}
-        ${prog}.cc
-        )
-    target_link_libraries(${prog} ${LDLIBS} utilvar)
-    set_source_files_properties(${prog}.cc
-        PROPERTIES
-        LANGUAGE CXX
-        )
-endforeach()
+# foreach(prog ${CPP_WITH_UTIL})
+#    add_executable(${prog}
+#        ${prog}.cc
+#        )
+#    target_link_libraries(${prog} ${LDLIBS} utilvar)
+#    set_source_files_properties(${prog}.cc
+#        PROPERTIES
+#        LANGUAGE CXX
+#        )
+# endforeach()
 
 foreach(prog ${CPROGR_WITHOUT_UTIL})
     add_executable(${prog}
