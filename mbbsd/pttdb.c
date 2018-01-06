@@ -782,10 +782,10 @@ _serialize_main_bson(MainHeader *main_header, bson_t *main_bson) {
     bson_status = bson_append_binary(main_bson, "create_milli_timestamp", -1, BSON_SUBTYPE_BINARY, &main_header->create_milli_timestamp, sizeof(time64_t));
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "updater", -1, BSON_SUBTYPE_BINARY, &main_header->updater, IDLEN);
+    bson_status = bson_append_binary(main_bson, "updater", -1, BSON_SUBTYPE_BINARY, main_header->updater, IDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "update_ip", -1, BSON_SUBTYPE_BINARY, &main_header->update_ip, IPV4LEN);
+    bson_status = bson_append_binary(main_bson, "update_ip", -1, BSON_SUBTYPE_BINARY, main_header->update_ip, IPV4LEN);
     if (!bson_status) return S_ERR;
 
     bson_status = bson_append_binary(main_bson, "update_milli_timestamp", -1, BSON_SUBTYPE_BINARY, &main_header->update_milli_timestamp, sizeof(time64_t));
@@ -824,10 +824,10 @@ Err
 _serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main_content_block_bson) {
     bool bson_status;
 
-    bson_status = bson_append_binary(main_content_block_bson, "the_id", -1, BSON_SUBTYPE_BINARY, &main_content_block->the_id, UUIDLEN);
+    bson_status = bson_append_binary(main_content_block_bson, "the_id", -1, BSON_SUBTYPE_BINARY, main_content_block->the_id, UUIDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_content_block_bson, "main_id", -1, BSON_SUBTYPE_BINARY, &main_content_block->main_id, UUIDLEN);
+    bson_status = bson_append_binary(main_content_block_bson, "main_id", -1, BSON_SUBTYPE_BINARY, main_content_block->main_id, UUIDLEN);
     if (!bson_status) return S_ERR;
 
     bson_status = bson_append_binary(main_content_block_bson, "block_id", -1, BSON_SUBTYPE_BINARY, &main_content_block->block_id, sizeof(int));
@@ -839,7 +839,7 @@ _serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main
     bson_status = bson_append_binary(main_content_block_bson, "n_line", -1, BSON_SUBTYPE_BINARY, &main_content_block->n_line, sizeof(int));
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_content_block_bson, "buf_block", -1, BSON_SUBTYPE_BINARY, &main_content_block->buf_block, main_content_block->len_block);
+    bson_status = bson_append_binary(main_content_block_bson, "buf_block", -1, BSON_SUBTYPE_BINARY, main_content_block->buf_block, main_content_block->len_block);
     if (!bson_status) return S_ERR;
 
     return S_OK;
