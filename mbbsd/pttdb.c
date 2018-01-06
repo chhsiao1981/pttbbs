@@ -91,7 +91,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
 
     bson_error_t error;
     Err error_code;
-    unsigned char is_upsert = true;
+    bool is_upsert = true;
     int n_upserted;
 
     // set_val
@@ -105,7 +105,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
     // opts
     bson_init(&opts);
 
-    status = bson_append_binary(&opts, "upsert", -1, BSON_SUBTYPE_BINARY, &is_upsert, 1);
+    status = bson_append_bool(&opts, "upsert", -1, is_upsert);
     if(!status) {
         bson_destroy(&set_val);
         bson_destroy(&opts);
@@ -151,7 +151,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
 }
 
 Err
-db_update_one(int collection, bson_t *key, bson_t *val, unsigned char is_upsert) {
+db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
     bool status;
 
     bson_t set_val;
@@ -170,7 +170,7 @@ db_update_one(int collection, bson_t *key, bson_t *val, unsigned char is_upsert)
 
     // opts
     bson_init(&opts);
-    status = bson_append_binary(&opts, "upsert", -1, BSON_SUBTYPE_BINARY, &is_upsert, 1);
+    status = bson_append_bool(&opts, "upsert", -1, &is_upsert);
     if(!status) {
         bson_destroy(&set_val);
         bson_destroy(&opts);
@@ -383,7 +383,7 @@ gen_content_uuid_with_db(int collection, UUID uuid) {
  */
 Err
 _serialize_uuid_bson(UUID uuid, bson_t *uuid_bson) {
-    bool bson_status = bson_append_binary(uuid_bson, "the_id", -1, BSON_SUBTYPE_BINARY, uuid, UUIDLEN);
+    bool bson_status = bson_append_utf8(uuid_bson, "the_id", -1, uuid, UUIDLEN);
     if (!bson_status) return S_ERR;
 
     return S_OK;
@@ -399,10 +399,10 @@ _serialize_uuid_bson(UUID uuid, bson_t *uuid_bson) {
  */
 Err
 _serialize_content_uuid_bson(UUID uuid, int block_id, bson_t *uuid_bson) {
-    bool bson_status = bson_append_binary(uuid_bson, "the_id", -1, BSON_SUBTYPE_BINARY, uuid, UUIDLEN);
+    bool bson_status = bson_append_utf8(uuid_bson, "the_id", -1, uuid, UUIDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(uuid_bson, "block_id", -1, BSON_SUBTYPE_BINARY, block_id, sizeof(int));
+    bson_status = bson_append_int32(uuid_bson, "block_id", -1, block_id);
     if (!bson_status) return S_ERR;
 
     return S_OK;
@@ -749,64 +749,64 @@ Err
 _serialize_main_bson(MainHeader *main_header, bson_t *main_bson) {
     bool bson_status;
 
-    bson_status = bson_append_binary(main_bson, "version", -1, BSON_SUBTYPE_BINARY, &main_header->version, 1);
+    bson_status = bson_append_int32(main_bson, "version", -1, main_header->version);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "the_id", -1, BSON_SUBTYPE_BINARY, main_header->the_id, UUIDLEN);
+    bson_status = bson_append_utf8(main_bson, "the_id", -1, main_header->the_id, UUIDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "content_id", -1, BSON_SUBTYPE_BINARY, main_header->content_id, UUIDLEN);
+    bson_status = bson_append_utf8(main_bson, "content_id", -1, main_header->content_id, UUIDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "aid", -1, BSON_SUBTYPE_BINARY, &main_header->aid, sizeof(aidu_t));
+    bson_status = bson_append_int32(main_bson, "aid", -1, main_header->aid);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "status", -1, BSON_SUBTYPE_BINARY, &main_header->status, 1);
+    bson_status = bson_append_int32(main_bson, "status", -1, main_header->status);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "status_updater", -1, BSON_SUBTYPE_BINARY, main_header->status_updater, IDLEN);
+    bson_status = bson_append_utf8(main_bson, "status_updater", -1, main_header->status_updater, IDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "status_update_ip", -1, BSON_SUBTYPE_BINARY, main_header->status_update_ip, IPV4LEN);
+    bson_status = bson_append_utf8(main_bson, "status_update_ip", -1, main_header->status_update_ip, IPV4LEN);
     if (!bson_status) return S_ERR;
 
     bson_status = bson_append_binary(main_bson, "title", -1, BSON_SUBTYPE_BINARY, main_header->title, TTLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "poster", -1, BSON_SUBTYPE_BINARY, main_header->poster, IDLEN);
+    bson_status = bson_append_utf8(main_bson, "poster", -1, main_header->poster, IDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "ip", -1, BSON_SUBTYPE_BINARY, main_header->ip, IPV4LEN);
+    bson_status = bson_append_utf8(main_bson, "ip", -1, main_header->ip, IPV4LEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "create_milli_timestamp", -1, BSON_SUBTYPE_BINARY, &main_header->create_milli_timestamp, sizeof(time64_t));
+    bson_status = bson_append_int64(main_bson, "create_milli_timestamp", -1, main_header->create_milli_timestamp);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "updater", -1, BSON_SUBTYPE_BINARY, main_header->updater, IDLEN);
+    bson_status = bson_append_utf8(main_bson, "updater", -1, main_header->updater, IDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "update_ip", -1, BSON_SUBTYPE_BINARY, main_header->update_ip, IPV4LEN);
+    bson_status = bson_append_utf8(main_bson, "update_ip", -1, main_header->update_ip, IPV4LEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "update_milli_timestamp", -1, BSON_SUBTYPE_BINARY, &main_header->update_milli_timestamp, sizeof(time64_t));
+    bson_status = bson_append_int64(main_bson, "update_milli_timestamp", -1, main_header->update_milli_timestamp);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "origin", -1, BSON_SUBTYPE_BINARY, main_header->origin, strlen(main_header->origin));
+    bson_status = bson_append_utf8(main_bson, "origin", -1, main_header->origin, strlen(main_header->origin));
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "web_link", -1, BSON_SUBTYPE_BINARY, main_header->web_link, strlen(main_header->web_link));
+    bson_status = bson_append_utf8(main_bson, "web_link", -1, main_header->web_link, strlen(main_header->web_link));
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "reset_karma", -1, BSON_SUBTYPE_BINARY, &main_header->reset_karma, sizeof(int));
+    bson_status = bson_append_int32(main_bson, "reset_karma", -1, main_header->reset_karma);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "n_total_line", -1, BSON_SUBTYPE_BINARY, &main_header->n_total_line, sizeof(int));
+    bson_status = bson_append_int32(main_bson, "n_total_line", -1, main_header->n_total_line);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "n_total_block", -1, BSON_SUBTYPE_BINARY, &main_header->n_total_block, sizeof(int));
+    bson_status = bson_append_int32(main_bson, "n_total_block", -1, main_header->n_total_block);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_bson, "len_total", -1, BSON_SUBTYPE_BINARY, &main_header->len_total, sizeof(int));
+    bson_status = bson_append_int32(main_bson, "len_total", -1, main_header->len_total);
     if (!bson_status) return S_ERR;
 
     return S_OK;
@@ -824,19 +824,19 @@ Err
 _serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main_content_block_bson) {
     bool bson_status;
 
-    bson_status = bson_append_binary(main_content_block_bson, "the_id", -1, BSON_SUBTYPE_BINARY, main_content_block->the_id, UUIDLEN);
+    bson_status = bson_append_utf8(main_content_block_bson, "the_id", -1, main_content_block->the_id, UUIDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_content_block_bson, "main_id", -1, BSON_SUBTYPE_BINARY, main_content_block->main_id, UUIDLEN);
+    bson_status = bson_append_utf8(main_content_block_bson, "main_id", -1, main_content_block->main_id, UUIDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_content_block_bson, "block_id", -1, BSON_SUBTYPE_BINARY, &main_content_block->block_id, sizeof(int));
+    bson_status = bson_append_int32(main_content_block_bson, "block_id", -1, main_content_block->block_id);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_content_block_bson, "len_block", -1, BSON_SUBTYPE_BINARY, &main_content_block->len_block, sizeof(int));
+    bson_status = bson_append_int32(main_content_block_bson, "len_block", -1, main_content_block->len_block);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_binary(main_content_block_bson, "n_line", -1, BSON_SUBTYPE_BINARY, &main_content_block->n_line, sizeof(int));
+    bson_status = bson_append_int32(main_content_block_bson, "n_line", -1, main_content_block->n_line);
     if (!bson_status) return S_ERR;
 
     bson_status = bson_append_binary(main_content_block_bson, "buf_block", -1, BSON_SUBTYPE_BINARY, main_content_block->buf_block, main_content_block->len_block);
