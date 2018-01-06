@@ -2,12 +2,14 @@
 #include "bbs.h"
 
 TEST(pttdb, serialize_uuid_bson) {
+    _UUID _uuid;
     UUID uuid;
     char *str;
     char buf[MAX_BUF_SIZE];
 
 
-    bzero(uuid, sizeof(UUID));    
+    bzero(_uuid, sizeof(_UUID));
+    b64_ntop(_uuid, _UUIDLEN, uuid, UUIDLEN);
 
     bson_t uuid_bson;
     bson_init(&uuid_bson);
