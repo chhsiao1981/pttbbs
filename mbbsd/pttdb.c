@@ -90,6 +90,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
     bson_t reply;
 
     bson_error_t error;
+    Err error_code;
     unsigned char is_upsert = true;
 
     // set_val
