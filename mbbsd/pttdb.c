@@ -270,31 +270,32 @@ gen_uuid(UUID uuid) {
 
     unsigned short *p_short;
     unsigned int *p_int;
+    _UUID _uuid;
 
     // last 8 chars as milli-timestamp, but only the last 6 chars will be used.
     error_code = get_milli_timestamp(&milli_timestamp);
     if (error_code) return error_code;
 
     milli_timestamp <<= 16;
-    p_milli_timestamp = uuid + 8;
+    p_milli_timestamp = uuid + 40;
     *p_milli_timestamp = milli_timestamp;
 
     rand_num = random();
     p_short_rand_num = &rand_num;
-    p_short = uuid + 8;
+    p_short = uuid + 40;
     *p_short = *p_short_rand_num;
 
-    // first 8 chars as random, but 6th char is version (6 for now)
-    rand_num = random();
-    p_rand = uuid;
-    *p_rand = rand_num;
+    // first 40 chars as random, but 6th char is version (6 for now)
+    p_rand = _uuid;
+    for(int i = 0; i < 10; i++) {
+        rand_num = random();
+        *p_rand = rand_num;
+        *p_rand += 4;
 
-    rand_num = random();
-    p_rand = uuid + 4;
-    *p_rand = rand_num;
+    _uuid[6] &= 0x0f;
+    _uuid[6] |= 0x60;
 
-    uuid[6] &= 0x0f;
-    uuid[6] |= 0x60;
+    b64_ntop(_uuid, _UUIDLEN, uuid, UUIDLEN);
 
     return S_OK;
 }

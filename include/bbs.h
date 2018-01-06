@@ -33,6 +33,7 @@ extern "C" {
 #include <sys/shm.h>
 #include <sys/sem.h>
 #include <sys/time.h>
+#include <resolv.h>
 
 /* our header */
 #include "config.h"

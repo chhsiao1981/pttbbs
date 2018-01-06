@@ -2,7 +2,8 @@
 #ifndef PTTDB_H
 #define PTTDB_H
 
-#define UUIDLEN 16
+#define UUIDLEN 64
+#define _UUIDLEN 48
 
 #define MAX_ORIGIN_LEN 20
 #define MAX_WEB_LINK 50
@@ -27,6 +28,8 @@
 // XXX hack for time64_t and UUID
 typedef long long int time64_t;
 typedef unsigned char UUID[UUIDLEN];
+typedef unsigned char _UUID[_UUIDLEN];
+typedef unsigned char _UUID_b64[_UUIDB64LEN];
 
 enum {
     MONGO_MAIN,
