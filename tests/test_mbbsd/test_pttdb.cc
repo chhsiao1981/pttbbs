@@ -9,7 +9,7 @@ TEST(pttdb, serialize_uuid_bson) {
 
 
     bzero(_uuid, sizeof(_UUID));
-    b64_ntop(_uuid, _UUIDLEN, uuid, UUIDLEN);
+    b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
 
     bson_t uuid_bson;
     bson_init(&uuid_bson);
