@@ -109,7 +109,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
         bson_destroy(&opts);
         return S_ERR;
     }
-    status = bson_append_document(&opts, "$setOnInsert", key);
+    status = bson_append_document(&opts, "$setOnInsert", -1, key);
     if(!status) {
         bson_destroy(&set_val);
         bson_destroy(&opts);
