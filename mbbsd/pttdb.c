@@ -383,7 +383,7 @@ gen_content_uuid_with_db(int collection, UUID uuid) {
  */
 Err
 _serialize_uuid_bson(UUID uuid, bson_t *uuid_bson) {
-    bool bson_status = bson_append_utf8(uuid_bson, "the_id", -1, uuid, UUIDLEN);
+    bool bson_status = bson_append_binary(uuid_bson, "the_id", -1, BSON_SUBTYPE_BINARY, uuid, UUIDLEN);
     if (!bson_status) return S_ERR;
 
     return S_OK;
