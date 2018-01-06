@@ -58,8 +58,8 @@ extern "C" {
 #include "proto.h"
 #include "fnv_hash.h"
 
-#include "pttdb.h"
 #include "ptterr.h"
+#include "pttdb.h"
 
 #ifdef ASSESS
     #include "assess.h"
