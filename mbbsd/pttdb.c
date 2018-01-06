@@ -90,6 +90,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
     bson_t reply;
 
     bson_error_t error;
+    unsigned char is_upsert = true;
 
     // set_val
     bson_init(&set_val);
@@ -101,7 +102,8 @@ db_set_if_not_exists(int collection, bson_t *key) {
 
     // opts
     bson_init(&opts);
-    status = bson_append_binary(&opts, "upsert", true);
+
+    status = bson_append_binary(&opts, "upsert", -1, BSON_SUBTYPE_BINARY, &is_upsert);
     if(!status) {
         bson_destroy(&set_val);
         bson_destroy(&opts);
@@ -147,7 +149,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
 }
 
 Err
-db_update_one(int collection, bson_t *key, bson_t *val) {
+db_update_one(int collection, bson_t *key, bson_t *val, unsigned char is_upsert=true) {
     bool status;
 
     bson_t set_val;
@@ -166,8 +168,7 @@ db_update_one(int collection, bson_t *key, bson_t *val) {
 
     // opts
     bson_init(&opts);
-    unsigned char the_bool = true
-    status = bson_append_binary(&opts, "upsert", -1, BSON_SUBTYPE_BINARY, &the_bool);
+    status = bson_append_binary(&opts, "upsert", -1, BSON_SUBTYPE_BINARY, &is_upsert);
     if(!status) {
         bson_destroy(&set_val);
         bson_destroy(&opts);
