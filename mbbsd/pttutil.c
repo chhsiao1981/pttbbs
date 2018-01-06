@@ -35,7 +35,7 @@ get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offs
     }
 
     // check \r\n in buf.
-    for (i = offset_buf; i < bytes - 1; i++) {
+    for (int i = offset_buf; i < bytes - 1; i++) {
         if (*p_buf == '\r' && *(p_buf + 1) == '\n') {
             *p_line = '\r';
             *(p_line + 1) = '\n';
