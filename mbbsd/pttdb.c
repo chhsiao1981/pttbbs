@@ -149,7 +149,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
 }
 
 Err
-db_update_one(int collection, bson_t *key, bson_t *val, unsigned char is_upsert=true) {
+db_update_one(int collection, bson_t *key, bson_t *val, unsigned char is_upsert) {
     bool status;
 
     bson_t set_val;
@@ -528,7 +528,7 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, unsigned char *ip, un
         return error_code;
     }
 
-    error_code = db_update_one(MONGO_MAIN, &main_id_bson, &main_bson);
+    error_code = db_update_one(MONGO_MAIN, &main_id_bson, &main_bson, true);
     bson_destroy(&main_bson);
     bson_destroy(&main_id_bson);
     if (error_code) {
@@ -716,7 +716,7 @@ _split_main_contents_save_main_content_block(MainContent *main_content_block) {
         return error_code;
     }
 
-    error_code = db_update_one(MONGO_MAIN_CONTENT, &main_content_block_uuid_bson, &main_content_block_bson);
+    error_code = db_update_one(MONGO_MAIN_CONTENT, &main_content_block_uuid_bson, &main_content_block_bson, true);
     bson_destroy(&main_content_block_uuid_bson);
     bson_destroy(&main_content_block_bson);
     if (error_code) {

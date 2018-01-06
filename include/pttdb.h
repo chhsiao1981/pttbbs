@@ -201,7 +201,7 @@ Err init_mongo_collections();
 Err free_mongo_collections();
 
 Err db_set_if_not_exists(int collection, bson_t *key);
-Err db_update_one(int collection, bson_t *key, bson_t *val, unsigned char is_upsert=true);
+Err db_update_one(int collection, bson_t *key, bson_t *val, unsigned char is_upsert);
 
 Err _bson_get_value_int32(bson_t *b, char *name, int *value);
 
