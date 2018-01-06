@@ -9,6 +9,7 @@
 #define MAX_BUF_SIZE 8192
 #define MAX_BUF_BLOCK 8192
 #define MAX_BUF_COMMENT 256
+#define MAX_BUF_LINES 256
 
 #define N_GEN_UUID_WITH_DB 10
 
