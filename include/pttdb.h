@@ -25,6 +25,9 @@
 
 #define MONGO_TEST_NAME "test"
 
+// Mongo the id
+#define MONGO_THE_ID "the_id"
+
 // XXX hack for time64_t and UUID
 typedef long long int time64_t;
 typedef unsigned char UUID[UUIDLEN];
@@ -194,8 +197,8 @@ Err get_milli_timestamp(time64_t *milli_timestamp);
 Err gen_uuid(UUID uuid);
 Err gen_uuid_with_db(int collection, UUID uuid);
 Err gen_content_uuid_with_db(int collection, UUID uuid);
-Err _serialize_uuid_bson(UUID uuid, bson_t *uuid_bson);
-Err _serialize_content_uuid_bson(UUID uuid, int block_id, bson_t *uuid_bson);
+Err _serialize_uuid_bson(UUID uuid, const char *key, bson_t *uuid_bson);
+Err _serialize_content_uuid_bson(UUID uuid, const char *key, int block_id, bson_t *uuid_bson);
 
 /**********
  * Mongo

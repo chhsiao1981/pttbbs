@@ -321,7 +321,7 @@ gen_uuid_with_db(int collection, UUID uuid) {
         }
 
         bson_init(&uuid_bson);
-        error_code = _serialize_uuid_bson(uuid, &uuid_bson);
+        error_code = _serialize_uuid_bson(uuid, MONGO_THE_ID, &uuid_bson);
         if (error_code) {
             bson_destroy(&uuid_bson);
             continue;
@@ -384,8 +384,8 @@ gen_content_uuid_with_db(int collection, UUID uuid) {
  * @return Err
  */
 Err
-_serialize_uuid_bson(UUID uuid, bson_t *uuid_bson) {
-    bool bson_status = bson_append_binary(uuid_bson, "the_id", -1, BSON_SUBTYPE_BINARY, uuid, UUIDLEN);
+_serialize_uuid_bson(UUID uuid, const char *key, bson_t *uuid_bson) {
+    bool bson_status = bson_append_utf8(uuid_bson, key, -1, uuid, UUIDLEN);
     if (!bson_status) return S_ERR;
 
     return S_OK;
@@ -400,8 +400,8 @@ _serialize_uuid_bson(UUID uuid, bson_t *uuid_bson) {
  * @return Err
  */
 Err
-_serialize_content_uuid_bson(UUID uuid, int block_id, bson_t *uuid_bson) {
-    bool bson_status = bson_append_utf8(uuid_bson, "the_id", -1, uuid, UUIDLEN);
+_serialize_content_uuid_bson(UUID uuid, const char *key, int block_id, bson_t *uuid_bson) {
+    bool bson_status = bson_append_utf8(uuid_bson, key, -1, uuid, UUIDLEN);
     if (!bson_status) return S_ERR;
 
     bson_status = bson_append_int32(uuid_bson, "block_id", -1, block_id);
@@ -722,7 +722,7 @@ _split_main_contents_save_main_content_block(MainContent *main_content_block) {
     }
 
     bson_init(&main_content_block_uuid_bson);
-    error_code = _serialize_content_uuid_bson(main_content_block->the_id, main_content_block->block_id, &main_content_block_uuid_bson);
+    error_code = _serialize_content_uuid_bson(main_content_block->the_id, MONGO_THE_ID, main_content_block->block_id, &main_content_block_uuid_bson);
     if (error_code) {
         bson_destroy(&main_content_block_bson);
         bson_destroy(&main_content_block_uuid_bson);
