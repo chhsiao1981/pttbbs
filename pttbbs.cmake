@@ -136,8 +136,8 @@ string(STRIP "${LIBEVENT_LIBS_l}" LIBEVENT_LIBS_l)
 
 set(LDLIBS ${LDLIBS} cmbbs cmsys osdep mongoc-1.0 bson-1.0)
 
-include_directories("/usr/include/libmongoc-1.0")
-include_directories("/usr/include/libbson-1.0")
+include_directories("/usr/local/include/libmongoc-1.0")
+include_directories("/usr/local/include/libbson-1.0")
 link_directories("/usr/local/lib")
 
 ##########
