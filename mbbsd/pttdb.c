@@ -27,7 +27,7 @@ init_mongo_global() {
     MONGO_URI = mongoc_uri_new(MONGO_CLIENT_URL);
     if (!MONGO_URI) return S_ERR;
 
-    MONGO_CLIENT_POOL = mongo_client_pool_new(MONGO_URI);
+    MONGO_CLIENT_POOL = mongoc_client_pool_new(MONGO_URI);
     mongoc_client_pool_set_error_api(MONGO_CLIENT_POOL, MONGOC_ERROR_API_VERSION_2);
     return S_OK;
 }
@@ -56,10 +56,10 @@ init_mongo_collections() {
     }
 
     MONGO_COLLECTIONS = malloc(sizeof(mongoc_collection_t *) * N_MONGO_COLLECTIONS);
-    MONGO_COLLECTIONS[MONGO_MAIN] = mongo_client_get_collection(MONGO_POST_DBNAME, MONGO_MAIN_NAME);
-    MONGO_COLLECTIONS[MONGO_MAIN_CONTENT] = mongo_client_get_collection(MONGO_POST_DBNAME, MONGO_MAIN_CONTENT_NAME);
+    MONGO_COLLECTIONS[MONGO_MAIN] = mongoc_client_get_collection(MONGO_POST_DBNAME, MONGO_MAIN_NAME);
+    MONGO_COLLECTIONS[MONGO_MAIN_CONTENT] = mongoc_client_get_collection(MONGO_POST_DBNAME, MONGO_MAIN_CONTENT_NAME);
 
-    MONGO_COLLECTIONS[MONGO_TEST] = mongo_client_get_collection(MONGO_TEST_DBNAME, MONGO_TEST_NAME);
+    MONGO_COLLECTIONS[MONGO_TEST] = mongoc_client_get_collection(MONGO_TEST_DBNAME, MONGO_TEST_NAME);
 
     return S_OK;
 }
