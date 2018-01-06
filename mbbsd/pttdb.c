@@ -89,7 +89,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
     bson_t opts;
     bson_t reply;
 
-    bson_errot_t error;
+    bson_error_t error;
 
     // set_val
     bson_init(&set_val);
@@ -154,7 +154,7 @@ db_update_one(int collection, bson_t *key, bson_t *val) {
     bson_t opts;
     bson_t reply;
 
-    bson_errot_t error;
+    bson_error_t error;
 
     // set_val
     bson_init(&set_val);
