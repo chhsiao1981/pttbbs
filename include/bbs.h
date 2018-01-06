@@ -3,6 +3,8 @@
 #ifndef INCLUDE_BBS_H
 #define INCLUDE_BBS_H
 
+#include <mongoc.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -31,7 +33,6 @@ extern "C" {
 #include <sys/shm.h>
 #include <sys/sem.h>
 #include <sys/time.h>
-#include <mongoc.h>
 
 /* our header */
 #include "config.h"
