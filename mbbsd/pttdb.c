@@ -608,6 +608,13 @@ _split_main_contents(int fd_content, int len, UUID main_id, UUID content_id, int
             return error_code;
         }
     }
+    // last block
+    if(main_content_block.n_line) {
+        error_code = _split_main_contents_save_main_content_block(main_content_block);
+        if(error_code) {
+            return error_code;
+        }
+    }
 
     return S_OK;
 }
@@ -647,7 +654,7 @@ _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID cont
         }
     }
     // XXX should never happen.
-    else if (current_block->len_block + bytes_in_line >= MAX_BUF_BLOCK) {
+    else if (main_content_block->len_block + bytes_in_line >= MAX_BUF_BLOCK) {
         error_code = _split_main_contents_save_main_content_block(main_content_block);
         if (error_code) {
             return error_code;
