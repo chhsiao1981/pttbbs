@@ -166,7 +166,8 @@ db_update_one(int collection, bson_t *key, bson_t *val) {
 
     // opts
     bson_init(&opts);
-    status = bson_append_binary(&opts, "upsert", true);
+    unsigned char the_bool = true
+    status = bson_append_binary(&opts, "upsert", -1, BSON_SUBTYPE_BINARY, &the_bool);
     if(!status) {
         bson_destroy(&set_val);
         bson_destroy(&opts);
