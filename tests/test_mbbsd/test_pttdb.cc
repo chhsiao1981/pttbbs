@@ -25,4 +25,5 @@ TEST(pttdb, serialize_uuid_bson) {
     bson_destroy(&uuid_bson);
 
     EXPECT_EQ(error, S_OK);
+    EXPECT_STREQ(buf, "{ \"the_id\" : \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\" }");
 }
