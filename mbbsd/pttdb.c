@@ -291,6 +291,7 @@ gen_uuid(UUID uuid) {
         rand_num = random();
         *p_rand = rand_num;
         *p_rand += 4;
+    }
 
     _uuid[6] &= 0x0f;
     _uuid[6] |= 0x60;
