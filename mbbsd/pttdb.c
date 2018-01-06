@@ -56,10 +56,10 @@ init_mongo_collections() {
     }
 
     MONGO_COLLECTIONS = malloc(sizeof(mongoc_collection_t *) * N_MONGO_COLLECTIONS);
-    MONGO_COLLECTIONS[MONGO_MAIN] = mongoc_client_get_collection(MONGO_POST_DBNAME, MONGO_MAIN_NAME);
-    MONGO_COLLECTIONS[MONGO_MAIN_CONTENT] = mongoc_client_get_collection(MONGO_POST_DBNAME, MONGO_MAIN_CONTENT_NAME);
+    MONGO_COLLECTIONS[MONGO_MAIN] = mongoc_client_get_collection(MONGO_CLIENT, MONGO_POST_DBNAME, MONGO_MAIN_NAME);
+    MONGO_COLLECTIONS[MONGO_MAIN_CONTENT] = mongoc_client_get_collection(MONGO_CLIENT, MONGO_POST_DBNAME, MONGO_MAIN_CONTENT_NAME);
 
-    MONGO_COLLECTIONS[MONGO_TEST] = mongoc_client_get_collection(MONGO_TEST_DBNAME, MONGO_TEST_NAME);
+    MONGO_COLLECTIONS[MONGO_TEST] = mongoc_client_get_collection(MONGO_CLIENT, MONGO_TEST_DBNAME, MONGO_TEST_NAME);
 
     return S_OK;
 }
