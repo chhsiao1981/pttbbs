@@ -14,7 +14,7 @@ TEST(pttdb, serialize_uuid_bson) {
     bson_t uuid_bson;
     bson_init(&uuid_bson);
     
-    Err error = _serialize_uuid_bson(uuid, &uuid_bson);
+    Err error = _serialize_uuid_bson(uuid, MONG_THE_ID, &uuid_bson);
     str = bson_as_canonical_extended_json (&uuid_bson, NULL);
     strcpy(buf, str);
 
