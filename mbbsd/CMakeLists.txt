@@ -206,7 +206,7 @@ endif()
 
 # XXX hack for INCLUDES
 get_directory_property(INCLUDE_DIRECTORIES INCLUDE_DIRECTORIES)
-get_source_file_property(COMPILE_FLAGS COMPILE_FLAGS)
+get_source_file_property(COMPILE_FLAGS mbbsd.c COMPILE_FLAGS)
 
 # XXX hack for DIETCC
 string(REPLACE " " ";" DIETCC "${DIETCC}")
