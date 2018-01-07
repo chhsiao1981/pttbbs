@@ -2,7 +2,6 @@
 #ifndef PTTDB_INTERNAL_H
 #define PTTDB_INTERNAL_H
 
-#include <bson.h>
 #include <mongoc.h>
 
 #ifdef __cplusplus
