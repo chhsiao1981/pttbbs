@@ -32,17 +32,7 @@ ARFLAGS:=     rv
 ##########
 # test
 ##########
-
-# XXX hack due to there is main in mbbsd.o,
-#     and many .o depends on functions mbbsd.o
-.for obj in $(OBJS)
-.if $(obj) != "mbbsd.o" && $(obj) != "admin.o" && $(obj) != "xyz.o" && $(obj) != "bbs.o" && $(obj) != "board.o" && $(obj) != "user.o" && $(obj) != "register.o" && $(obj) != "io.o" && $(obj) != "telnet.o" && $(obj) != "talk.o" && $(obj) != "menu.o"  && $(obj) != "ordersong.o" && $(obj) != "edit.o" && $(obj) != "voteboard.o" && $(obj) != "announce.o" && $(obj) != "read.o" && $(obj) != "mail.o" && $(obj) != "record.o" && $(obj) != "fav.o" && $(obj) != "nios.o" && $(obj) != "friend.o" && $(obj) != "ccw.o" && $(obj) != "name.o" && $(obj) != "cache.o" && $(obj) != "cal.o" && $(obj) != "more.o" && $(obj) != "chess.o" && $(obj) != "chicken.o" && $(obj) != "gamble.o" && $(obj) != "pfterm.o" && $(obj) != "vote.o" && $(obj) != "acl.o" && $(obj) != "stuff.o" && $(obj) != "vtuikit.o" && $(obj) != "psb.o" && $(obj) != "pmore.o" && $(obj) != "chc.o" && $(obj) != "ch_go.o" && $(obj) != "ch_gomo.o" && $(obj) != "ch_dark.o" && $(obj) != "ch_reversi.o" && $(obj) != "ch_conn6.o" && $(obj) != "bbslua.o" && $(obj) != "brc.o" && $(obj) != "passwd.o" && $(obj) != "kaede.o" && $(obj) != "syspost.o" && $(obj) != "screen.o" && $(obj) != "term.o"
-MBBSD_OBJS+= $(SRCROOT)/mbbsd/$(obj)
-.endif
-.endfor
-MBBSD_VERSC= $(SRCROOT)/mbbsd/vers.c
-
-TEST_PROGS= test_dummy
+TEST_PROGS= test_dummy test_pttdb test_pttutil
 
 ##########
 # gtest
@@ -62,10 +52,14 @@ gtest_main.a: gtest-all.o gtest_main.o
 ##########
 # all
 ##########
-.for fn in $(TEST_PROGS)
-$(fn): $(MBBSD_OBJS) $(fn).o gtest_main.a
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(fn) ${MBBSD_VERSC} $(MBBSD_OBJS) $(fn).o gtest_main.a $(LDLIBS) -lpthread
-.endfor
+
+.SUFFIXES: .cc .o
+
+.cc.o: $(SRCROOT)/include/var.h
+	$(CXX) $(CXXFLAGS) -c $*.cc
+
+test_dummy: test_dummy.o gtest_main.a $(LDLIBS)
+	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFALGS) -o $@ $>
 
 all: $(TEST_PROGS)
 
