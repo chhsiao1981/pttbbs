@@ -1,6 +1,8 @@
 #include "bbs.h"
-#include "pttdb.h"
 #include "pttdb_internal.h"
+#include "pttutil.h"
+#include "ptterr.h"
+#include "pttdb.h"
 
 /**********
  * Globally Available
