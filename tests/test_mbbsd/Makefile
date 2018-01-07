@@ -23,10 +23,24 @@ GTEST_SRCS_= $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 AR:=          ar
 ARFLAGS:=     rv
 
+#######################################################################
+# conditional configurations and optional modules
+#######################################################################
+
+BBSCONF:=	$(SRCROOT)/pttbbs.conf
+DEF_PATTERN:=	^[ \t]*\#[ \t]*define[ \t]*
+DEF_CMD:=	grep -Ewq "${DEF_PATTERN}"
+DEF_YES:=	&& echo "YES" || echo ""
+MONGO_CLIENT_URL!=  	sh -c '${DEF_CMD}"MONGO_CLIENT_URL" ${BBSCONF} ${DEF_YES}'
+
 ##########
 # test
 ##########
-TEST_PROGS= test_dummy test_pttdb test_pttutil
+TEST_PROGS= test_dummy
+
+.if $(MONGO_CLIENT_URL)
+TEST_PROGS+= test_pttdb test_pttutil
+.endif
 
 ##########
 # gtest
