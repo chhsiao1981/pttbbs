@@ -63,11 +63,11 @@ test_dummy: test_dummy.o gtest_main.a $(LDLIBS)
 
 all: $(TEST_PROGS)
 
-.else
+.else # GTEST_DIR
 
 all:
 
-.endif
+.endif # GTEST_DIR
 
 clean:
 	rm -f *.o gtest.a gtest_main.a $(TEST_PROGS)
