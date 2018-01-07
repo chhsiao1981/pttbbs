@@ -90,7 +90,7 @@ MONGO_LIBS:=	-L/usr/local/lib -lmongoc-1.0 -lbson-1.0 -lresolv
 CFLAGS+=	${MONGO_CFLAGS}
 LDFLAGS+=	${MONGO_LDFLAGS}
 LDLIBS+=	${MONGO_LIBS}
-OBJS+=		pttdb_util.o pttdb.o
+OBJS+=		pttdb.o
 .endif # MONGO_CLIENT_URL
 
 #######################################################################

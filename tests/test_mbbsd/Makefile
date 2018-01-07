@@ -73,10 +73,10 @@ LDLIBS+=	${MONGO_LIBS}
 # test
 ##########
 
-TEST_PROGS=	test_dummy test_pttdb test_pttdb_util
+TEST_PROGS=	test_dummy
 
 .if $(MONGO_CLIENT_URL)
-TEST_PROGS+=	test_pttdb test_pttdb_util
+TEST_PROGS+=	test_pttdb
 .endif
 
 ##########
@@ -107,9 +107,6 @@ test_dummy: test_dummy.o gtest_main.a
 	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $> $(MBBSD_OBJS) $(LDLIBS) 
 
 test_pttdb: test_pttdb.o gtest.a
-	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $> $(MBBSD_OBJS) $(LDLIBS)
-
-test_pttdb_util: test_pttdb_util.o gtest_main.a
 	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $> $(MBBSD_OBJS) $(LDLIBS)
 
 all: $(TEST_PROGS)
