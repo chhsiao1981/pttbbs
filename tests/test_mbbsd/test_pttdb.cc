@@ -28,6 +28,8 @@ TEST(pttdb, serialize_uuid_bson) {
 TEST(pttdb, serialize_content_uuid_bson) {
     _UUID _uuid;
     UUID uuid;
+    char *str;
+    char buf[MAX_BUF_SIZE];
 
     bzero(_uuid, sizeof(_UUID));
     b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
