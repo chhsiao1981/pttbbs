@@ -56,5 +56,5 @@ TEST(pttdb, gen_uuid) {
     EXPECT_GE(milli_timestamp2, milli_timestamp);
 
     b64_pton((char *)uuid, _uuid, _UUIDLEN);
-    EXPECT_EQ(0x60, uuid[6] & 0xf0);
+    EXPECT_EQ(0x60, _uuid[6] & 0xf0);
 }
