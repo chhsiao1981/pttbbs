@@ -48,7 +48,7 @@ TEST(pttdb, serialize_content_uuid_bson) {
     bson_destroy(&uuid_bson);
 
     EXPECT_EQ(S_OK, error);
-    EXPECT_STREQ("{ \"the_id\" : \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\" }", buf);
+    EXPECT_STREQ("{ \"the_id\" : \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"block_id\" : { \"$numberInt\" : \"0\" } }", buf);
 }
 
 TEST(pttdb, gen_uuid) {
