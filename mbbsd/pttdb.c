@@ -1,4 +1,5 @@
 #include "bbs.h"
+#include <mongoc.h>
 
 /**********
  * Globally Available

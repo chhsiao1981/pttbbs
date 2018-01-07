@@ -3,10 +3,6 @@
 #ifndef INCLUDE_BBS_H
 #define INCLUDE_BBS_H
 
-#ifdef MONGO_CLIENT_URL
-#include <mongoc.h>
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
