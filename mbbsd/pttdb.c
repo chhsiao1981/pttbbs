@@ -278,15 +278,9 @@ gen_uuid(UUID uuid) {
     error_code = get_milli_timestamp(&milli_timestamp);
     if (error_code) return error_code;
 
-    printf("milli_timestamp: %lld\n", milli_timestamp);    
     p_char = &milli_timestamp;
-    for(int i = 0; i < 8; i++) printf("%x", *(p_char + i));
-    printf("\n");
     milli_timestamp <<= 16;
-    printf("after <<= 16: milli_timestamp: %lld\n", milli_timestamp);
     p_char = &milli_timestamp;
-    for(int i = 0; i < 8; i++) printf("%x", *(p_char + i));
-    printf("\n");
     p_milli_timestamp = _uuid + 40;
     *p_milli_timestamp = milli_timestamp;
 
@@ -298,7 +292,6 @@ gen_uuid(UUID uuid) {
     // first 40 chars as random, but 6th char is version (6 for now)
     p_rand = _uuid;
     for(int i = 0; i < (_UUIDLEN - 8) / sizeof(long int); i++) {
-        printf("(%d/%d) p_rand: %d\n", i, (_UUIDLEN - 8) / sizeof(long int), p_rand);
         rand_num = random();
         *p_rand = rand_num;
         p_rand++;
@@ -306,9 +299,6 @@ gen_uuid(UUID uuid) {
 
     _uuid[6] &= 0x0f;
     _uuid[6] |= 0x60;
-
-    printf("_uuid: ");
-    for(int i = 0; i < _UUIDLEN; i++) printf("%x", _uuid[i]);
 
     b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
 
@@ -427,10 +417,11 @@ _serialize_content_uuid_bson(UUID uuid, const char *key, int block_id, bson_t *u
 Err
 uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp)
 {
+    _UUID _uuid;
+    b64_pton(uuid, _uuid, _UUIDLEN);
     unsigned short *p_head;
-    *milli_timestamp = *(uuid + 40);
-    p_head = milli_timestamp;
-    *p_head = 0;
+    *milli_timestamp = *(_uuid + 40);
+    *milli_timestamp >>= 16;
 
     return S_OK;
 }
