@@ -422,6 +422,8 @@ Err
 uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp)
 {
     _UUID _uuid;
+    time64_t *p_uuid = _uuid + 5;
+    printf("_uuid: %u p_uuid: %u\n", _uuid, p_uuid);
     b64_pton(uuid, _uuid, _UUIDLEN);
     printf("uuid_to_milli_timestamp: _uuid: ");
     for(int i = 0; i < _UUIDLEN; i++) printf("%x", _uuid[i]);
