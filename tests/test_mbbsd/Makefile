@@ -12,24 +12,24 @@ SRCROOT:= ../..
 # gtest
 ##########
 
-CPPFLAGS+= -isystem $(GTEST_DIR)/include
-CXXFLAGS+= -g -Wall -Wextra -pthread
+CPPFLAGS+=	-isystem $(GTEST_DIR)/include
+CXXFLAGS+=	-g -Wall -Wextra -pthread
 
-GTEST_HEADERS= /usr/include/gtest/*.h \
-                /usr/include/gtest/internal/*.h
+GTEST_HEADERS=	/usr/include/gtest/*.h \
+		/usr/include/gtest/internal/*.h
 
 GTEST_SRCS_= $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
-AR:=          ar
-ARFLAGS:=     rv
+AR:=		ar
+ARFLAGS:=	rv
 
 ##########
 # test
 ##########
-TEST_PROGS= test_dummy
+TEST_PROGS=	test_dummy
 
 .if $(MONGO_CLIENT_URL)
-TEST_PROGS+= test_pttdb test_pttutil
+TEST_PROGS+=	test_pttdb test_pttutil
 .endif
 
 ##########
