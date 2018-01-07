@@ -108,6 +108,6 @@ TEST(pttdb, db_set_if_not_exists) {
     free_mongo_collections();
     free_mongo_global();
 
-    EXPECT_EQ(error, S_OK);
-    EXPECT_EQ(error2, S_ERR_ALREADY_EXISTS);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(S_ERR_ALREADY_EXISTS, error2);
 }
