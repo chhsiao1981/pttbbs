@@ -279,12 +279,12 @@ gen_uuid(UUID uuid) {
     printf("milli_timestamp: %lld\n", milli_timestamp);
     milli_timestamp <<= 16;
     printf("after <<= 16: milli_timestamp: %lld\n", milli_timestamp);
-    p_milli_timestamp = uuid + 40;
+    p_milli_timestamp = _uuid + 40;
     *p_milli_timestamp = milli_timestamp;
 
     rand_num = random();
     p_short_rand_num = &rand_num;
-    p_short = uuid + 40;
+    p_short = _uuid + 40;
     *p_short = *p_short_rand_num;
 
     // first 40 chars as random, but 6th char is version (6 for now)
