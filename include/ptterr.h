@@ -2,6 +2,10 @@
 #ifndef PTTERR_H
 #define PTTERR_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef char Err;
 
 #define S_OK 0
@@ -9,5 +13,9 @@ typedef char Err;
 #define S_ERR_MALLOC -2
 #define S_ERR_ALREADY_EXISTS -3
 #define S_ERR_NOT_EXISTS -4
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

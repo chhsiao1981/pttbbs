@@ -45,6 +45,13 @@ Err _serialize_main_bson(MainHeader *main_header, bson_t *main_bson);
 
 Err _serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main_content_block_bson);
 
+/**********
+ * Misc
+ **********/
+
+Err get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offset_line, int *bytes_in_new_line);
+
+
 #ifdef __cplusplus
 }
 #endif

@@ -2,6 +2,10 @@
 #ifndef PTTDB_H
 #define PTTDB_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define UUIDLEN 64
 #define _UUIDLEN 48
 
@@ -280,5 +284,9 @@ int update_comment_reply(UUID comment_reply_id, char *updater, unsigned char *ip
 
 int delete_comment(UUID comment_reply_id, char *updater, unsigned char *ip);
 */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* PTTDB_H */
