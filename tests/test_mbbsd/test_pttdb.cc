@@ -128,18 +128,21 @@ TEST(pttdb, db_update_one) {
     EXPECT_EQ(S_OK, error);
 }
 
-class MyEnvironment : public Environment {
- public:
-  void SetUp() {
+class MyEnvironment: public ::testing::Environment {
+public:
+    void SetUp();
+    void TearDown();
+};
+
+void MyEnvironment::Setup() {
     init_mongo_global();
     init_mongo_collections();
-  }
-  
-  void TearDown() {
+}
+
+void MyEnvironment::TearDown() {
     free_mongo_collections();
     free_mongo_global();
-  }
-};
+}
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
