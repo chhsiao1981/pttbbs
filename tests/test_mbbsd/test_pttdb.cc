@@ -29,6 +29,7 @@ TEST(pttdb, serialize_uuid_bson) {
 
 TEST(pttdb, gen_uuid) {
     UUID uuid;
+    _UUID _uuid;
     time64_t milli_timestamp;
     time64_t milli_timestamp2;
 
@@ -40,24 +41,20 @@ TEST(pttdb, gen_uuid) {
 
     gen_uuid(uuid);
     uuid_to_milli_timestamp(uuid, &milli_timestamp);
-    printf("uuid: ");
-    for(int i = 0; i < UUIDLEN; i++) printf("%c", uuid[i]);
-    printf("\n");
-    printf("milli_timestamp: %lld\n", milli_timestamp);
-
+    
     EXPECT_GE(milli_timestamp, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
-    EXPECT_EQ(uuid[6] & 0xf0, 0x60);
+
+    b64_pton(uuid, _uuid, _UUIDLEN);
+    EXPECT_EQ(0x60, _uuid[6] & 0xf0);
 
     gen_uuid(uuid);
     uuid_to_milli_timestamp(uuid, &milli_timestamp2);
-    printf("uuid: ");
-    for(int i = 0; i < UUIDLEN; i++) printf("%c", uuid[i]);
-    printf("\n");
-    printf("milli_timestamp2: %lld\n", milli_timestamp2);
 
     EXPECT_GE(milli_timestamp2, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp2, END_MILLI_TIMESTAMP);
-    EXPECT_EQ(uuid[6] & 0xf0, 0x60);
     EXPECT_GE(milli_timestamp2, milli_timestamp);
+
+    b64_pton(uuid, _uuid, _UUIDLEN);
+    EXPECT_EQ(0x60, uuid[6] & 0xf0);
 }

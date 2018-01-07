@@ -300,10 +300,6 @@ gen_uuid(UUID uuid) {
     _uuid[6] &= 0x0f;
     _uuid[6] |= 0x60;
 
-    printf("gen_uuid: _uuid: ");
-    for(int i = 0; i < _UUIDLEN; i++) printf("%x", _uuid[i]);
-    printf("\n");
-
     b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
 
     return S_OK;
@@ -423,16 +419,10 @@ uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp)
 {
     _UUID _uuid;
     time64_t *p_uuid = _uuid + 40;
-    printf("_uuid: %u p_uuid: %u\n", _uuid, p_uuid);
     b64_pton(uuid, _uuid, _UUIDLEN);
-    printf("uuid_to_milli_timestamp: _uuid: ");
-    for(int i = 0; i < _UUIDLEN; i++) printf("%x", _uuid[i]);
-    printf("\n");
 
     *milli_timestamp = *p_uuid;
-    printf("milli_timestamp: %lld\n", *milli_timestamp);
     *milli_timestamp >>= 16;
-    printf("milli_timestamp: %lld\n", *milli_timestamp);
 
     return S_OK;
 }
