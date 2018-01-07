@@ -85,8 +85,10 @@ OBJS+=		screen.o
 
 .if $(MONGO_CLIENT_URL)
 MONGO_CFLAGS:=	-I/usr/local/include/libmongoc-1.0 -I/usr/local/include/libbson-1.0
+MONGO_LDFLAGS:=	-L/usr/local/lib
 MONGO_LIBS:=	-L/usr/local/lib -lmongoc-1.0 -lbson-1.0 -lresolv
 CFLAGS+=	${MONGO_CFLAGS}
+LDFLAGS+=	${MONGO_LDFLAGS}
 LDLIBS+=	${MONGO_LIBS}
 OBJS+=		pttdb_util.o pttdb.o
 .endif # MONGO_CLIENT_URL
