@@ -121,6 +121,8 @@ TEST(pttdb, db_update_one) {
     bson_t key_bson;
     bson_t val_bson;
     bson_init(&key_bson);
+    bson_init(&val_bson);
+    
     bson_append_utf8(&key_bson, "the_key", -1, "key0", 4);
     bson_append_utf8(&val_bson, "the_val", -1, "val0", 4);
 
