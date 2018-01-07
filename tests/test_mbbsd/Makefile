@@ -62,7 +62,7 @@ MONGO_CLIENT_URL!=	sh -c '${DEF_CMD}"MONGO_CLIENT_URL" ${BBSCONF} ${DEF_YES}'
 
 .if $(MONGO_CLIENT_URL)
 MONGO_CXXFLAGS:=	-I/usr/local/include/libmongoc-1.0 -I/usr/local/include/libbson-1.0	
-MONGO_LDFLAGS:= -L/usr/local/lib -Wl,-rpath,/usr/local/lib
+MONGO_LDFLAGS:= -L/usr/local/lib -Wl,-rpath,/usr/local/lib -rdynamic
 MONGO_LIBS:=	-lmongoc-1.0 -lbson-1.0 -lresolv
 CXXFLAGS+=	${MONGO_CXXFLAGS}
 LDFLAGS+=	${MONGO_LDFLAGS}
