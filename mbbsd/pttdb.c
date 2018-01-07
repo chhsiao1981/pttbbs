@@ -96,7 +96,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
 
     // set_val
     bson_init(&set_val);
-    status = bson_append_document(&set_val, "$set", -1, key);
+    status = bson_append_document(&set_val, "$setOnInsert", -1, key);
     if(!status) {
         printf("something went wrong with set_val\n");
         bson_destroy(&set_val);
@@ -109,13 +109,6 @@ db_set_if_not_exists(int collection, bson_t *key) {
     status = bson_append_bool(&opts, "upsert", -1, is_upsert);
     if(!status) {
         printf("something went wrong with upsert\n");
-        bson_destroy(&set_val);
-        bson_destroy(&opts);
-        return S_ERR;
-    }
-    status = bson_append_document(&opts, "$setOnInsert", -1, key);
-    if(!status) {
-        printf("something went wrong with setOnInsert\n");
         bson_destroy(&set_val);
         bson_destroy(&opts);
         return S_ERR;
