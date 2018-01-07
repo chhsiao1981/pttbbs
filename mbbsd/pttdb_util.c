@@ -1,5 +1,5 @@
 #include "bbs.h"
-#include "pttutil.h"
+#include "pttdb_util.h"
 
 /**
  * @brief Try to get a line (ending with \r\n) from buffer.

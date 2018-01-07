@@ -88,7 +88,7 @@ MONGO_CFLAGS:=	-I/usr/local/include/libmongoc-1.0 -I/usr/local/include/libbson-1
 MONGO_LIBS:=	-L/usr/local/lib -lmongoc-1.0 -lbson-1.0 -lresolv
 CFLAGS+=	${MONGO_CFLAGS}
 LDLIBS+=	${MONGO_LIBS}
-OBJS+=		pttutil.o pttdb.o
+OBJS+=		pttdb_util.o pttdb.o
 .endif # MONGO_CLIENT_URL
 
 #######################################################################

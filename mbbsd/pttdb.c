@@ -1,5 +1,4 @@
 #include "bbs.h"
-#include "pttutil.h"
 #include "ptterr.h"
 #include "pttdb.h"
 #include "pttdb_internal.h"
@@ -101,7 +100,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
     // set_val
     bson_init(&set_val);
     status = bson_append_document(&set_val, "$setOnInsert", -1, key);
-    if(!status) {
+    if (!status) {
         bson_destroy(&set_val);
         return S_ERR;
     }
@@ -110,7 +109,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
     bson_init(&opts);
 
     status = bson_append_bool(&opts, "upsert", -1, is_upsert);
-    if(!status) {
+    if (!status) {
         bson_destroy(&set_val);
         bson_destroy(&opts);
         return S_ERR;
@@ -119,7 +118,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
     // reply
     bson_init(&reply);
     status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, &set_val, &opts, &reply, &error);
-    if(!status) {
+    if (!status) {
         bson_destroy(&set_val);
         bson_destroy(&opts);
         bson_destroy(&reply);
@@ -127,7 +126,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
     }
 
     error_code = _bson_exists(&reply, "upsertedId");
-    if(error_code) {
+    if (error_code) {
         bson_destroy(&set_val);
         bson_destroy(&opts);
         bson_destroy(&reply);
@@ -154,7 +153,7 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
     // set_val
     bson_init(&set_val);
     status = bson_append_document(&set_val, "$set", -1, val);
-    if(!status) {
+    if (!status) {
         bson_destroy(&set_val);
         return S_ERR;
     }
@@ -162,7 +161,7 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
     // opts
     bson_init(&opts);
     status = bson_append_bool(&opts, "upsert", -1, &is_upsert);
-    if(!status) {
+    if (!status) {
         bson_destroy(&set_val);
         bson_destroy(&opts);
         return S_ERR;
@@ -171,7 +170,7 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
     // reply
     bson_init(&reply);
     status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, &set_val, &opts, &reply, &error);
-    if(!status) {
+    if (!status) {
         bson_destroy(&set_val);
         bson_destroy(&opts);
         bson_destroy(&reply);
@@ -190,48 +189,50 @@ _DB_FORCE_DROP_COLLECTION(int collection) {
     bool status;
     bson_error_t error;
     status = mongoc_collection_drop(MONGO_COLLECTIONS[collection], &error);
-    if(!status) {
+    if (!status) {
         return S_ERR;
     }
 
     return S_OK;
 }
 
-Err _bson_exists(bson_t *b, char *name) {
+Err
+_bson_exists(bson_t *b, char *name) {
     bool status;
     bson_iter_t iter;
     bson_iter_t it_val;
 
     status = bson_iter_init(&iter, b);
-    if(!status) {
+    if (!status) {
         return S_ERR;
     }
 
     status = bson_iter_find_descendant(&iter, name, &it_val);
-    if(!status) {
+    if (!status) {
         return S_ERR_NOT_EXISTS;
     }
 
     return S_OK;
 }
 
-Err _bson_get_value_int32(bson_t *b, char *name, int *value) {
+Err
+_bson_get_value_int32(bson_t *b, char *name, int *value) {
     bool status;
     bson_iter_t iter;
     bson_iter_t it_val;
 
     status = bson_iter_init(&iter, b);
-    if(!status) {
+    if (!status) {
         return S_ERR;
     }
 
     status = bson_iter_find_descendant(&iter, name, &it_val);
-    if(!status) {
+    if (!status) {
         return S_ERR;
     }
 
     status = BSON_ITER_HOLDS_INT32(&it_val);
-    if(!status) {
+    if (!status) {
         return S_ERR;
     }
 
@@ -312,7 +313,7 @@ gen_uuid(UUID uuid) {
 
     // first 40 chars as random, but 6th char is version (6 for now)
     p_rand = _uuid;
-    for(int i = 0; i < (_UUIDLEN - 8) / sizeof(long int); i++) {
+    for (int i = 0; i < (_UUIDLEN - 8) / sizeof(long int); i++) {
         rand_num = random();
         *p_rand = rand_num;
         p_rand++;
@@ -649,9 +650,9 @@ _split_main_contents(int fd_content, int len, UUID main_id, UUID content_id, int
         }
     }
     // last block
-    if(main_content_block.n_line) {
+    if (main_content_block.n_line) {
         error_code = _split_main_contents_save_main_content_block(&main_content_block);
-        if(error_code) {
+        if (error_code) {
             return error_code;
         }
     }
@@ -855,7 +856,7 @@ _serialize_main_bson(MainHeader *main_header, bson_t *main_bson) {
 /**
  * @brief Serialize main-content-block to bson
  * @details Serialize main-content-block to bson
- * 
+ *
  * @param main_content_block main-content-block
  * @param main_content_block_bson main_content_block_bson (to-compute)
  * @return Err

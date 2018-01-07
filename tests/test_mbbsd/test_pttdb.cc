@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "bbs.h"
-#include "pttutil.h"
 #include "ptterr.h"
 #include "pttdb.h"
 #include "pttdb_internal.h"
@@ -16,7 +15,7 @@ TEST(pttdb, serialize_uuid_bson) {
 
     bson_t uuid_bson;
     bson_init(&uuid_bson);
-    
+
     Err error = _serialize_uuid_bson(uuid, MONGO_THE_ID, &uuid_bson);
     str = bson_as_canonical_extended_json (&uuid_bson, NULL);
     strcpy(buf, str);
@@ -40,7 +39,7 @@ TEST(pttdb, serialize_content_uuid_bson) {
 
     bson_t uuid_bson;
     bson_init(&uuid_bson);
-    
+
     Err error = _serialize_content_uuid_bson(uuid, MONGO_THE_ID, 0, &uuid_bson);
     str = bson_as_canonical_extended_json (&uuid_bson, NULL);
     strcpy(buf, str);
@@ -99,7 +98,7 @@ TEST(pttdb, db_set_if_not_exists) {
 
     bson_t uuid_bson;
     bson_init(&uuid_bson);
-    
+
     _serialize_content_uuid_bson(uuid, MONGO_THE_ID, 0, &uuid_bson);
 
     error = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
@@ -119,7 +118,7 @@ TEST(pttdb, db_update_one) {
     bson_t val_bson;
     bson_init(&key_bson);
     bson_init(&val_bson);
-    
+
     bson_append_utf8(&key_bson, "the_key", -1, "key0", 4);
     bson_append_utf8(&val_bson, "the_val", -1, "val0", 4);
 

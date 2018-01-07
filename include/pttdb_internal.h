@@ -11,6 +11,8 @@ extern "C" {
 #include <sys/time.h>
 #include <resolv.h>
 
+#include "pttdb_util.h"
+
 /**********
  * UUID
  **********/
