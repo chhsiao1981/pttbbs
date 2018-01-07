@@ -53,5 +53,5 @@ TEST(pttdb, gen_uuid) {
     EXPECT_GE(milli_timestamp2, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp2, END_MILLI_TIMESTAMP);
     EXPECT_EQ(uuid[6] & 0xf0, 0x60);
-    EXPECT_GE(milli_timestamp2, milli_timestamp)
+    EXPECT_GE(milli_timestamp2, milli_timestamp);
 }
