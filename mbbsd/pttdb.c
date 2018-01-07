@@ -98,7 +98,6 @@ db_set_if_not_exists(int collection, bson_t *key) {
     bson_init(&set_val);
     status = bson_append_document(&set_val, "$setOnInsert", -1, key);
     if(!status) {
-        printf("something went wrong with set_val\n");
         bson_destroy(&set_val);
         return S_ERR;
     }
@@ -108,7 +107,6 @@ db_set_if_not_exists(int collection, bson_t *key) {
 
     status = bson_append_bool(&opts, "upsert", -1, is_upsert);
     if(!status) {
-        printf("something went wrong with upsert\n");
         bson_destroy(&set_val);
         bson_destroy(&opts);
         return S_ERR;
@@ -118,7 +116,6 @@ db_set_if_not_exists(int collection, bson_t *key) {
     bson_init(&reply);
     status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, &set_val, &opts, &reply, &error);
     if(!status) {
-        printf("something went wrong with update_one: (%d.%d/%s)\n", error.domain, error.code, error.message);
         bson_destroy(&set_val);
         bson_destroy(&opts);
         bson_destroy(&reply);
@@ -132,7 +129,6 @@ db_set_if_not_exists(int collection, bson_t *key) {
 
     error_code = _bson_exists(&reply, "upsertedId");
     if(error_code) {
-        printf("something went wrong with nUpserted. Assuming no nUpserted\n");
         bson_destroy(&set_val);
         bson_destroy(&opts);
         bson_destroy(&reply);
