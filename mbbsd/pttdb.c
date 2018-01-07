@@ -297,6 +297,7 @@ gen_uuid(UUID uuid) {
     // first 40 chars as random, but 6th char is version (6 for now)
     p_rand = _uuid;
     for(int i = 0; i < 10; i++) {
+        printf("(%d/%d) p_rand: %d\n", i, 10, p_rand);
         rand_num = random();
         *p_rand = rand_num;
         p_rand++;
