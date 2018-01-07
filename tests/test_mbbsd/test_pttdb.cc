@@ -40,7 +40,7 @@ TEST(pttdb, gen_uuid) {
 
     gen_uuid(uuid);
     uuid_to_milli_timestamp(uuid, &milli_timestamp);
-    printf("uuid: ")
+    printf("uuid: ");
     for(int i = 0; i < UUIDLEN; i++) printf("%c", uuid[i]);
     printf("\n");
     printf("milli_timestamp: %lld\n", milli_timestamp);
@@ -51,7 +51,7 @@ TEST(pttdb, gen_uuid) {
 
     gen_uuid(uuid);
     uuid_to_milli_timestamp(uuid, &milli_timestamp2);
-    printf("uuid: ")
+    printf("uuid: ");
     for(int i = 0; i < UUIDLEN; i++) printf("%c", uuid[i]);
     printf("\n");
     printf("milli_timestamp2: %lld\n", milli_timestamp2);
