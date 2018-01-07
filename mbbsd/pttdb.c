@@ -125,6 +125,11 @@ db_set_if_not_exists(int collection, bson_t *key) {
         return S_ERR;
     }
 
+    char *str = bson_as_canonical_extended_json (&reply, NULL);
+    printf("reply: %s\n", str);
+    bson_free (str);
+
+
     error_code = _bson_get_value_int32(&reply, "nUpserted", &n_upserted);
     if(error_code) {
         printf("something went wrong with nUpserted\n");
