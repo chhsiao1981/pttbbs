@@ -42,8 +42,8 @@ TEST(pttutil, get_line_from_buf_with_line_offset) {
     int bytes_in_new_line = 0;
 
     strcpy(buf, "0123456789\r\nABCDEFGHIJ\r\n");
-    line[0] = '!'
-    line[1] = '@'
+    line[0] = '!';
+    line[1] = '@';
 
     Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, &bytes_in_new_line);
     EXPECT_EQ(S_OK, error);
