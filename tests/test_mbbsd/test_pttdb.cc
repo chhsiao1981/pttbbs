@@ -21,8 +21,8 @@ TEST(pttdb, serialize_uuid_bson) {
 
     bson_destroy(&uuid_bson);
 
-    EXPECT_EQ(error, S_OK);
-    EXPECT_STREQ(buf, "{ \"the_id\" : \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\" }");
+    EXPECT_EQ(S_OK, error);
+    EXPECT_STREQ("{ \"the_id\" : \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\" }", buf);
 }
 
 TEST(pttdb, serialize_content_uuid_bson) {
@@ -47,8 +47,8 @@ TEST(pttdb, serialize_content_uuid_bson) {
 
     bson_destroy(&uuid_bson);
 
-    EXPECT_EQ(error, S_OK);
-    EXPECT_STREQ(buf, "{ \"the_id\" : \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\" }");
+    EXPECT_EQ(S_OK, error);
+    EXPECT_STREQ("{ \"the_id\" : \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\" }", buf);
 }
 
 TEST(pttdb, gen_uuid) {
@@ -70,7 +70,7 @@ TEST(pttdb, gen_uuid) {
     EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
 
     b64_pton((char *)uuid, _uuid, _UUIDLEN);
-    EXPECT_EQ(_uuid[6] & 0xf0, 0x60);
+    EXPECT_EQ(0x60, _uuid[6] & 0xf0);
 
     gen_uuid(uuid);
     uuid_to_milli_timestamp(uuid, &milli_timestamp2);
@@ -80,7 +80,7 @@ TEST(pttdb, gen_uuid) {
     EXPECT_GE(milli_timestamp2, milli_timestamp);
 
     b64_pton((char *)uuid, _uuid, _UUIDLEN);
-    EXPECT_EQ(_uuid[6] & 0xf0, 0x60);
+    EXPECT_EQ(0x60, _uuid[6] & 0xf0);
 }
 
 TEST(pttdb, db_set_if_not_exists) {
