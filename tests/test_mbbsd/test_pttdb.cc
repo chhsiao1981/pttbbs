@@ -102,6 +102,7 @@ TEST(pttdb, db_set_if_not_exists) {
 
     error = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
     error2 = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
+    error3 = _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
     bson_destroy(&uuid_bson);
 

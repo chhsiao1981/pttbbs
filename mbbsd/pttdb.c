@@ -190,6 +190,18 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
     return S_OK;
 }
 
+Err
+_DB_FORCE_DROP_COLLECTION(int collection) {
+    bool status;
+    bson_error_t error;
+    status = mongoc_collection_drop(MONGO_COLLECTIONS[collection], &error);
+    if(!status) {
+        return S_ERR;
+    }
+
+    return S_OK;
+}
+
 Err _bson_exists(bson_t *b, char *name) {
     bool status;
     bson_iter_t iter;
