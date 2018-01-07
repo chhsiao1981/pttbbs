@@ -427,7 +427,7 @@ uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp)
     for(int i = 0; i < _UUIDLEN; i++) printf("%x", _uuid[i]);
     printf("\n");
 
-    *milli_timestamp = *(_uuid + 40);
+    *milli_timestamp = *(_uuid + 5);
     *milli_timestamp >>= 16;
     printf("milli_timestamp: %lld\n", *milli_timestamp);
 
