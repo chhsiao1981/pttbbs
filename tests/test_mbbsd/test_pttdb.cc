@@ -86,6 +86,7 @@ TEST(pttdb, gen_uuid) {
 TEST(pttdb, db_set_if_not_exists) {
     Err error;
     Err error2;
+    Err error3;
     _UUID _uuid;
     UUID uuid;
 
