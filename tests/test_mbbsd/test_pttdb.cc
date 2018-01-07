@@ -82,3 +82,32 @@ TEST(pttdb, gen_uuid) {
     b64_pton((char *)uuid, _uuid, _UUIDLEN);
     EXPECT_EQ(0x60, _uuid[6] & 0xf0);
 }
+
+TEST(pttdb, db_set_if_not_exists) {
+    Err error;
+    Err error2;
+    _UUID _uuid;
+    UUID uuid;
+
+    init_mongo_global();
+    init_mongo_collections();
+
+    bzero(_uuid, sizeof(_UUID));
+    b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
+
+    bson_t uuid_bson;
+    bson_init(&uuid_bson);
+    
+    _serialize_uuid_bson(uuid, MONGO_THE_ID, &uuid_bson);
+
+    error = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
+    error2 = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
+
+    bson_destroy(&uuid_bson);
+
+    free_mongo_collections();
+    free_mongo_global();
+
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(S_ERR_ALREADY_EXISTS, error2);
+}
