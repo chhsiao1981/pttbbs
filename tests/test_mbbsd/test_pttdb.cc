@@ -134,7 +134,7 @@ public:
     void TearDown();
 };
 
-void MyEnvironment::Setup() {
+void MyEnvironment::SetUp() {
     init_mongo_global();
     init_mongo_collections();
 }
