@@ -42,7 +42,7 @@ TEST(pttdb, gen_uuid) {
     uuid_to_milli_timestamp(uuid, &milli_timestamp);
     printf("milli_timestamp: %lld\n", milli_timestamp);
 
-    EXPECT_GTE(milli_timestamp, START_MILLI_TIMESTAMP);
+    EXPECT_GE(milli_timestamp, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
     EXPECT_EQ(uuid[6] & 0xf0, 0x60);
 
@@ -50,8 +50,8 @@ TEST(pttdb, gen_uuid) {
     uuid_to_milli_timestamp(uuid, &milli_timestamp2);
     printf("milli_timestamp2: %lld\n", milli_timestamp2);
 
-    EXPECT_GTE(milli_timestamp2, START_MILLI_TIMESTAMP);
+    EXPECT_GE(milli_timestamp2, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp2, END_MILLI_TIMESTAMP);
     EXPECT_EQ(uuid[6] & 0xf0, 0x60);
-    EXPECT_GTE(milli_timestamp2, milli_timestamp)
+    EXPECT_GE(milli_timestamp2, milli_timestamp)
 }
