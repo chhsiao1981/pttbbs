@@ -8,6 +8,8 @@
 SRCROOT:= ../..
 .include "$(SRCROOT)/pttbbs.mk"
 
+MBBSD_DIR:=	${SRCROOT}/mbbsd
+
 ##########
 # gtest
 ##########
@@ -22,6 +24,27 @@ GTEST_SRCS_= $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
 AR:=		ar
 ARFLAGS:=	rv
+
+#######################################################################
+# mbbsd modules
+#######################################################################	
+MBBSD_OJBS:=	${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/pttdb_util.o
+
+#######################################################################
+# reduce .bss align overhead
+#######################################################################
+
+.if !defined(DEBUG) && $(OSTYPE)!="Darwin"
+LDFLAGS+=-Wl,--sort-common
+.endif
+
+#######################################################################
+# common libraries
+#######################################################################
+
+LDFLAGS+= -L$(SRCROOT)/common/bbs -L$(SRCROOT)/common/sys \
+	  -L$(SRCROOT)/common/osdep 
+LDLIBS:= -lcmbbs -lcmsys -losdep $(LDLIBS)
 
 #######################################################################
 # conditional configurations and optional modules
@@ -49,6 +72,7 @@ LDLIBS+=	${MONGO_LIBS}
 ##########
 # test
 ##########
+
 TEST_PROGS=	test_dummy
 
 .if $(MONGO_CLIENT_URL)
