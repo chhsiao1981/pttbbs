@@ -71,23 +71,6 @@ TEST(pttutil, get_line_from_buf_not_end) {
     EXPECT_STREQ("0123456789", line);
 }
 
-TEST(pttutil, get_line_from_buf_not_end) {
-    int len_buf = 10;
-    char buf[MAX_BUF_SIZE];
-    char line[MAX_BUF_SIZE];
-    int offset_buf = 0;
-    int offset_line = 0;
-    int bytes_in_new_line = 0;
-    bzero(line, sizeof(line));
-
-    strcpy(buf, "0123456789");
-
-    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, &bytes_in_new_line);
-    EXPECT_EQ(S_ERR, error);
-    EXPECT_EQ(10, bytes_in_new_line);
-    EXPECT_STREQ("0123456789", line);
-}
-
 TEST(pttutil, get_line_from_buf_partial_line_break) {
     int len_buf = 10;
     char buf[MAX_BUF_SIZE];
