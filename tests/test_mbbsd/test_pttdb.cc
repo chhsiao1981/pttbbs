@@ -87,7 +87,6 @@ TEST(pttdb, gen_uuid) {
 TEST(pttdb, db_set_if_not_exists) {
     Err error;
     Err error2;
-    Err error3;
     _UUID _uuid;
     UUID uuid;
 
@@ -101,7 +100,7 @@ TEST(pttdb, db_set_if_not_exists) {
 
     error = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
     error2 = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
-    error3 = _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
+    _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
     bson_destroy(&uuid_bson);
 
@@ -121,6 +120,7 @@ TEST(pttdb, db_update_one) {
     bson_append_utf8(&val_bson, "the_val", -1, "val0", 4);
 
     error = db_update_one(MONGO_TEST, &key_bson, &val_bson, true);
+    _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
     bson_destroy(&key_bson);
     bson_destroy(&val_bson);
