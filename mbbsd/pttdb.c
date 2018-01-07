@@ -299,7 +299,7 @@ gen_uuid(UUID uuid) {
     for(int i = 0; i < 10; i++) {
         rand_num = random();
         *p_rand = rand_num;
-        p_rand += 4;
+        p_rand++;
     }
 
     _uuid[6] &= 0x0f;
