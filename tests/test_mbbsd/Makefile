@@ -9,12 +9,6 @@ SRCROOT:= ../..
 .include "$(SRCROOT)/pttbbs.mk"
 
 ##########
-# include mbbsd Makefile
-##########
-
-.include "$(SRCROOT)/mbbsd/mbbsdvars.mk"
-
-##########
 # gtest
 ##########
 
