@@ -79,14 +79,14 @@ gtest_main.a: gtest-all.o gtest_main.o
 .cc.o: $(SRCROOT)/include/var.h
 	$(CXX) $(CXXFLAGS) -c $*.cc
 
-test_dummy: test_dummy.o gtest_main.a $(LDLIBS)
-	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFALGS) -o $@ $>
+test_dummy: test_dummy.o gtest_main.a
+	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFALGS) $(LDLIBS) -o $@ $>
 
-test_pttdb: test_pttdb.o gtest_main.a $(LDLIBS)
-	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFALGS) -o $@ $>
+test_pttdb: test_pttdb.o gtest_main.a
+	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFALGS) $(LDLIBS) -o $@ $>
 
-test_pttdb_util: test_pttdb_util.o gtest_main.a $(LDLIBS)
-	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFALGS) -o $@ $>
+test_pttdb_util: test_pttdb_util.o gtest_main.a
+	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFALGS) $(LDLIBS) -o $@ $>
 
 all: $(TEST_PROGS)
 
