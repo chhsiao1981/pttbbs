@@ -91,9 +91,6 @@ TEST(pttdb, db_set_if_not_exists) {
     _UUID _uuid;
     UUID uuid;
 
-    init_mongo_global();
-    init_mongo_collections();
-
     bzero(_uuid, sizeof(_UUID));
     b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
 
@@ -107,9 +104,6 @@ TEST(pttdb, db_set_if_not_exists) {
     error3 = _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
     bson_destroy(&uuid_bson);
-
-    free_mongo_collections();
-    free_mongo_global();
 
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(S_ERR_ALREADY_EXISTS, error2);
