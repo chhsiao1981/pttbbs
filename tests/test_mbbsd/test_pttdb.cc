@@ -41,11 +41,11 @@ TEST(pttdb, gen_uuid) {
 
     gen_uuid(uuid);
     uuid_to_milli_timestamp(uuid, &milli_timestamp);
-    
+
     EXPECT_GE(milli_timestamp, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
 
-    b64_pton(uuid, _uuid, _UUIDLEN);
+    b64_pton((char *)uuid, _uuid, _UUIDLEN);
     EXPECT_EQ(0x60, _uuid[6] & 0xf0);
 
     gen_uuid(uuid);
@@ -55,6 +55,6 @@ TEST(pttdb, gen_uuid) {
     EXPECT_LT(milli_timestamp2, END_MILLI_TIMESTAMP);
     EXPECT_GE(milli_timestamp2, milli_timestamp);
 
-    b64_pton(uuid, _uuid, _UUIDLEN);
+    b64_pton((char *)uuid, _uuid, _UUIDLEN);
     EXPECT_EQ(0x60, uuid[6] & 0xf0);
 }
