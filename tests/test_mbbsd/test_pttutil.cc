@@ -72,10 +72,10 @@ TEST(pttutil, get_line_from_buf_not_end) {
 }
 
 TEST(pttutil, get_line_from_buf_partial_line_break) {
-    int len_buf = 10;
+    int len_buf = 13;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
-    int offset_buf = 13;
+    int offset_buf = 0;
     int offset_line = 2;
     int bytes_in_new_line = 0;
     bzero(line, sizeof(line));
