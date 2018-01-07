@@ -61,6 +61,7 @@ USE_BBSLUA!=  	sh -c '${DEF_CMD}"USE_BBSLUA" ${BBSCONF} ${DEF_YES}'
 USE_PFTERM!=	sh -c '${DEF_CMD}"USE_PFTERM" ${BBSCONF} ${DEF_YES}'
 USE_NIOS!=	sh -c '${DEF_CMD}"USE_NIOS"   ${BBSCONF} ${DEF_YES}'
 USE_CONVERT!=	sh -c '${DEF_CMD}"CONVERT"    ${BBSCONF} ${DEF_YES}'
+MONGO_CLIENT_URL!=  	sh -c '${DEF_CMD}"MONGO_CLIENT_URL" ${BBSCONF} ${DEF_YES}'
 
 .if $(USE_BBSLUA)
 .if $(OSTYPE)=="FreeBSD"
@@ -81,6 +82,19 @@ OBJS+=		pfterm.o
 .else
 OBJS+=		screen.o
 .endif
+
+.if $(MONGO_CLIENT_URL)
+.if defined(MONGOC_LATEST)
+MONGO_CFLAGS!=  -I/usr/local/include/libmongoc-1.0 -I/usr/local/include/libbson-1.0
+MONGO_LIBS!=    -L/usr/local/lib -lmongoc-1.0 -lbson-1.0
+.else # MONGOC_LATEST
+MONGO_CFLAGS!=  -I/usr/include/libmongoc-1.0 -I/usr/include/libbson-1.0
+MONGO_LIBS!=  -lmongoc-1.0 -lbson-1.0
+.endif # MONGOC_LATEST
+CFLAGS+=    ${MONGO_CFLAGS}
+LDLIBS+=    ${MONGO_LIBS}
+OBJS+=      pttutil.o pttdb.o
+.endif # MONGO_CLIENT_URL
 
 #######################################################################
 # Make Rules
