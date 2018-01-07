@@ -8,5 +8,6 @@ typedef char Err;
 #define S_ERR -1
 #define S_ERR_MALLOC -2
 #define S_ERR_ALREADY_EXISTS -3
+#define S_ERR_NOT_EXISTS -4
 
 #endif

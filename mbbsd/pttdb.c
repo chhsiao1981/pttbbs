@@ -130,13 +130,13 @@ db_set_if_not_exists(int collection, bson_t *key) {
     bson_free (str);
 
 
-    error_code = _bson_get_value_int32(&reply, "nUpserted", &n_upserted);
+    error_code = _bson_exists(&reply, "upsertedId");
     if(error_code) {
-        printf("something went wrong with nUpserted\n");
+        printf("something went wrong with nUpserted. Assuming no nUpserted\n");
         bson_destroy(&set_val);
         bson_destroy(&opts);
         bson_destroy(&reply);
-        return error_code;
+        return S_ERR_ALREADY_EXISTS;
     }
 
     if(!n_upserted) {
@@ -193,6 +193,24 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
     bson_destroy(&set_val);
     bson_destroy(&opts);
     bson_destroy(&reply);
+
+    return S_OK;
+}
+
+Err _bson_exists(bson_t *b, char *name) {
+    bool status;
+    bson_iter_t iter;
+    bson_iter_t it_val;
+
+    status = bson_iter_init(&iter, b);
+    if(!status) {
+        return S_ERR;
+    }
+
+    status = bson_iter_find_descendant(&iter, name, &it_val);
+    if(!status) {
+        return S_ERR_NOT_EXISTS;
+    }
 
     return S_OK;
 }
