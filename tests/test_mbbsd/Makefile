@@ -73,7 +73,7 @@ LDLIBS+=	${MONGO_LIBS}
 # test
 ##########
 
-TEST_PROGS=	test_dummy
+TEST_PROGS=	test_dummy test_pttdb test_pttdb_util
 
 .if $(MONGO_CLIENT_URL)
 TEST_PROGS+=	test_pttdb test_pttdb_util
