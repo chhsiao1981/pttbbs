@@ -28,7 +28,7 @@ ARFLAGS:=	rv
 #######################################################################
 # mbbsd modules
 #######################################################################	
-MBBSD_OJBS:=	${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/pttdb_util.o
+MBBSD_OBJS:=	${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/pttdb_util.o
 
 #######################################################################
 # reduce .bss align overhead
