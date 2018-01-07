@@ -266,6 +266,7 @@ gen_uuid(UUID uuid) {
 
     long int rand_num;
     long int *p_rand;
+    int n_i;
     unsigned short *p_short_rand_num;
 
     unsigned short *p_short;
@@ -295,10 +296,9 @@ gen_uuid(UUID uuid) {
     *p_short = *p_short_rand_num;
 
     // first 40 chars as random, but 6th char is version (6 for now)
-    printf("sizeof(long int): %d", sizeof(long int));
     p_rand = _uuid;
-    for(int i = 0; i < 10; i++) {
-        printf("(%d/%d) p_rand: %d\n", i, 10, p_rand);
+    for(int i = 0; i < (_UUIDLEN - 8) / sizeof(long int); i++) {
+        printf("(%d/%d) p_rand: %d\n", i, (_UUIDLEN - 8) / sizeof(long int), p_rand);
         rand_num = random();
         *p_rand = rand_num;
         p_rand++;
