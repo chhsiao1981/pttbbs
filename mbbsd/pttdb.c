@@ -276,7 +276,9 @@ gen_uuid(UUID uuid) {
     error_code = get_milli_timestamp(&milli_timestamp);
     if (error_code) return error_code;
 
+    printf("milli_timestamp: %lld\n", milli_timestamp);
     milli_timestamp <<= 16;
+    printf("after <<= 16: milli_timestamp: %lld\n", milli_timestamp);
     p_milli_timestamp = uuid + 40;
     *p_milli_timestamp = milli_timestamp;
 
