@@ -11,6 +11,9 @@ extern "C" {
 #include <sys/time.h>
 #include <resolv.h>
 
+#include "pttutil.h"
+#include "ptterr.h"
+
 /**********
  * UUID
  **********/

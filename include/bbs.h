@@ -56,12 +56,6 @@ extern "C" {
 #include "proto.h"
 #include "fnv_hash.h"
 
-#ifdef MONGO_CLIENT_URL
-#include "pttutil.h"
-#include "ptterr.h"
-#include "pttdb.h"
-#endif
-
 #ifdef ASSESS
     #include "assess.h"
 #endif
