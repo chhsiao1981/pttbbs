@@ -410,6 +410,17 @@ _serialize_content_uuid_bson(UUID uuid, const char *key, int block_id, bson_t *u
     return S_OK;
 }
 
+Err
+uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp)
+{
+    unsigned short *p_head;
+    *milli_timestamp = *(uuid + 40);
+    p_head = milli_timestamp;
+    *p_head = 0;
+
+    return S_OK;
+}
+
 /**********
  * Post
  **********/
