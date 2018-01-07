@@ -283,6 +283,9 @@ gen_uuid(UUID uuid) {
     printf("\n");
     milli_timestamp <<= 16;
     printf("after <<= 16: milli_timestamp: %lld\n", milli_timestamp);
+    p_char = &milli_timestamp;
+    for(int i = 0; i < 8; i++) printf("%x", *(p_char + i));
+    printf("\n");
     p_milli_timestamp = _uuid + 40;
     *p_milli_timestamp = milli_timestamp;
 
