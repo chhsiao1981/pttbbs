@@ -75,7 +75,7 @@ TEST(pttdb, gen_uuid) {
     gen_uuid(uuid2);
     uuid_to_milli_timestamp(uuid2, &milli_timestamp2);
 
-    EXPECT_STRNE(uuid, uuid2);
+    EXPECT_STRNE((char *)uuid, (char *)uuid2);
     EXPECT_GE(milli_timestamp2, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp2, END_MILLI_TIMESTAMP);
     EXPECT_GE(milli_timestamp2, milli_timestamp);
@@ -117,8 +117,6 @@ TEST(pttdb, db_set_if_not_exists) {
 
 TEST(pttdb, db_update_one) {
     Err error;
-    Err error2;
-    Err error3;
 
     bson_t key_bson;
     bson_t val_bson;
