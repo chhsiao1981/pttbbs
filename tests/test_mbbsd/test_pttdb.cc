@@ -41,8 +41,6 @@ TEST(pttdb, serialize_content_uuid_bson) {
     str = bson_as_canonical_extended_json (&uuid_bson, NULL);
     strcpy(buf, str);
 
-    printf("str: %s\n", str);
-
     bson_free (str);
 
     bson_destroy(&uuid_bson);
