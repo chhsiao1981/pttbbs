@@ -40,6 +40,9 @@ TEST(pttdb, gen_uuid) {
 
     gen_uuid(uuid);
     uuid_to_milli_timestamp(uuid, &milli_timestamp);
+    printf("uuid: ")
+    for(int i = 0; i < UUIDLEN; i++) printf("%c", uuid[i]);
+    printf("\n");
     printf("milli_timestamp: %lld\n", milli_timestamp);
 
     EXPECT_GE(milli_timestamp, START_MILLI_TIMESTAMP);
@@ -48,6 +51,9 @@ TEST(pttdb, gen_uuid) {
 
     gen_uuid(uuid);
     uuid_to_milli_timestamp(uuid, &milli_timestamp2);
+    printf("uuid: ")
+    for(int i = 0; i < UUIDLEN; i++) printf("%c", uuid[i]);
+    printf("\n");
     printf("milli_timestamp2: %lld\n", milli_timestamp2);
 
     EXPECT_GE(milli_timestamp2, START_MILLI_TIMESTAMP);
