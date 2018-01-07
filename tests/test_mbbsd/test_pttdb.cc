@@ -30,10 +30,28 @@ TEST(pttdb, serialize_uuid_bson) {
 TEST(pttdb, gen_uuid) {
     UUID uuid;
     time64_t milli_timestamp;
+    time64_t milli_timestamp2;
+
+    // 2018-01-01
+    time64_t START_MILLI_TIMESTAMP = 1514764800000;
+
+    // 2018-02-01
+    time64_t END_MILLI_TIMESTAMP = 1517443200000;
 
     gen_uuid(uuid);
     uuid_to_milli_timestamp(uuid, &milli_timestamp);
+    printf("milli_timestamp: %lld\n", milli_timestamp);
 
-    EXPECT_GTE(milli_timestamp, 1514764800000); // 2018-01-01
-    EXPECT_LT(milli_timestamp, 1517443200000);  //2018-02-01
+    EXPECT_GTE(milli_timestamp, START_MILLI_TIMESTAMP);
+    EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
+    EXPECT_EQ(uuid[6] & 0xf0, 0x60);
+
+    gen_uuid(uuid);
+    uuid_to_milli_timestamp(uuid, &milli_timestamp2);
+    printf("milli_timestamp2: %lld\n", milli_timestamp2);
+
+    EXPECT_GTE(milli_timestamp2, START_MILLI_TIMESTAMP);
+    EXPECT_LT(milli_timestamp2, END_MILLI_TIMESTAMP);
+    EXPECT_EQ(uuid[6] & 0xf0, 0x60);
+    EXPECT_GTE(milli_timestamp2, milli_timestamp)
 }
