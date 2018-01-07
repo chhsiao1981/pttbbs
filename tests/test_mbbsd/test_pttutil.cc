@@ -3,8 +3,8 @@
 
 TEST(pttutil, get_line_from_buf) {
     int len_buf = 24;
-    char buf[MAX_BUFFER_SIZE];
-    char line[MAX_BUFFER_SIZE];
+    char buf[MAX_BUF_SIZE];
+    char line[MAX_BUF_SIZE];
     int offset_line = 0;
     int bytes_in_new_line = 0;
 
