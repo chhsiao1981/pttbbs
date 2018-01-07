@@ -122,11 +122,6 @@ db_set_if_not_exists(int collection, bson_t *key) {
         return S_ERR;
     }
 
-    char *str = bson_as_canonical_extended_json (&reply, NULL);
-    printf("reply: %s\n", str);
-    bson_free (str);
-
-
     error_code = _bson_exists(&reply, "upsertedId");
     if(error_code) {
         bson_destroy(&set_val);
