@@ -116,6 +116,7 @@ $(PROG): testsz $(OBJS)
 	@[ -z "$(USE_PFTERM)" ] || echo -n "+PFTERM "
 	@[ -z "$(USE_CONVERT)" ] || echo -n "+CONVERT "
 	@[ -z "$(USE_NIOS)" ] || echo -n "+NIOS "
+	@[ -z "$(MONGO_CLIENT_URL)" ] || echo -n "+MONGO_CLIENT_URL "
 	@printf "\033[m"
 	$(CC) vers.c -o $(PROG) $(OBJS) $(LDFLAGS) $(LDLIBS)
 
