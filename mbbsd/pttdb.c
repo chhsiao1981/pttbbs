@@ -1,4 +1,5 @@
 #include "bbs.h"
+#include "pttdb_internal.h"
 #include <mongoc.h>
 
 /**********

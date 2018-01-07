@@ -72,7 +72,7 @@ enum {
 
 /**********
  * Main
- * XXX always update main first, and then update main-header.
+ * XXX always update main-content first, and then update main-header.
  **********/
 typedef struct MainHeader {
     unsigned char version;
@@ -146,7 +146,7 @@ typedef struct Comment {
 
 /**********
  * CommentReply
- * XXX always update comment-reply first, and then update comment-reply-header.
+ * XXX always update comment-reply-content first, and then update comment-reply-header.
  **********/
 typedef struct CommentReplyHeader {
     unsigned char version;
@@ -198,8 +198,6 @@ Err get_milli_timestamp(time64_t *milli_timestamp);
 Err gen_uuid(UUID uuid);
 Err gen_uuid_with_db(int collection, UUID uuid);
 Err gen_content_uuid_with_db(int collection, UUID uuid);
-Err _serialize_uuid_bson(UUID uuid, const char *key, bson_t *uuid_bson);
-Err _serialize_content_uuid_bson(UUID uuid, const char *key, int block_id, bson_t *uuid_bson);
 
 Err uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp);
 
@@ -210,15 +208,6 @@ Err init_mongo_global();
 Err free_mongo_global();
 Err init_mongo_collections();
 Err free_mongo_collections();
-
-Err db_set_if_not_exists(int collection, bson_t *key);
-Err db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert);
-
-// XXX NEVER USE UNLESS IN TEST
-Err _DB_FORCE_DROP_COLLECTION(int collection);
-
-Err _bson_exists(bson_t *b, char *name);
-Err _bson_get_value_int32(bson_t *b, char *name, int *value);
 
 /**********
  * Post

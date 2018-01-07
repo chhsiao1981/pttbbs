@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "bbs.h"
+#include "pttdb_internal.h"
 
 TEST(pttdb, serialize_uuid_bson) {
     _UUID _uuid;
