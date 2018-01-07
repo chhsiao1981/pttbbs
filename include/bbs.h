@@ -30,8 +30,6 @@ extern "C" {
 #include <sys/mman.h>
 #include <sys/shm.h>
 #include <sys/sem.h>
-#include <sys/time.h>
-#include <resolv.h>
 
 /* our header */
 #include "config.h"
