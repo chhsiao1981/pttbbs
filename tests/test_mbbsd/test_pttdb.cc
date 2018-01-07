@@ -98,7 +98,7 @@ TEST(pttdb, db_set_if_not_exists) {
     bson_t uuid_bson;
     bson_init(&uuid_bson);
     
-    _serialize_uuid_bson(uuid, MONGO_THE_ID, &uuid_bson);
+    _serialize_content_uuid_bson(uuid, MONGO_THE_ID, &uuid_bson);
 
     error = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
     error2 = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
