@@ -3,7 +3,9 @@
 #ifndef INCLUDE_BBS_H
 #define INCLUDE_BBS_H
 
+#ifdef MONGO_CLIENT_URL
 #include <mongoc.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,9 +62,11 @@ extern "C" {
 #include "proto.h"
 #include "fnv_hash.h"
 
+#ifdef MONGO_CLIENT_URL
 #include "pttutil.h"
 #include "ptterr.h"
 #include "pttdb.h"
+#endif
 
 #ifdef ASSESS
     #include "assess.h"
