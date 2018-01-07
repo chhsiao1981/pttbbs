@@ -1,7 +1,5 @@
 #include "bbs.h"
 #include "pttdb_internal.h"
-#include <bson.h>
-#include <mongoc.h>
 
 /**********
  * Globally Available

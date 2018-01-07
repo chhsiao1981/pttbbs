@@ -2,6 +2,13 @@
 #ifndef PTTDB_INTERNAL_H
 #define PTTDB_INTERNAL_H
 
+#include <bson.h>
+#include <mongoc.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**********
  * UUID
  **********/
@@ -33,5 +40,9 @@ Err _split_main_contents_save_main_content_block(MainContent *main_content_block
 Err _serialize_main_bson(MainHeader *main_header, bson_t *main_bson);
 
 Err _serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main_content_block_bson);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* PTTDB_INTERNAL_H */
