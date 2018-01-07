@@ -128,7 +128,7 @@ TEST(pttdb, db_update_one) {
     EXPECT_EQ(S_OK, error);
 }
 
-class MyEnvironment : Environment {
+class MyEnvironment : public Environment {
  public:
   void SetUp() {
     init_mongo_global();
