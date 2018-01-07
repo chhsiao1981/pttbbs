@@ -408,7 +408,7 @@ _serialize_content_uuid_bson(UUID uuid, const char *key, int block_id, bson_t *u
     bool bson_status = bson_append_utf8(uuid_bson, key, -1, uuid, UUIDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_int32(uuid_bson, "block_id", -1, block_id);
+    bson_status = bson_append_int32(uuid_bson, MONGO_BLOCK_ID, -1, block_id);
     if (!bson_status) return S_ERR;
 
     return S_OK;

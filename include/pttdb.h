@@ -27,6 +27,7 @@
 
 // Mongo the id
 #define MONGO_THE_ID "the_id"
+#define MONGO_BLOCK_ID "block_id"
 
 // XXX hack for time64_t and UUID
 typedef long long int time64_t;
