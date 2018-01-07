@@ -104,13 +104,13 @@ gtest_main.a: gtest-all.o gtest_main.o
 	$(CXX) $(CXXFLAGS) -c $*.cc
 
 test_dummy: test_dummy.o gtest_main.a
-	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDLIBS) -o $@ $(MBBSD_OBJS) $>
+	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(MBBSD_OBJS) $> $(LDLIBS) 
 
 test_pttdb: test_pttdb.o gtest_main.a
-	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDLIBS) -o $@ $(MBBSD_OBJS) $>
+	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(MBBSD_OBJS) $> $(LDLIBS)
 
 test_pttdb_util: test_pttdb_util.o gtest_main.a
-	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDLIBS) -o $@ $(MBBSD_OBJS) $>
+	echo ">: $> <: $< *: $* @: $@" && $(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(MBBSD_OBJS) $> $(LDLIBS)
 
 all: $(TEST_PROGS)
 
