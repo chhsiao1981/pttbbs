@@ -135,13 +135,11 @@ public:
 };
 
 void MyEnvironment::SetUp() {
-    printf("MyEnvironment::Setup\n");
     init_mongo_global();
     init_mongo_collections();
 }
 
 void MyEnvironment::TearDown() {
-    printf("MyEnvironment::TearDown\n");
     free_mongo_collections();
     free_mongo_global();
 }
