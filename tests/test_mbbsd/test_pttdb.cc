@@ -52,6 +52,8 @@ TEST(pttdb, serialize_content_uuid_bson) {
 TEST(pttdb, gen_uuid) {
     UUID uuid;
     _UUID _uuid;
+    UUID uuid2;
+    _UUID _uuid2;
     time64_t milli_timestamp;
     time64_t milli_timestamp2;
 
@@ -70,15 +72,16 @@ TEST(pttdb, gen_uuid) {
     b64_pton((char *)uuid, _uuid, _UUIDLEN);
     EXPECT_EQ(0x60, _uuid[6] & 0xf0);
 
-    gen_uuid(uuid);
-    uuid_to_milli_timestamp(uuid, &milli_timestamp2);
+    gen_uuid(uuid2);
+    uuid_to_milli_timestamp(uuid2, &milli_timestamp2);
 
+    EXPECT_STRNE(uuid, uuid2);
     EXPECT_GE(milli_timestamp2, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp2, END_MILLI_TIMESTAMP);
     EXPECT_GE(milli_timestamp2, milli_timestamp);
 
-    b64_pton((char *)uuid, _uuid, _UUIDLEN);
-    EXPECT_EQ(0x60, _uuid[6] & 0xf0);
+    b64_pton((char *)uuid2, _uuid2, _UUIDLEN);
+    EXPECT_EQ(0x60, _uuid2[6] & 0xf0);
 }
 
 TEST(pttdb, db_set_if_not_exists) {
@@ -110,4 +113,23 @@ TEST(pttdb, db_set_if_not_exists) {
 
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(S_ERR_ALREADY_EXISTS, error2);
+}
+
+TEST(pttdb, db_update_one) {
+    Err error;
+    Err error2;
+    Err error3;
+
+    bson_t key_bson;
+    bson_t val_bson;
+    bson_init(&key_bson);
+    bson_append_utf8(&key_bson, "the_key", -1, "key0", 4);
+    bson_append_utf8(&val_bson, "the_val", -1, "val0", 4);
+
+    error = db_update_one(MONGO_TEST, &key_bson, &val_bson, true);
+
+    bson_destroy(&key_bson);
+    bson_destroy(&val_bson);
+
+    EXPECT_EQ(S_OK, error);
 }
