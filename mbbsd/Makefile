@@ -85,11 +85,11 @@ OBJS+=		screen.o
 
 .if $(MONGO_CLIENT_URL)
 .if defined(MONGOC_LATEST)
-MONGO_CFLAGS!=	-I/usr/local/include/libmongoc-1.0 -I/usr/local/include/libbson-1.0
-MONGO_LIBS!=	-L/usr/local/lib -lmongoc-1.0 -lbson-1.0
+MONGO_CFLAGS:=	-I/usr/local/include/libmongoc-1.0 -I/usr/local/include/libbson-1.0
+MONGO_LIBS:=	-L/usr/local/lib -lmongoc-1.0 -lbson-1.0
 .else # MONGOC_LATEST
-MONGO_CFLAGS!=	-I/usr/include/libmongoc-1.0 -I/usr/include/libbson-1.0
-MONGO_LIBS!=	-lmongoc-1.0 -lbson-1.0
+MONGO_CFLAGS:=	-I/usr/include/libmongoc-1.0 -I/usr/include/libbson-1.0
+MONGO_LIBS:=	-lmongoc-1.0 -lbson-1.0
 .endif # MONGOC_LATEST
 CFLAGS+=	${MONGO_CFLAGS}
 LDLIBS+=	${MONGO_LIBS}
