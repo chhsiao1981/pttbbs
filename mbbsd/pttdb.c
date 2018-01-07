@@ -419,9 +419,12 @@ uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp)
 {
     _UUID _uuid;
     b64_pton(uuid, _uuid, _UUIDLEN);
-    unsigned short *p_head;
+    printf("_uuid: ")
+    for(int i = 0; i < _UUIDLEN, i++) printf("%x", _uuid[i])
+
     *milli_timestamp = *(_uuid + 40);
     *milli_timestamp >>= 16;
+    printf("milli_timestamp: %lld\n", *milli_timestamp);
 
     return S_OK;
 }
