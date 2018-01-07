@@ -133,3 +133,17 @@ TEST(pttdb, db_update_one) {
 
     EXPECT_EQ(S_OK, error);
 }
+
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+
+    init_mongo_global();
+    init_mongo_collections();
+
+    int err = RUN_ALL_TESTS();
+
+    free_mongo_collections();
+    free_mongo_global();
+
+    return err;
+}
