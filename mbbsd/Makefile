@@ -104,6 +104,15 @@ OBJS+=		pttutil.o pttdb.o
 .PHONY: all ctags test install clean
 
 .c.o:	$(SRCROOT)/include/var.h
+	@printf "\033[0;1;32m"
+	@[ -z "$(DEBUG)" ] || printf "\033[31m+DEBUG \033[32m"
+	@[ -z "$(USE_BBSLUA)" ] || echo -n "+BBSLUA "
+	@[ -z "$(USE_PFTERM)" ] || echo -n "+PFTERM "
+	@[ -z "$(USE_CONVERT)" ] || echo -n "+CONVERT "
+	@[ -z "$(USE_NIOS)" ] || echo -n "+NIOS "
+	@[ -z "$(MONGO_CLIENT_URL)" ] || echo -n "+MONGO_CLIENT_URL "
+	@printf "\033[m"
+	
 	$(CC) $(CFLAGS) -c $*.c
 
 all: $(PROG)
