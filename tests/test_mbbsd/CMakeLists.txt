@@ -8,6 +8,13 @@ add_executable(test_dummy
 
 target_link_libraries(test_dummy gtest gtest_main ${LDLIBS})
 
+add_executable(test_pttutil
+    test_pttutil.cc
+    ${CMAKE_SOURCE_DIR}/mbbsd/pttutil.c
+    )
+
+target_link_libraries(test_pttdb gtest gtest_main ${LDLIBS})
+
 add_executable(test_pttdb
     test_pttdb.cc
     ${CMAKE_SOURCE_DIR}/mbbsd/pttutil.c
