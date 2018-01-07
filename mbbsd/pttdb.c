@@ -270,13 +270,16 @@ gen_uuid(UUID uuid) {
 
     unsigned short *p_short;
     unsigned int *p_int;
+    unsigned char *p_char;
     _UUID _uuid;
 
     // last 8 chars as milli-timestamp, but only the last 6 chars will be used.
     error_code = get_milli_timestamp(&milli_timestamp);
     if (error_code) return error_code;
 
-    printf("milli_timestamp: %lld\n", milli_timestamp);
+    printf("milli_timestamp: %lld\n", milli_timestamp);    
+    p_char = &milli_timestamp;
+    for(int i = 0; i < 8; i++) printf("%c", *(p_char + i));
     milli_timestamp <<= 16;
     printf("after <<= 16: milli_timestamp: %lld\n", milli_timestamp);
     p_milli_timestamp = _uuid + 40;
