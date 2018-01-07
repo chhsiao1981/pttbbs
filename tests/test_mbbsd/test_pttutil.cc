@@ -88,3 +88,19 @@ TEST(pttutil, get_line_from_buf_partial_line_break) {
     EXPECT_EQ(1, bytes_in_new_line);
     EXPECT_STREQ("!\r\n", line);
 }
+
+TEST(pttutil, get_line_from_buf_end_of_buf) {
+    int len_buf = 12;
+    char buf[MAX_BUF_SIZE];
+    char line[MAX_BUF_SIZE];
+    int offset_buf = 12;
+    int offset_line = 0;
+    int bytes_in_new_line = 0;
+    bzero(line, sizeof(line));
+
+    strcpy(buf, "0123456789\r\n");
+
+    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, &bytes_in_new_line);
+    EXPECT_EQ(S_ERR, error);
+    EXPECT_EQ(0, bytes_in_new_line);
+}
