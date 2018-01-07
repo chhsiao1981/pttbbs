@@ -139,13 +139,6 @@ db_set_if_not_exists(int collection, bson_t *key) {
         return S_ERR_ALREADY_EXISTS;
     }
 
-    if(!n_upserted) {
-        bson_destroy(&set_val);
-        bson_destroy(&opts);
-        bson_destroy(&reply);
-        return S_ERR_ALREADY_EXISTS;
-    }
-
     bson_destroy(&set_val);
     bson_destroy(&opts);
     bson_destroy(&reply);
