@@ -84,13 +84,8 @@ OBJS+=		screen.o
 .endif
 
 .if $(MONGO_CLIENT_URL)
-.if defined(MONGOC_LATEST)
 MONGO_CFLAGS:=	-I/usr/local/include/libmongoc-1.0 -I/usr/local/include/libbson-1.0
 MONGO_LIBS:=	-L/usr/local/lib -lmongoc-1.0 -lbson-1.0 -lresolv
-.else # MONGOC_LATEST
-MONGO_CFLAGS:=	-I/usr/include/libmongoc-1.0 -I/usr/include/libbson-1.0
-MONGO_LIBS:=	-lmongoc-1.0 -lbson-1.0 -lresolv
-.endif # MONGOC_LATEST
 CFLAGS+=	${MONGO_CFLAGS}
 LDLIBS+=	${MONGO_LIBS}
 OBJS+=		pttutil.o pttdb.o
@@ -104,15 +99,6 @@ OBJS+=		pttutil.o pttdb.o
 .PHONY: all ctags test install clean
 
 .c.o:	$(SRCROOT)/include/var.h
-	@printf "\033[0;1;32m"
-	@[ -z "$(DEBUG)" ] || printf "\033[31m+DEBUG \033[32m"
-	@[ -z "$(USE_BBSLUA)" ] || echo -n "+BBSLUA "
-	@[ -z "$(USE_PFTERM)" ] || echo -n "+PFTERM "
-	@[ -z "$(USE_CONVERT)" ] || echo -n "+CONVERT "
-	@[ -z "$(USE_NIOS)" ] || echo -n "+NIOS "
-	@echo "MONGO_CLIENT_URL: ${MONGO_CLIENT_URL}"
-	@printf "\033[m"
-	
 	$(CC) $(CFLAGS) -c $*.c
 
 all: $(PROG)
