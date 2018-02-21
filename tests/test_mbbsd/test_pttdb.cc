@@ -138,8 +138,17 @@ public:
 };
 
 void MyEnvironment::SetUp() {
-    init_mongo_global();
-    init_mongo_collections();
+    Err err = S_OK;
+    err = init_mongo_global();
+    if(err != S_OK) {
+        fprintf(stderr, "[ERROR] UNABLE TO init mongo global");
+        return;
+    }
+    err = init_mongo_collections();
+    if(err != S_OK) {
+        fprintf(stderr, "[ERROR] UNABLE TO init mongo collections");
+        return;
+    }
 }
 
 void MyEnvironment::TearDown() {
