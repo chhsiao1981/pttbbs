@@ -79,73 +79,73 @@ enum {
  * XXX always update main-content first, and then update main-header.
  **********/
 typedef struct MainHeader {
-    unsigned char version;
+    unsigned char version;                           // version
 
-    UUID the_id;
-    UUID content_id;
-    UUID update_content_id;
-    aidu_t aid;
+    UUID the_id;                                     // main id
+    UUID content_id;                                 // corresponding content-id
+    UUID update_content_id;                          // updating content-id
+    aidu_t aid;                                      // aid
 
-    unsigned char status;
-    char status_updater[IDLEN + 1];
-    unsigned char status_update_ip[IPV4LEN + 1];
+    unsigned char status;                            // status of the main.
+    char status_updater[IDLEN + 1];                  // last user updating the status
+    unsigned char status_update_ip[IPV4LEN + 1];     // last ip updating the status
 
-    char title[TTLEN + 1];
+    char title[TTLEN + 1];                           // title
 
-    char poster[IDLEN + 1];
-    unsigned char ip[IPV4LEN + 1];
-    time64_t create_milli_timestamp;
-    char updater[IDLEN + 1];
-    unsigned char update_ip[IPV4LEN + 1];
-    time64_t update_milli_timestamp;
+    char poster[IDLEN + 1];                          // creater
+    unsigned char ip[IPV4LEN + 1];                   // create-ip
+    time64_t create_milli_timestamp;                 // create-time
+    char updater[IDLEN + 1];                         // last updater
+    unsigned char update_ip[IPV4LEN + 1];            // last update-ip
+    time64_t update_milli_timestamp;                 // last update-time
 
-    char origin[MAX_ORIGIN_LEN + 1];
-    char web_link[MAX_WEB_LINK + 1];
+    char origin[MAX_ORIGIN_LEN + 1];                 // origin
+    char web_link[MAX_WEB_LINK + 1];                 // web-link
 
-    int reset_karma;
+    int reset_karma;                                 // reset-karma.
 
-    int n_total_line;
-    int n_total_block;
-    int len_total;
+    int n_total_line;                                // total-line
+    int n_total_block;                               // total-block
+    int len_total;                                   // total-size
 } MainHeader;
 
 typedef struct MainContent {
-    UUID the_id;
-    UUID main_id;
+    UUID the_id;                                     // content-id
+    UUID main_id;                                    // corresponding main-id
 
-    int block_id;
+    int block_id;                                    // corresponding block-id
 
-    int len_block;
-    int n_line;
+    int len_block;                                   // size of this block.
+    int n_line;                                      // n-line of this block.
 
-    char buf_block[MAX_BUF_BLOCK + 1];
+    char buf_block[MAX_BUF_BLOCK + 1];               // buf
 } MainContent;
 
 /**********
  * Comments
  **********/
 typedef struct Comment {
-    unsigned char version;
+    unsigned char version;                           // version
 
-    UUID the_id;
-    UUID main_id;
+    UUID the_id;                                     // comment-id
+    UUID main_id;                                    // corresponding main-id
 
-    unsigned char status;
-    char status_updater[IDLEN + 1];
-    unsigned char status_update_ip[IPV4LEN + 1];
+    unsigned char status;                            // status
+    char status_updater[IDLEN + 1];                  // last user updaing the status
+    unsigned char status_update_ip[IPV4LEN + 1];     // last ip updating the status
 
-    unsigned char rec_type;
-    int karma;
+    unsigned char rec_type;                          // recommendation-type.
+    int karma;                                       // karma
 
-    char poster[IDLEN + 1];
-    unsigned char ip[IPV4LEN + 1];
-    time64_t create_milli_timestamp;
-    char updater[IDLEN + 1];
-    unsigned char update_ip[IPV4LEN + 1];
-    time64_t update_milli_timestamp;
+    char poster[IDLEN + 1];                          // creater
+    unsigned char ip[IPV4LEN + 1];                   // create-ip
+    time64_t create_milli_timestamp;                 // create-time
+    char updater[IDLEN + 1];                         // last updater
+    unsigned char update_ip[IPV4LEN + 1];            // last update-ip
+    time64_t update_milli_timestamp;                 // last update-time
 
-    int len;
-    char buf[MAX_BUF_COMMENT + 1];
+    int len;                                         // size
+    char buf[MAX_BUF_COMMENT + 1];                   // buf
 } Comment;
 
 /**********
@@ -153,41 +153,40 @@ typedef struct Comment {
  * XXX always update comment-reply-content first, and then update comment-reply-header.
  **********/
 typedef struct CommentReplyHeader {
-    unsigned char version;
+    unsigned char version;                           // version
 
-    UUID the_id;
-    UUID content_id;
-    UUID update_content_id;
+    UUID the_id;                                     // comment-reply-id
+    UUID content_id;                                 // corresponding content-id
+    UUID update_content_id;                          // updating content-id
 
-    UUID comment_id;
-    UUID main_id;
+    UUID comment_id;                                 // corresponding comment-id
+    UUID main_id;                                    // corresponding main-id
 
-    unsigned char status;
-    char status_updater[IDLEN + 1];
-    unsigned char status_update_ip[IPV4LEN + 1];
+    unsigned char status;                            // status
+    char status_updater[IDLEN + 1];                  // last user updating status
+    unsigned char status_update_ip[IPV4LEN + 1];     // last ip updating the status
 
-    char poster[IDLEN + 1];
-    unsigned char ip[IPV4LEN + 1];
-    time64_t create_milli_timestamp;
-    char updater[IDLEN + 1];
-    unsigned char update_ip[IPV4LEN + 1];
-    time64_t update_milli_timestamp;
+    char poster[IDLEN + 1];                          // creater
+    unsigned char ip[IPV4LEN + 1];                   // create-ip
+    time64_t create_milli_timestamp;                 // create-time
+    char updater[IDLEN + 1];                         // last updater
+    unsigned char update_ip[IPV4LEN + 1];            // last update-ip
+    time64_t update_milli_timestamp;                 // last update-time
 
-    int n_total_line;
-    int n_total_block;
-    int len_total;
+    int n_total_line;                                // total-line
+    int n_total_block;                               // total-blocks
+    int len_total;                                   // total-size
 } CommentReplyHeader;
 
 typedef struct CommentReplyContent {
-    UUID the_id;
-    UUID comment_reply_id;
+    UUID the_id;                                     // comment-reply-content-id
+    UUID comment_reply_id;                           // corresponding comment-reply-id
 
-    int block_id;
+    int block_id;                                    // block-id
 
-    int len_block;
-    int n_line;
-
-    char buf_block[MAX_BUF_BLOCK + 1];
+    int len_block;                                   // size of the block
+    int n_line;                                      // lines of the block
+    char buf_block[MAX_BUF_BLOCK + 1];               // buf
 } CommentReplyContent;
 
 
@@ -225,10 +224,10 @@ Err n_line_post(UUID main_id, int *n_line);
  **********/
 Err create_main_from_fd(aidu_t aid, char *title, char *poster, unsigned char *ip, unsigned char *origin, unsigned char *web_link, int len, int fd_content, UUID main_id);
 
-/*
-Err len_main(UUID main_id);
+Err len_main(UUID main_id, int *len);
 Err len_main_by_aid(aidu_t aid);
 
+/*
 Err n_line_main(UUID main_id);
 Err n_line_main_by_aid(aidu_t aid);
 

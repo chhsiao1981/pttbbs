@@ -783,6 +783,97 @@ _split_main_contents_save_main_content_block(MainContent *main_content_block) {
 }
 
 /**
+ * @brief Get total size of main from main_id
+ * @details [long description]
+ *
+ * @param main_id main_id
+ * @param len total-size of the main.
+ *
+ * @return Err
+ */
+Err
+len_main(UUID main_id, int *len) {
+    Err error_code;
+    bson_t key;
+    bson_init(&key);
+    bson_append_utf8(&key, "the_id", -1, main_id, UUIDLEN);
+
+    bson_t fields;
+    bson_init(&fields);
+    bson_append_bool(&fields, "_id", -1, false);
+    bson_append_bool(&fields, "the_id", -1, true);
+    bson_append_bool(&fields, "len_total", -1, true);
+
+    bson_t db_result;
+    bson_init(&db_result);
+    error_code = db_find_one(MONGO_MAIN, &key, &fields, &db_result);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&fields);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+
+    error_code = _bson_get_value_int32(&db_result, "len_total", len);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&fields);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+    bson_destroy(&key);
+    bson_destroy(&fields);
+    bson_destroy(&db_result);
+
+    return S_OK;
+}
+
+/**
+ * @brief Get total size of main from aid
+ * @details
+ *
+ * @param aid aid
+ * @return Err
+ */
+Err
+len_main_by_aid(aidu_t aid) {
+    Err error_code;
+    bson_t key;
+    bson_init(&key);
+    bson_append_int32(&key, "aid", -1, aid, UUIDLEN);
+
+    bson_t fields;
+    bson_init(&fields);
+    bson_append_bool(&fields, "_id", -1, false);
+    bson_append_bool(&fields, "aid", -1, true);
+    bson_append_bool(&fields, "len_total", -1, true);
+
+    bson_t db_result;
+    bson_init(&db_result);
+    error_code = db_find_one(MONGO_MAIN, &key, &fields, &db_result);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&fields);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+
+    error_code = _bson_get_value_int32(&db_result, "len_total", len);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&fields);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+    bson_destroy(&key);
+    bson_destroy(&fields);
+    bson_destroy(&db_result);
+
+    return S_OK;
+}
+
+
+/**
  * @brief Serialize main-header to bson
  * @details Serialize main-header to bson
  *
