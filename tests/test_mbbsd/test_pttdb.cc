@@ -102,13 +102,24 @@ TEST(pttdb, db_set_if_not_exists) {
     _serialize_content_uuid_bson(uuid, MONGO_THE_ID, 0, &uuid_bson);
 
     error = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
+    EXPECT_EQ(S_OK, error);
+
+    if(error != S_OK) {
+        bson_destroy(&uuid_bson);
+        return;
+    }
+
     error2 = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
+    EXPECT_EQ(S_ERR_ALREADY_EXISTS, error2);
+    if(error2 != S_ERR_ALREADY_EXISTS) {
+        bson_destroy(&uuid_bson);
+        return;
+    }
+
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
     bson_destroy(&uuid_bson);
 
-    EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(S_ERR_ALREADY_EXISTS, error2);
 }
 
 TEST(pttdb, db_update_one) {
