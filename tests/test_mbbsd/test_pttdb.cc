@@ -102,6 +102,7 @@ TEST(pttdb, db_set_if_not_exists) {
     _serialize_content_uuid_bson(uuid, MONGO_THE_ID, 0, &uuid_bson);
 
     error = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
+    fprintf(stderr, "after db_set_if_not_exists: error: %d", error);
     EXPECT_EQ(S_OK, error);
 
     if(error != S_OK) {
