@@ -22,6 +22,7 @@ Err _serialize_content_uuid_bson(UUID uuid, const char *key, int block_id, bson_
  **********/
 Err db_set_if_not_exists(int collection, bson_t *key);
 Err db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert);
+Err db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result);
 
 Err _bson_exists(bson_t *b, char *name);
 Err _bson_get_value_int32(bson_t *b, char *name, int *value);

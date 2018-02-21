@@ -185,6 +185,35 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
 }
 
 Err
+db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result) {
+    mongoc_cursor_t *cursor = mongoc_collection_find(MONGO_COLLECTIONS[collection], MONGOC_QUERY_NONE, 0, 1, 0, key, fields, NULL);
+    bson_error_t error;
+
+    int len = 0;
+    while (mongoc_cursor_next(cursor, result)) {
+        len++;
+    }
+
+    if (mongoc_cursor_error(cursor, &error)) {
+        mongoc_cursor_destroy(cursor);
+        return S_ERR;
+    }
+
+    if (len == 0) {
+        mongoc_cursor_destroy(cursor);
+        return S_ERR_NOT_EXISTS;
+    }
+
+    if (len > 1) {
+        mongoc_cursor_destroy(cursor);
+        return S_ERR_FOUND_MULTI;
+    }
+
+    mongoc_cursor_destroy(cursor);
+    return S_OK;
+}
+
+Err
 _DB_FORCE_DROP_COLLECTION(int collection) {
     bool status;
     bson_error_t error;
@@ -832,7 +861,7 @@ len_main(UUID main_id, int *len) {
  * @return Err
  */
 Err
-len_main_by_aid(aidu_t aid) {
+len_main_by_aid(aidu_t aid, int *len) {
     Err error_code;
     bson_t key;
     bson_init(&key);
