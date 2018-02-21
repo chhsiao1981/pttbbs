@@ -121,7 +121,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
     status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, reply, &error);
     fprintf(stderr, "after update_one: status: %d\n", status);
     if (!status) {
-        fprintf(stderr, "error on update_one: e: (%d.%d/%s)\n", error.domain, error.code, error.message);
+        fprintf(stderr, "error on set_if_not_exists: e: (%d.%d/%s)\n", error.domain, error.code, error.message);
         bson_destroy(set_val);
         bson_destroy(opts);
         bson_destroy(reply);
@@ -147,42 +147,43 @@ Err
 db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
     bool status;
 
-    bson_t set_val;
-    bson_t opts;
-    bson_t reply;
+    bson_t *set_val;
+    bson_t *opts;
+    bson_t *reply;
 
     bson_error_t error;
 
     // set_val
-    bson_init(&set_val);
-    status = bson_append_document(&set_val, "$set", -1, val);
+    set_val = bson_new();
+    status = bson_append_document(set_val, "$set", -1, val);
     if (!status) {
-        bson_destroy(&set_val);
+        bson_destroy(set_val);
         return S_ERR;
     }
 
     // opts
-    bson_init(&opts);
-    status = bson_append_bool(&opts, "upsert", -1, &is_upsert);
+    opts = bson_new();
+    status = bson_append_bool(opts, "upsert", -1, &is_upsert);
     if (!status) {
-        bson_destroy(&set_val);
-        bson_destroy(&opts);
+        bson_destroy(set_val);
+        bson_destroy(opts);
         return S_ERR;
     }
 
     // reply
-    bson_init(&reply);
-    status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, &set_val, &opts, &reply, &error);
+    reply = bson_new();
+    status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, reply, &error);
     if (!status) {
-        bson_destroy(&set_val);
-        bson_destroy(&opts);
-        bson_destroy(&reply);
+        fprintf(stderr, "error on update_one: e: (%d.%d/%s)\n", error.domain, error.code, error.message);
+        bson_destroy(set_val);
+        bson_destroy(opts);
+        bson_destroy(reply);
         return S_ERR;
     }
 
-    bson_destroy(&set_val);
-    bson_destroy(&opts);
-    bson_destroy(&reply);
+    bson_destroy(set_val);
+    bson_destroy(opts);
+    bson_destroy(reply);
 
     return S_OK;
 }
