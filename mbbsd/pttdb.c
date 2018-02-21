@@ -88,9 +88,9 @@ Err
 db_set_if_not_exists(int collection, bson_t *key) {
     bool status;
 
-    bson_t set_val;
-    bson_t opts;
-    bson_t reply;
+    bson_t *set_val;
+    bson_t *opts;
+    bson_t *reply;
 
     bson_error_t error;
     Err error_code;
@@ -98,44 +98,46 @@ db_set_if_not_exists(int collection, bson_t *key) {
     int n_upserted;
 
     // set_val
-    bson_init(&set_val);
-    status = bson_append_document(&set_val, "$setOnInsert", -1, key);
+    set_val = bson_new();
+    status = bson_append_document(set_val, "$setOnInsert", -1, key);
     if (!status) {
-        bson_destroy(&set_val);
+        bson_destroy(set_val);
         return S_ERR;
     }
 
     // opts
-    bson_init(&opts);
+    opts = bson_new();
 
-    status = bson_append_bool(&opts, "upsert", -1, is_upsert);
+    status = bson_append_bool(opts, "upsert", -1, is_upsert);
     if (!status) {
-        bson_destroy(&set_val);
-        bson_destroy(&opts);
+        bson_destroy(set_val);
+        bson_destroy(opts);
         return S_ERR;
     }
 
     // reply
-    bson_init(&reply);
-    status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, &set_val, &opts, &reply, &error);
+    reply = bson_new();
+    status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, reply, &error);
+    fprintf(stderr, "after update_one: status: %d\n", status);
     if (!status) {
-        bson_destroy(&set_val);
-        bson_destroy(&opts);
-        bson_destroy(&reply);
+        fprintf(stderr, "error on update_one: e: (%d.%d/%s)\n", error.domain, error.code, error.message);
+        bson_destroy(set_val);
+        bson_destroy(opts);
+        bson_destroy(reply);
         return S_ERR;
     }
 
-    error_code = _bson_exists(&reply, "upsertedId");
+    error_code = _bson_exists(reply, "upsertedId");
     if (error_code) {
-        bson_destroy(&set_val);
-        bson_destroy(&opts);
-        bson_destroy(&reply);
+        bson_destroy(set_val);
+        bson_destroy(opts);
+        bson_destroy(reply);
         return S_ERR_ALREADY_EXISTS;
     }
 
-    bson_destroy(&set_val);
-    bson_destroy(&opts);
-    bson_destroy(&reply);
+    bson_destroy(set_val);
+    bson_destroy(opts);
+    bson_destroy(reply);
 
     return S_OK;
 }

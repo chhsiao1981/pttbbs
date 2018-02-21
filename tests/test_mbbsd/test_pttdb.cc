@@ -102,7 +102,7 @@ TEST(pttdb, db_set_if_not_exists) {
     _serialize_content_uuid_bson(uuid, MONGO_THE_ID, 0, &uuid_bson);
 
     error = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
-    fprintf(stderr, "after db_set_if_not_exists: error: %d", error);
+    fprintf(stderr, "after db_set_if_not_exists: error: %d\n", error);
     EXPECT_EQ(S_OK, error);
 
     if(error != S_OK) {
@@ -153,12 +153,12 @@ void MyEnvironment::SetUp() {
     Err err = S_OK;
     err = init_mongo_global();
     if(err != S_OK) {
-        fprintf(stderr, "[ERROR] UNABLE TO init mongo global");
+        fprintf(stderr, "[ERROR] UNABLE TO init mongo global\n");
         return;
     }
     err = init_mongo_collections();
     if(err != S_OK) {
-        fprintf(stderr, "[ERROR] UNABLE TO init mongo collections");
+        fprintf(stderr, "[ERROR] UNABLE TO init mongo collections\n");
         return;
     }
 }
