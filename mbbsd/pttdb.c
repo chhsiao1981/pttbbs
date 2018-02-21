@@ -865,7 +865,7 @@ len_main_by_aid(aidu_t aid, int *len) {
     Err error_code;
     bson_t key;
     bson_init(&key);
-    bson_append_int32(&key, "aid", -1, aid, UUIDLEN);
+    bson_append_int32(&key, "aid", -1, aid);
 
     bson_t fields;
     bson_init(&fields);
@@ -957,7 +957,7 @@ n_line_main_by_aid(aidu_t aid, int *n_line) {
     Err error_code;
     bson_t key;
     bson_init(&key);
-    bson_append_int32(&key, "aid", -1, aid, UUIDLEN);
+    bson_append_int32(&key, "aid", -1, aid);
 
     bson_t fields;
     bson_init(&fields);
@@ -975,7 +975,7 @@ n_line_main_by_aid(aidu_t aid, int *n_line) {
         return error_code;
     }
 
-    error_code = _bson_get_value_int32(&db_result, "n_total_line", len);
+    error_code = _bson_get_value_int32(&db_result, "n_total_line", n_line);
     if (error_code) {
         bson_destroy(&key);
         bson_destroy(&fields);
