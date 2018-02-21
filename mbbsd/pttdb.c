@@ -117,6 +117,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
 
     // reply
     reply = bson_new();
+    fprintf(stderr, "to update_one\n");
     status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, reply, &error);
     fprintf(stderr, "after update_one: status: %d\n", status);
     if (!status) {
