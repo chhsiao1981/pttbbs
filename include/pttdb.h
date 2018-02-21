@@ -225,12 +225,12 @@ Err n_line_post(UUID main_id, int *n_line);
 Err create_main_from_fd(aidu_t aid, char *title, char *poster, unsigned char *ip, unsigned char *origin, unsigned char *web_link, int len, int fd_content, UUID main_id);
 
 Err len_main(UUID main_id, int *len);
-Err len_main_by_aid(aidu_t aid);
+Err len_main_by_aid(aidu_t aid, int *len);
+
+Err n_line_main(UUID main_id, int *n_line);
+Err n_line_main_by_aid(aidu_t aid, int *n_line);
 
 /*
-Err n_line_main(UUID main_id);
-Err n_line_main_by_aid(aidu_t aid);
-
 Err read_main_header(UUID main_id, MainHeader *main_header);
 Err read_main_header_by_aid(aidu_t aid, MainHeader *main);
 Err read_main_contents(UUID main_content_id, int block_id, int max_n_main_content, int *n_read_main_content, MainContent *main_content);

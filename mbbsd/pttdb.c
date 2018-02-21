@@ -117,11 +117,8 @@ db_set_if_not_exists(int collection, bson_t *key) {
 
     // reply
     reply = bson_new();
-    fprintf(stderr, "to update_one\n");
     status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, reply, &error);
-    fprintf(stderr, "after update_one: status: %d\n", status);
     if (!status) {
-        fprintf(stderr, "error on set_if_not_exists: e: (%d.%d/%s)\n", error.domain, error.code, error.message);
         bson_destroy(set_val);
         bson_destroy(opts);
         bson_destroy(reply);
@@ -174,7 +171,6 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
     reply = bson_new();
     status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, reply, &error);
     if (!status) {
-        fprintf(stderr, "error on update_one: e: (%d.%d/%s)\n", error.domain, error.code, error.message);
         bson_destroy(set_val);
         bson_destroy(opts);
         bson_destroy(reply);
@@ -872,6 +868,97 @@ len_main_by_aid(aidu_t aid) {
     return S_OK;
 }
 
+/**
+ * @brief get total-lines of main from main_id
+ * @details [long description]
+ *
+ * @param main_id main-id
+ * @param n_line n-line
+ *
+ * @return Err
+ */
+Err
+n_line_main(UUID main_id, int *n_line) {
+    Err error_code;
+    bson_t key;
+    bson_init(&key);
+    bson_append_utf8(&key, "the_id", -1, main_id, UUIDLEN);
+
+    bson_t fields;
+    bson_init(&fields);
+    bson_append_bool(&fields, "_id", -1, false);
+    bson_append_bool(&fields, "the_id", -1, true);
+    bson_append_bool(&fields, "n_total_line", -1, true);
+
+    bson_t db_result;
+    bson_init(&db_result);
+    error_code = db_find_one(MONGO_MAIN, &key, &fields, &db_result);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&fields);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+
+    error_code = _bson_get_value_int32(&db_result, "n_total_line", n_line);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&fields);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+    bson_destroy(&key);
+    bson_destroy(&fields);
+    bson_destroy(&db_result);
+
+    return S_OK;
+}
+
+/**
+ * @brief get total-lines of main from aid
+ * @details [long description]
+ *
+ * @param aid aid
+ * @param n_line n-line
+ *
+ * @return Err
+ */
+Err
+n_line_main_by_aid(aidu_t aid, int *n_line) {
+    Err error_code;
+    bson_t key;
+    bson_init(&key);
+    bson_append_int32(&key, "aid", -1, aid, UUIDLEN);
+
+    bson_t fields;
+    bson_init(&fields);
+    bson_append_bool(&fields, "_id", -1, false);
+    bson_append_bool(&fields, "aid", -1, true);
+    bson_append_bool(&fields, "n_total_line", -1, true);
+
+    bson_t db_result;
+    bson_init(&db_result);
+    error_code = db_find_one(MONGO_MAIN, &key, &fields, &db_result);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&fields);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+
+    error_code = _bson_get_value_int32(&db_result, "n_total_line", len);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&fields);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+    bson_destroy(&key);
+    bson_destroy(&fields);
+    bson_destroy(&db_result);
+
+    return S_OK;
+}
 
 /**
  * @brief Serialize main-header to bson
