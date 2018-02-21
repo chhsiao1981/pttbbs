@@ -135,12 +135,18 @@ TEST(pttdb, db_update_one) {
     bson_append_utf8(&val_bson, "the_val", -1, "val0", 4);
 
     error = db_update_one(MONGO_TEST, &key_bson, &val_bson, true);
+    EXPECT_EQ(S_OK, error);
+    if(error != S_OK) {
+        bson_destroy(&key_bson);
+        bson_destroy(&val_bson);
+        return;
+    }
+
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
     bson_destroy(&key_bson);
     bson_destroy(&val_bson);
 
-    EXPECT_EQ(S_OK, error);
 }
 
 class MyEnvironment: public ::testing::Environment {
