@@ -270,6 +270,34 @@ _bson_get_value_int32(bson_t *b, char *name, int *value) {
     return S_OK;
 }
 
+Err
+_bson_get_value_bin(bson_t *b, char *name, char *value, int *len) {
+    bool status;
+    bson_iter_t iter;
+    bson_iter_t it_val;
+
+    status = bson_iter_init(&iter, b);
+    if (!status) {
+        return S_ERR;
+    }
+
+    status = bson_iter_find_descendant(&iter, name, &it_val);
+    if (!status) {
+        return S_ERR;
+    }
+
+    status = BSON_ITER_HOLDS_BINARY(&it_val);
+    if (!status) {
+        return S_ERR;
+    }
+
+    char *p_value;
+    bson_iter_binary(&it_val, BSON_SUBTYPE_BINARY, len, &p_value);
+    strcpy(value, p_value, len);
+
+    return S_OK;
+}
+
 /**********
  * Milli-timestamp
  **********/
@@ -990,6 +1018,44 @@ n_line_main_by_aid(aidu_t aid, int *n_line) {
 }
 
 /**
+ * @brief read main header
+ * @details [long description]
+ *
+ * @param main_id main-id
+ * @param main_header main-header
+ *
+ * @return Err
+ */
+Err
+read_main_header(UUID main_id, MainHeader *main_header) {
+    Err error_code;
+    bson_t key;
+    bson_init(&key);
+    bson_append_utf8(&key, "the_id", -1, main_id, UUIDLEN);
+
+    bson_t db_result;
+    bson_init(&db_result);
+    error_code = db_find_one(MONGO_MAIN, &key, NULL, &db_result);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+
+    error_code = _deserialize_main_bson(db_result, main_header);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+
+    bson_destroy(&key);
+    bson_destroy(&db_result);
+    return S_OK;
+}
+
+
+/**
  * @brief Serialize main-header to bson
  * @details Serialize main-header to bson
  *
@@ -1060,6 +1126,27 @@ _serialize_main_bson(MainHeader *main_header, bson_t *main_bson) {
 
     bson_status = bson_append_int32(main_bson, "len_total", -1, main_header->len_total);
     if (!bson_status) return S_ERR;
+
+    return S_OK;
+}
+
+/**
+ * @brief [brief description]
+ * @details [long description]
+ *
+ * @param main_bson [description]
+ * @param main_header [description]
+ *
+ * @return Err
+ */
+Err
+_deserialize_main_bson(bson_t *main_bson, MainHeader *main_header) {
+    Err error_code;
+    error_code = _bson_get_value_int32(main_bson, "version", &main_header->version);
+    if(error_code) return error_code;
+
+    error_code = _bson_get_value_int32(main_bson, "version", &main_header->version);
+    if(error_code) return error_code;
 
     return S_OK;
 }

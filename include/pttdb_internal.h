@@ -26,6 +26,7 @@ Err db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result);
 
 Err _bson_exists(bson_t *b, char *name);
 Err _bson_get_value_int32(bson_t *b, char *name, int *value);
+Err _bson_get_value_bin(bson_t *b, char *name, char *value, int *len);
 
 // XXX NEVER USE UNLESS IN TEST
 Err _DB_FORCE_DROP_COLLECTION(int collection);
@@ -41,6 +42,7 @@ Err _split_main_contents_init_main_content(MainContent *main_content_block, UUID
 Err _split_main_contents_save_main_content_block(MainContent *main_content_block);
 
 Err _serialize_main_bson(MainHeader *main_header, bson_t *main_bson);
+Err _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header);
 
 Err _serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main_content_block_bson);
 
