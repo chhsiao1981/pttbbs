@@ -122,6 +122,7 @@ void test3() {
     bson_t *read_opts;
     bson_t reply;
     const bson_t *result;
+    const bson_t *next_result;
     int len = 0;
     char str[MAX_BUFFER];
     bson_subtype_t subtype;
@@ -152,7 +153,8 @@ void test3() {
 
     cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[MONGO_TEST], key, NULL, NULL);
 
-    while (mongoc_cursor_next(cursor, &result)) {
+    while (mongoc_cursor_next(cursor, &next_result)) {
+        result = next_result;
         len++;
     }
 
