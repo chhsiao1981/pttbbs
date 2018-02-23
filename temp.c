@@ -149,7 +149,7 @@ void test3() {
     mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key, set_val, opts, &reply, &error);
 
     str2 = bson_as_canonical_extended_json(key, NULL);
-    fprintf(stderr, "to find: key: %s\n", str2);
+    //fprintf(stderr, "to find: key: %s\n", str2);
     bson_free(str2);
 
     cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[MONGO_TEST], key, NULL, NULL);
@@ -159,21 +159,21 @@ void test3() {
         len++;
     }
 
-    fprintf(stderr, "after mongoc_cursor_next: result: %d\n", result);
+    //fprintf(stderr, "after mongoc_cursor_next: result: %d\n", result);
     status = bson_iter_init(&iter, result);
 
     bson_iter_find_descendant(&iter, "test", &it_val);
     bson_iter_binary(&it_val, &subtype, (uint32_t *)&len, (const uint8_t**)&p_str);
 
-    fprintf(stderr, "after iter bin: subtype: %d len: %d p_str: %s\n", subtype, len, p_str);
+    //fprintf(stderr, "after iter bin: subtype: %d len: %d p_str: %s\n", subtype, len, p_str);
 
     //fprintf(stderr, "after mongoc_cursor_next: len: %d\n", len);
 
-    fprintf(stderr, "to cursor_destroy p_str: %s\n", p_str);
+    //fprintf(stderr, "to cursor_destroy p_str: %s\n", p_str);
 
     mongoc_cursor_destroy(cursor);
 
-    fprintf(stderr, "after cursor_destroy p_str: %s\n", p_str);
+    //fprintf(stderr, "after cursor_destroy p_str: %s\n", p_str);
 
     bson_destroy(&reply);
     bson_destroy(opts);
