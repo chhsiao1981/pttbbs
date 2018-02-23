@@ -38,7 +38,7 @@ mongoc_client_pool_t *MONGO_CLIENT_POOL;
 mongoc_client_t *MONGO_CLIENT;
 mongoc_collection_t **MONGO_COLLECTIONS;
 
-int get_memory_size2() {
+long get_memory_size2() {
     struct rusage usage;
     getrusage(RUSAGE_SELF, &usage);
 
@@ -159,9 +159,11 @@ void test3() {
 int main() {
     pid_t pid = getpid();
     unsigned long int memory_size = get_memory_size(pid);
-    int memory_size2 = get_memory_size2();
+    long memory_size2 = get_memory_size2();
 
-    fprintf(stderr, "before mongoc_init: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
+    fprintf(stderr, "int: %d long int: %d long :%d", sizeof(int), sizeof(long int), sizeof(long));
+
+    fprintf(stderr, "before mongoc_init: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);
 
     mongoc_init();
     MONGO_URI = mongoc_uri_new("mongodb://localhost/?wtimeoutms=10000&serverselectiontimeoutms=10000");
