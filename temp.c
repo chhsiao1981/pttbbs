@@ -119,6 +119,7 @@ void test3() {
     bson_t *val;
     bson_t *set_val;    
     bson_t *opts;
+    bson_t *read_opts;
     bson_t reply;
     const bson_t *result;
     int len = 0;
@@ -144,7 +145,7 @@ void test3() {
 
     mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key, set_val, opts, &reply, &error);
 
-    mongoc_cursor_t *cursor = mongoc_collection_find(MONGO_COLLECTIONS[MONGO_TEST], MONGOC_QUERY_NONE, 0, 1, 0, key, NULL, NULL);
+    mongoc_cursor_t *cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[MONGO_TEST], key, NULL, NULL);
 
     while (mongoc_cursor_next(cursor, &result)) {
         len++;
@@ -162,6 +163,7 @@ void test3() {
     mongoc_cursor_destroy(cursor);
 
     bson_destroy(&reply);
+    bson_destroy(read_opts);
     bson_destroy(opts);
     bson_destroy(set_val);
     bson_destroy(val);
