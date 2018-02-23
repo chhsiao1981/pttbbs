@@ -3,6 +3,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 
 #define MAX_BUFFER 8192
 
@@ -35,6 +37,13 @@ mongoc_client_pool_t *MONGO_CLIENT_POOL;
 
 mongoc_client_t *MONGO_CLIENT;
 mongoc_collection_t **MONGO_COLLECTIONS;
+
+int get_memory_size2() {
+    struct rusage usage;
+    getrusage(RUSAGE_SELF, &usage);
+
+    return usage.ru_idrss + usage.ru_isrss + usage.ru_ixrss
+}
 
 unsigned long int get_memory_size(pid_t pid) {
     char filename[MAX_BUFFER];
@@ -150,8 +159,9 @@ void test3() {
 int main() {
     pid_t pid = getpid();
     unsigned long int memory_size = get_memory_size(pid);
+    int memory_size2 = get_memory_size2();
 
-    fprintf(stderr, "before mongoc_init: memory_size: %lu\n", memory_size);
+    fprintf(stderr, "before mongoc_init: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
 
     mongoc_init();
     MONGO_URI = mongoc_uri_new("mongodb://localhost/?wtimeoutms=10000&serverselectiontimeoutms=10000");
@@ -166,15 +176,18 @@ int main() {
     MONGO_COLLECTIONS[MONGO_TEST] = mongoc_client_get_collection(MONGO_CLIENT, MONGO_TEST_DBNAME, MONGO_TEST_NAME);
 
     memory_size = get_memory_size(pid);
-    fprintf(stderr, "before test: memory_size: %lu\n", memory_size);
+    memory_size2 = get_memory_size2();
+    fprintf(stderr, "before test: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
 
     test();
 
     memory_size = get_memory_size(pid);
-    fprintf(stderr, "after test: memory_size: %lu\n", memory_size);
+    memory_size2 = get_memory_size2();
+    fprintf(stderr, "after test: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
 
     memory_size = get_memory_size(pid);
-    fprintf(stderr, "before test2: memory_size: %lu\n", memory_size);
+    memory_size2 = get_memory_size2();
+    fprintf(stderr, "before test2: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
 
     test2();
 
@@ -182,32 +195,38 @@ int main() {
     nanosleep(&sleep_time, NULL);
 
     memory_size = get_memory_size(pid);
-    fprintf(stderr, "after test2: memory_size: %lu\n", memory_size);
+    memory_size2 = get_memory_size2();
+    fprintf(stderr, "after test2: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
 
 
     memory_size = get_memory_size(pid);
-    fprintf(stderr, "before test3: memory_size: %lu\n", memory_size);
+    memory_size2 = get_memory_size2();
+    fprintf(stderr, "before test3: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
 
     test3();
 
     nanosleep(&sleep_time, NULL);
 
     memory_size = get_memory_size(pid);
-    fprintf(stderr, "after test3: memory_size: %lu\n", memory_size);
+    memory_size2 = get_memory_size2();
+    fprintf(stderr, "after test3: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
 
 
     memory_size = get_memory_size(pid);
-    fprintf(stderr, "before test3-2: memory_size: %lu\n", memory_size);
+    memory_size2 = get_memory_size2();
+    fprintf(stderr, "before test3-2: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
 
     test3();
 
     nanosleep(&sleep_time, NULL);
 
     memory_size = get_memory_size(pid);
-    fprintf(stderr, "after test3-2: memory_size: %lu\n", memory_size);
+    memory_size2 = get_memory_size2();
+    fprintf(stderr, "after test3-2: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
 
     memory_size = get_memory_size(pid);
-    fprintf(stderr, "before test3-100: memory_size: %lu\n", memory_size);    
+    memory_size2 = get_memory_size2();
+    fprintf(stderr, "before test3-100: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);    
 
     for(int i = 0; i < 1000; i++) {
         test3();
@@ -215,5 +234,6 @@ int main() {
 
     nanosleep(&sleep_time, NULL);
     memory_size = get_memory_size(pid);
-    fprintf(stderr, "after test3-100: memory_size: %lu\n", memory_size);    
+    memory_size2 = get_memory_size2();
+    fprintf(stderr, "after test3-100: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);    
 }
