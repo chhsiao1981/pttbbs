@@ -64,7 +64,7 @@ TEST(pttdb, gen_uuid) {
     time64_t START_MILLI_TIMESTAMP = 1514764800000;
 
     // 2019-01-01
-    time64_t END_MILLI_TIMESTAMP =   1546300800000;
+    time64_t END_MILLI_TIMESTAMP = 1546300800000;
 
     gen_uuid(uuid);
     uuid_to_milli_timestamp(uuid, &milli_timestamp);

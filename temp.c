@@ -138,7 +138,6 @@ void test3() {
 
     mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key, set_val, opts, &reply, &error);
 
-    /*
     mongoc_cursor_t *cursor = mongoc_collection_find(MONGO_COLLECTIONS[MONGO_TEST], MONGOC_QUERY_NONE, 0, 1, 0, key, NULL, NULL);
 
     while (mongoc_cursor_next(cursor, &result)) {
@@ -148,7 +147,6 @@ void test3() {
     //fprintf(stderr, "after mongoc_cursor_next: len: %d\n", len);
 
     mongoc_cursor_destroy(cursor);
-    */
 
     bson_destroy(&reply);
     bson_destroy(opts);
