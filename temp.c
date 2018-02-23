@@ -129,27 +129,27 @@ int main() {
     MONGO_COLLECTIONS[MONGO_TEST] = mongoc_client_get_collection(MONGO_CLIENT, MONGO_TEST_DBNAME, MONGO_TEST_NAME);
 
     memory_size = get_memory_size(pid);
-    fprintf("before test: memory_size: %lu\n", memory_size);
+    fprintf(stderr, "before test: memory_size: %lu\n", memory_size);
 
     test();
 
     memory_size = get_memory_size(pid);
-    fprintf("after test: memory_size: %lu\n", memory_size);
+    fprintf(stderr, "after test: memory_size: %lu\n", memory_size);
 
     memory_size = get_memory_size(pid);
-    fprintf("before test2: memory_size: %lu\n", memory_size);
+    fprintf(stderr, "before test2: memory_size: %lu\n", memory_size);
 
     test2();
-&pgrp, &session, &tty_nr, 
+
     memory_size = get_memory_size(pid);
-    fprintf("after test2: memory_size: %lu\n", memory_size);
+    fprintf(stderr, "after test2: memory_size: %lu\n", memory_size);
 
 
     memory_size = get_memory_size(pid);
-    fprintf("before test3: memory_size: %lu\n", memory_size);
+    fprintf(stderr, "before test3: memory_size: %lu\n", memory_size);
 
     test3();
 
     memory_size = get_memory_size(pid);
-    fprintf("after test3: memory_size: %lu\n", memory_size);
+    fprintf(stderr, "after test3: memory_size: %lu\n", memory_size);
 }
