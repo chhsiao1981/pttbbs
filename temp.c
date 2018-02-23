@@ -151,7 +151,7 @@ void test3() {
     }
 
     status = bson_iter_init(&iter, result);
-    fprintf(stderr, "after bson_iter_init: status: %d\n", status);
+    fprintf(stderr, "after bson_iter_init: status: %d result: %d\n", status, result);
 
     bson_iter_find_descendant(&iter, "test", &it_val);
     bson_iter_binary(&it_val, &subtype, (uint32_t *)&len, (const uint8_t**)&str);
