@@ -42,7 +42,7 @@ long get_memory_size2() {
     struct rusage usage;
     getrusage(RUSAGE_SELF, &usage);
 
-    return usage.ru_idrss + usage.ru_isrss + usage.ru_ixrss;
+    return usage.ru_maxrss;
 }
 
 unsigned long int get_memory_size(pid_t pid) {
@@ -231,6 +231,15 @@ int main() {
     fprintf(stderr, "before test3-100: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);    
 
     for(int i = 0; i < 1000; i++) {
+        test3();
+    }
+
+    nanosleep(&sleep_time, NULL);
+    memory_size = get_memory_size(pid);
+    memory_size2 = get_memory_size2();
+    fprintf(stderr, "after test3-100: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);    
+
+    for(int i = 0; i < 10000; i++) {
         test3();
     }
 
