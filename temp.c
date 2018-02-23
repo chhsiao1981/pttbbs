@@ -66,7 +66,7 @@ unsigned long int get_memory_size(pid_t pid) {
     FILE *f = fopen(filename, "r" );
     // man 5 proc
     //       1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  20  21   22  23
-    fscanf("%d %s %c %d %d %d %d %d %u %lu %lu %lu %lu %lu %lu %ld %ld %ld %ld %ld %ld %llu %lu", 
+    fscanf(f, "%d %s %c %d %d %d %d %d %u %lu %lu %lu %lu %lu %lu %ld %ld %ld %ld %ld %ld %llu %lu", 
         &pid2,                    // 1
         comm,                     // 2
         &state,                   // 3
