@@ -116,8 +116,8 @@ void test3() {
     bson_init(&val);
     bson_init(&set_val);
 
-    bson_append_binary(&key, "test", -1, BSON_SUBTYPE_BINARY, "temp", 4);
-    bson_append_binary(&val, "test2", -1, BSON_SUBTYPE_BINARY, "temp2", 4);
+    bson_append_binary(&key, "test", -1, BSON_SUBTYPE_BINARY, (uint8_t *)"temp", 4);
+    bson_append_binary(&val, "test2", -1, BSON_SUBTYPE_BINARY, (uint8_t *)"temp2", 4);
     bson_append_document(&set_val, "$set", -1, val);
 
     bson_init(&opts);
