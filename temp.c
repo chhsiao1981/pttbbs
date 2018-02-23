@@ -194,7 +194,7 @@ void test3(char *find_key) {
     bson_destroy(val2);
     bson_destroy(key2);
 
-    //fprintf(stderr, "after bson_destroy p_str: %s\n", p_str);
+    fprintf(stderr, "after bson_destroy p_str: %s\n", p_str);
 }
 
 int main() {
