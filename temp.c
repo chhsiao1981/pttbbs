@@ -90,7 +90,7 @@ unsigned long int get_memory_size(pid_t pid) {
         &itrealvalue,             //21
         &starttime,               //22
         &vsize,                   //23
-    )
+    );
 
     fclose(f);
 
