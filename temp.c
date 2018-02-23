@@ -328,7 +328,7 @@ int main() {
     memory_size2 = get_memory_size2();
     fprintf(stderr, "after test3-1000: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);    
 
-    for(int i = 0; i < 100000; i++) {
+    for(int i = 0; i < 10000; i++) {
         test3("test");
         test3("test2");
     }
