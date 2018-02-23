@@ -3,6 +3,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#define MAX_BUFFER 8192
+
 // Mongo Post
 #define MONGO_POST_DBNAME "post"
 
