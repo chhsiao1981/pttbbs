@@ -172,8 +172,11 @@ void test3(char *find_key) {
     //fprintf(stderr, "after mongoc_cursor_next: result: %d\n", result);
     status = bson_iter_init(&iter, result);
 
-    bson_iter_find_descendant(&iter, find_key, &it_val);
+    bson_iter_find_descendant(&iter, "test", &it_val);
     bson_iter_binary(&it_val, &subtype, (uint32_t *)&len, (const uint8_t**)&p_str);
+
+    bson_iter_find_descendant(&iter, "test2", &it_val);
+    bson_iter_binary(&it_val, &subtype, (uint32_t *)&len, (const uint8_t**)&p_str2);
 
     //fprintf(stderr, "after iter bin: subtype: %d len: %d p_str: %s\n", subtype, len, p_str);
 
@@ -195,8 +198,6 @@ void test3(char *find_key) {
     bson_destroy(key2);
 
     //fprintf(stderr, "after bson_destroy p_str: %s\n", p_str);
-
-    bson_free((uint8_t *)p_str);
 }
 
 int main() {
