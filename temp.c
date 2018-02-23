@@ -42,7 +42,7 @@ long get_memory_size2() {
     struct rusage usage;
     getrusage(RUSAGE_THREAD, &usage);
 
-    return usage.ru_ixrss + usage.ru_idrss + usage.ru_isrss;
+    return usage.ru_maxrss;
 }
 
 unsigned long int get_memory_size(pid_t pid) {
