@@ -106,7 +106,7 @@ unsigned long int get_memory_size(pid_t pid) {
 
     fprintf(stderr, "pid2: %d comm: %s state: %c ppid: %d pgrp: %d session: %d tty_nr: %d tpgid: %d flags: %u\n",
         pid2,                    // 1
-        omm,                     // 2
+        comm,                    // 2
         state,                   // 3
         ppid,                    // 4
         pgrp,                    // 5
@@ -124,16 +124,17 @@ unsigned long int get_memory_size(pid_t pid) {
         utime,                   //14
         stime,                   //15
         cutime,                  //16
-        cstime,                  //17
+        cstime                   //17
     );
 
     fprintf(stderr, "priority: %ld nice: %ld num_threads: %ld itrealvalue: %ld starttime: %llu mem: %lu\n", 
-        priority,
-        nice,
-        num_threads,
-        itrealvalue,
-        starttime,
-        vsize);
+        priority,                //18
+        nice,                    //19
+        num_threads,             //20
+        itrealvalue,             //21
+        starttime,               //22
+        vsize                    //23
+    );
 
     return vsize;
 }
