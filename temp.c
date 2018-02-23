@@ -150,7 +150,7 @@ void test3(char *find_key) {
     opts = bson_new();
     bson_append_bool(opts, "upsert", -1, true);
 
-    mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key, set_val, opts, &reply, &error);
+    //mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key, set_val, opts, &reply, &error);
 
     key2 = bson_new();
     val2 = bson_new();
@@ -160,14 +160,15 @@ void test3(char *find_key) {
     bson_append_binary(val2, "test2", -1, BSON_SUBTYPE_BINARY, (uint8_t *)"temp45", 6);
     bson_append_document(set_val2, "$set", -1, val);
 
-    mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key2, set_val2, opts, &reply, &error);
+    //mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key2, set_val2, opts, &reply, &error);
 
+    /*
     cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[MONGO_TEST], key, NULL, NULL);
 
     while (mongoc_cursor_next(cursor, &next_result)) {
         result = next_result;
         len++;
-    }
+    }    
 
     //fprintf(stderr, "after mongoc_cursor_next: result: %d\n", result);
     status = bson_iter_init(&iter, result);
@@ -185,10 +186,11 @@ void test3(char *find_key) {
     //fprintf(stderr, "to cursor_destroy p_str: %s\n", p_str);
 
     mongoc_cursor_destroy(cursor);
+    */
 
     //fprintf(stderr, "after cursor_destroy p_str: %s\n", p_str);
 
-    bson_destroy(&reply);
+    //bson_destroy(&reply);
     bson_destroy(opts);
     bson_destroy(set_val);
     bson_destroy(val);
