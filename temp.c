@@ -190,4 +190,13 @@ int main() {
 
     memory_size = get_memory_size(pid);
     fprintf(stderr, "after test3: memory_size: %lu\n", memory_size);
+
+
+    memory_size = get_memory_size(pid);
+    fprintf(stderr, "before test3-2: memory_size: %lu\n", memory_size);
+
+    test3();
+
+    memory_size = get_memory_size(pid);
+    fprintf(stderr, "after test3-2: memory_size: %lu\n", memory_size);
 }
