@@ -122,6 +122,10 @@ void test3() {
     bson_t reply;
     const bson_t *result;
     int len = 0;
+    char result[MAX_BUFFER];
+
+    bson_iter_t iter;
+    bson_iter_t it_val;
 
     bson_error_t error;
 
@@ -144,6 +148,11 @@ void test3() {
         len++;
     }
 
+    status = bson_iter_init(&iter, result);
+
+    bson_iter_find_descendant(&iter, "test", &it_val);
+    bson_iter_binary(&it_val, BSON_SUBTYPE_BINARY, len, &result);
+
     //fprintf(stderr, "after mongoc_cursor_next: len: %d\n", len);
 
     mongoc_cursor_destroy(cursor);
@@ -153,6 +162,8 @@ void test3() {
     bson_destroy(set_val);
     bson_destroy(val);
     bson_destroy(key);
+
+    fprintf(stderr, "result: %s\n", result);
 }
 
 int main() {
