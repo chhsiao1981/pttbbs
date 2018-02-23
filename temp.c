@@ -106,7 +106,31 @@ void test2() {
 
 void test3() {
     bson_t key;
+    bson_t val;
+    bson_t set_val;    
+    bson_t opts;
+    bson_t reply;
+
+    bson_error_t error;
     bson_init(&key);
+    bson_init(&val);
+    bson_init(&set_val);
+
+    bson_append_binary(key, "test", -1, BSON_SUBTYPE_BINARY, "temp", 4);
+    bson_append_binary(val, "test2", -1, BSON_SUBTYPE_BINARY, "temp2", 4);
+    bson_append_document(set_val, "$set", -1, val);
+
+    bson_init(&opts);
+    bson_append_bool(opts, "upsert", -1, true);
+
+    bson_init(&reply);
+
+    mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key, set_val, opts, reply, &error);
+
+    bson_destroy(&reply);
+    bson_destroy(&opts);
+    bson_destroy(&set_val);
+    bson_destroy(&val);
     bson_destroy(&key);
 }
 
