@@ -194,7 +194,6 @@ void test3(char *find_key) {
 
     mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key2, set_val2, opts, &reply, &error);
 
-    /*
     cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[MONGO_TEST], key, NULL, NULL);
 
     while (mongoc_cursor_next(cursor, &next_result)) {
@@ -218,7 +217,6 @@ void test3(char *find_key) {
     //fprintf(stderr, "to cursor_destroy p_str: %s\n", p_str);
 
     mongoc_cursor_destroy(cursor);
-    */
 
     //fprintf(stderr, "after cursor_destroy p_str: %s\n", p_str);
 
