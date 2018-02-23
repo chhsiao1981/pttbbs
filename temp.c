@@ -146,7 +146,7 @@ void test3() {
 
     mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key, set_val, opts, &reply, &error);
 
-    str2 = bson_as_canonical_extended_json(&key);
+    str2 = bson_as_canonical_extended_json(key, NULL);
     fprintf(stderr, "to find: key: %s\n", str2);
     bson_free(str2);
 
