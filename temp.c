@@ -170,7 +170,6 @@ void test3() {
     mongoc_cursor_destroy(cursor);
 
     bson_destroy(&reply);
-    bson_destroy(read_opts);
     bson_destroy(opts);
     bson_destroy(set_val);
     bson_destroy(val);
