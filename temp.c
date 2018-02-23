@@ -338,5 +338,17 @@ int main() {
     nanosleep(&sleep_time, NULL);
     memory_size = get_memory_size(pid);
     memory_size2 = get_memory_size2();
-    fprintf(stderr, "after test3-10000: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);    
+    fprintf(stderr, "after test3-10000: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);
+
+
+    for (int i = 0; i < N_MONGO_COLLECTIONS; i++) {
+        mongoc_collection_destroy(MONGO_COLLECTIONS[i]);
+    }
+    free(MONGO_COLLECTIONS);
+
+    mongoc_client_pool_push(MONGO_CLIENT_POOL, MONGO_CLIENT);    
+
+    mongoc_client_pool_destroy(MONGO_CLIENT_POOL);
+    mongoc_uri_destroy(MONGO_URI);
+    mongoc_cleanup();
 }
