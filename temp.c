@@ -121,7 +121,7 @@ void test3() {
     bson_append_document(&set_val, "$set", -1, val);
 
     bson_init(&opts);
-    bson_append_bool(opts, "upsert", -1, true);
+    bson_append_bool(&opts, "upsert", -1, true);
 
     bson_init(&reply);
 
