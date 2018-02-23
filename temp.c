@@ -129,6 +129,7 @@ void test3() {
     mongoc_cursor_t * cursor;
     bson_iter_t iter;
     bson_iter_t it_val;
+    char *str2;
 
     bson_error_t error;
 
@@ -145,10 +146,10 @@ void test3() {
 
     mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key, set_val, opts, &reply, &error);
 
-    char *str2 = bson_as_canonical_extended_json(key);
+    str2 = bson_as_canonical_extended_json(key);
     fprintf(stderr, "to find: key: %s\n", str2);
     bson_free(str2);
-    
+
     cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[MONGO_TEST], key, NULL, NULL);
 
     while (mongoc_cursor_next(cursor, &result)) {
