@@ -256,7 +256,7 @@ int main() {
     memory_size2 = get_memory_size2();
     fprintf(stderr, "before test3: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);
 
-    test3();
+    test3("test");
 
     nanosleep(&sleep_time, NULL);
 
@@ -269,7 +269,7 @@ int main() {
     memory_size2 = get_memory_size2();
     fprintf(stderr, "before test3-2: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);
 
-    test3();
+    test3("test2");
 
     nanosleep(&sleep_time, NULL);
 
@@ -282,7 +282,8 @@ int main() {
     fprintf(stderr, "before test3-1000: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);    
 
     for(int i = 0; i < 1000; i++) {
-        test3();
+        test3("test");
+        test3("test2");
     }
 
     nanosleep(&sleep_time, NULL);
@@ -291,7 +292,8 @@ int main() {
     fprintf(stderr, "after test3-1000: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);    
 
     for(int i = 0; i < 10000; i++) {
-        test3();
+        test3("test");
+        test3("test2");
     }
 
     nanosleep(&sleep_time, NULL);
