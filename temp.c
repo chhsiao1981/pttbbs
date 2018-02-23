@@ -164,7 +164,7 @@ void test3() {
     bson_iter_find_descendant(&iter, "test", &it_val);
     bson_iter_binary(&it_val, &subtype, (uint32_t *)&len, (const uint8_t**)&str);
 
-    fprintf(stderr, "after iter bin: str: %s\n", str);
+    fprintf(stderr, "after iter bin: subtype: %d len: %d str: %s\n", subtype, len, str);
 
     //fprintf(stderr, "after mongoc_cursor_next: len: %d\n", len);
 
