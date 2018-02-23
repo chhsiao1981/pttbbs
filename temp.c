@@ -124,6 +124,7 @@ void test3() {
     int len = 0;
     char str[MAX_BUFFER];
     bson_subtype_t subtype;
+    bool status;
 
     bson_iter_t iter;
     bson_iter_t it_val;
@@ -149,7 +150,8 @@ void test3() {
         len++;
     }
 
-    bson_iter_init(&iter, result);
+    status = bson_iter_init(&iter, result);
+    fprintf(stderr, "after bson_iter_init: status: %d\n", status);
 
     bson_iter_find_descendant(&iter, "test", &it_val);
     bson_iter_binary(&it_val, &subtype, (uint32_t *)&len, (const uint8_t**)&str);
