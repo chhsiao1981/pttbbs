@@ -114,7 +114,7 @@ void test2() {
 
 }
 
-void test3() {
+void test3(char *find_key) {
     bson_t *key;
     bson_t *val;
     bson_t *set_val;    
@@ -144,7 +144,7 @@ void test3() {
     set_val = bson_new();
 
     bson_append_binary(key, "test", -1, BSON_SUBTYPE_BINARY, (uint8_t *)"temp", 4);
-    bson_append_binary(val, "test2", -1, BSON_SUBTYPE_BINARY, (uint8_t *)"temp2", 5);
+    bson_append_binary(val, "test2", -1, BSON_SUBTYPE_BINARY, (uint8_t *)"temp23", 6);
     bson_append_document(set_val, "$set", -1, val);
 
     opts = bson_new();
@@ -157,8 +157,10 @@ void test3() {
     set_val2 = bson_new();
 
     bson_append_binary(key2, "test", -1, BSON_SUBTYPE_BINARY, (uint8_t *)"temp3", 5);
-    bson_append_binary(val2, "test2", -1, BSON_SUBTYPE_BINARY, (uint8_t *)"temp4", 5);
+    bson_append_binary(val2, "test2", -1, BSON_SUBTYPE_BINARY, (uint8_t *)"temp45", 6);
     bson_append_document(set_val2, "$set", -1, val);
+
+    mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key2, set_val2, opts, &reply, &error);
 
     cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[MONGO_TEST], key, NULL, NULL);
 
@@ -170,7 +172,7 @@ void test3() {
     //fprintf(stderr, "after mongoc_cursor_next: result: %d\n", result);
     status = bson_iter_init(&iter, result);
 
-    bson_iter_find_descendant(&iter, "test2", &it_val);
+    bson_iter_find_descendant(&iter, find_key, &it_val);
     bson_iter_binary(&it_val, &subtype, (uint32_t *)&len, (const uint8_t**)&p_str);
 
     //fprintf(stderr, "after iter bin: subtype: %d len: %d p_str: %s\n", subtype, len, p_str);
