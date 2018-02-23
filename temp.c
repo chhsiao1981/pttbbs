@@ -122,7 +122,7 @@ int main() {
 
     MONGO_CLIENT = mongoc_client_pool_try_pop(MONGO_CLIENT_POOL);
 
-    MONGO_COLLECTIONS = malloc(sizeof(mongoc_collection_t *) * N_MONGO_COLLECTIONS);
+    MONGO_COLLECTIONS = (mongoc_collection_t**)malloc(sizeof(mongoc_collection_t *) * N_MONGO_COLLECTIONS);
     MONGO_COLLECTIONS[MONGO_MAIN] = mongoc_client_get_collection(MONGO_CLIENT, MONGO_POST_DBNAME, MONGO_MAIN_NAME);
     MONGO_COLLECTIONS[MONGO_MAIN_CONTENT] = mongoc_client_get_collection(MONGO_CLIENT, MONGO_POST_DBNAME, MONGO_MAIN_CONTENT_NAME);
 
