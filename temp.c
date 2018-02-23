@@ -137,7 +137,7 @@ void test3() {
 
     reply = bson_new();
 
-    mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key, set_val, opts, reply, &error);
+    //mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key, set_val, opts, reply, &error);
 
     /*
     mongoc_cursor_t *cursor = mongoc_collection_find(MONGO_COLLECTIONS[MONGO_TEST], MONGOC_QUERY_NONE, 0, 1, 0, key, NULL, NULL);
