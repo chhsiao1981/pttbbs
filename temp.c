@@ -161,7 +161,7 @@ int main() {
     unsigned long int memory_size = get_memory_size(pid);
     long memory_size2 = get_memory_size2();
 
-    fprintf(stderr, "int: %d long int: %d long :%d", sizeof(int), sizeof(long int), sizeof(long));
+    fprintf(stderr, "int: %lu long int: %lu long :%lu", sizeof(int), sizeof(long int), sizeof(long));
 
     fprintf(stderr, "before mongoc_init: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);
 
