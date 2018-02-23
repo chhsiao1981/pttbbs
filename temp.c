@@ -110,7 +110,7 @@ void test3() {
     bson_t set_val;    
     bson_t opts;
     bson_t reply;
-    bson_t result;
+    bson_t *result;
     int len = 0;
 
     bson_error_t error;
@@ -131,8 +131,8 @@ void test3() {
 
     mongoc_cursor_t *cursor = mongoc_collection_find(MONGO_COLLECTIONS[MONGO_TEST], MONGOC_QUERY_NONE, 0, 1, 0, &key, NULL, NULL);
 
-    bson_init(&result);
-    while (mongoc_cursor_next(cursor, &result)) {
+    result = bson_new();
+    while (mongoc_cursor_next(cursor, result)) {
         len++;
     }
 
@@ -140,7 +140,7 @@ void test3() {
 
     mongoc_cursor_destroy(cursor);
 
-    bson_destroy(&result);
+    bson_destroy(result);
     bson_destroy(&reply);
     bson_destroy(&opts);
     bson_destroy(&set_val);
