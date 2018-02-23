@@ -137,7 +137,7 @@ void test3() {
 
     fprintf(stderr, "after mongoc_cursor_next: len: %d\n", len);
 
-    //mongoc_cursor_destroy(cursor);
+    mongoc_cursor_destroy(cursor);
 
     //bson_destroy(&reply);
     //bson_destroy(&opts);
@@ -201,7 +201,7 @@ int main() {
     memory_size = get_memory_size(pid);
     fprintf(stderr, "before test3-100: memory_size: %lu\n", memory_size);    
 
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < 1000; i++) {
         test3();
     }
 
