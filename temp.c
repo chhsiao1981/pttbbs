@@ -133,6 +133,8 @@ void test3() {
 
     while (mongoc_cursor_next(cursor, &result)) {
         len++;
+
+        bson_destroy(result);
     }
 
     fprintf(stderr, "after mongoc_cursor_next: len: %d\n", len);
