@@ -196,7 +196,7 @@ void test3(char *find_key) {
 
     //fprintf(stderr, "after bson_destroy p_str: %s\n", p_str);
 
-    bson_free(p_str);
+    bson_free((uint8_t *)p_str);
 }
 
 int main() {
