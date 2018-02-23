@@ -124,6 +124,7 @@ void test3() {
     int len = 0;
 
     bson_error_t error;
+
     key = bson_new();
     val = bson_new();
     set_val = bson_new();
@@ -137,7 +138,7 @@ void test3() {
 
     reply = bson_new();
 
-    //mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key, set_val, opts, reply, &error);
+    mongoc_collection_update_one(MONGO_COLLECTIONS[MONGO_TEST], key, set_val, opts, reply, &error);
 
     /*
     mongoc_cursor_t *cursor = mongoc_collection_find(MONGO_COLLECTIONS[MONGO_TEST], MONGOC_QUERY_NONE, 0, 1, 0, key, NULL, NULL);
@@ -170,6 +171,7 @@ int main() {
     mongoc_init();
     MONGO_URI = mongoc_uri_new("mongodb://localhost/?wtimeoutms=10000&serverselectiontimeoutms=10000");
     MONGO_CLIENT_POOL = mongoc_client_pool_new(MONGO_URI);
+    mongoc_client_pool_max_size(MONGO_CLIENT_POOL, 1);
 
     MONGO_CLIENT = mongoc_client_pool_try_pop(MONGO_CLIENT_POOL);
 
