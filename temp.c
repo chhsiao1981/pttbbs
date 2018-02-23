@@ -152,7 +152,7 @@ void test3() {
     bson_iter_init(&iter, result);
 
     bson_iter_find_descendant(&iter, "test", &it_val);
-    bson_iter_binary(&it_val, &subtype, &len, &result);
+    bson_iter_binary(&it_val, &subtype, (uint32 *)&len, &result);
 
     //fprintf(stderr, "after mongoc_cursor_next: len: %d\n", len);
 
