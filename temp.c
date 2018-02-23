@@ -75,7 +75,7 @@ unsigned long int get_memory_size(pid_t pid) {
     sprintf(filename, "/proc/%d/stat", pid);
     FILE *f = fopen(filename, "r" );
     // man 5 proc
-    //       1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  20  21   22  23
+    //          1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  20  21   22  23
     fscanf(f, "%d %s %c %d %d %d %d %d %u %lu %lu %lu %lu %lu %lu %ld %ld %ld %ld %ld %ld %llu %lu", 
         &pid2,                    // 1
         comm,                     // 2
@@ -103,6 +103,37 @@ unsigned long int get_memory_size(pid_t pid) {
     );
 
     fclose(f);
+
+    fprintf(stderr, "pid2: %d comm: %s state: %c ppid: %d pgrp: %d session: %d tty_nr: %d tpgid: %d flags: %u\n",
+        pid2,                    // 1
+        omm,                     // 2
+        state,                   // 3
+        ppid,                    // 4
+        pgrp,                    // 5
+        session,                 // 6
+        tty_nr,                  // 7
+        tpgid,                   // 8
+        flags                    // 9
+    );
+
+    fprintf(stderr, "minflt: %lu cminflt: %lu majflt: %lu cmajflt: %lu utime: %lu stime: %lu cutime: %ld cstime: %ld\n",
+        minflt,                  //10
+        cminflt,                 //11
+        majflt,                  //12
+        cmajflt,                 //13
+        utime,                   //14
+        stime,                   //15
+        cutime,                  //16
+        cstime,                  //17
+    );
+
+    fprintf(stderr, "priority: %ld nice: %ld num_threads: %ld itrealvalue: %ld starttime: %llu mem: %lu\n", 
+        priority,
+        nice,
+        num_threads,
+        itrealvalue,
+        starttime,
+        vsize);
 
     return vsize;
 }
