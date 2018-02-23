@@ -150,6 +150,7 @@ void test3() {
         len++;
     }
 
+    fprintf(stderr, "after mongoc_cursor_next: result: %d\n", result);
     status = bson_iter_init(&iter, result);
     fprintf(stderr, "after bson_iter_init: status: %d result: %d\n", status, result);
 
