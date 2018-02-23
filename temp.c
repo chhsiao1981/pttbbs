@@ -33,6 +33,68 @@ mongoc_client_pool_t *MONGO_CLIENT_POOL;
 mongoc_client_t *MONGO_CLIENT;
 mongoc_collection_t **MONGO_COLLECTIONS;
 
+unsigned long int get_memory_size(pid_t pid) {
+    char filename[MAX_BUFFER];
+    // man 5 proc
+    pid_t pid2;                   // 1
+    char comm[MAX_BUFFER];        // 2
+    char state;                   // 3
+    int ppid;                     // 4
+    int pgrp;                     // 5
+    int session;                  // 6
+    int tty_nr;                   // 7
+    int tpgid;                    // 8
+    unsigned int flags;           // 9
+    unsigned long int minflt;     //10
+    unsigned long int cminflt;    //11
+    unsigned long int majflt;     //12
+    unsigned long int cmajflt;    //13
+    unsigned long int utime;      //14
+    unsigned long int stime;      //15
+    long int cutime;              //16
+    long int cstime;              //17
+    long int priority;            //18
+    long int nice;                //19
+    long int num_threads;         //20
+    long int itrealvalue;         //21
+    unsigned long long int starttime; //22
+    unsigned long int vsize;      //23
+
+    sprintf(filename, "/proc/%d/stat", pid);
+    FILE *f = fopen(filename, "r" );
+    // man 5 proc
+    //       1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  20  21   22  23
+    fscanf("%d %s %c %d %d %d %d %d %u %lu %lu %lu %lu %lu %lu %ld %ld %ld %ld %ld %ld %llu %lu", 
+        &pid2,                    // 1
+        comm,                     // 2
+        &state,                   // 3
+        &ppid,                    // 4
+        &pgrp,                    // 5
+        &session,                 // 6
+        &tty_nr,                  // 7
+        &tpgid,                   // 8
+        &flags,                   // 9
+        &minflt,                  //10
+        &cminflt,                 //11
+        &majflt,                  //12
+        &cmajflt,                 //13
+        &utime,                   //14
+        &stime,                   //15
+        &cutime,                  //16
+        &cstime,                  //17
+        &priority,                //18
+        &nice,                    //19
+        &num_threads,             //20
+        &itrealvalue,             //21
+        &starttime,               //22
+        &vsize,                   //23
+    )
+
+    fclose(f);
+
+    return vsize;
+}
+
 void test() {
 }
 
@@ -48,9 +110,9 @@ void test3() {
 
 int main() {
     pid_t pid = getpid();
-    int memory_size = get_memory_size(pid);
+    unsigned long int memory_size = get_memory_size(pid);
 
-    fprintf(stderr, "before mongoc_init: memory_size: %d\n", memory_size);
+    fprintf(stderr, "before mongoc_init: memory_size: %lu\n", memory_size);
 
     mongoc_init();
     MONGO_URI = mongoc_uri_new("mongodb://localhost/?wtimeoutms=10000&serverselectiontimeoutms=10000");
@@ -65,27 +127,27 @@ int main() {
     MONGO_COLLECTIONS[MONGO_TEST] = mongoc_client_get_collection(MONGO_CLIENT, MONGO_TEST_DBNAME, MONGO_TEST_NAME);
 
     memory_size = get_memory_size(pid);
-    fprintf("before test: memory_size: %d\n", memory_size);
+    fprintf("before test: memory_size: %lu\n", memory_size);
 
     test();
 
     memory_size = get_memory_size(pid);
-    fprintf("after test: memory_size: %d\n", memory_size);
+    fprintf("after test: memory_size: %lu\n", memory_size);
 
     memory_size = get_memory_size(pid);
-    fprintf("before test2: memory_size: %d\n", memory_size);
+    fprintf("before test2: memory_size: %lu\n", memory_size);
 
     test2();
+&pgrp, &session, &tty_nr, 
+    memory_size = get_memory_size(pid);
+    fprintf("after test2: memory_size: %lu\n", memory_size);
+
 
     memory_size = get_memory_size(pid);
-    fprintf("after test2: memory_size: %d\n", memory_size);
-
-
-    memory_size = get_memory_size(pid);
-    fprintf("before test3: memory_size: %d\n", memory_size);
+    fprintf("before test3: memory_size: %lu\n", memory_size);
 
     test3();
 
     memory_size = get_memory_size(pid);
-    fprintf("after test3: memory_size: %d\n", memory_size);
+    fprintf("after test3: memory_size: %lu\n", memory_size);
 }
