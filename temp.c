@@ -137,7 +137,7 @@ void test3() {
 
     fprintf(stderr, "after mongoc_cursor_next: len: %d\n", len);
 
-    mongoc_cursor_destroy(cursor);
+    //mongoc_cursor_destroy(cursor);
 
     //bson_destroy(&reply);
     //bson_destroy(&opts);
