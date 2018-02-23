@@ -179,17 +179,17 @@ int main() {
 
     memory_size = get_memory_size(pid);
     memory_size2 = get_memory_size2();
-    fprintf(stderr, "before test: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
+    fprintf(stderr, "before test: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);
 
     test();
 
     memory_size = get_memory_size(pid);
     memory_size2 = get_memory_size2();
-    fprintf(stderr, "after test: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
+    fprintf(stderr, "after test: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);
 
     memory_size = get_memory_size(pid);
     memory_size2 = get_memory_size2();
-    fprintf(stderr, "before test2: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
+    fprintf(stderr, "before test2: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);
 
     test2();
 
@@ -198,12 +198,12 @@ int main() {
 
     memory_size = get_memory_size(pid);
     memory_size2 = get_memory_size2();
-    fprintf(stderr, "after test2: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
+    fprintf(stderr, "after test2: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);
 
 
     memory_size = get_memory_size(pid);
     memory_size2 = get_memory_size2();
-    fprintf(stderr, "before test3: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
+    fprintf(stderr, "before test3: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);
 
     test3();
 
@@ -211,12 +211,12 @@ int main() {
 
     memory_size = get_memory_size(pid);
     memory_size2 = get_memory_size2();
-    fprintf(stderr, "after test3: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
+    fprintf(stderr, "after test3: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);
 
 
     memory_size = get_memory_size(pid);
     memory_size2 = get_memory_size2();
-    fprintf(stderr, "before test3-2: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
+    fprintf(stderr, "before test3-2: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);
 
     test3();
 
@@ -224,11 +224,11 @@ int main() {
 
     memory_size = get_memory_size(pid);
     memory_size2 = get_memory_size2();
-    fprintf(stderr, "after test3-2: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);
+    fprintf(stderr, "after test3-2: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);
 
     memory_size = get_memory_size(pid);
     memory_size2 = get_memory_size2();
-    fprintf(stderr, "before test3-100: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);    
+    fprintf(stderr, "before test3-100: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);    
 
     for(int i = 0; i < 1000; i++) {
         test3();
@@ -237,5 +237,5 @@ int main() {
     nanosleep(&sleep_time, NULL);
     memory_size = get_memory_size(pid);
     memory_size2 = get_memory_size2();
-    fprintf(stderr, "after test3-100: memory_size: %lu memory_size2: %d\n", memory_size, memory_size2);    
+    fprintf(stderr, "after test3-100: memory_size: %lu memory_size2: %ld\n", memory_size, memory_size2);    
 }
