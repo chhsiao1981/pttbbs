@@ -178,6 +178,9 @@ int main() {
 
     test2();
 
+    struct timespec sleep_time = {0, 1000000};
+    nanosleep(&sleep_time, NULL);
+
     memory_size = get_memory_size(pid);
     fprintf(stderr, "after test2: memory_size: %lu\n", memory_size);
 
@@ -187,6 +190,9 @@ int main() {
 
     test3();
 
+    struct timespec sleep_time = {0, 1000000};
+    nanosleep(&sleep_time, NULL);
+
     memory_size = get_memory_size(pid);
     fprintf(stderr, "after test3: memory_size: %lu\n", memory_size);
 
@@ -195,6 +201,9 @@ int main() {
     fprintf(stderr, "before test3-2: memory_size: %lu\n", memory_size);
 
     test3();
+
+    struct timespec sleep_time = {0, 1000000};
+    nanosleep(&sleep_time, NULL);
 
     memory_size = get_memory_size(pid);
     fprintf(stderr, "after test3-2: memory_size: %lu\n", memory_size);
