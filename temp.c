@@ -40,7 +40,7 @@ mongoc_collection_t **MONGO_COLLECTIONS;
 
 long get_memory_size2() {
     struct rusage usage;
-    getrusage(RUSAGE_SELF, &usage);
+    getrusage(RUSAGE_THREAD, &usage);
 
     return usage.ru_maxrss;
 }
