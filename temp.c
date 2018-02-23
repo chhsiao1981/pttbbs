@@ -169,7 +169,11 @@ void test3() {
 
     //fprintf(stderr, "after mongoc_cursor_next: len: %d\n", len);
 
+    fprintf(stderr, "to cursor_destroy p_str: %s\n", p_str);
+
     mongoc_cursor_destroy(cursor);
+
+    fprintf(stderr, "after cursor_destroy p_str: %s\n", p_str);
 
     bson_destroy(&reply);
     bson_destroy(opts);
@@ -177,7 +181,6 @@ void test3() {
     bson_destroy(val);
     bson_destroy(key);
 
-    fprintf(stderr, "result: %s\n", result);
 }
 
 int main() {
