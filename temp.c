@@ -110,7 +110,7 @@ void test3() {
     bson_t set_val;    
     bson_t opts;
     bson_t reply;
-    bson_t *result;
+    const bson_t *result;
     int len = 0;
 
     bson_error_t error;
