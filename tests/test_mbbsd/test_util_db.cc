@@ -86,8 +86,8 @@ TEST(util_db, db_find_one) {
         return;
     }
 
-    bson_t *result;
-    error = db_find_one(MONGO_TEST, &key, NULL, result);
+    bson_t result;
+    error = db_find_one(MONGO_TEST, &key, NULL, &result);
     EXPECT_EQ(S_OK, error);
     if(error != S_OK) {
         bson_destroy(&key);
