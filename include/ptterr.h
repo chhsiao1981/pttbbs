@@ -19,4 +19,4 @@ typedef char Err;
 }
 #endif
 
-#endif
+#endif /* PTTERR_H */
