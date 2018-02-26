@@ -2,6 +2,8 @@
 #ifndef PTTDB_INTERNAL_H
 #define PTTDB_INTERNAL_H
 
+#include "ptterr.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
