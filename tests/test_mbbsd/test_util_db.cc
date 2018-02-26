@@ -135,5 +135,10 @@ int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::AddGlobalTestEnvironment(new MyEnvironment);
 
+    int fd = open("test_util_db.log", O_WRONLY|O_CREAT|O_TRUNC, 0660);
+    assert(fd >= 0);
+    int ret = dup2(fd, 2);
+    assert(ret >= 0);
+
     return RUN_ALL_TESTS();
 }
