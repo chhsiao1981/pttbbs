@@ -83,6 +83,13 @@ free_mongo_collections() {
     return S_OK;
 }
 
+/**
+ * @brief set if not exists
+ * @details [long description]
+ * 
+ * @param collection [description]
+ * @param key [description]
+ */
 Err
 db_set_if_not_exists(int collection, bson_t *key) {
     bool status;
@@ -115,7 +122,6 @@ db_set_if_not_exists(int collection, bson_t *key) {
     }
 
     // reply
-    reply = bson_new();
     status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, reply, &error);
     if (!status) {
         bson_destroy(set_val);
@@ -139,6 +145,15 @@ db_set_if_not_exists(int collection, bson_t *key) {
     return S_OK;
 }
 
+/**
+ * @brief update one key / val
+ * @details [long description]
+ * 
+ * @param collection [description]
+ * @param key [description]
+ * @param val [description]
+ * @param is_upsert [description]
+ */
 Err
 db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
     bool status;
@@ -167,7 +182,6 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
     }
 
     // reply
-    reply = bson_new();
     status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, reply, &error);
     if (!status) {
         bson_destroy(set_val);
@@ -183,13 +197,24 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
     return S_OK;
 }
 
+/**
+ * @brief find one result in db
+ * @details [long description]
+ *
+ * @param collection [description]
+ * @param key [description]
+ * @param fields [description]
+ * @param result result (MUST-NOT initialized and need to bson_destroy)
+ */
 Err
 db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result) {
     mongoc_cursor_t *cursor = mongoc_collection_find(MONGO_COLLECTIONS[collection], MONGOC_QUERY_NONE, 0, 1, 0, key, fields, NULL);
     bson_error_t error;
 
+    bson_t *p_result;
     int len = 0;
-    while (mongoc_cursor_next(cursor, result)) {
+    while (mongoc_cursor_next(cursor, &p_result)) {
+        bson_copy_to(p_result, result);
         len++;
     }
 
@@ -224,6 +249,13 @@ _DB_FORCE_DROP_COLLECTION(int collection) {
     return S_OK;
 }
 
+/**
+ * @brief exists the name in the bson-struct
+ * @details [long description]
+ * 
+ * @param b the bson-struct
+ * @param name name
+ */
 Err
 bson_exists(bson_t *b, char *name) {
     bool status;
@@ -243,6 +275,14 @@ bson_exists(bson_t *b, char *name) {
     return S_OK;
 }
 
+/**
+ * @brief get int32 value in bson
+ * @details [long description]
+ * 
+ * @param b [description]
+ * @param name [description]
+ * @param value [description]
+ */
 Err
 bson_get_value_int32(bson_t *b, char *name, int *value) {
     bool status;
@@ -269,9 +309,19 @@ bson_get_value_int32(bson_t *b, char *name, int *value) {
     return S_OK;
 }
 
+/**
+ * @brief find binary in the bson-struct
+ * @details [long description]
+ * 
+ * @param b [description]
+ * @param name [description]
+ * @param value [MUST-NOT initialized and need to free!]
+ * @param len received length
+ */
 Err
-bson_get_value_bin(bson_t *b, char *name, char *value, int *len) {
+bson_get_value_bin(bson_t *b, char *name, char **value, int *len) {
     bool status;
+    bson_subtype_t subtype;
     bson_iter_t iter;
     bson_iter_t it_val;
 
@@ -291,8 +341,53 @@ bson_get_value_bin(bson_t *b, char *name, char *value, int *len) {
     }
 
     char *p_value;
-    bson_iter_binary(&it_val, BSON_SUBTYPE_BINARY, len, &p_value);
-    memcpy(value, p_value, len);
+    bson_iter_binary(&it_val, &subtype, len, &p_value);
+    *value = malloc(len);
+    memcpy(*value, p_value, len);
 
     return S_OK;
+}
+
+/**
+ * @brief get binary value without init
+ * @details [long description]
+ * 
+ * @param b [description]
+ * @param name [description]
+ * @param max_len max-length of the buffer
+ * @param value [MUST INITIALIZED WITH max_len!]
+ * @param len real received length
+ */
+Err
+bson_get_value_bin_no_init(bson_t *b, char *name, int max_len, char *value, int *len) {
+    bool status;
+    bson_subtype_t subtype;
+    bson_iter_t iter;
+    bson_iter_t it_val;
+
+    status = bson_iter_init(&iter, b);
+    if (!status) {
+        return S_ERR;
+    }
+
+    status = bson_iter_find_descendant(&iter, name, &it_val);
+    if (!status) {
+        return S_ERR;
+    }
+
+    status = BSON_ITER_HOLDS_BINARY(&it_val);
+    if (!status) {
+        return S_ERR;
+    }
+
+    char *p_value;
+    Err error = S_OK;
+    bson_iter_binary(&it_val, &subtype, len, &p_value);
+    if(len > max_len) {
+        len = max_len;
+        error = S_ERR_BUFFER_LEN;
+    }
+    memcpy(value, p_value, len);
+
+    return error;
 }
