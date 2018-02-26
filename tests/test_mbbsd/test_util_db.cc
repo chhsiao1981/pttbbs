@@ -85,7 +85,7 @@ TEST(util_db, db_find_one) {
     EXPECT_EQ(S_OK, error);
     if(error != S_OK) {
         std::string output = testing::internal::GetCapturedStderr();
-        cout << output;
+        std::cout << output;
         bson_destroy(&key);
         bson_destroy(&val);
         bson_destroy(result);
