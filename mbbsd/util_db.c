@@ -96,7 +96,7 @@ db_set_if_not_exists(int collection, bson_t *key) {
 
     bson_t *set_val;
     bson_t *opts;
-    bson_t *reply;
+    bson_t reply;
 
     bson_error_t error;
     Err error_code;
@@ -122,11 +122,11 @@ db_set_if_not_exists(int collection, bson_t *key) {
     }
 
     // reply
-    status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, reply, &error);
+    status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, &reply, &error);
     if (!status) {
         bson_destroy(set_val);
         bson_destroy(opts);
-        bson_destroy(reply);
+        bson_destroy(&reply);
         return S_ERR;
     }
 
@@ -134,13 +134,13 @@ db_set_if_not_exists(int collection, bson_t *key) {
     if (error_code) {
         bson_destroy(set_val);
         bson_destroy(opts);
-        bson_destroy(reply);
+        bson_destroy(&reply);
         return S_ERR_ALREADY_EXISTS;
     }
 
     bson_destroy(set_val);
     bson_destroy(opts);
-    bson_destroy(reply);
+    bson_destroy(&reply);
 
     return S_OK;
 }
