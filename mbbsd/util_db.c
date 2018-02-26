@@ -219,7 +219,7 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result) {
     }
 
     if (mongoc_cursor_error(cursor, &error)) {
-        fprintf(stdout, "[ERROR] db_find_one: (%u.%u: %s)\n", error.domain, error.code, error.message);
+        fprintf(stderr, "[ERROR] db_find_one: (%u.%u: %s)\n", error.domain, error.code, error.message);
         mongoc_cursor_destroy(cursor);        
         return S_ERR;
     }
