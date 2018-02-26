@@ -75,7 +75,7 @@ TEST(util_db, db_find_one) {
     error = db_update_one(MONGO_TEST, &key, &val, true);
     EXPECT_EQ(S_OK, error);
     if(error != S_OK) {
-        std::string output = testing::internal::GetCapturedStderr();
+        std::string output = testing::internal::GetCapturedStdout();
         std::cout << output;
         bson_destroy(&key);
         bson_destroy(&val);
@@ -86,7 +86,7 @@ TEST(util_db, db_find_one) {
     error = db_find_one(MONGO_TEST, &key, NULL, result);
     EXPECT_EQ(S_OK, error);
     if(error != S_OK) {
-        std::string output = testing::internal::GetCapturedStderr();
+        std::string output = testing::internal::GetCapturedStdout();
         std::cout << output;
         bson_destroy(&key);
         bson_destroy(&val);
@@ -97,7 +97,7 @@ TEST(util_db, db_find_one) {
     error = bson_get_value_int32(result, "the_key", &int_result);
     EXPECT_EQ(S_OK, error);
     if(error != S_OK) {
-        std::string output = testing::internal::GetCapturedStderr();
+        std::string output = testing::internal::GetCapturedStdout();
         std::cout << output;
         bson_destroy(&key);
         bson_destroy(&val);
@@ -107,7 +107,7 @@ TEST(util_db, db_find_one) {
 
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
-    std::string output = testing::internal::GetCapturedStderr();
+    std::string output = testing::internal::GetCapturedStdout();
     std::cout << output;
     bson_destroy(&key);
     bson_destroy(&val);
@@ -142,7 +142,7 @@ void MyEnvironment::TearDown() {
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::AddGlobalTestEnvironment(new MyEnvironment);
-    ::testing::internal::CaptureStderr();
+    ::testing::internal::CaptureStdout();
 
     return RUN_ALL_TESTS();
 }
