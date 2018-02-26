@@ -209,7 +209,7 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
 Err
 db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result) {
     mongoc_cursor_t *cursor = mongoc_collection_find(MONGO_COLLECTIONS[collection], MONGOC_QUERY_NONE, 0, 1, 0, key, fields, NULL);
-    
+
     bson_error_t error;
     bson_t *p_result;
     int len = 0;
@@ -219,7 +219,8 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result) {
     }
 
     if (mongoc_cursor_error(cursor, &error)) {
-        mongoc_cursor_destroy(cursor);
+        fprintf(stderr, "[ERROR] db_find_one: (%u.%u: %s)\n", error.domain, error.code, error.message);
+        mongoc_cursor_destroy(cursor);        
         return S_ERR;
     }
 
