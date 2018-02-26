@@ -76,7 +76,7 @@ TEST(util_db, db_find_one) {
     EXPECT_EQ(S_OK, error);
     if(error != S_OK) {
         std::string output = testing::internal::GetCapturedStderr();
-        std::cerr << output;
+        std::cout << output;
         bson_destroy(&key);
         bson_destroy(&val);
         return;
@@ -87,7 +87,7 @@ TEST(util_db, db_find_one) {
     EXPECT_EQ(S_OK, error);
     if(error != S_OK) {
         std::string output = testing::internal::GetCapturedStderr();
-        std::cerr << output;
+        std::cout << output;
         bson_destroy(&key);
         bson_destroy(&val);
         bson_destroy(result);
@@ -98,7 +98,7 @@ TEST(util_db, db_find_one) {
     EXPECT_EQ(S_OK, error);
     if(error != S_OK) {
         std::string output = testing::internal::GetCapturedStderr();
-        std::cerr << output;
+        std::cout << output;
         bson_destroy(&key);
         bson_destroy(&val);
         bson_destroy(result);
@@ -108,7 +108,7 @@ TEST(util_db, db_find_one) {
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
     std::string output = testing::internal::GetCapturedStderr();
-    std::cerr << output;
+    std::cout << output;
     bson_destroy(&key);
     bson_destroy(&val);
     bson_destroy(result);
