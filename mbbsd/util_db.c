@@ -1,3 +1,4 @@
+#include "bbs.h"
 #include "util_db.h"
 #include "util_db_internal.h"
 
