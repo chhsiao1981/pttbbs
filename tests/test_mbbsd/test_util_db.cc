@@ -38,27 +38,62 @@ TEST(util_db, db_set_if_not_exists) {
 TEST(util_db, db_update_one) {
     Err error;
 
-    bson_t key_bson;
-    bson_t val_bson;
-    bson_init(&key_bson);
-    bson_init(&val_bson);
+    bson_t key;
+    bson_t val;
+    bson_init(&key);
+    bson_init(&val);
 
-    bson_append_utf8(&key_bson, "the_key", -1, "key0", 4);
-    bson_append_utf8(&val_bson, "the_val", -1, "val0", 4);
+    bson_append_utf8(&key, "the_key", -1, "key0", 4);
+    bson_append_utf8(&val, "the_val", -1, "val0", 4);
 
-    error = db_update_one(MONGO_TEST, &key_bson, &val_bson, true);
+    error = db_update_one(MONGO_TEST, &key, &val, true);
     EXPECT_EQ(S_OK, error);
     if(error != S_OK) {
-        bson_destroy(&key_bson);
-        bson_destroy(&val_bson);
+        bson_destroy(&key);
+        bson_destroy(&val);
         return;
+    }
+
+    _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
+
+    bson_destroy(&key);
+    bson_destroy(&val);
+
+}
+
+TEST(util_db, db_find_one) {
+    Err error;
+
+    bson_t key;
+    bson_t val;
+    bson_init(&key);
+    bson_init(&val);
+
+    bson_append_utf8(&key, "the_key", -1, "key1", 4);
+    bson_append_utf8(&val, "the_val", -1, "val1", 4);
+
+    error = db_update_one(MONGO_TEST, &key, &val, true);
+    EXPECT_EQ(S_OK, error);
+    if(error != S_OK) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return;
+    }
+
+    bson_t *result;
+    error = db_find_one(MONGO_TEST, &key, NULL, result);
+    EXPECT_EQ(S_OK, error);
+    if(error != S_OK) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        bson_destroy(result);
     }
 
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
     bson_destroy(&key_bson);
     bson_destroy(&val_bson);
-
+    bson_destroy(result);
 }
 
 class MyEnvironment: public ::testing::Environment {
