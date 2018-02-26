@@ -3,6 +3,7 @@
 #include "ptterr.h"
 #include "pttdb.h"
 #include "pttdb_internal.h"
+#include "util_db_internal.h"
 
 TEST(pttdb, serialize_uuid_bson) {
     _UUID _uuid;
