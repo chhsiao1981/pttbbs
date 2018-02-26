@@ -25,6 +25,15 @@ extern "C" {
 #define MONGO_THE_ID "the_id"
 #define MONGO_BLOCK_ID "block_id"
 
+enum {
+    MONGO_MAIN,
+    MONGO_MAIN_CONTENT,
+
+    MONGO_TEST,
+
+    N_MONGO_COLLECTIONS,
+};
+
 // initialization / free
 Err init_mongo_global();
 Err free_mongo_global();

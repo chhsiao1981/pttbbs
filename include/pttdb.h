@@ -7,6 +7,7 @@ extern "C" {
 #endif
 
 #include "ptterr.h"
+#include "util_db.h"
 
 #define UUIDLEN 64
 #define _UUIDLEN 48
@@ -24,16 +25,6 @@ extern "C" {
 typedef long long int time64_t;
 typedef unsigned char UUID[UUIDLEN];
 typedef unsigned char _UUID[_UUIDLEN];
-
-enum {
-    MONGO_MAIN,
-    MONGO_MAIN_CONTENT,
-
-    MONGO_TEST,
-
-    N_MONGO_COLLECTIONS,
-};
-
 
 enum {
     COMMENTTYPE_GOOD,
