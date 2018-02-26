@@ -87,6 +87,7 @@ TEST(util_db, db_find_one) {
         bson_destroy(&key);
         bson_destroy(&val);
         bson_destroy(result);
+        return;
     }
 
     fprintf(stderr, "after db_find_one: result: %d\n", result);
@@ -99,6 +100,7 @@ TEST(util_db, db_find_one) {
         bson_destroy(&key);
         bson_destroy(&val);
         bson_destroy(result);
+        return;
     }
     EXPECT_EQ(4, int_result);
 
