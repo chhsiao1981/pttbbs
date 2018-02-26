@@ -89,6 +89,8 @@ TEST(util_db, db_find_one) {
         bson_destroy(result);
     }
 
+    fprintf(stder, "after db_find_one: result: %d", result);
+
     int int_result;
     error = bson_get_value_int32(result, "the_key", &int_result);
     EXPECT_EQ(S_OK, error);

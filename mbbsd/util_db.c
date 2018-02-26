@@ -219,7 +219,6 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result) {
     }
 
     if (mongoc_cursor_error(cursor, &error)) {
-        fprintf(stderr, "[ERROR] db_find_one: (%u.%u: %s)\n", error.domain, error.code, error.message);
         mongoc_cursor_destroy(cursor);        
         return S_ERR;
     }
@@ -292,16 +291,19 @@ bson_get_value_int32(bson_t *b, char *name, int *value) {
 
     status = bson_iter_init(&iter, b);
     if (!status) {
+        fprintf(stderr, "[ERROR] bson_get_value_int32: unable to init\n");
         return S_ERR;
     }
 
     status = bson_iter_find_descendant(&iter, name, &it_val);
     if (!status) {
+        fprintf(stderr, "[ERROR] bson_get_value_int32: unable to find descendant\n");
         return S_ERR;
     }
 
     status = BSON_ITER_HOLDS_INT32(&it_val);
     if (!status) {
+        fprintf(stderr, "[ERROR] bson_get_value_int32: not int32\n");
         return S_ERR;
     }
 
