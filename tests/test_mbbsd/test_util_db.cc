@@ -8,6 +8,8 @@ TEST(util_db, db_set_if_not_exists) {
     Err error;
     Err error2;
 
+    _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
+
     bson_t b;
     bson_init(&b);
 
@@ -38,6 +40,8 @@ TEST(util_db, db_set_if_not_exists) {
 TEST(util_db, db_update_one) {
     Err error;
 
+    _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
+
     bson_t key;
     bson_t val;
     bson_init(&key);
@@ -63,6 +67,8 @@ TEST(util_db, db_update_one) {
 
 TEST(util_db, db_find_one) {
     Err error;
+
+    _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
     bson_t key;
     bson_t val;
@@ -104,7 +110,7 @@ TEST(util_db, db_find_one) {
     }
     EXPECT_EQ(4, int_result);
 
-    _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
+    fprintf(stderr, "after bson_get_value_int32\n");
 
     bson_destroy(&key);
     bson_destroy(&val);
