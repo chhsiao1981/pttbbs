@@ -69,8 +69,8 @@ TEST(util_db, db_find_one) {
     bson_init(&key);
     bson_init(&val);
 
-    bson_append_utf8(&key, "the_key", -1, "key1", 4);
-    bson_append_utf8(&val, "the_val", -1, "val1", 4);
+    bson_append_int32(&key, "the_key", -1, 4);
+    bson_append_int32(&val, "the_val", -1, 5);
 
     error = db_update_one(MONGO_TEST, &key, &val, true);
     EXPECT_EQ(S_OK, error);
@@ -88,6 +88,16 @@ TEST(util_db, db_find_one) {
         bson_destroy(&val);
         bson_destroy(result);
     }
+
+    int int_result;
+    error = bson_get_value_int32(result, "the_key", &int_result);
+    EXPECT_EQ(S_OK, error);
+    if(error != S_OK) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        bson_destroy(result);
+    }
+    EXPECT_EQ(4, int_result);
 
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
