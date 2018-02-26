@@ -142,7 +142,7 @@ void MyEnvironment::TearDown() {
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::AddGlobalTestEnvironment(new MyEnvironment);
-    //::testing::internal::CaptureStderr();
+    ::testing::internal::CaptureStderr();
 
     return RUN_ALL_TESTS();
 }
