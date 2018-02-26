@@ -746,7 +746,7 @@ read_main_header(UUID main_id, MainHeader *main_header) {
         return error_code;
     }
 
-    error_code = _deserialize_main_bson(db_result, main_header);
+    error_code = _deserialize_main_bson(&db_result, main_header);
     if (error_code) {
         bson_destroy(&key);
         bson_destroy(&db_result);
