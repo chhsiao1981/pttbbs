@@ -17,4 +17,8 @@ extern "C" {
 // XXX NEVER USE UNLESS IN TEST
 Err _DB_FORCE_DROP_COLLECTION(int collection);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* UTIL_DB_INTERNAL_H */
