@@ -91,8 +91,8 @@ TEST(util_db, db_find_one) {
 
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
-    bson_destroy(&key_bson);
-    bson_destroy(&val_bson);
+    bson_destroy(&key);
+    bson_destroy(&val);
     bson_destroy(result);
 }
 
