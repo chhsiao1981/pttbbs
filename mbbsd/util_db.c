@@ -160,8 +160,8 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
 
     bson_t *set_val;
     bson_t *opts;
-    bson_t *reply;
 
+    bson_t reply;
     bson_error_t error;
 
     // set_val
@@ -182,17 +182,17 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
     }
 
     // reply
-    status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, reply, &error);
+    status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, &reply, &error);
     if (!status) {
         bson_destroy(set_val);
         bson_destroy(opts);
-        bson_destroy(reply);
+        bson_destroy(&reply);
         return S_ERR;
     }
 
     bson_destroy(set_val);
     bson_destroy(opts);
-    bson_destroy(reply);
+    bson_destroy(&reply);
 
     return S_OK;
 }
@@ -209,8 +209,8 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
 Err
 db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result) {
     mongoc_cursor_t *cursor = mongoc_collection_find(MONGO_COLLECTIONS[collection], MONGOC_QUERY_NONE, 0, 1, 0, key, fields, NULL);
+    
     bson_error_t error;
-
     bson_t *p_result;
     int len = 0;
     while (mongoc_cursor_next(cursor, &p_result)) {
