@@ -2,11 +2,12 @@
 #ifndef UTIL_DB_H
 #define UTIL_DB_H
 
+#include <mongoc.h>
+#include "ptterr.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "ptterr.h"
 
 // Mongo Post
 #define MONGO_POST_DBNAME "post"

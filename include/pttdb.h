@@ -2,12 +2,12 @@
 #ifndef PTTDB_H
 #define PTTDB_H
 
+#include "ptterr.h"
+#include "util_db.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "ptterr.h"
-#include "util_db.h"
 
 #define UUIDLEN 64
 #define _UUIDLEN 48
