@@ -571,7 +571,7 @@ len_main(UUID main_id, int *len) {
         return error_code;
     }
 
-    error_code = _bson_get_value_int32(&db_result, "len_total", len);
+    error_code = bson_get_value_int32(&db_result, "len_total", len);
     if (error_code) {
         bson_destroy(&key);
         bson_destroy(&fields);
@@ -615,7 +615,7 @@ len_main_by_aid(aidu_t aid, int *len) {
         return error_code;
     }
 
-    error_code = _bson_get_value_int32(&db_result, "len_total", len);
+    error_code = bson_get_value_int32(&db_result, "len_total", len);
     if (error_code) {
         bson_destroy(&key);
         bson_destroy(&fields);
@@ -661,7 +661,7 @@ n_line_main(UUID main_id, int *n_line) {
         return error_code;
     }
 
-    error_code = _bson_get_value_int32(&db_result, "n_total_line", n_line);
+    error_code = bson_get_value_int32(&db_result, "n_total_line", n_line);
     if (error_code) {
         bson_destroy(&key);
         bson_destroy(&fields);
@@ -707,7 +707,7 @@ n_line_main_by_aid(aidu_t aid, int *n_line) {
         return error_code;
     }
 
-    error_code = _bson_get_value_int32(&db_result, "n_total_line", n_line);
+    error_code = bson_get_value_int32(&db_result, "n_total_line", n_line);
     if (error_code) {
         bson_destroy(&key);
         bson_destroy(&fields);
@@ -846,10 +846,10 @@ _serialize_main_bson(MainHeader *main_header, bson_t *main_bson) {
 Err
 _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header) {
     Err error_code;
-    error_code = _bson_get_value_int32(main_bson, "version", &main_header->version);
+    error_code = bson_get_value_int32(main_bson, "version", &main_header->version);
     if(error_code) return error_code;
 
-    error_code = _bson_get_value_int32(main_bson, "version", &main_header->version);
+    error_code = bson_get_value_int32(main_bson, "version", &main_header->version);
     if(error_code) return error_code;
 
     return S_OK;
