@@ -6,6 +6,8 @@
 extern "C" {
 #endif
 
+#include "ptterr.h"
+
 #define UUIDLEN 64
 #define _UUIDLEN 48
 
@@ -17,21 +19,6 @@ extern "C" {
 #define MAX_BUF_LINES 256
 
 #define N_GEN_UUID_WITH_DB 10
-
-// Mongo Post
-#define MONGO_POST_DBNAME "post"
-
-#define MONGO_MAIN_NAME "main"
-#define MONGO_MAIN_CONTENT_NAME "main_content"
-
-// Mongo Test
-#define MONGO_TEST_DBNAME "test"
-
-#define MONGO_TEST_NAME "test"
-
-// Mongo the id
-#define MONGO_THE_ID "the_id"
-#define MONGO_BLOCK_ID "block_id"
 
 // XXX hack for time64_t and UUID
 typedef long long int time64_t;
@@ -203,14 +190,6 @@ Err gen_uuid_with_db(int collection, UUID uuid);
 Err gen_content_uuid_with_db(int collection, UUID uuid);
 
 Err uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp);
-
-/**********
- * Mongo
- **********/
-Err init_mongo_global();
-Err free_mongo_global();
-Err init_mongo_collections();
-Err free_mongo_collections();
 
 /**********
  * Post
