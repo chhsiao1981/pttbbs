@@ -291,19 +291,19 @@ bson_get_value_int32(bson_t *b, char *name, int *value) {
 
     status = bson_iter_init(&iter, b);
     if (!status) {
-        //fprintf(stderr, "[ERROR] bson_get_value_int32: unable to init\n");
+        fprintf(stderr, "[ERROR] bson_get_value_int32: unable to init\n");
         return S_ERR;
     }
 
     status = bson_iter_find_descendant(&iter, name, &it_val);
     if (!status) {
-        //fprintf(stderr, "[ERROR] bson_get_value_int32: unable to find descendant\n");
+        fprintf(stderr, "[ERROR] bson_get_value_int32: unable to find descendant\n");
         return S_ERR;
     }
 
     status = BSON_ITER_HOLDS_INT32(&it_val);
     if (!status) {
-        //fprintf(stderr, "[ERROR] bson_get_value_int32: not int32\n");
+        fprintf(stderr, "[ERROR] bson_get_value_int32: not int32\n");
         return S_ERR;
     }
 
