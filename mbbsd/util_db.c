@@ -291,7 +291,7 @@ bson_get_value_bin(bson_t *b, char *name, char *value, int *len) {
 
     char *p_value;
     bson_iter_binary(&it_val, BSON_SUBTYPE_BINARY, len, &p_value);
-    strcpy(value, p_value, len);
+    memcpy(value, p_value, len);
 
     return S_OK;
 }
