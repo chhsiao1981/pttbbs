@@ -92,18 +92,18 @@ TEST(util_db, db_find_one) {
     if(error != S_OK) {
         bson_destroy(&key);
         bson_destroy(&val);
-        bson_destroy(result);
+        bson_destroy(&result);
         return;
     }
 
     int int_result;
-    error = bson_get_value_int32(result, "the_key", &int_result);
+    error = bson_get_value_int32(&result, "the_key", &int_result);
     EXPECT_EQ(S_OK, error);
     if(error != S_OK) {
         fprintf(stderr, "unable to bson_get_value_int32\n");
         bson_destroy(&key);
         bson_destroy(&val);
-        bson_destroy(result);
+        bson_destroy(&result);
         return;
     }
     EXPECT_EQ(4, int_result);
@@ -112,7 +112,7 @@ TEST(util_db, db_find_one) {
 
     bson_destroy(&key);
     bson_destroy(&val);
-    bson_destroy(result);
+    bson_destroy(&result);
 }
 
 class MyEnvironment: public ::testing::Environment {
