@@ -84,6 +84,8 @@ TEST(util_db, db_find_one) {
     error = db_find_one(MONGO_TEST, &key, NULL, result);
     EXPECT_EQ(S_OK, error);
     if(error != S_OK) {
+        std::string output = testing::internal::GetCapturedStderr();
+        cout << output;
         bson_destroy(&key);
         bson_destroy(&val);
         bson_destroy(result);
@@ -134,6 +136,7 @@ void MyEnvironment::TearDown() {
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::AddGlobalTestEnvironment(new MyEnvironment);
+    ::testing::internal::CaptureStderr();
 
     return RUN_ALL_TESTS();
 }
