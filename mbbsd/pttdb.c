@@ -873,13 +873,13 @@ _serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main
     bson_status = bson_append_bin(main_content_block_bson, "main_id", -1, main_content_block->main_id, UUIDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_bin(main_content_block_bson, "block_id", -1, main_content_block->block_id);
+    bson_status = bson_append_int32(main_content_block_bson, "block_id", -1, main_content_block->block_id);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_bin(main_content_block_bson, "len_block", -1, main_content_block->len_block);
+    bson_status = bson_append_int32(main_content_block_bson, "len_block", -1, main_content_block->len_block);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_bin(main_content_block_bson, "n_line", -1, main_content_block->n_line);
+    bson_status = bson_append_int32(main_content_block_bson, "n_line", -1, main_content_block->n_line);
     if (!bson_status) return S_ERR;
 
     bson_status = bson_append_bin(main_content_block_bson, "buf_block", -1, main_content_block->buf_block, main_content_block->len_block);
