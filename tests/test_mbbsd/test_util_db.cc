@@ -115,6 +115,9 @@ TEST(util_db, db_find_one) {
     bson_destroy(&result);
 }
 
+/**********
+ * MAIN
+ */
 class MyEnvironment: public ::testing::Environment {
 public:
     void SetUp();
