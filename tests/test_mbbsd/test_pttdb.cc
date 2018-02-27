@@ -5,6 +5,20 @@
 #include "pttdb_internal.h"
 #include "util_db_internal.h"
 
+// 2018-01-01
+time64_t START_MILLI_TIMESTAMP = 1514764800000;
+
+// 2019-01-01
+time64_t END_MILLI_TIMESTAMP = 1546300800000;
+
+TEST(pttdb, get_milli_timestamp) {
+    time64_t t;
+    get_milli_timestamp(&t);
+
+    EXPECT_GE(t, START_MILLI_TIMESTAMP);
+    EXPECT_LT(t, END_MILLI_TIMESTAMP);
+}
+
 TEST(pttdb, serialize_uuid_bson) {
     _UUID _uuid;
     UUID uuid;
@@ -62,12 +76,6 @@ TEST(pttdb, gen_uuid) {
     _UUID _uuid2;
     time64_t milli_timestamp;
     time64_t milli_timestamp2;
-
-    // 2018-01-01
-    time64_t START_MILLI_TIMESTAMP = 1514764800000;
-
-    // 2019-01-01
-    time64_t END_MILLI_TIMESTAMP = 1546300800000;
 
     gen_uuid(uuid);
     uuid_to_milli_timestamp(uuid, &milli_timestamp);
