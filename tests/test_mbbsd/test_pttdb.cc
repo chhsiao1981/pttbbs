@@ -28,7 +28,7 @@ TEST(pttdb, serialize_uuid_bson) {
     fprintf(stderr, "buf: %s\n", buf);
 
     EXPECT_EQ(S_OK, error);
-    EXPECT_STREQ("{ \"the_id\" : \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\" }", buf);
+    EXPECT_STREQ("{ \"the_id\" : { \"$binary\" : { \"base64\": \"QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQQ==\", \"subType\" : \"00\" } }, \"block_id\" : { \"$numberInt\" : \"0\" } }", buf);
 }
 
 TEST(pttdb, serialize_content_uuid_bson) {
