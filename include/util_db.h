@@ -45,7 +45,7 @@ Err db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert);
 Err db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result);
 
 // bson-ops
-#define bson_append_bin(b, key, key_length, binary, length) bson_append_binary(b, key, key_length, BSON_SUBTYPE_BINARY, length)
+#define bson_append_bin(b, key, key_length, bin, length) bson_append_binary(b, key, key_length, BSON_SUBTYPE_BINARY, bin, length)
 
 Err bson_exists(bson_t *b, char *name);
 Err bson_get_value_int32(bson_t *b, char *name, int *value);
