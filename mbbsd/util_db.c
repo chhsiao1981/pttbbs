@@ -345,8 +345,9 @@ bson_get_value_bin(bson_t *b, char *name, char **value, int *len) {
 
     char *p_value;
     bson_iter_binary(&it_val, &subtype, len, &p_value);
-    *value = malloc(len);
+    *value = malloc(len + 1);
     memcpy(*value, p_value, len);
+    (*value)[len] = 0;
 
     return S_OK;
 }
