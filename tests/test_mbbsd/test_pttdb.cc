@@ -90,68 +90,6 @@ TEST(pttdb, gen_uuid) {
     EXPECT_EQ(0x60, _uuid2[6] & 0xf0);
 }
 
-TEST(pttdb, db_set_if_not_exists) {
-    Err error;
-    Err error2;
-    _UUID _uuid;
-    UUID uuid;
-
-    bzero(_uuid, sizeof(_UUID));
-    b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
-
-    bson_t uuid_bson;
-    bson_init(&uuid_bson);
-
-    _serialize_content_uuid_bson(uuid, MONGO_THE_ID, 0, &uuid_bson);
-
-    error = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
-    fprintf(stderr, "after db_set_if_not_exists: error: %d\n", error);
-    EXPECT_EQ(S_OK, error);
-
-    if(error != S_OK) {
-        bson_destroy(&uuid_bson);
-        return;
-    }
-
-    error2 = db_set_if_not_exists(MONGO_TEST, &uuid_bson);
-    EXPECT_EQ(S_ERR_ALREADY_EXISTS, error2);
-    if(error2 != S_ERR_ALREADY_EXISTS) {
-        bson_destroy(&uuid_bson);
-        return;
-    }
-
-    _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
-
-    bson_destroy(&uuid_bson);
-
-}
-
-TEST(pttdb, db_update_one) {
-    Err error;
-
-    bson_t key_bson;
-    bson_t val_bson;
-    bson_init(&key_bson);
-    bson_init(&val_bson);
-
-    bson_append_utf8(&key_bson, "the_key", -1, "key0", 4);
-    bson_append_utf8(&val_bson, "the_val", -1, "val0", 4);
-
-    error = db_update_one(MONGO_TEST, &key_bson, &val_bson, true);
-    EXPECT_EQ(S_OK, error);
-    if(error != S_OK) {
-        bson_destroy(&key_bson);
-        bson_destroy(&val_bson);
-        return;
-    }
-
-    _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
-
-    bson_destroy(&key_bson);
-    bson_destroy(&val_bson);
-
-}
-
 class MyEnvironment: public ::testing::Environment {
 public:
     void SetUp();
