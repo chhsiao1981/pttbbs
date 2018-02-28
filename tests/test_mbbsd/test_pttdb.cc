@@ -46,8 +46,6 @@ TEST(pttdb, gen_uuid) {
 
     b64_pton((char *)uuid2, _uuid2, _UUIDLEN);
     EXPECT_EQ(0x60, _uuid2[6] & 0xf0);
-
-    EXPECT_NE(0, strncmp(uuid, uuid2, _UUIDLEN));
 }
 
 TEST(pttdb, gen_uuid_with_db) {
@@ -72,7 +70,6 @@ TEST(pttdb, gen_uuid_with_db) {
     gen_uuid_with_db(MONGO_TEST, uuid2);
     uuid_to_milli_timestamp(uuid2, &milli_timestamp2);
 
-    EXPECT_STRNE((char *)uuid, (char *)uuid2);
     EXPECT_GE(milli_timestamp2, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp2, END_MILLI_TIMESTAMP);
     EXPECT_GE(milli_timestamp2, milli_timestamp);
@@ -81,6 +78,9 @@ TEST(pttdb, gen_uuid_with_db) {
     EXPECT_EQ(0x60, _uuid2[6] & 0xf0);
 
     EXPECT_NE(0, strncmp(uuid, uuid2, _UUIDLEN));
+
+    int cmp = strncmp(uuid, uuid2, _UUIDLEN)
+    EXPECT_NE(0, cmp);
 }
 
 TEST(pttdb, serialize_uuid_bson) {
@@ -131,6 +131,19 @@ TEST(pttdb, serialize_content_uuid_bson) {
 
     EXPECT_EQ(S_OK, error);
     EXPECT_STREQ("{ \"the_id\" : { \"$binary\" : { \"base64\": \"QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQQ==\", \"subType\" : \"00\" } }, \"block_id\" : { \"$numberInt\" : \"0\" } }", buf);
+}
+
+TEST(pttdb, uuid_to_milli_timestamp) {
+    UUID uuid;
+    time64_t milli_timestamp;
+
+    gen_uuid(uuid);
+    uuid_to_milli_timestamp(uuid, &milli_timestamp);
+
+    fprintf(stderr, "milli_timestamp: %lu\n", milli_timestamp);
+
+    EXPECT_GE(milli_timestamp, START_MILLI_TIMESTAMP);
+    EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
 }
 
 TEST(pttdb, get_line_from_buf) {
