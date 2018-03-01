@@ -359,7 +359,7 @@ bson_get_value_int64(bson_t *b, char *name, long int *value) {
  * @param len received length
  */
 Err
-bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *len) {
+bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *p_len) {
     bool status;
     bson_subtype_t subtype;
     bson_iter_t iter;
@@ -380,7 +380,7 @@ bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *len) {
     *value = malloc(tmp_len + 1);
     memcpy(*value, p_value, tmp_len);
     (*value)[tmp_len] = 0;
-    *len = tmp_len;
+    *p_len = tmp_len;
 
     return S_OK;
 }
@@ -396,7 +396,7 @@ bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *len) {
  * @param len real received length
  */
 Err
-bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *len) {
+bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len) {
     bool status;
     bson_subtype_t subtype;
     bson_iter_t iter;
@@ -413,7 +413,8 @@ bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *len) {
 
     char *p_value;
     Err error = S_OK;
-    bson_iter_binary(&iter, &subtype, len, &p_value);
+    bson_iter_binary(&iter, &subtype, p_len, &p_value);
+    int len = *p_len;
     if(len > max_len) {
         fprintf(stderr, "bson_get_value_bin: len: %d max_len: %d\n", len, max_len);
         len = max_len;
