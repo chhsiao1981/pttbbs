@@ -622,7 +622,7 @@ TEST(pttdb, delete_main_by_aid) {
     for(int i = 0; i < 3; i++) {
         free(fields[i]);
     }
-    free fields;
+    free(fields);
 
     EXPECT_EQ(LIVE_STATUS_DELETED, result_status);
     EXPECT_STREQ(del_updater, result_status_updater);
