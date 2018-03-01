@@ -159,10 +159,10 @@ TEST(pttdb, serialize_main_bson) {
     strcpy(main_header.title, "test_title");
     strcpy(main_header.poster, "poster1");
     strcpy(main_header.ip, "10.1.1.2");
-    main_header.create_milli_timestamp = 1514764800000 //2018-01-01 08:00:00 CST
+    main_header.create_milli_timestamp = 1514764800000; //2018-01-01 08:00:00 CST
     strcpy(main_header.updater, "updater2");
     strcpy(main_header.update_ip, "10.1.1.3");
-    main_header.update_milli_timestamp = 1514764801000 //2018-01-01 08:00:01 CST
+    main_header.update_milli_timestamp = 1514764801000; //2018-01-01 08:00:01 CST
     strcpy(main_header.origin, "ptt.cc");
     strcpy(main_header.web_link, "https://www.ptt.cc/bbs/temp/M.1514764800.A.ABC.html");
     main_header.reset_karma = -100;
@@ -174,7 +174,7 @@ TEST(pttdb, serialize_main_bson) {
     bson_init(&main_bson);
 
     _serialize_main_bson(&main_header, &main_bson);
-    _deserialize_main_bson(&main_header2, &main_bson);    
+    _deserialize_main_bson(&main_bson, &main_header2);
 
     bson_destroy(&main_bson);
 
