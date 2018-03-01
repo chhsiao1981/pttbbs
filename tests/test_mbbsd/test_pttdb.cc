@@ -602,8 +602,8 @@ TEST(pttdb, delete_main_by_aid) {
         fields[i] = (char *)malloc(30);
     }
     strcpy(fields[0], "status");
-    strcpy(fields[0], "status_updater");
-    strcpy(fields[0], "status_update_ip");
+    strcpy(fields[1], "status_updater");
+    strcpy(fields[2], "status_update_ip");
 
     bson_init(&query);
     bson_init(&result);
