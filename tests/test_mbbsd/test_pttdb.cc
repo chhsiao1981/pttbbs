@@ -616,8 +616,8 @@ TEST(pttdb, delete_main_by_aid) {
     char result_status_updater[MAX_BUF_SIZE];
     char result_status_update_ip[MAX_BUF_SIZE];
 
-    char *str = bson_as_canonical_extended_json(&result);
-    fprintf(stder, "after db_find_one_with_fields: result: %s\n", str);
+    char *str = bson_as_canonical_extended_json(&result, NULL);
+    fprintf(stderr, "after db_find_one_with_fields: result: %s\n", str);
     bson_free(str); 
 
     bson_get_value_int32(&result, "status", &result_status);
