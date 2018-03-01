@@ -210,7 +210,7 @@ Err read_main_content(UUID main_content_id, int block_id, MainContent *main_cont
 Err delete_main(UUID main_id, char *updater, char *ip);
 Err delete_main_by_aid(aidu_t aid, char *updater, char *ip);
 
-Err update_main_from_fd(UUID main_id, char *title, char *updater, unsigned char *ip, int len, int fd_content);
+Err update_main_from_fd(UUID main_id, char *updater, unsigned char *ip, int len, int fd_content);
 /*
 Err check_main(UUID main_id);
 */
