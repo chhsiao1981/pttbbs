@@ -948,6 +948,41 @@ _serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main
     return S_OK;
 }
 
+/**
+ * @brief Deserialize bson to main-content-block
+ * @details [long description]
+ * 
+ * @param main_content_block_bson [description]
+ * @param main_content_block [description]
+ * 
+ * @return [description]
+ */
+Err
+_deserialize_main_content_block_bson(bson_t *main_content_block_bson, MainContent *main_content_block) {
+    Err error_code;
+
+    int len;
+    error_code = bson_get_value_bin(main_content_block_bson, "the_id", UUIDLEN, main_content_block->the_id, &len);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_bin(main_content_block_bson, "main_id", UUIDLEN, main_content_block->main_id, &len);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_int32(main_content_block_bson, "block_id", &main_content_block->block_id);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_int32(main_content_block_bson, "len_block", &main_content_block->len_block);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_int32(main_content_block_bson, "n_line", &main_content_block->n_line);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_bin(main_content_block_bson, "buf_block", MAX_BUF_SIZE, main_content_block->buf_block, &len);
+    if(error_code) return error_code;
+
+    return S_OK;
+}
+
 /**********
  * Misc
  **********/

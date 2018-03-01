@@ -31,6 +31,7 @@ Err _serialize_main_bson(MainHeader *main_header, bson_t *main_bson);
 Err _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header);
 
 Err _serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main_content_block_bson);
+Err _deserialize_main_content_block_bson(bson_t *main_content_block_bson, MainContent *main_content_block);
 
 /**********
  * Misc

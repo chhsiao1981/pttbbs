@@ -176,7 +176,7 @@ TEST(pttdb, serialize_main_bson) {
     bson_init(&main_bson);
 
     Err error = _serialize_main_bson(&main_header, &main_bson);
-    EXPECT_EQ(0, error);
+    EXPECT_EQ(S_OK, error);
 
     char *str = bson_as_canonical_extended_json(&main_bson, NULL);
     fprintf(stderr, "main_bson: %s\n", str);
@@ -192,7 +192,7 @@ TEST(pttdb, serialize_main_bson) {
 
     fprintf(stderr, "main_header.status_update_ip: %s main_header2.status_update_ip: %s\n", main_header.status_update_ip, main_header2.status_update_ip);
 
-    EXPECT_EQ(0, error);
+    EXPECT_EQ(S_OK, error);
     EXPECT_EQ(main_header.version, main_header2.version);
     EXPECT_EQ(0, strncmp((char *)main_header.the_id, (char *)main_header2.the_id, UUIDLEN));
     EXPECT_EQ(0, strncmp((char *)main_header.content_id, (char *)main_header2.content_id, UUIDLEN));
@@ -213,6 +213,31 @@ TEST(pttdb, serialize_main_bson) {
     EXPECT_EQ(main_header.n_total_line, main_header2.n_total_line);
     EXPECT_EQ(main_header.n_total_block, main_header2.n_total_block);
     EXPECT_EQ(main_header.len_total, main_header2.len_total);
+}
+
+TEST(pttdb, serialize_main_content_block_bson) {
+    MainContent main_content_block = {};
+    MainContent main_content_block2 = {};
+
+    bson_t b;
+    bson_init(&b);
+
+    Error error = _serialize_main_content_block_bson(&main_content_block, &b);
+    EXPECT_EQ(S_OK, error);
+
+    char *str = bson_as_canonical_extended_json(&b, NULL);
+    fprintf(stderr, "b: %s\n", str);
+    bson_free(str);
+
+    error = _deserialize_main_content_block_bson(&b, &main_content_block2);
+    EXPECT_EQ(S_OK, error);
+
+    EXPECT_EQ(0, strncmp((char *)main_content_block.the_id, (char *)main_content_block2.the_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)main_content_block.main_id, (char *)main_content_block2.main_id, UUIDLEN));
+    EXPECT_EQ(main_content_block.block_id, main_content_block2.block_id);
+    EXPECT_EQ(main_content_block.len_block, main_content_block2.len_block);
+    EXPECT_EQ(main_content_block.n_line, main_content_block2.n_line);
+    EXPECT_EQ(0, strncmp((char *)main_content_block->buf_block, (char *)main_content_block2->buf_block, MAX_BUF_SIZE);
 }
 
 TEST(pttdb, get_line_from_buf) {
