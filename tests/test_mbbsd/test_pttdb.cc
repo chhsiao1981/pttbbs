@@ -222,7 +222,7 @@ TEST(pttdb, serialize_main_content_block_bson) {
     bson_t b;
     bson_init(&b);
 
-    Error error = _serialize_main_content_block_bson(&main_content_block, &b);
+    Err error = _serialize_main_content_block_bson(&main_content_block, &b);
     EXPECT_EQ(S_OK, error);
 
     char *str = bson_as_canonical_extended_json(&b, NULL);
