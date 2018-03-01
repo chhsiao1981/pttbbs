@@ -237,7 +237,7 @@ TEST(pttdb, serialize_main_content_block_bson) {
     EXPECT_EQ(main_content_block.block_id, main_content_block2.block_id);
     EXPECT_EQ(main_content_block.len_block, main_content_block2.len_block);
     EXPECT_EQ(main_content_block.n_line, main_content_block2.n_line);
-    EXPECT_EQ(0, strncmp((char *)main_content_block->buf_block, (char *)main_content_block2->buf_block, MAX_BUF_SIZE);
+    EXPECT_EQ(0, strncmp((char *)main_content_block->buf_block, (char *)main_content_block2->buf_block, MAX_BUF_SIZE));
 }
 
 TEST(pttdb, get_line_from_buf) {
