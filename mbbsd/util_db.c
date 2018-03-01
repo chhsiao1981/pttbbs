@@ -276,7 +276,7 @@ db_find_one_with_fields(int collection, bson_t *key, char **fields, int n_fields
     }
 
     error_code = db_find_one(collection, key, &b_fields, result);
-    if(error) {
+    if(error_code) {
         bson_destroy(&b_fields);
         return error_code;
     }
