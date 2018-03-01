@@ -1020,7 +1020,6 @@ update_main_from_fd(UUID main_id, char *updater, unsigned char *ip, int len, int
     Err error_code = S_OK;
     int n_line;
     int n_block;
-    bson_t
 
     UUID content_id;
 
