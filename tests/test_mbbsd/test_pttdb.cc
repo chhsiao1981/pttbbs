@@ -457,30 +457,15 @@ TEST(pttdb, read_main_content) {
     error = db_update_one(MONGO_MAIN_CONTENT, &b, &b, true);
     EXPECT_EQ(S_OK, error);
 
-    error = read_main_content(&main_content_block, &main_header2);
+    error = read_main_content(main_content_block.the_id, &main_content_block2);
     EXPECT_EQ(S_OK, error);
 
-    EXPECT_EQ(main_header.version, main_header2.version);
-    EXPECT_EQ(0, strncmp((char *)main_header.the_id, (char *)main_header2.the_id, UUIDLEN));
-    EXPECT_EQ(0, strncmp((char *)main_header.content_id, (char *)main_header2.content_id, UUIDLEN));
-    EXPECT_EQ(0, strncmp((char *)main_header.update_content_id, (char *)main_header2.update_content_id, UUIDLEN));
-    EXPECT_EQ(main_header.aid, main_header2.aid);
-    EXPECT_EQ(main_header.status, main_header2.status);
-    EXPECT_STREQ(main_header.status_updater, main_header2.status_updater);
-    EXPECT_STREQ(main_header.status_update_ip, main_header2.status_update_ip);
-    EXPECT_STREQ(main_header.title, main_header2.title);
-    EXPECT_STREQ(main_header.poster, main_header2.poster);
-    EXPECT_STREQ(main_header.ip, main_header2.ip);
-    EXPECT_EQ(main_header.create_milli_timestamp, main_header2.create_milli_timestamp);
-    EXPECT_STREQ(main_header.updater, main_header2.updater);
-    EXPECT_STREQ(main_header.update_ip, main_header2.update_ip);
-    EXPECT_EQ(main_header.update_milli_timestamp, main_header2.update_milli_timestamp);
-    EXPECT_STREQ(main_header.origin, main_header2.origin);
-    EXPECT_STREQ(main_header.web_link, main_header2.web_link);
-    EXPECT_EQ(main_header.reset_karma, main_header2.reset_karma);
-    EXPECT_EQ(main_header.n_total_line, main_header2.n_total_line);
-    EXPECT_EQ(main_header.n_total_block, main_header2.n_total_block);
-    EXPECT_EQ(main_header.len_total, main_header2.len_total);
+    EXPECT_EQ(0, strncmp((char *)main_content_block.the_id, (char *)main_content_block2.the_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)main_content_block.main_id, (char *)main_content_block2.main_id, UUIDLEN));
+    EXPECT_EQ(main_content_block.block_id, main_content_block2.block_id);
+    EXPECT_EQ(main_content_block.len_block, main_content_block2.len_block);
+    EXPECT_EQ(main_content_block.n_line, main_content_block2.n_line);
+    EXPECT_STREQ(main_content_block.buf_block, main_content_block2.buf_block);
 }
 
 TEST(pttdb, delete_main) {
