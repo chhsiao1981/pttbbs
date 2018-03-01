@@ -1018,9 +1018,8 @@ Err
 update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content)
 {
     Err error_code = S_OK;
-    int n_total_line;
-    int n_total_block;
-    int len_total;
+    int n_line;
+    int n_block;
 
     UUID content_id;
 
@@ -1052,7 +1051,7 @@ update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int f
     }
 
     // update: content_id, update_content_id, updater, update_ip, update_milli_timestamp, n_total_line, n_total_block, len_total
-    error_code = _serialize_update_main_bson(content_id, updater, update_ip, update_milli_timestamp, n_total_line, n_total_block, len_total, &main_bson);
+    error_code = _serialize_update_main_bson(content_id, updater, update_ip, update_milli_timestamp, n_line, n_block, len, &main_bson);
     if(error_code) {
         bson_destroy(&main_id_bson);
         bson_destroy(&main_bson);
