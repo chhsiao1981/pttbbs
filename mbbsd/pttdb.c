@@ -1018,8 +1018,9 @@ Err
 update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content)
 {
     Err error_code = S_OK;
-    int n_line;
-    int n_block;
+    int n_total_line;
+    int n_total_block;
+    int len_total;
 
     UUID content_id;
 
