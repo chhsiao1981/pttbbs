@@ -868,10 +868,9 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header) {
     if(error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "status_updater", IDLEN, main_header->status_updater, &len);
-    fprintf(stderr, "pttdb._deserialize_main_bson: some thing went wrong with status_updater: e: %d\n", error_code);
     if(error_code) return error_code;
 
-    error_code = bson_get_value_bin(main_bson, "status_updater_ip", IPV4LEN, main_header->status_update_ip, &len);
+    error_code = bson_get_value_bin(main_bson, "status_update_ip", IPV4LEN, main_header->status_update_ip, &len);
     if(error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "title", TTLEN, main_header->title, &len);
