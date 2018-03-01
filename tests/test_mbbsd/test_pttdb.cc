@@ -308,7 +308,7 @@ TEST(pttdb, n_line_main_by_aid) {
     int n_line;
     error = n_line_main_by_aid(main_header.aid, &n_line);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(main_header.n_line, n_line);
+    EXPECT_EQ(main_header.n_total_line, n_line);
 }
 
 TEST(pttdb, serialize_main_bson) {
