@@ -13,7 +13,8 @@
  * @return Err
  */
 Err
-get_milli_timestamp(time64_t *milli_timestamp) {
+get_milli_timestamp(time64_t *milli_timestamp)
+{
     struct timeval tv;
     struct timezone tz;
 
@@ -40,7 +41,8 @@ get_milli_timestamp(time64_t *milli_timestamp) {
  * @param uuid [description]
  */
 Err
-gen_uuid(UUID uuid) {
+gen_uuid(UUID uuid)
+{
     Err error_code;
 
     time64_t milli_timestamp;
@@ -96,7 +98,8 @@ gen_uuid(UUID uuid) {
  * @return Err
  */
 Err
-gen_uuid_with_db(int collection, UUID uuid) {
+gen_uuid_with_db(int collection, UUID uuid)
+{
     Err error_code = S_OK;
     bson_t uuid_bson;
 
@@ -133,7 +136,8 @@ gen_uuid_with_db(int collection, UUID uuid) {
  * @return Err
  */
 Err
-gen_content_uuid_with_db(int collection, UUID uuid) {
+gen_content_uuid_with_db(int collection, UUID uuid)
+{
     Err error_code = S_OK;
     bson_t uuid_bson;
 
@@ -170,7 +174,8 @@ gen_content_uuid_with_db(int collection, UUID uuid) {
  * @return Err
  */
 Err
-_serialize_uuid_bson(UUID uuid, const char *key, bson_t *uuid_bson) {
+_serialize_uuid_bson(UUID uuid, const char *key, bson_t *uuid_bson)
+{
     bool bson_status = bson_append_bin(uuid_bson, key, -1, uuid, UUIDLEN);
     if (!bson_status) return S_ERR;
 
@@ -186,7 +191,8 @@ _serialize_uuid_bson(UUID uuid, const char *key, bson_t *uuid_bson) {
  * @return Err
  */
 Err
-_serialize_content_uuid_bson(UUID uuid, const char *key, int block_id, bson_t *uuid_bson) {
+_serialize_content_uuid_bson(UUID uuid, const char *key, int block_id, bson_t *uuid_bson)
+{
     bool bson_status = bson_append_bin(uuid_bson, key, -1, uuid, UUIDLEN);
     if (!bson_status) return S_ERR;
 
@@ -266,7 +272,8 @@ n_line_post(UUID main_id, int *n_line) {
  * @return Err
  */
 Err
-create_main_from_fd(aidu_t aid, char *title, char *poster, unsigned char *ip, unsigned char *origin, unsigned char *web_link, int len, int fd_content, UUID main_id) {
+create_main_from_fd(aidu_t aid, char *title, char *poster, unsigned char *ip, unsigned char *origin, unsigned char *web_link, int len, int fd_content, UUID main_id)
+{
 
     Err error_code = S_OK;
     int n_line;
@@ -359,7 +366,8 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, unsigned char *ip, un
  * @return Err
  */
 Err
-_split_main_contents(int fd_content, int len, UUID main_id, UUID content_id, int *n_line, int *n_block) {
+_split_main_contents(int fd_content, int len, UUID main_id, UUID content_id, int *n_line, int *n_block)
+{
     Err error_code;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -435,7 +443,8 @@ _split_main_contents(int fd_content, int len, UUID main_id, UUID content_id, int
  * @return Err
  */
 Err
-_split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID content_id, MainContent *main_content_block, int *n_line, int *n_block) {
+_split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID content_id, MainContent *main_content_block, int *n_line, int *n_block)
+{
     Err error_code;
 
     //1 more line
@@ -486,7 +495,8 @@ _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID cont
  * @return Err
  */
 Err
-_split_main_contents_init_main_content(MainContent *main_content_block, UUID main_id, UUID content_id, int block_id) {
+_split_main_contents_init_main_content(MainContent *main_content_block, UUID main_id, UUID content_id, int block_id)
+{
     if (main_content_block->len_block) {
         bzero(main_content_block->buf_block, main_content_block->len_block);
     }
@@ -507,7 +517,8 @@ _split_main_contents_init_main_content(MainContent *main_content_block, UUID mai
  * @return Err
  */
 Err
-_split_main_contents_save_main_content_block(MainContent *main_content_block) {
+_split_main_contents_save_main_content_block(MainContent *main_content_block)
+{
     Err error_code;
     bson_t main_content_block_bson;
     bson_t main_content_block_uuid_bson;
@@ -548,7 +559,8 @@ _split_main_contents_save_main_content_block(MainContent *main_content_block) {
  * @return Err
  */
 Err
-len_main(UUID main_id, int *len) {
+len_main(UUID main_id, int *len)
+{
     Err error_code;
     bson_t key;
     bson_init(&key);
@@ -592,7 +604,8 @@ len_main(UUID main_id, int *len) {
  * @return Err
  */
 Err
-len_main_by_aid(aidu_t aid, int *len) {
+len_main_by_aid(aidu_t aid, int *len)
+{
     Err error_code;
     bson_t key;
     bson_init(&key);
@@ -638,7 +651,8 @@ len_main_by_aid(aidu_t aid, int *len) {
  * @return Err
  */
 Err
-n_line_main(UUID main_id, int *n_line) {
+n_line_main(UUID main_id, int *n_line)
+{
     Err error_code;
     bson_t key;
     bson_init(&key);
@@ -684,7 +698,8 @@ n_line_main(UUID main_id, int *n_line) {
  * @return Err
  */
 Err
-n_line_main_by_aid(aidu_t aid, int *n_line) {
+n_line_main_by_aid(aidu_t aid, int *n_line)
+{
     Err error_code;
     bson_t key;
     bson_init(&key);
@@ -730,7 +745,8 @@ n_line_main_by_aid(aidu_t aid, int *n_line) {
  * @return Err
  */
 Err
-read_main_header(UUID main_id, MainHeader *main_header) {
+read_main_header(UUID main_id, MainHeader *main_header)
+{
     Err error_code;
     bson_t key;
     bson_init(&key);
@@ -760,14 +776,15 @@ read_main_header(UUID main_id, MainHeader *main_header) {
 /**
  * @brief [brief description]
  * @details [long description]
- * 
+ *
  * @param aid [description]
  * @param main [description]
- * 
+ *
  * @return [description]
  */
 Err
-read_main_header_by_aid(aidu_t aid, MainHeader *main_header) {
+read_main_header_by_aid(aidu_t aid, MainHeader *main_header)
+{
     Err error_code;
     bson_t key;
     bson_init(&key);
@@ -794,6 +811,51 @@ read_main_header_by_aid(aidu_t aid, MainHeader *main_header) {
     return S_OK;
 }
 
+/**
+ * @brief [brief description]
+ * @details [long description]
+ *
+ * @param main_content_id [description]
+ * @param block_id [description]
+ * @param max_n_main_content [description]
+ * @param n_read_main_content [description]
+ * @param main_content [description]
+ * @return [description]
+ */
+Err
+read_main_content(UUID main_content_id, int block_id, MainContent *main_content)
+{
+    Err error_code;
+    bson_t key;
+    bool bson_status;
+
+    bson_init(&key);
+    bson_status = bson_append_bin(&key, "the_id", -1, main_content_id, UUIDLEN);
+    if(!bson_status) return S_ERR;
+
+    bson_status = bson_append_int32(&key, "block_id", -1, block_id);
+    if(!bson_status) return S_ERR;
+
+    bson_t db_result;
+    bson_init(&db_result);
+    error_code = db_find_one(MONGO_MAIN_CONTENT, &key, NULL, &db_result);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+
+    error_code = _deserialize_main_bson(&db_result, main_content);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+
+    bson_destroy(&key);
+    bson_destroy(&db_result);
+    return S_OK;
+}
 
 /**
  * @brief Serialize main-header to bson
@@ -804,7 +866,8 @@ read_main_header_by_aid(aidu_t aid, MainHeader *main_header) {
  * @return Err
  */
 Err
-_serialize_main_bson(MainHeader *main_header, bson_t *main_bson) {
+_serialize_main_bson(MainHeader *main_header, bson_t *main_bson)
+{
     bool bson_status;
 
     bson_status = bson_append_int32(main_bson, "version", -1, main_header->version);
@@ -883,71 +946,72 @@ _serialize_main_bson(MainHeader *main_header, bson_t *main_bson) {
  * @return Err
  */
 Err
-_deserialize_main_bson(bson_t *main_bson, MainHeader *main_header) {
+_deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
+{
     Err error_code;
     error_code = bson_get_value_int32(main_bson, "version", &main_header->version);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     int len;
     error_code = bson_get_value_bin(main_bson, "the_id", UUIDLEN, main_header->the_id, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "content_id", UUIDLEN, main_header->content_id, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "update_content_id", UUIDLEN, main_header->update_content_id, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_int32(main_bson, "aid", &main_header->aid);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_int32(main_bson, "status", &main_header->status);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "status_updater", IDLEN, main_header->status_updater, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "status_update_ip", IPV4LEN, main_header->status_update_ip, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "title", TTLEN, main_header->title, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "poster", IDLEN, main_header->poster, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "ip", IPV4LEN, main_header->ip, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_int64(main_bson, "create_milli_timestamp", &main_header->create_milli_timestamp);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "updater", IDLEN, main_header->updater, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "update_ip", IPV4LEN, main_header->update_ip, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_int64(main_bson, "update_milli_timestamp", &main_header->update_milli_timestamp);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "origin", MAX_ORIGIN_LEN, main_header->origin, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "web_link", MAX_WEB_LINK_LEN, main_header->web_link, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_int32(main_bson, "reset_karma", &main_header->reset_karma);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_int32(main_bson, "n_total_line", &main_header->n_total_line);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_int32(main_bson, "n_total_block", &main_header->n_total_block);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_int32(main_bson, "len_total", &main_header->len_total);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     return S_OK;
 }
@@ -961,7 +1025,8 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header) {
  * @return Err
  */
 Err
-_serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main_content_block_bson) {
+_serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main_content_block_bson)
+{
     bool bson_status;
 
     bson_status = bson_append_bin(main_content_block_bson, "the_id", -1, main_content_block->the_id, UUIDLEN);
@@ -988,34 +1053,35 @@ _serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main
 /**
  * @brief Deserialize bson to main-content-block
  * @details [long description]
- * 
+ *
  * @param main_content_block_bson [description]
  * @param main_content_block [description]
- * 
+ *
  * @return [description]
  */
 Err
-_deserialize_main_content_block_bson(bson_t *main_content_block_bson, MainContent *main_content_block) {
+_deserialize_main_content_block_bson(bson_t *main_content_block_bson, MainContent *main_content_block)
+{
     Err error_code;
 
     int len;
     error_code = bson_get_value_bin(main_content_block_bson, "the_id", UUIDLEN, main_content_block->the_id, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_content_block_bson, "main_id", UUIDLEN, main_content_block->main_id, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_int32(main_content_block_bson, "block_id", &main_content_block->block_id);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_int32(main_content_block_bson, "len_block", &main_content_block->len_block);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_int32(main_content_block_bson, "n_line", &main_content_block->n_line);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_content_block_bson, "buf_block", MAX_BUF_SIZE, main_content_block->buf_block, &len);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     return S_OK;
 }
@@ -1037,7 +1103,8 @@ _deserialize_main_content_block_bson(bson_t *main_content_block_bson, MainConten
  * @return Error
  */
 Err
-get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offset_line, int *bytes_in_new_line) {
+get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offset_line, int *bytes_in_new_line)
+{
 
     // check the end of buf
     if (offset_buf >= bytes) {
