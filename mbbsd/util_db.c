@@ -313,6 +313,43 @@ bson_get_value_int32(bson_t *b, char *name, int *value) {
 }
 
 /**
+ * @brief get int64 value in bson
+ * @details [long description]
+ * 
+ * @param b [description]
+ * @param name [description]
+ * @param value [description]
+ */
+Err
+bson_get_value_int64(bson_t *b, char *name, long int *value) {
+    bool status;
+    bson_iter_t iter;
+    bson_iter_t it_val;
+
+    status = bson_iter_init(&iter, b);
+    if (!status) {
+        //fprintf(stderr, "[ERROR] bson_get_value_int32: unable to init\n");
+        return S_ERR;
+    }
+
+    status = bson_iter_find_descendant(&iter, name, &it_val);
+    if (!status) {
+        //fprintf(stderr, "[ERROR] bson_get_value_int32: unable to find descendant\n");
+        return S_ERR;
+    }
+
+    status = BSON_ITER_HOLDS_INT64(&it_val);
+    if (!status) {
+        //fprintf(stderr, "[ERROR] bson_get_value_int32: not int32\n");
+        return S_ERR;
+    }
+
+    *value = bson_iter_int64(&it_val);
+
+    return S_OK;
+}
+
+/**
  * @brief find binary in the bson-struct
  * @details [long description]
  * 
