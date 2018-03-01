@@ -844,6 +844,7 @@ read_main_content(UUID main_content_id, int block_id, MainContent *main_content)
 
     bson_status = bson_append_bin(&key, "the_id", -1, main_content_id, UUIDLEN);
     if (!bson_status) {
+        fprintf(stderr, "pttdb.read_main_content: unable to append the_id\n");
         bson_destroy(&key);
         bson_destroy(&db_result);
         return S_ERR;
@@ -851,6 +852,7 @@ read_main_content(UUID main_content_id, int block_id, MainContent *main_content)
 
     bson_status = bson_append_int32(&key, "block_id", -1, block_id);
     if (!bson_status) {
+        fprintf(stderr, "pttdb.read_main_content: unable to append block_id\n");
         bson_destroy(&key);
         bson_destroy(&db_result);
         return S_ERR;
@@ -858,13 +860,15 @@ read_main_content(UUID main_content_id, int block_id, MainContent *main_content)
 
     error_code = db_find_one(MONGO_MAIN_CONTENT, &key, NULL, &db_result);
     if (error_code) {
+        fprintf(stderr, "pttdb.read_main_content: unable to find_one\n");
         bson_destroy(&key);
         bson_destroy(&db_result);
         return error_code;
     }
 
-    error_code = _deserialize_main_bson(&db_result, main_content);
+    error_code = _deserialize_main_content_block_bson(&db_result, main_content);
     if (error_code) {
+        fprintf(stderr, "pttdb.read_main_content: unable to deserialize\n");
         bson_destroy(&key);
         bson_destroy(&db_result);
         return error_code;
