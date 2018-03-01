@@ -767,7 +767,7 @@ read_main_header(UUID main_id, MainHeader *main_header) {
  * @return [description]
  */
 Err
-read_main_header_by_aid(aidu_t aid, MainHeader *main) {
+read_main_header_by_aid(aidu_t aid, MainHeader *main_header) {
     Err error_code;
     bson_t key;
     bson_init(&key);
