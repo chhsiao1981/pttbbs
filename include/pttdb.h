@@ -68,15 +68,15 @@ typedef struct MainHeader {
 
     unsigned char status;                            // status of the main.
     char status_updater[IDLEN + 1];                  // last user updating the status
-    unsigned char status_update_ip[IPV4LEN + 1];     // last ip updating the status
+    char status_update_ip[IPV4LEN + 1];              // last ip updating the status
 
     char title[TTLEN + 1];                           // title
 
     char poster[IDLEN + 1];                          // creater
-    unsigned char ip[IPV4LEN + 1];                   // create-ip
+    char ip[IPV4LEN + 1];                            // create-ip
     time64_t create_milli_timestamp;                 // create-time
     char updater[IDLEN + 1];                         // last updater
-    unsigned char update_ip[IPV4LEN + 1];            // last update-ip
+    char update_ip[IPV4LEN + 1];                     // last update-ip
     time64_t update_milli_timestamp;                 // last update-time
 
     char origin[MAX_ORIGIN_LEN + 1];                 // origin
@@ -112,16 +112,16 @@ typedef struct Comment {
 
     unsigned char status;                            // status
     char status_updater[IDLEN + 1];                  // last user updaing the status
-    unsigned char status_update_ip[IPV4LEN + 1];     // last ip updating the status
+    char status_update_ip[IPV4LEN + 1];              // last ip updating the status
 
     unsigned char rec_type;                          // recommendation-type.
     int karma;                                       // karma
 
     char poster[IDLEN + 1];                          // creater
-    unsigned char ip[IPV4LEN + 1];                   // create-ip
+    char ip[IPV4LEN + 1];                            // create-ip
     time64_t create_milli_timestamp;                 // create-time
     char updater[IDLEN + 1];                         // last updater
-    unsigned char update_ip[IPV4LEN + 1];            // last update-ip
+    char update_ip[IPV4LEN + 1];                     // last update-ip
     time64_t update_milli_timestamp;                 // last update-time
 
     int len;                                         // size
@@ -144,13 +144,13 @@ typedef struct CommentReplyHeader {
 
     unsigned char status;                            // status
     char status_updater[IDLEN + 1];                  // last user updating status
-    unsigned char status_update_ip[IPV4LEN + 1];     // last ip updating the status
+    char status_update_ip[IPV4LEN + 1];              // last ip updating the status
 
     char poster[IDLEN + 1];                          // creater
-    unsigned char ip[IPV4LEN + 1];                   // create-ip
+    char ip[IPV4LEN + 1];                            // create-ip
     time64_t create_milli_timestamp;                 // create-time
     char updater[IDLEN + 1];                         // last updater
-    unsigned char update_ip[IPV4LEN + 1];            // last update-ip
+    char update_ip[IPV4LEN + 1];                     // last update-ip
     time64_t update_milli_timestamp;                 // last update-time
 
     int n_total_line;                                // total-line
