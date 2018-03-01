@@ -923,7 +923,7 @@ delete_main(UUID main_id, char *updater, unsigned char *ip) {
         return S_ERR;
     }
 
-    error_code = db_update_one(MONGO_MAIN, &main_id_bson, &main_bson, true);
+    error_code = db_update_one(MONGO_MAIN, &key, &val, true);
     if (error_code) {
         bson_destroy(&key);
         bson_destroy(&val);
@@ -984,7 +984,7 @@ delete_main_by_aid(aidu_t aid, char *updater, unsigned char *ip) {
         return S_ERR;
     }
 
-    error_code = db_update_one(MONGO_MAIN, &main_id_bson, &main_bson, true);
+    error_code = db_update_one(MONGO_MAIN, &key, &val, true);
     if (error_code) {
         bson_destroy(&key);
         bson_destroy(&val);
