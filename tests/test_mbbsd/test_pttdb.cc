@@ -179,7 +179,7 @@ TEST(pttdb, serialize_main_bson) {
     fprintf(stderr, "main_bson: %s\n", str);
     bson_free(str);
 
-    _deserialize_main_bson(&main_bson, &main_header2);
+    Err error = _deserialize_main_bson(&main_bson, &main_header2);
 
     bson_destroy(&main_bson);
 
@@ -187,6 +187,7 @@ TEST(pttdb, serialize_main_bson) {
 
     fprintf(stderr, "main_header.content_id: %s main_header2.content_id: %s\n", main_header.content_id, main_header2.content_id);
 
+    EXPECT_EQ(0, error);
     EXPECT_EQ(main_header.version, main_header2.version);
     EXPECT_EQ(0, strncmp((char *)main_header.the_id, (char *)main_header2.the_id, UUIDLEN));
     EXPECT_EQ(0, strncmp((char *)main_header.content_id, (char *)main_header2.content_id, UUIDLEN));

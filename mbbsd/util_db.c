@@ -363,26 +363,20 @@ bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *len) {
     bool status;
     bson_subtype_t subtype;
     bson_iter_t iter;
-    bson_iter_t it_val;
 
-    status = bson_iter_init(&iter, b);
+    status = bson_iter_init_find(&iter, b, name);
     if (!status) {
         return S_ERR;
     }
 
-    status = bson_iter_find_descendant(&iter, name, &it_val);
-    if (!status) {
-        return S_ERR;
-    }
-
-    status = BSON_ITER_HOLDS_BINARY(&it_val);
+    status = BSON_ITER_HOLDS_BINARY(&iter);
     if (!status) {
         return S_ERR;
     }
 
     char *p_value;
     int tmp_len;
-    bson_iter_binary(&it_val, &subtype, &tmp_len, &p_value);
+    bson_iter_binary(&iter, &subtype, &tmp_len, &p_value);
     *value = malloc(tmp_len + 1);
     memcpy(*value, p_value, tmp_len);
     (*value)[tmp_len] = 0;
@@ -406,26 +400,20 @@ bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *len) {
     bool status;
     bson_subtype_t subtype;
     bson_iter_t iter;
-    bson_iter_t it_val;
 
-    status = bson_iter_init(&iter, b);
+    status = bson_iter_init_find(&iter, b, name);
     if (!status) {
         return S_ERR;
     }
 
-    status = bson_iter_find_descendant(&iter, name, &it_val);
-    if (!status) {
-        return S_ERR;
-    }
-
-    status = BSON_ITER_HOLDS_BINARY(&it_val);
+    status = BSON_ITER_HOLDS_BINARY(&iter);
     if (!status) {
         return S_ERR;
     }
 
     char *p_value;
     Err error = S_OK;
-    bson_iter_binary(&it_val, &subtype, len, &p_value);
+    bson_iter_binary(&iter, &subtype, len, &p_value);
     if(len > max_len) {
         len = max_len;
         error = S_ERR_BUFFER_LEN;
