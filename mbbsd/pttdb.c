@@ -848,7 +848,62 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header) {
     error_code = bson_get_value_int32(main_bson, "version", &main_header->version);
     if(error_code) return error_code;
 
-    error_code = bson_get_value_int32(main_bson, "version", &main_header->version);
+    int len;
+    error_code = bson_get_value_bin(main_bson, "the_id", UUIDLEN, main_header->the_id, &len);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_bin(main_bson, "content_id", UUIDLEN, main_header->content_id, &len);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_int32(main_bson, "aid", &main_header->aid);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_int32(main_bson, "status", &main_header->status);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_bin(main_bson, "status_updater", IDLEN, main_header->status_updater, &len);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_bin(main_bson, "status_updater_ip", IPV4LEN, main_header->status_update_ip, &len);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_bin(main_bson, "title", TTLEN, main_header->title, &len);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_bin(main_bson, "poster", IDLEN, main_header->poster, &len);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_bin(main_bson, "ip", IPV4LEN, main_header->ip, &len);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_int64(main_bson, "create_milli_timestamp", &main_header->create_milli_timestamp);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_bin(main_bson, "updater", IDLEN, main_header->updater, &len);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_bin(main_bson, "update_ip", IPV4LEN, main_header->update_ip, &len);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_int64(main_bson, "update_milli_timestamp", &main_header->update_milli_timestamp);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_bin(main_bson, "origin", MAX_ORIGIN_LEN, main_header->origin, &len);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_bin(main_bson, "web_link", MAX_WEB_LINK_LEN, main_header->web_link, &len);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_int32(main_bson, "reset_karma", &main_header->reset_karma);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_int32(main_bson, "n_total_line", &main_header->n_total_line);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_int32(main_bson, "n_total_block", &main_header->n_total_block);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_int32(main_bson, "len_total", &main_header->len_total);
     if(error_code) return error_code;
 
     return S_OK;

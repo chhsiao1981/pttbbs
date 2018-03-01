@@ -322,7 +322,7 @@ bson_get_value_int32(bson_t *b, char *name, int *value) {
  * @param len received length
  */
 Err
-bson_get_value_bin(bson_t *b, char *name, char **value, int *len) {
+bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *len) {
     bool status;
     bson_subtype_t subtype;
     bson_iter_t iter;
@@ -365,7 +365,7 @@ bson_get_value_bin(bson_t *b, char *name, char **value, int *len) {
  * @param len real received length
  */
 Err
-bson_get_value_bin_no_init(bson_t *b, char *name, int max_len, char *value, int *len) {
+bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *len) {
     bool status;
     bson_subtype_t subtype;
     bson_iter_t iter;

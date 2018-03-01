@@ -15,7 +15,7 @@ extern "C" {
 #define _UUIDLEN 48
 
 #define MAX_ORIGIN_LEN 20
-#define MAX_WEB_LINK 50
+#define MAX_WEB_LINK_LEN 50
 #define MAX_BUF_SIZE 8192
 #define MAX_BUF_BLOCK 8192
 #define MAX_BUF_COMMENT 256
@@ -59,14 +59,14 @@ enum {
  * XXX always update main-content first, and then update main-header.
  **********/
 typedef struct MainHeader {
-    unsigned char version;                           // version
+    unsigned int version;                           // version
 
     UUID the_id;                                     // main id
     UUID content_id;                                 // corresponding content-id
     UUID update_content_id;                          // updating content-id
     aidu_t aid;                                      // aid
 
-    unsigned char status;                            // status of the main.
+    unsigned int status;                            // status of the main.
     char status_updater[IDLEN + 1];                  // last user updating the status
     char status_update_ip[IPV4LEN + 1];              // last ip updating the status
 
@@ -80,7 +80,7 @@ typedef struct MainHeader {
     time64_t update_milli_timestamp;                 // last update-time
 
     char origin[MAX_ORIGIN_LEN + 1];                 // origin
-    char web_link[MAX_WEB_LINK + 1];                 // web-link
+    char web_link[MAX_WEB_LINK_LEN + 1];                 // web-link
 
     int reset_karma;                                 // reset-karma.
 
@@ -105,16 +105,16 @@ typedef struct MainContent {
  * Comments
  **********/
 typedef struct Comment {
-    unsigned char version;                           // version
+    unsigned int version;                           // version
 
     UUID the_id;                                     // comment-id
     UUID main_id;                                    // corresponding main-id
 
-    unsigned char status;                            // status
+    unsigned int status;                            // status
     char status_updater[IDLEN + 1];                  // last user updaing the status
     char status_update_ip[IPV4LEN + 1];              // last ip updating the status
 
-    unsigned char rec_type;                          // recommendation-type.
+    unsigned int rec_type;                          // recommendation-type.
     int karma;                                       // karma
 
     char poster[IDLEN + 1];                          // creater
@@ -133,7 +133,7 @@ typedef struct Comment {
  * XXX always update comment-reply-content first, and then update comment-reply-header.
  **********/
 typedef struct CommentReplyHeader {
-    unsigned char version;                           // version
+    unsigned int version;                           // version
 
     UUID the_id;                                     // comment-reply-id
     UUID content_id;                                 // corresponding content-id
@@ -142,7 +142,7 @@ typedef struct CommentReplyHeader {
     UUID comment_id;                                 // corresponding comment-id
     UUID main_id;                                    // corresponding main-id
 
-    unsigned char status;                            // status
+    unsigned int status;                            // status
     char status_updater[IDLEN + 1];                  // last user updating status
     char status_update_ip[IPV4LEN + 1];              // last ip updating the status
 
