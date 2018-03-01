@@ -175,7 +175,7 @@ TEST(pttdb, serialize_main_bson) {
 
     _serialize_main_bson(&main_header, &main_bson);
 
-    char *str = bson_as_canonical_extended_json(&main_bson);
+    char *str = bson_as_canonical_extended_json(&main_bson, NULL);
     fprintf(stderr, "main_bson: %s\n", str);
     bson_free(str);
 
