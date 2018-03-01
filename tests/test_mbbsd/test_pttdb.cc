@@ -483,6 +483,48 @@ TEST(pttdb, read_main_content) {
     EXPECT_EQ(main_header.len_total, main_header2.len_total);
 }
 
+TEST(pttdb, delete_main) {
+    MainHeader main_header = {};
+
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+
+    gen_uuid(main_header.the_id);
+    gen_uuid(main_header.content_id);
+    gen_uuid(main_header.update_content_id);
+    main_header.aid = 12345;
+    main_header.status = LIVE_STATUS_ALIVE;
+    strcpy(main_header.status_updater, "updater1");
+    strcpy(main_header.status_update_ip, "10.1.1.1");
+    strcpy(main_header.title, "test_title");
+    strcpy(main_header.poster, "poster1");
+    strcpy(main_header.ip, "10.1.1.2");
+    main_header.create_milli_timestamp = 1514764800000; //2018-01-01 08:00:00 CST
+    strcpy(main_header.updater, "updater2");
+    strcpy(main_header.update_ip, "10.1.1.3");
+    main_header.update_milli_timestamp = 1514764801000; //2018-01-01 08:00:01 CST
+    strcpy(main_header.origin, "ptt.cc");
+    strcpy(main_header.web_link, "https://www.ptt.cc/bbs/temp/M.1514764800.A.ABC.html");
+    main_header.reset_karma = -100;
+    main_header.n_total_line = 100;
+    main_header.n_total_block = 20;
+    main_header.len_total = 10000;
+
+    bson_t main_bson;
+    bson_init(&main_bson);
+
+    Err error = _serialize_main_bson(&main_header, &main_bson);
+    EXPECT_EQ(S_OK, error);
+
+    error = db_update_one(MONGO_MAIN, &main_bson, &main_bson, true);
+    EXPECT_EQ(S_OK, error);
+
+    int len;
+    char del_updater[IDLEN + 1] = "del_updater";
+    char status_update_ip[IPV4LEN + 1] = "10.1.1.4";
+    error = delete_main(main_header.the_id, del_updater, status_update_ip);
+    EXPECT_EQ(S_OK, error);
+}
+
 TEST(pttdb, serialize_main_bson) {
     MainHeader main_header = {};
     MainHeader main_header2 = {};

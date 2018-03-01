@@ -244,6 +244,48 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
     return S_OK;
 }
 
+/**
+ * @brief [brief description]
+ * @details [long description]
+ * 
+ * @param collection [description]
+ * @param key [description]
+ * @param fields [description]
+ * @param n_fields [description]
+ * @param result [description]
+ */
+Err
+db_find_one_with_fields(int collection, bson_t *key, char **fields, int n_fields, bson_t *result)
+{
+    Err error_code;
+    bson_t b_fields;
+    bool bson_status;
+    bson_init(&b_fields);
+
+    for(int i = 0; i < n_fields; i++) {
+        bson_status = bson_append_bool(b_fields, fields[i], -1, true);
+        if(!bson_status) {
+            bson_destroy(&b_fields);
+            return S_ERR;
+        }
+    }
+    bson_status = bson_append_bool(b_fields, "_id", -1, false);
+    if(!bson_status) {
+        bson_destroy(&b_fields);
+        return S_ERR;
+    }
+
+    error_code = db_find_one(collection, key, b_fields, result);
+    if(error) {
+        bson_destroy(&b_fields);
+        return error_code;
+    }
+
+    bson_destroy(&b_fields);
+    return S_OK;    
+}
+
+
 Err
 _DB_FORCE_DROP_COLLECTION(int collection)
 {
