@@ -260,16 +260,10 @@ Err
 bson_exists(bson_t *b, char *name) {
     bool status;
     bson_iter_t iter;
-    bson_iter_t it_val;
 
-    status = bson_iter_init(&iter, b);
+    status = bson_iter_init_find(&iter, b, name);
     if (!status) {
         return S_ERR;
-    }
-
-    status = bson_iter_find_descendant(&iter, name, &it_val);
-    if (!status) {
-        return S_ERR_NOT_EXISTS;
     }
 
     return S_OK;
@@ -287,27 +281,20 @@ Err
 bson_get_value_int32(bson_t *b, char *name, int *value) {
     bool status;
     bson_iter_t iter;
-    bson_iter_t it_val;
 
-    status = bson_iter_init(&iter, b);
+    status = bson_iter_init_find(&iter, b, name);
     if (!status) {
         //fprintf(stderr, "[ERROR] bson_get_value_int32: unable to init\n");
         return S_ERR;
     }
 
-    status = bson_iter_find_descendant(&iter, name, &it_val);
-    if (!status) {
-        //fprintf(stderr, "[ERROR] bson_get_value_int32: unable to find descendant\n");
-        return S_ERR;
-    }
-
-    status = BSON_ITER_HOLDS_INT32(&it_val);
+    status = BSON_ITER_HOLDS_INT32(&iter);
     if (!status) {
         //fprintf(stderr, "[ERROR] bson_get_value_int32: not int32\n");
         return S_ERR;
     }
 
-    *value = bson_iter_int32(&it_val);
+    *value = bson_iter_int32(&iter);
 
     return S_OK;
 }
@@ -324,27 +311,20 @@ Err
 bson_get_value_int64(bson_t *b, char *name, long int *value) {
     bool status;
     bson_iter_t iter;
-    bson_iter_t it_val;
 
-    status = bson_iter_init(&iter, b);
+    status = bson_iter_init_find(&iter, b, name);
     if (!status) {
         //fprintf(stderr, "[ERROR] bson_get_value_int32: unable to init\n");
         return S_ERR;
     }
 
-    status = bson_iter_find_descendant(&iter, name, &it_val);
-    if (!status) {
-        //fprintf(stderr, "[ERROR] bson_get_value_int32: unable to find descendant\n");
-        return S_ERR;
-    }
-
-    status = BSON_ITER_HOLDS_INT64(&it_val);
+    status = BSON_ITER_HOLDS_INT64(&iter);
     if (!status) {
         //fprintf(stderr, "[ERROR] bson_get_value_int32: not int32\n");
         return S_ERR;
     }
 
-    *value = bson_iter_int64(&it_val);
+    *value = bson_iter_int64(&iter);
 
     return S_OK;
 }
