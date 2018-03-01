@@ -787,11 +787,20 @@ read_main_header_by_aid(aidu_t aid, MainHeader *main_header)
 {
     Err error_code;
     bson_t key;
-    bson_init(&key);
-    bson_append_int32(&key, "aid", -1, aid);
-
     bson_t db_result;
+    bool bson_status;
+
+    bson_init(&key);
+
     bson_init(&db_result);
+
+    bson_status = bson_append_int32(&key, "aid", -1, aid);
+    if(!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&db_result);
+        return S_ERR;
+    }
+
     error_code = db_find_one(MONGO_MAIN, &key, NULL, &db_result);
     if (error_code) {
         bson_destroy(&key);
@@ -827,17 +836,26 @@ read_main_content(UUID main_content_id, int block_id, MainContent *main_content)
 {
     Err error_code;
     bson_t key;
+    bson_t db_result;
     bool bson_status;
 
     bson_init(&key);
+    bson_init(&db_result);
+
     bson_status = bson_append_bin(&key, "the_id", -1, main_content_id, UUIDLEN);
-    if(!bson_status) return S_ERR;
+    if(!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&db_result);
+        return S_ERR;
+    }
 
     bson_status = bson_append_int32(&key, "block_id", -1, block_id);
-    if(!bson_status) return S_ERR;
+    if(!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&db_result);
+        return S_ERR;
+    }
 
-    bson_t db_result;
-    bson_init(&db_result);
     error_code = db_find_one(MONGO_MAIN_CONTENT, &key, NULL, &db_result);
     if (error_code) {
         bson_destroy(&key);
@@ -854,6 +872,126 @@ read_main_content(UUID main_content_id, int block_id, MainContent *main_content)
 
     bson_destroy(&key);
     bson_destroy(&db_result);
+    return S_OK;
+}
+
+/**
+ * @brief [brief description]
+ * @details [long description]
+ * 
+ * @param main_id [description]
+ * @param updater [description]
+ * @param char [description]
+ * @return [description]
+ */
+Err
+delete_main(UUID main_id, char *updater, unsigned char *ip) {
+    bool bson_status;
+
+    bson_t key;    
+    bson_init(&key);
+
+    bson_t val;
+    bson_init(&val);
+
+    bson_status = bson_append_bin(&key, "the_id", -1, main_id, UUIDLEN);
+    if (!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return S_ERR;
+    }
+
+    bson_status = bson_append_bin(&val, "status_updater", -1, updater, IDLEN);
+    if (!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return S_ERR;
+    }
+
+    bson_status = bson_append_int32(&val, "status", -1, LIVE_STATUS_DELETED);
+    if (!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return S_ERR;
+    }
+
+    bson_status = bson_append_bin(&val, "status_update_ip", -1, ip, IPV4LEN);
+    if (!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return S_ERR;
+    }
+
+    error_code = db_update_one(MONGO_MAIN, &main_id_bson, &main_bson, true);
+    if(error_code != S_OK) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return error_code;
+    }
+
+    bson_destroy(&key);
+    bson_destroy(&val);
+
+    return S_OK;
+}
+
+/**
+ * @brief [brief description]
+ * @details [long description]
+ * 
+ * @param main_id [description]
+ * @param updater [description]
+ * @param char [description]
+ * @return [description]
+ */
+Err
+delete_main_by_aid(aidu_t aid, char *updater, unsigned char *ip) {
+    bool bson_status;
+
+    bson_t key;    
+    bson_init(&key);
+
+    bson_t val;
+    bson_init(&val);
+
+    bson_status = bson_append_int32(&key, "aid", -1, aid);
+    if (!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return S_ERR;
+    }
+
+    bson_status = bson_append_bin(&val, "status_updater", -1, updater, IDLEN);
+    if (!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return S_ERR;
+    }
+
+    bson_status = bson_append_int32(&val, "status", -1, LIVE_STATUS_DELETED);
+    if (!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return S_ERR;
+    }
+
+    bson_status = bson_append_bin(&val, "status_update_ip", -1, ip, IPV4LEN);
+    if (!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return S_ERR;
+    }
+
+    error_code = db_update_one(MONGO_MAIN, &main_id_bson, &main_bson, true);
+    if(error_code != S_OK) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return error_code;
+    }
+
+    bson_destroy(&key);
+    bson_destroy(&val);
+
     return S_OK;
 }
 

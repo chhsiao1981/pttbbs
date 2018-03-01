@@ -205,16 +205,16 @@ Err n_line_main_by_aid(aidu_t aid, int *n_line);
 Err read_main_header(UUID main_id, MainHeader *main_header);
 Err read_main_header_by_aid(aidu_t aid, MainHeader *main_header);
 
-/*
 Err read_main_content(UUID main_content_id, int block_id, int max_n_main_content, int *n_read_main_content, MainContent *main_content);
-
-Err check_main(UUID main_id);
-
-Err update_main(UUID main_id, char *updater, unsigned char *ip, int len, char *content);
-Err update_main_by_aid(aidu_t aid, char *updater, unsigned char *ip, int len, char *content);
 
 Err delete_main(UUID main_id, char *updater, unsigned char *ip);
 Err delete_main_by_aid(aidu_t aid, char *updater, unsigned char *ip);
+
+/*
+Err update_main(UUID main_id, char *updater, unsigned char *ip, int len, char *content);
+Err update_main_by_aid(aidu_t aid, char *updater, unsigned char *ip, int len, char *content);
+
+Err check_main(UUID main_id);
 */
 
 /**********
