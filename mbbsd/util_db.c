@@ -383,11 +383,13 @@ bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len) 
 
     status = bson_iter_init_find(&iter, b, name);
     if (!status) {
+        fprintf(stderr, "util_db.bson_get_value_bin: unable to find: name: %s\n", name);
         return S_ERR;
     }
 
     status = BSON_ITER_HOLDS_BINARY(&iter);
     if (!status) {
+        fprintf(stderr, "util_db.bson_get_value_bin: not bin: name: %s\n", name);
         return S_ERR;
     }
 
