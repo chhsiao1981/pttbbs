@@ -523,6 +523,23 @@ TEST(pttdb, delete_main) {
     char status_update_ip[IPV4LEN + 1] = "10.1.1.4";
     error = delete_main(main_header.the_id, del_updater, status_update_ip);
     EXPECT_EQ(S_OK, error);
+
+    bson_t query;
+    bson_t result;
+
+    char fields[][] = {
+        "status"
+    };
+
+    bson_init(&query);
+    bson_init(&result);
+
+    bson_append_bin(query, "the_id", -1, main_header.the_id, UUIDLEN);
+
+    error = db_find_one_with_fields(MONGO_MAIN, &query, fields, 1, &result);
+
+    bson_destroy(&query);
+    bson_destroy(&result);
 }
 
 TEST(pttdb, serialize_main_bson) {
