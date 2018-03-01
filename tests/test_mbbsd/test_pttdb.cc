@@ -457,7 +457,7 @@ TEST(pttdb, read_main_content) {
     error = db_update_one(MONGO_MAIN_CONTENT, &b, &b, true);
     EXPECT_EQ(S_OK, error);
 
-    error = read_main_content(main_content_block., &main_header2);
+    error = read_main_content(&main_content_block, &main_header2);
     EXPECT_EQ(S_OK, error);
 
     EXPECT_EQ(main_header.version, main_header2.version);
