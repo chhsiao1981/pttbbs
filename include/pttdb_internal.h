@@ -29,6 +29,7 @@ Err _split_main_contents_save_main_content_block(MainContent *main_content_block
 
 Err _serialize_main_bson(MainHeader *main_header, bson_t *main_bson);
 Err _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header);
+Err _serialize_update_main_bson(UUID content_id, char *updater, char *update_ip, time64_t update_milli_timestamp, int n_total_line, int n_total_block, int len_total, bson_t *main_bson);
 
 Err _serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main_content_block_bson);
 Err _deserialize_main_content_block_bson(bson_t *main_content_block_bson, MainContent *main_content_block);

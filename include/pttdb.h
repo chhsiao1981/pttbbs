@@ -63,7 +63,7 @@ typedef struct MainHeader {
 
     UUID the_id;                                     // main id
     UUID content_id;                                 // corresponding content-id
-    UUID update_content_id;                          // updating content-id
+    UUID update_content_id;                          // updating content-id, not effective if content_id == update_content_id
     aidu_t aid;                                      // aid
 
     unsigned int status;                            // status of the main.
@@ -210,10 +210,8 @@ Err read_main_content(UUID main_content_id, int block_id, MainContent *main_cont
 Err delete_main(UUID main_id, char *updater, char *ip);
 Err delete_main_by_aid(aidu_t aid, char *updater, char *ip);
 
+Err update_main_from_fd(UUID main_id, char *title, char *updater, unsigned char *ip, int len, int fd_content);
 /*
-Err update_main(UUID main_id, char *updater, unsigned char *ip, int len, char *content);
-Err update_main_by_aid(aidu_t aid, char *updater, unsigned char *ip, int len, char *content);
-
 Err check_main(UUID main_id);
 */
 

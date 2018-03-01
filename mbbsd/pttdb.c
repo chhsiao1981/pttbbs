@@ -299,6 +299,7 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, unsigned char *ip, un
     // main_header
     strlcpy(main_header.the_id, main_id, sizeof(UUID));
     strlcpy(main_header.content_id, content_id, sizeof(UUID));
+    strlcpy(main_header.update_content_id, content_id, sizeof(UUID));
     main_header.aid = aid;
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, poster);
@@ -1002,6 +1003,75 @@ delete_main_by_aid(aidu_t aid, char *updater, char *ip) {
 }
 
 /**
+ * @brief [brief description]
+ * @details [long description]
+ * 
+ * @param main_id [description]
+ * @param title [description]
+ * @param updater [description]
+ * @param char [description]
+ * @param len [description]
+ * @param fd_content [description]
+ * @return [description]
+ */
+Err 
+update_main_from_fd(UUID main_id, char *updater, unsigned char *ip, int len, int fd_content)
+{
+    Err error_code = S_OK;
+    int n_line;
+    int n_block;
+    bson_t
+
+    UUID content_id;
+
+    time64_t update_milli_timestamp;
+
+    error_code = get_milli_timestamp(&update_milli_timestamp);
+    if(error_code) return error_code;
+
+    error_code = gen_content_uuid_with_db(MONGO_MAIN_CONTENT, content_id);
+    if(error_code) return error_code;
+
+    // main-contents
+    error_code = _split_main_contents(fd_content, len, main_id, content_id, &n_line, &n_block);
+    if(error_code) {
+        return error_code;
+    }
+
+    // db-main
+    bson_t main_id_bson;
+    bson_t main_bson;
+    bson_init(&main_id_bson);
+    bson_init(&main_bson);
+
+    error_code = _serialize_uuid_bson(main_id, MONGO_THE_ID, &main_id_bson);
+    if (error_code) {
+        bson_destroy(&main_id_bson);
+        bson_destroy(&main_bson);
+        return error_code;
+    }
+
+    // update: content_id, update_content_id, updater, update_ip, update_milli_timestamp, n_total_line, n_total_block, len_total
+    error_code = _serialize_update_main_bson(content_id, updater, update_ip, update_milli_timestamp, n_total_line, n_total_block, len_total, &main_bson);
+    if(error_code) {
+        bson_destroy(&main_id_bson);
+        bson_destroy(&main_bson);
+        return error_code;
+    }
+
+    error_code = db_update_one(MONGO_MAIN, &main_id_bson, &main_bson, false);
+    if(error_code) {
+        bson_destroy(&main_bson);
+        bson_destroy(&main_id_bson);
+        return error_code;
+    }
+
+    bson_destroy(&main_bson);
+    bson_destroy(&main_id_bson);
+    return S_OK;
+}
+
+/**
  * @brief Serialize main-header to bson
  * @details Serialize main-header to bson
  *
@@ -1156,6 +1226,46 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
 
     error_code = bson_get_value_int32(main_bson, "len_total", &main_header->len_total);
     if (error_code) return error_code;
+
+    return S_OK;
+}
+
+/**
+ * @brief [brief description]
+ * @details [long description]
+ * 
+ * @param content_id [description]
+ * @param updater [description]
+ * @param p [description]
+ * @param update_milli_timestamp [description]
+ * @param n_total_line [description]
+ * @param n_total_block [description]
+ * @param len_total [description]
+ * @param main_bson [description]
+ */
+Err
+_serialize_update_main_bson(UUID content_id, char *updater, char *update_ip, time64_t update_milli_timestamp, int n_total_line, int n_total_block, int len_total, bson_t *main_bson)
+{
+    bson_status = bson_append_bin(main_bson, "content_id", -1, content_id, UUIDLEN);
+    if (!bson_status) return S_ERR;
+
+    bson_status = bson_append_bin(main_bson, "updater", -1, updater, IDLEN);
+    if (!bson_status) return S_ERR;
+
+    bson_status = bson_append_bin(main_bson, "update_ip", -1, update_ip, IPV4LEN);
+    if (!bson_status) return S_ERR;
+
+    bson_status = bson_append_int64(main_bson, "update_milli_timestamp", -1, update_milli_timestamp);
+    if (!bson_status) return S_ERR;
+
+    bson_status = bson_append_int32(main_bson, "n_total_line", -1, n_total_line);
+    if (!bson_status) return S_ERR;
+
+    bson_status = bson_append_int32(main_bson, "n_total_block", -1, n_total_block);
+    if (!bson_status) return S_ERR;
+
+    bson_status = bson_append_int32(main_bson, "len_total", -1, len_total);
+    if (!bson_status) return S_ERR;
 
     return S_OK;
 }
