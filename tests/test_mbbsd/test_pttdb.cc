@@ -519,12 +519,124 @@ TEST(pttdb, delete_main) {
     fields[0] = (char *)malloc(10);
     strcpy(fields[0], "status");
 
+    bson_t query;
+    bson_t result;
+
+    char **fields;
+    int n_fields = 3;
+    fields = (char **)malloc(sizeof(char *) * n_fields);
+    for(int i = 0; i < 3; i++) {
+        fields[i] = (char *)malloc(30);
+    }
+    strcpy(fields[0], "status");
+    strcpy(fields[0], "status_updater");
+    strcpy(fields[0], "status_update_ip");
+
     bson_init(&query);
     bson_init(&result);
 
     bson_append_bin(&query, "the_id", -1, main_header.the_id, UUIDLEN);
 
     error = db_find_one_with_fields(MONGO_MAIN, &query, fields, 1, &result);
+
+    int result_status;
+    char result_status_updater[MAX_BUF_SIZE];
+    char result_status_update_ip[MAX_BUF_SIZE];
+    int len;
+    bson_get_value_int32(&result, "status", &result_status);
+    bson_get_value_bin(&result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
+    bson_get_value_bin(&result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
+
+    for(int i = 0; i < 3; i++) {
+        free(fields[i]);
+    }
+    free fields;
+
+    EXPECT_EQ(LIVE_STATUS_DELETE, result_status);
+    EXPECT_STREQ(del_updater, result_status_updater);
+    EXPECT_STREQ(status_update_ip, result_status_update_ip);
+
+    bson_destroy(&query);
+    bson_destroy(&result);
+}
+
+TEST(pttdb, delete_main_by_aid) {
+    MainHeader main_header = {};
+
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+
+    gen_uuid(main_header.the_id);
+    gen_uuid(main_header.content_id);
+    gen_uuid(main_header.update_content_id);
+    main_header.aid = 12345;
+    main_header.status = LIVE_STATUS_ALIVE;
+    strcpy(main_header.status_updater, "updater1");
+    strcpy(main_header.status_update_ip, "10.1.1.1");
+    strcpy(main_header.title, "test_title");
+    strcpy(main_header.poster, "poster1");
+    strcpy(main_header.ip, "10.1.1.2");
+    main_header.create_milli_timestamp = 1514764800000; //2018-01-01 08:00:00 CST
+    strcpy(main_header.updater, "updater2");
+    strcpy(main_header.update_ip, "10.1.1.3");
+    main_header.update_milli_timestamp = 1514764801000; //2018-01-01 08:00:01 CST
+    strcpy(main_header.origin, "ptt.cc");
+    strcpy(main_header.web_link, "https://www.ptt.cc/bbs/temp/M.1514764800.A.ABC.html");
+    main_header.reset_karma = -100;
+    main_header.n_total_line = 100;
+    main_header.n_total_block = 20;
+    main_header.len_total = 10000;
+
+    bson_t main_bson;
+    bson_init(&main_bson);
+
+    Err error = _serialize_main_bson(&main_header, &main_bson);
+    EXPECT_EQ(S_OK, error);
+
+    error = db_update_one(MONGO_MAIN, &main_bson, &main_bson, true);
+    EXPECT_EQ(S_OK, error);
+
+    int len;
+    char del_updater[IDLEN + 1] = "del_updater";
+    char status_update_ip[IPV4LEN + 1] = "10.1.1.4";
+    error = delete_main_by_aid(main_header.aid, del_updater, status_update_ip);
+    EXPECT_EQ(S_OK, error);
+
+    bson_t query;
+    bson_t result;
+
+    char **fields;
+    int n_fields = 3;
+    fields = (char **)malloc(sizeof(char *) * n_fields);
+    for(int i = 0; i < 3; i++) {
+        fields[i] = (char *)malloc(30);
+    }
+    strcpy(fields[0], "status");
+    strcpy(fields[0], "status_updater");
+    strcpy(fields[0], "status_update_ip");
+
+    bson_init(&query);
+    bson_init(&result);
+
+    bson_append_bin(&query, "the_id", -1, main_header.the_id, UUIDLEN);
+
+    error = db_find_one_with_fields(MONGO_MAIN, &query, fields, 1, &result);
+
+    int result_status;
+    char result_status_updater[MAX_BUF_SIZE];
+    char result_status_update_ip[MAX_BUF_SIZE];
+    int len;
+    bson_get_value_int32(&result, "status", &result_status);
+    bson_get_value_bin(&result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
+    bson_get_value_bin(&result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
+
+    for(int i = 0; i < 3; i++) {
+        free(fields[i]);
+    }
+    free fields;
+
+    EXPECT_EQ(LIVE_STATUS_DELETE, result_status);
+    EXPECT_STREQ(del_updater, result_status_updater);
+    EXPECT_STREQ(status_update_ip, result_status_update_ip);
 
     bson_destroy(&query);
     bson_destroy(&result);
