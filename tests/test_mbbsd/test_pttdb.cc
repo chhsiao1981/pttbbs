@@ -219,6 +219,13 @@ TEST(pttdb, serialize_main_content_block_bson) {
     MainContent main_content_block = {};
     MainContent main_content_block2 = {};
 
+    gen_uuid(main_content_block.the_id);
+    gen_uuid(main_content_block.main_id);
+    main_content_block.block_id = 53;
+    main_content_block.len_block = 123;
+    main_content_block.n_line = 2;
+    strcpy(main_content_block.buf_block, "test123\n");
+
     bson_t b;
     bson_init(&b);
 
