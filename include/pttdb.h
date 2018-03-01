@@ -15,7 +15,7 @@ extern "C" {
 #define _UUIDLEN 48
 
 #define MAX_ORIGIN_LEN 20
-#define MAX_WEB_LINK_LEN 50
+#define MAX_WEB_LINK_LEN 100                  // MAX_ORIGN_LEN + 8 + 12 + BOARDLEN + 1 + 23
 #define MAX_BUF_SIZE 8192
 #define MAX_BUF_BLOCK 8192
 #define MAX_BUF_COMMENT 256
