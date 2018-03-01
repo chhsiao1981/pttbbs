@@ -457,7 +457,7 @@ TEST(pttdb, read_main_content) {
     error = db_update_one(MONGO_MAIN_CONTENT, &b, &b, true);
     EXPECT_EQ(S_OK, error);
 
-    error = read_main_content(main_content_block.the_id, &main_content_block2.the_id);
+    error = read_main_content(main_content_block.the_id, main_content_block.block_id, &main_content_block2);
     EXPECT_EQ(S_OK, error);
 
     EXPECT_EQ(0, strncmp((char *)main_content_block.the_id, (char *)main_content_block2.the_id, UUIDLEN));
@@ -512,14 +512,12 @@ TEST(pttdb, delete_main) {
     bson_t query;
     bson_t result;
 
-    char fields[][] = {
-        "status"
-    };
+    char fields[1][] = {"status"};
 
     bson_init(&query);
     bson_init(&result);
 
-    bson_append_bin(query, "the_id", -1, main_header.the_id, UUIDLEN);
+    bson_append_bin(&query, "the_id", -1, main_header.the_id, UUIDLEN);
 
     error = db_find_one_with_fields(MONGO_MAIN, &query, fields, 1, &result);
 
