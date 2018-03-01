@@ -380,7 +380,7 @@ bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *p_len) {
     *value = malloc(tmp_len + 1);
     memcpy(*value, p_value, tmp_len);
     (*value)[tmp_len] = 0;
-    *p_len = tmp_len;
+    *p_len = tmp_len;    
 
     return S_OK;
 }
@@ -421,6 +421,9 @@ bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len) 
         error = S_ERR_BUFFER_LEN;
     }
     memcpy(value, p_value, len);
+    if(len < max_len) {
+        value[len + 1] = 0;
+    }
 
     return error;
 }
