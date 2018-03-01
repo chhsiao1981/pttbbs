@@ -23,7 +23,8 @@ mongoc_collection_t **MONGO_COLLECTIONS;
  * @details mongo-init, mongo-uri, and mongo-client-pool
  */
 Err
-init_mongo_global() {
+init_mongo_global()
+{
     mongoc_init();
 
     MONGO_URI = mongoc_uri_new(MONGO_CLIENT_URL);
@@ -39,7 +40,8 @@ init_mongo_global() {
  * @details mongo-client-pool, mongo-uri, and mongo-cleanup.
  */
 Err
-free_mongo_global() {
+free_mongo_global()
+{
     mongoc_client_pool_destroy(MONGO_CLIENT_POOL);
     mongoc_uri_destroy(MONGO_URI);
     mongoc_cleanup();
@@ -51,7 +53,8 @@ free_mongo_global() {
  * @details client, collections.
  */
 Err
-init_mongo_collections() {
+init_mongo_collections()
+{
     MONGO_CLIENT = mongoc_client_pool_try_pop(MONGO_CLIENT_POOL);
     if (MONGO_CLIENT == NULL) {
         return S_ERR;
@@ -72,7 +75,8 @@ init_mongo_collections() {
  * @details collections, client.
  */
 Err
-free_mongo_collections() {
+free_mongo_collections()
+{
     for (int i = 0; i < N_MONGO_COLLECTIONS; i++) {
         mongoc_collection_destroy(MONGO_COLLECTIONS[i]);
     }
@@ -91,7 +95,8 @@ free_mongo_collections() {
  * @param key [description]
  */
 Err
-db_set_if_not_exists(int collection, bson_t *key) {
+db_set_if_not_exists(int collection, bson_t *key)
+{
     bool status;
 
     bson_t *set_val;
@@ -155,7 +160,8 @@ db_set_if_not_exists(int collection, bson_t *key) {
  * @param is_upsert [description]
  */
 Err
-db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
+db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
+{
     bool status;
 
     bson_t *set_val;
@@ -207,7 +213,8 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert) {
  * @param result result (MUST-NOT initialized and need to bson_destroy)
  */
 Err
-db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result) {
+db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
+{
     mongoc_cursor_t *cursor = mongoc_collection_find(MONGO_COLLECTIONS[collection], MONGOC_QUERY_NONE, 0, 1, 0, key, fields, NULL);
 
     bson_error_t error;
@@ -238,7 +245,8 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result) {
 }
 
 Err
-_DB_FORCE_DROP_COLLECTION(int collection) {
+_DB_FORCE_DROP_COLLECTION(int collection)
+{
     bool status;
     bson_error_t error;
     status = mongoc_collection_drop(MONGO_COLLECTIONS[collection], &error);
@@ -257,7 +265,8 @@ _DB_FORCE_DROP_COLLECTION(int collection) {
  * @param name name
  */
 Err
-bson_exists(bson_t *b, char *name) {
+bson_exists(bson_t *b, char *name)
+{
     bool status;
     bson_iter_t iter;
 
@@ -278,7 +287,8 @@ bson_exists(bson_t *b, char *name) {
  * @param value [description]
  */
 Err
-bson_get_value_int32(bson_t *b, char *name, int *value) {
+bson_get_value_int32(bson_t *b, char *name, int *value)
+{
     bool status;
     bson_iter_t iter;
 
@@ -308,7 +318,8 @@ bson_get_value_int32(bson_t *b, char *name, int *value) {
  * @param value [description]
  */
 Err
-bson_get_value_int64(bson_t *b, char *name, long int *value) {
+bson_get_value_int64(bson_t *b, char *name, long int *value)
+{
     bool status;
     bson_iter_t iter;
 
@@ -339,7 +350,8 @@ bson_get_value_int64(bson_t *b, char *name, long int *value) {
  * @param len received length
  */
 Err
-bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *p_len) {
+bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *p_len)
+{
     bool status;
     bson_subtype_t subtype;
     bson_iter_t iter;
@@ -376,7 +388,8 @@ bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *p_len) {
  * @param len real received length
  */
 Err
-bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len) {
+bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len)
+{
     bool status;
     bson_subtype_t subtype;
     bson_iter_t iter;
