@@ -178,7 +178,7 @@ TEST(pttdb, len_main) {
     Err error = _serialize_main_bson(&main_header, &main_bson);
     EXPECT_EQ(S_OK, error);
 
-    error = db_update_one(MONG_MAIN, &main_bson, &main_bson, true);
+    error = db_update_one(MONGO_MAIN, &main_bson, &main_bson, true);
     EXPECT_EQ(S_OK, error);
 
     int len;
