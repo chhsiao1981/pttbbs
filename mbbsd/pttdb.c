@@ -885,7 +885,7 @@ read_main_content(UUID main_content_id, int block_id, MainContent *main_content)
  * @return [description]
  */
 Err
-delete_main(UUID main_id, char *updater, unsigned char *ip) {
+delete_main(UUID main_id, char *updater, char *ip) {
     Err error_code;
     bool bson_status;
 
@@ -946,7 +946,7 @@ delete_main(UUID main_id, char *updater, unsigned char *ip) {
  * @return [description]
  */
 Err
-delete_main_by_aid(aidu_t aid, char *updater, unsigned char *ip) {
+delete_main_by_aid(aidu_t aid, char *updater, char *ip) {
     Err error_code;
     bool bson_status;
 

@@ -207,8 +207,8 @@ Err read_main_header_by_aid(aidu_t aid, MainHeader *main_header);
 
 Err read_main_content(UUID main_content_id, int block_id, MainContent *main_content);
 
-Err delete_main(UUID main_id, char *updater, unsigned char *ip);
-Err delete_main_by_aid(aidu_t aid, char *updater, unsigned char *ip);
+Err delete_main(UUID main_id, char *updater, char *ip);
+Err delete_main_by_aid(aidu_t aid, char *updater, char *ip);
 
 /*
 Err update_main(UUID main_id, char *updater, unsigned char *ip, int len, char *content);
