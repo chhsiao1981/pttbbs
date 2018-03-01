@@ -757,6 +757,43 @@ read_main_header(UUID main_id, MainHeader *main_header) {
     return S_OK;
 }
 
+/**
+ * @brief [brief description]
+ * @details [long description]
+ * 
+ * @param aid [description]
+ * @param main [description]
+ * 
+ * @return [description]
+ */
+Err
+read_main_header_by_aid(aidu_t aid, MainHeader *main) {
+    Err error_code;
+    bson_t key;
+    bson_init(&key);
+    bson_append_int32(&key, "aid", -1, aid);
+
+    bson_t db_result;
+    bson_init(&db_result);
+    error_code = db_find_one(MONGO_MAIN, &key, NULL, &db_result);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+
+    error_code = _deserialize_main_bson(&db_result, main_header);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+
+    bson_destroy(&key);
+    bson_destroy(&db_result);
+    return S_OK;
+}
+
 
 /**
  * @brief Serialize main-header to bson
