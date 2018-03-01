@@ -552,7 +552,7 @@ TEST(pttdb, delete_main) {
     }
     free fields;
 
-    EXPECT_EQ(LIVE_STATUS_DELETE, result_status);
+    EXPECT_EQ(LIVE_STATUS_DELETED, result_status);
     EXPECT_STREQ(del_updater, result_status_updater);
     EXPECT_STREQ(status_update_ip, result_status_update_ip);
 
@@ -634,7 +634,7 @@ TEST(pttdb, delete_main_by_aid) {
     }
     free fields;
 
-    EXPECT_EQ(LIVE_STATUS_DELETE, result_status);
+    EXPECT_EQ(LIVE_STATUS_DELETED, result_status);
     EXPECT_STREQ(del_updater, result_status_updater);
     EXPECT_STREQ(status_update_ip, result_status_update_ip);
 
