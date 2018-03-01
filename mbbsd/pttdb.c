@@ -1246,6 +1246,7 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
 Err
 _serialize_update_main_bson(UUID content_id, char *updater, char *update_ip, time64_t update_milli_timestamp, int n_total_line, int n_total_block, int len_total, bson_t *main_bson)
 {
+    bool bson_status;
     bson_status = bson_append_bin(main_bson, "content_id", -1, content_id, UUIDLEN);
     if (!bson_status) return S_ERR;
 
