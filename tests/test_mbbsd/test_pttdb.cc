@@ -148,8 +148,8 @@ TEST(pttdb, uuid_to_milli_timestamp) {
 }
 
 TEST(pttdb, serialize_main_bson) {
-    MainHeader main_header;
-    MainHeader main_header2;
+    MainHeader main_header = {};
+    MainHeader main_header2 = {};
 
     main_header.version = 2;
     gen_uuid(main_header.the_id);
