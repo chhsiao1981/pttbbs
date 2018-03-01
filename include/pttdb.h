@@ -5,6 +5,8 @@
 #include "ptterr.h"
 #include "util_db.h"
 
+#include "bbs.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

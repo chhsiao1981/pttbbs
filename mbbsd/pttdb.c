@@ -1,4 +1,3 @@
-#include "bbs.h"
 #include "pttdb.h"
 #include "pttdb_internal.h"
 

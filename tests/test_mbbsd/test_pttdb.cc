@@ -145,6 +145,61 @@ TEST(pttdb, uuid_to_milli_timestamp) {
     EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
 }
 
+TEST(pttdb, serialize_main_bson) {
+    MainHeader main_header;
+    MainHeader main_header2;
+
+    main_header.version = 2;
+    gen_uuid(main_header.the_id);
+    gen_uuid(main_header.content_id);
+    gen_uuid(main_header.update_content_id);
+    main_header.status = LIVE_STATUS_ALIVE;
+    strcpy(main_header.status_updater, "updater1");
+    strcpy(main_header.status_update_ip, "10.1.1.1");
+    strcpy(main_header.title, "test_title");
+    strcpy(main_header.poster, "poster1");
+    strcpy(main_header.ip, "10.1.1.2");
+    main_header.create_milli_timestamp = 1514764800000 //2018-01-01 08:00:00 CST
+    strcpy(main_header.updater, "updater2");
+    strcpy(main_header.update_ip, "10.1.1.3");
+    main_header.update_milli_timestamp = 1514764801000 //2018-01-01 08:00:01 CST
+    strcpy(main_header.origin, "ptt.cc");
+    strcpy(main_header.web_link, "https://www.ptt.cc/bbs/temp/M.1514764800.A.ABC.html");
+    main_header.reset_karma = -100;
+    main_header.n_total_line = 100;
+    main_header.n_total_block = 20;
+    main_header.len_total = 10000;
+
+    bson_t main_bson;
+    bson_init(&main_bson);
+
+    _serialize_main_bson(&main_header, &main_bson);
+    _deserialize_main_bson(&main_header2, &main_bson);    
+
+    bson_destroy(&main_bson);
+
+    EXPECT_EQ(main_header.version, main_header2.version);
+    EXPECT_EQ(0, strncmp((char *)main_header.the_id, (char *)main_header2.the_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)main_header.content_id, (char *)main_header2.content_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)main_header.update_content_id, (char *)main_header2.update_content_id, UUIDLEN));
+    EXPECT_EQ(main_header.status, main_header2.status);
+    EXPECT_STREQ(main_header.status_updater, main_header2.status_updater);
+    EXPECT_STREQ(main_header.status_update_ip, main_header2.status_update_ip);
+    EXPECT_STREQ(main_header.title, main_header2.title);
+    EXPECT_STREQ(main_header.poster, main_header2.poster);
+    EXPECT_STREQ(main_header.ip, main_header2.ip);
+    EXPECT_EQ(main_header.create_milli_timestamp, main_header2.create_milli_timestamp);
+    EXPECT_STREQ(main_header.updater, main_header2.updater);
+    EXPECT_STREQ(main_header.update_ip, main_header2.update_ip);
+    EXPECT_EQ(main_header.update_milli_timestamp, main_header2.update_milli_timestamp);
+    EXPECT_STREQ(main_header.origin, main_header2.origin);
+    EXPECT_STREQ(main_header.web_link, main_header2.web_link);
+    EXPECT_EQ(main_header.reset_karma, main_header2.reset_karma);
+    EXPECT_EQ(main_header.n_total_line, main_header2.n_total_line);
+    EXPECT_EQ(main_header.n_total_block, main_header2.n_total_block);
+    EXPECT_EQ(main_header.len_total, main_header2.len_total);
+}
+
 TEST(pttdb, get_line_from_buf) {
     int len_buf = 24;
     char buf[MAX_BUF_SIZE];
