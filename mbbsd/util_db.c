@@ -415,6 +415,7 @@ bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *len) {
     Err error = S_OK;
     bson_iter_binary(&iter, &subtype, len, &p_value);
     if(len > max_len) {
+        fprintf(stderr, "bson_get_value_bin: len: %s max_len: %s\n", len, max_len);
         len = max_len;
         error = S_ERR_BUFFER_LEN;
     }
