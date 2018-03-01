@@ -610,7 +610,7 @@ TEST(pttdb, delete_main_by_aid) {
 
     bson_append_bin(&query, "the_id", -1, main_header.the_id, UUIDLEN);
 
-    error = db_find_one_with_fields(MONGO_MAIN, &query, fields, 1, &result);
+    error = db_find_one_with_fields(MONGO_MAIN, &query, fields, n_fields, &result);
 
     int result_status;
     char result_status_updater[MAX_BUF_SIZE];
