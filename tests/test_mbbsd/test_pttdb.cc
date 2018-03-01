@@ -267,7 +267,7 @@ TEST(pttdb, n_line_main) {
     int n_line;
     error = n_line_main(main_header.the_id, &n_line);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(main_header.n_line, n_line);
+    EXPECT_EQ(main_header.n_total_line, n_line);
 }
 
 TEST(pttdb, n_line_main_by_aid) {
