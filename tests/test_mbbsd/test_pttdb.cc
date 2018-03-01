@@ -190,7 +190,7 @@ TEST(pttdb, serialize_main_bson) {
 
     fprintf(stderr, "main_header.content_id: %s main_header2.content_id: %s\n", main_header.content_id, main_header2.content_id);
 
-    fprintf(stderr, "main_header.status_update_ip: %s main_header2.status_update_ip: %s\n", main_header.status_updat_ip, main_header2.status_update_ip);
+    fprintf(stderr, "main_header.status_update_ip: %s main_header2.status_update_ip: %s\n", main_header.status_update_ip, main_header2.status_update_ip);
 
     EXPECT_EQ(0, error);
     EXPECT_EQ(main_header.version, main_header2.version);
