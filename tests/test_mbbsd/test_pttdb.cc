@@ -11,6 +11,8 @@ time64_t START_MILLI_TIMESTAMP = 1514764800000;
 // 2019-01-01
 time64_t END_MILLI_TIMESTAMP = 1546300800000;
 
+int fd = 0;
+
 TEST(pttdb, get_milli_timestamp) {
     time64_t t;
     get_milli_timestamp(&t);
@@ -376,6 +378,10 @@ public:
 
 void MyEnvironment::SetUp() {
     Err err = S_OK;
+
+    fd = open("log.test_pttdb.err", O_WRONLY|O_CREAT|O_TRUNC, 0660);
+    dup2(fd, 2);
+
     err = init_mongo_global();
     if(err != S_OK) {
         fprintf(stderr, "[ERROR] UNABLE TO init mongo global\n");
@@ -391,6 +397,11 @@ void MyEnvironment::SetUp() {
 void MyEnvironment::TearDown() {
     free_mongo_collections();
     free_mongo_global();
+
+    if(fd) {
+        close(fd);
+        fd = 0;
+    }
 }
 
 int main(int argc, char **argv) {
