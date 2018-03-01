@@ -174,6 +174,11 @@ TEST(pttdb, serialize_main_bson) {
     bson_init(&main_bson);
 
     _serialize_main_bson(&main_header, &main_bson);
+    
+    char *main_bson = bson_as_canonical_extended_json(&main_bson);
+    fprintf(stderr, "main_bson: %s\n", main_bson);
+    bson_free(main_bson);
+
     _deserialize_main_bson(&main_bson, &main_header2);
 
     bson_destroy(&main_bson);
