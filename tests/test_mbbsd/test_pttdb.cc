@@ -175,13 +175,14 @@ TEST(pttdb, serialize_main_bson) {
     bson_t main_bson;
     bson_init(&main_bson);
 
-    _serialize_main_bson(&main_header, &main_bson);
+    Err error = _serialize_main_bson(&main_header, &main_bson);
+    EXPECT_EQ(0, error);
 
     char *str = bson_as_canonical_extended_json(&main_bson, NULL);
     fprintf(stderr, "main_bson: %s\n", str);
     bson_free(str);
 
-    Err error = _deserialize_main_bson(&main_bson, &main_header2);
+    error = _deserialize_main_bson(&main_bson, &main_header2);
 
     bson_destroy(&main_bson);
 
@@ -189,7 +190,7 @@ TEST(pttdb, serialize_main_bson) {
 
     fprintf(stderr, "main_header.content_id: %s main_header2.content_id: %s\n", main_header.content_id, main_header2.content_id);
 
-    fprintf(stderr, "main_header.status_update_ip: %s main_header2.status_update_ip: %s\n", main_header.content_id, main_header2.content_id);
+    fprintf(stderr, "main_header.status_update_ip: %s main_header2.status_update_ip: %s\n", main_header.status_updat_ip, main_header2.status_update_ip);
 
     EXPECT_EQ(0, error);
     EXPECT_EQ(main_header.version, main_header2.version);
