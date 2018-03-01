@@ -515,14 +515,6 @@ TEST(pttdb, delete_main) {
     bson_t result;
 
     char **fields;
-    fields = (char **)malloc(sizeof(char *));
-    fields[0] = (char *)malloc(10);
-    strcpy(fields[0], "status");
-
-    bson_t query;
-    bson_t result;
-
-    char **fields;
     int n_fields = 3;
     fields = (char **)malloc(sizeof(char *) * n_fields);
     for(int i = 0; i < 3; i++) {
@@ -542,7 +534,6 @@ TEST(pttdb, delete_main) {
     int result_status;
     char result_status_updater[MAX_BUF_SIZE];
     char result_status_update_ip[MAX_BUF_SIZE];
-    int len;
     bson_get_value_int32(&result, "status", &result_status);
     bson_get_value_bin(&result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
     bson_get_value_bin(&result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
@@ -624,7 +615,6 @@ TEST(pttdb, delete_main_by_aid) {
     int result_status;
     char result_status_updater[MAX_BUF_SIZE];
     char result_status_update_ip[MAX_BUF_SIZE];
-    int len;
     bson_get_value_int32(&result, "status", &result_status);
     bson_get_value_bin(&result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
     bson_get_value_bin(&result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
