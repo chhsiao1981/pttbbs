@@ -512,7 +512,10 @@ TEST(pttdb, delete_main) {
     bson_t query;
     bson_t result;
 
-    char fields[1][] = {"status"};
+    char **fields;
+    fields = malloc(sizeof(char *));
+    fields[0] = malloc(10);
+    strcpy(fields[0], "status");
 
     bson_init(&query);
     bson_init(&result);
