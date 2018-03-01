@@ -779,6 +779,9 @@ _serialize_main_bson(MainHeader *main_header, bson_t *main_bson) {
     bson_status = bson_append_bin(main_bson, "content_id", -1, main_header->content_id, UUIDLEN);
     if (!bson_status) return S_ERR;
 
+    bson_status = bson_append_bin(main_bson, "update_content_id", -1, main_header->update_content_id, UUIDLEN);
+    if (!bson_status) return S_ERR;
+
     bson_status = bson_append_int32(main_bson, "aid", -1, main_header->aid);
     if (!bson_status) return S_ERR;
 
@@ -853,6 +856,9 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header) {
     if(error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "content_id", UUIDLEN, main_header->content_id, &len);
+    if(error_code) return error_code;
+
+    error_code = bson_get_value_bin(main_bson, "update_content_id", UUIDLEN, main_header->update_content_id, &len);
     if(error_code) return error_code;
 
     error_code = bson_get_value_int32(main_bson, "aid", &main_header->aid);
