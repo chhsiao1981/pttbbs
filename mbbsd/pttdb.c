@@ -493,7 +493,7 @@ _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID cont
         }
     }
 
-    strncpy(main_content_block->buf_block, line, bytes_in_line);
+    strncpy(main_content_block->buf_block + main_content_block->len_block, line, bytes_in_line);
     main_content_block->len_block += bytes_in_line;
     main_content_block->n_line++;
 
