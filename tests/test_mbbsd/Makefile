@@ -76,7 +76,7 @@ MBBSD_OBJS+=	${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/pttdb_main.o ${MBBSD_DIR}/pttdb_m
 TEST_PROGS=	test_dummy
 
 .if $(MONGO_CLIENT_URL)
-TEST_PROGS+=	test_pttdb test_util_db
+TEST_PROGS+=	test_pttdb test_pttdb_main test_pttdb_misc test_util_db
 .endif
 
 ##########
@@ -108,14 +108,11 @@ gtest_main.a: gtest-all.o gtest_main.o
 .cc.o: $(SRCROOT)/include/var.h
 	$(CXX) $(CXXFLAGS) -c $*.cc
 
-test_dummy: test_dummy.o gtest_main.a
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $> $(MBBSD_OBJS) $(LDLIBS) 
+.for fn in ${TEST_PROGS}
+${fn}: ${fn}.o gtest.a ${MBBSD_OBJS}
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $> $(LDLIBS)
+.endfor
 
-test_pttdb: test_pttdb.o gtest.a
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $> $(MBBSD_OBJS) $(LDLIBS)
-
-test_util_db: test_util_db.o gtest.a
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $> $(MBBSD_OBJS) $(LDLIBS)
 
 all: $(TEST_PROGS)
 

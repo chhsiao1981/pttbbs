@@ -4,8 +4,6 @@
 #include "util_db.h"
 #include "util_db_internal.h"
 
-int FD = 0;
-
 TEST(util_db, db_set_if_not_exists) {
     Err error;
     Err error2;
@@ -120,6 +118,8 @@ TEST(util_db, db_find_one) {
 /**********
  * MAIN
  */
+int FD = 0;
+
 class MyEnvironment: public ::testing::Environment {
 public:
     void SetUp();
@@ -129,13 +129,13 @@ public:
 void MyEnvironment::SetUp() {
     Err err = S_OK;
 
+    FD = open("log.test_util_db.err", O_WRONLY|O_CREAT|O_TRUNC, 0660);
+    dup2(FD, 2);
+
     const char *db_name[] = {
         "test_post",
         "test",
     };
-
-    FD = open("log.test_util_db.err", O_WRONLY|O_CREAT|O_TRUNC, 0660);
-    dup2(FD, 2);
 
     err = init_mongo_global();
     if(err != S_OK) {
