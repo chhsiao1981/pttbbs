@@ -2,7 +2,7 @@
 #include "util_db.h"
 #include "util_db_internal.h"
 
-const char *DEFAULT_MONGO_DB[] {
+const char *DEFAULT_MONGO_DB[] = {
     "post",
     "test",
 };
