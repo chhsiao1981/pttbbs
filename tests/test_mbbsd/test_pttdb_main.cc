@@ -81,8 +81,8 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
 
     EXPECT_EQ(len, main_content0.len_block + main_content1.len_block);
     EXPECT_EQ(main_header.n_total_line, main_content0.n_line + main_content1.n_line);
-    EXPECT_EQ(0, strncmp((char *)main_content0.buf, str_content, main_content0.len_block));
-    EXPECT_EQ(0, strncmp((char *)main_content1.buf, str_content + main_content0.len_block, main_content1.len_block));
+    EXPECT_EQ(0, strncmp((char *)main_content0.buf_block, str_content, main_content0.len_block));
+    EXPECT_EQ(0, strncmp((char *)main_content1.buf_block, str_content + main_content0.len_block, main_content1.len_block));
 
     free(str_content);
 }
