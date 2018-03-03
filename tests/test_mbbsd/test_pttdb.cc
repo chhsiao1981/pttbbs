@@ -235,7 +235,7 @@ TEST(pttdb, create_main_from_fd_test2) {
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
     fprintf(stderr, "test_pttdb.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
 
-    MainHeader main_header;
+    MainHeader main_header = {};
 
     error_code = read_main_header(main_id, &main_header);
     EXPECT_EQ(S_OK, error_code);
