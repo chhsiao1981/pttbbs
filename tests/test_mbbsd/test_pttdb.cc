@@ -161,6 +161,7 @@ TEST(pttdb, create_main_from_fd_test1) {
     char web_link[MAX_WEB_LINK_LEN + 1] = {};
     int len = 10000;
     UUID main_id;
+    UUID content_id;
 
     char tmp_main_id[UUIDLEN + 1] = {};
 
@@ -170,7 +171,7 @@ TEST(pttdb, create_main_from_fd_test1) {
     strcpy(origin, "ptt.cc");
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
-    Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id);
+    Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
     EXPECT_EQ(S_OK, error_code);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
@@ -220,6 +221,7 @@ TEST(pttdb, create_main_from_fd_test2) {
     char web_link[MAX_WEB_LINK_LEN + 1] = {};
     int len = 10000;
     UUID main_id;
+    UUID content_id;
 
     char tmp_main_id[UUIDLEN + 1] = {};
 
@@ -229,7 +231,7 @@ TEST(pttdb, create_main_from_fd_test2) {
     strcpy(origin, "ptt.cc");
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
-    Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id);
+    Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
     EXPECT_EQ(S_OK, error_code);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
@@ -279,6 +281,7 @@ TEST(pttdb, create_main_from_fd_test1_full) {
     char web_link[MAX_WEB_LINK_LEN + 1] = {};
     int len = 10020;
     UUID main_id;
+    UUID content_id;
 
     char tmp_main_id[UUIDLEN + 1] = {};
 
@@ -288,7 +291,7 @@ TEST(pttdb, create_main_from_fd_test1_full) {
     strcpy(origin, "ptt.cc");
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
-    Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id);
+    Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
     EXPECT_EQ(S_OK, error_code);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);

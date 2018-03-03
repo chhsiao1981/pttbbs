@@ -194,7 +194,7 @@ Err n_line_post(UUID main_id, int *n_line);
 /**********
  * Main
  **********/
-Err create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id);
+Err create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id, UUID content_id);
 
 Err len_main(UUID main_id, int *len);
 Err len_main_by_aid(aidu_t aid, int *len);
@@ -210,7 +210,7 @@ Err read_main_content(UUID main_content_id, int block_id, MainContent *main_cont
 Err delete_main(UUID main_id, char *updater, char *ip);
 Err delete_main_by_aid(aidu_t aid, char *updater, char *ip);
 
-Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content);
+Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content, UUID content_id);
 /*
 Err check_main(UUID main_id);
 */

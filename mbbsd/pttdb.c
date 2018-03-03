@@ -272,14 +272,12 @@ n_line_post(UUID main_id, int *n_line) {
  * @return Err
  */
 Err
-create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id)
+create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id, UUID content_id)
 {
 
     Err error_code = S_OK;
     int n_line = 0;
     int n_block = 0;
-
-    UUID content_id;
 
     time64_t create_milli_timestamp;
 
