@@ -322,6 +322,9 @@ TEST(pttdb, create_main_from_fd_test1_full_read_main_content) {
 
     MainHeader main_header = {};
 
+    time64_t start_timestamp;
+    get_milli_timestamp(&start_timestamp);
+
     error_code = read_main_header(main_id, &main_header);
     EXPECT_EQ(S_OK, error_code);
     EXPECT_EQ(0, strncmp((char *)main_id, (char *)main_header.the_id, UUIDLEN));
@@ -367,6 +370,11 @@ TEST(pttdb, create_main_from_fd_test1_full_read_main_content) {
     EXPECT_EQ(main_header.n_total_line, main_content0.n_line + main_content1.n_line);
     EXPECT_EQ(0, strncmp((char *)main_content0.buf_block, str_content, main_content0.len_block));
     EXPECT_EQ(0, strncmp((char *)main_content1.buf_block, str_content + main_content0.len_block, main_content1.len_block));
+
+    time64_t end_timestamp;
+    get_milli_timestamp(&end_timestamp);
+
+    fprintf(stderr, "pttdb.create_main_from_fd_test1_full_read_main_content: elapsed time: %lld\n", end_timestamp - start_timestamp);
 
     free(str_content);
 }
