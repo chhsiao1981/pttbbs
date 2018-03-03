@@ -4,6 +4,8 @@
 #include "util_db.h"
 #include "util_db_internal.h"
 
+int FD = 0;
+
 TEST(util_db, db_set_if_not_exists) {
     Err error;
     Err error2;
