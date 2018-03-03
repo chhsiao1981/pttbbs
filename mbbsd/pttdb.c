@@ -299,13 +299,11 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origi
     if (error_code) return error_code;
 
     // main_header
-    strlcpy(debug_uuid, main_id, sizeof(UUID));
-    fprintf(stderr, "pttdb.create_main_from_fd: sizeof(UUID): %d main_id: %s\n", sizeof(UUID), debug_uuid);
-    strlcpy(main_header.the_id, main_id, sizeof(UUID));
-    strlcpy(debug_uuid, main_header.the_id, sizeof(UUID));
-    fprintf(stderr, "pttdb.create_main_from_fd: main_header.the_id: %s\n", debug_uuid);
-    strlcpy(main_header.content_id, content_id, sizeof(UUID));
-    strlcpy(main_header.update_content_id, content_id, sizeof(UUID));
+    strncpy(debug_uuid, main_id, sizeof(UUID));
+    strncpy(main_header.the_id, main_id, sizeof(UUID));
+    strncpy(debug_uuid, main_header.the_id, sizeof(UUID));
+    strncpy(main_header.content_id, content_id, sizeof(UUID));
+    strncpy(main_header.update_content_id, content_id, sizeof(UUID));
     main_header.aid = aid;
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, poster);
@@ -492,7 +490,7 @@ _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID cont
         }
     }
 
-    strlcpy(main_content_block->buf_block, line, bytes_in_line);
+    strncpy(main_content_block->buf_block, line, bytes_in_line);
     main_content_block->len_block += bytes_in_line;
     main_content_block->n_line++;
 
@@ -517,8 +515,8 @@ _split_main_contents_init_main_content(MainContent *main_content_block, UUID mai
     }
     main_content_block->len_block = 0;
     main_content_block->n_line = 0;
-    strlcpy(main_content_block->the_id, content_id, sizeof(UUID));
-    strlcpy(main_content_block->main_id, main_id, sizeof(UUID));
+    strncpy(main_content_block->the_id, content_id, sizeof(UUID));
+    strncpy(main_content_block->main_id, main_id, sizeof(UUID));
     main_content_block->block_id = block_id;
 
     return S_OK;
