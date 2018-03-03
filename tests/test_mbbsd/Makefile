@@ -66,7 +66,7 @@ MONGO_LIBS:=	-lmongoc-1.0 -lbson-1.0 -lresolv
 CXXFLAGS+=	${MONGO_CXXFLAGS}
 LDFLAGS+=	${MONGO_LDFLAGS}
 LDLIBS+=	${MONGO_LIBS}
-MBBSD_OBJS+=	${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/util_db.o
+MBBSD_OBJS+=	${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/pttdb_main.o ${MBBSD_DIR}/pttdb_misc.o ${MBBSD_DIR}/util_db.o
 .endif # MONGO_CLIENT_URL
 
 ##########
