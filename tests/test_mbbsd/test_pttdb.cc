@@ -739,6 +739,71 @@ TEST(pttdb, serialize_main_content_block_bson) {
     EXPECT_EQ(0, strncmp((char *)main_content_block.buf_block, (char *)main_content_block2.buf_block, MAX_BUF_SIZE));
 }
 
+TEST(pttdb, serialize_update_main_bson) {
+    Err error_code;
+    UUID content_id;
+    char updater[IDLEN + 1] = {};
+    char update_ip[IPV4LEN + 1] = {};
+    time64_t update_milli_timestamp;
+    int n_line;
+    int n_block;
+    int len;
+
+    UUID result_content_id;
+    char result_updater[IDLEN + 1] = {};
+    char result_update_ip[IPV4LEN + 1] = {};
+    time64_t result_update_milli_timestamp;
+    int result_n_line;
+    int result_n_block;
+    int result_len;
+
+    bool bson_status;
+
+    strcpy(updater, "updater1");
+    strcpy(update_ip, "10.1.1.5");
+    get_milli_timestamp(&update_milli_timestamp);
+    n_line = 103;
+    n_block = 32;
+    len = 2031;
+
+    bson_t main_bson;
+    bson_init(&main_bson);
+
+    error_code = _serialize_update_main_bson(content_id, updater, update_ip, update_milli_timestamp, n_line, n_block, len, &main_bson);
+
+    bson_status = bson_get_value_bin(&main_bson, "content_id", UUIDLEN, result_content_id);
+    EXPECT_EQ(bson_status, true);
+
+    bson_status = bson_get_value_bin(&main_bson, "updater", IDLEN, result_updater);
+    EXPECT_EQ(bson_status, true);
+
+    bson_status = bson_get_value_bin(&main_bson, "update_ip", IPV4LEN, result_update_ip);
+    EXPECT_EQ(bson_status, true);
+
+    bson_status = bson_get_value_int64(&main_bson, "update_milli_timestamp", &result_update_milli_timestamp);
+    EXPECT_EQ(bson_status, true);
+
+    bson_status = bson_get_value_int32(&main_bson, "n_total_line", &result_n_line);
+    EXPECT_EQ(bson_status, true);
+
+    bson_status = bson_get_value_int32(&main_bson, "n_total_block", &result_n_block);
+    EXPECT_EQ(bson_status, true);
+
+    bson_status = bson_get_value_int32(&main_bson, "len_total", &result_len);
+    EXPECT_EQ(bson_status, true);
+
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)result_content_id, UUIDLEN));
+    EXPECT_STREQ(updater, result_updater);
+    EXPECT_STREQ(update_ip, result_update_ip);
+    EXPECT_EQ(update_milli_timestamp, result_update_milli_timestamp);
+    EXPECT_EQ(n_line, result_n_line);
+    EXPECT_EQ(n_block, result_n_block);
+    EXPECT_EQ(len, result_len);
+
+    bson_destroy(&main_bson);
+
+}
+
 TEST(pttdb, get_line_from_buf) {
     int len_buf = 24;
     char buf[MAX_BUF_SIZE];
