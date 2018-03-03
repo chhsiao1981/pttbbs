@@ -147,7 +147,7 @@ TEST(pttdb, uuid_to_milli_timestamp) {
     EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
 }
 
-TEST(pttdb, create_main_from_fd) {
+TEST(pttdb, create_main_from_fd_test1) {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
@@ -159,7 +159,7 @@ TEST(pttdb, create_main_from_fd) {
     char ip[IPV4LEN + 1] = {};
     char origin[MAX_ORIGIN_LEN + 1] = {};
     char web_link[MAX_WEB_LINK_LEN + 1] = {};
-    int len = 10000;    
+    int len = 10000;
     UUID main_id;
 
     char tmp_main_id[UUIDLEN + 1] = {};
@@ -201,7 +201,66 @@ TEST(pttdb, create_main_from_fd) {
 
     EXPECT_EQ(len, main_header.len_total);
     EXPECT_EQ(2, main_header.n_total_block);
-    EXPECT_EQ(10, main_header.n_total_line);
+    EXPECT_EQ(9, main_header.n_total_line);
+
+    close(fd);
+}
+
+TEST(pttdb, create_main_from_fd_test2) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    int fd = open("data_test/test2.txt", O_RDONLY);
+
+    aidu_t aid = 12345;
+    char title[TTLEN + 1] = {};
+    char poster[IDLEN + 1] = {};
+    char ip[IPV4LEN + 1] = {};
+    char origin[MAX_ORIGIN_LEN + 1] = {};
+    char web_link[MAX_WEB_LINK_LEN + 1] = {};
+    int len = 10000;
+    UUID main_id;
+
+    char tmp_main_id[UUIDLEN + 1] = {};
+
+    strcpy(title, "test_title");
+    strcpy(poster, "test_poster");
+    strcpy(ip, "test_ip");
+    strcpy(origin, "ptt.cc");
+    strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
+
+    Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id);
+    EXPECT_EQ(S_OK, error_code);
+
+    strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
+    fprintf(stderr, "test_pttdb.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
+
+    MainHeader main_header;
+
+    error_code = read_main_header(main_id, &main_header);
+    EXPECT_EQ(S_OK, error_code);
+    EXPECT_EQ(0, strncmp((char *)main_id, (char *)main_header.the_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)main_header.content_id, (char *)main_header.update_content_id, UUIDLEN));
+    EXPECT_EQ(aid, main_header.aid);
+    EXPECT_EQ(LIVE_STATUS_ALIVE, main_header.status);
+
+    EXPECT_STREQ(poster, main_header.status_updater);
+    EXPECT_STREQ(ip, main_header.status_update_ip);
+
+    EXPECT_STREQ(title, main_header.title);
+    EXPECT_STREQ(poster, main_header.poster);
+    EXPECT_STREQ(ip, main_header.ip);
+    EXPECT_STREQ(poster, main_header.updater);
+    EXPECT_STREQ(ip, main_header.update_ip);
+
+    EXPECT_STREQ(origin, main_header.origin);
+    EXPECT_STREQ(web_link, main_header.web_link);
+
+    EXPECT_EQ(0, main_header.reset_karma);
+
+    EXPECT_EQ(len, main_header.len_total);
+    EXPECT_EQ(2, main_header.n_total_block);
+    EXPECT_EQ(0, main_header.n_total_line);
 
     close(fd);
 }
@@ -1065,6 +1124,12 @@ void MyEnvironment::SetUp() {
             fprintf(f, "%c", 64 + (i % 26));
         }
         fprintf(f, "\r\n");
+    }
+    fclose(f);
+
+    FILE *f = fopen("data_test/test2.txt", "w");
+    for(int i = 0; i < 10000; i++) {
+        fprintf(f, "%c", 64 + (i % 26));
     }
     fclose(f);
 }
