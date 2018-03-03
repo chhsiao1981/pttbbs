@@ -182,7 +182,8 @@ TEST(pttdb, create_main_from_fd_test1) {
     error_code = read_main_header(main_id, &main_header);
     EXPECT_EQ(S_OK, error_code);
     EXPECT_EQ(0, strncmp((char *)main_id, (char *)main_header.the_id, UUIDLEN));
-    EXPECT_EQ(0, strncmp((char *)main_header.content_id, (char *)main_header.update_content_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)main_header.content_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)main_header.update_content_id, UUIDLEN));
     EXPECT_EQ(aid, main_header.aid);
     EXPECT_EQ(LIVE_STATUS_ALIVE, main_header.status);
 
