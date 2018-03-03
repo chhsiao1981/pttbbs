@@ -1034,7 +1034,7 @@ void MyEnvironment::SetUp() {
     const char *db_name[] = {
         "test_post",
         "test",
-    }
+    };
 
     FD = open("log.test_pttdb.err", O_WRONLY|O_CREAT|O_TRUNC, 0660);
     dup2(FD, 2);
