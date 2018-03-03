@@ -26,11 +26,6 @@ enum
     MONGO_TEST_DBNAME,
 };
 
-const char *DEFAULT_MONGO_DB[] = {
-    "post",
-    "test",
-};
-
 enum {
     MONGO_MAIN,
     MONGO_MAIN_CONTENT,
