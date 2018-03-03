@@ -718,7 +718,7 @@ n_line_main_by_aid(aidu_t aid, int *n_line)
     Err error_code;
     bson_t key;
     bson_init(&key);
-    bson_append_int32(&key, "aid", -1, aid);
+    bson_append_int64(&key, "aid", -1, aid);
 
     bson_t fields;
     bson_init(&fields);
@@ -813,7 +813,7 @@ read_main_header_by_aid(aidu_t aid, MainHeader *main_header)
 
     bson_init(&db_result);
 
-    bson_status = bson_append_int32(&key, "aid", -1, aid);
+    bson_status = bson_append_int64(&key, "aid", -1, aid);
     if (!bson_status) {
         bson_destroy(&key);
         bson_destroy(&db_result);
@@ -979,7 +979,7 @@ delete_main_by_aid(aidu_t aid, char *updater, char *ip) {
     bson_t val;
     bson_init(&val);
 
-    bson_status = bson_append_int32(&key, "aid", -1, aid);
+    bson_status = bson_append_int64(&key, "aid", -1, aid);
     if (!bson_status) {
         bson_destroy(&key);
         bson_destroy(&val);
@@ -1113,7 +1113,7 @@ _serialize_main_bson(MainHeader *main_header, bson_t *main_bson)
     bson_status = bson_append_bin(main_bson, "update_content_id", -1, main_header->update_content_id, UUIDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_int32(main_bson, "aid", -1, main_header->aid);
+    bson_status = bson_append_int64(main_bson, "aid", -1, main_header->aid);
     if (!bson_status) return S_ERR;
 
     bson_status = bson_append_int32(main_bson, "status", -1, main_header->status);
@@ -1184,7 +1184,7 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
     bson_free(str);
 
     Err error_code;
-    error_code = bson_get_value_int32(main_bson, "version", &main_header->version);
+    error_code = bson_get_value_int64(main_bson, "version", &main_header->version);
     if (error_code) return error_code;
 
     int len;
@@ -1197,7 +1197,7 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
     error_code = bson_get_value_bin(main_bson, "update_content_id", UUIDLEN, main_header->update_content_id, &len);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_int32(main_bson, "aid", &main_header->aid);
+    error_code = bson_get_value_int64(main_bson, "aid", &main_header->aid);
     if (error_code) return error_code;
 
     error_code = bson_get_value_int32(main_bson, "status", &main_header->status);
