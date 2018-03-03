@@ -162,6 +162,8 @@ TEST(pttdb, create_main_from_fd) {
     int len = 10000;    
     UUID main_id;
 
+    char tmp_main_id[UUIDLEN + 1] = {};
+
     strcpy(title, "test_title");
     strcpy(poster, "test_poster");
     strcpy(ip, "test_ip");
@@ -170,6 +172,9 @@ TEST(pttdb, create_main_from_fd) {
 
     Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id);
     EXPECT_EQ(S_OK, error_code);
+
+    strncpy(tmp_main_id, main_id, UUIDLEN);
+    fprintf(stderr, "test_pttdb.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
 
     MainHeader main_header;
 
@@ -671,7 +676,7 @@ TEST(pttdb, delete_main_by_aid) {
     char result_status_update_ip[MAX_BUF_SIZE];
 
     char *str = bson_as_canonical_extended_json(&result, NULL);
-    fprintf(stderr, "after db_find_one_with_fields: result: %s\n", str);
+    fprintf(stderr, "test_pttdb.delete_main_by_aid: after db_find_one_with_fields: result: %s\n", str);
     bson_free(str); 
 
     bson_get_value_int32(&result, "status", &result_status);
