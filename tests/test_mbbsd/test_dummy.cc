@@ -7,8 +7,6 @@ TEST(dummy, dummy) {
 /**********
  * MAIN
  */
-int FD = 0;
-
 class MyEnvironment: public ::testing::Environment {
 public:
     void SetUp();
@@ -16,10 +14,6 @@ public:
 };
 
 void MyEnvironment::SetUp() {
-    Err err = S_OK;
-
-    FD = open("log.test_dummy.err", O_WRONLY|O_CREAT|O_TRUNC, 0660);
-    dup2(FD, 2);
 }
 
 void MyEnvironment::TearDown() {
