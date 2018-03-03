@@ -276,8 +276,8 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origi
 {
 
     Err error_code = S_OK;
-    int n_line;
-    int n_block;
+    int n_line = 0;
+    int n_block = 0;
 
     UUID content_id;
 
