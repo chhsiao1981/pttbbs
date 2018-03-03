@@ -234,6 +234,9 @@ TEST(pttdb, create_main_from_fd_test2) {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
+    time64_t start_timestamp;
+    time64_t end_timestamp;
+
     int fd = open("data_test/test2.txt", O_RDONLY);
 
     aidu_t aid = 12345;
@@ -322,7 +325,6 @@ TEST(pttdb, create_main_from_fd_test1_full_read_main_content) {
 
     MainHeader main_header = {};
 
-    time64_t start_timestamp;
     get_milli_timestamp(&start_timestamp);
 
     error_code = read_main_header(main_id, &main_header);
@@ -371,10 +373,9 @@ TEST(pttdb, create_main_from_fd_test1_full_read_main_content) {
     EXPECT_EQ(0, strncmp((char *)main_content0.buf_block, str_content, main_content0.len_block));
     EXPECT_EQ(0, strncmp((char *)main_content1.buf_block, str_content + main_content0.len_block, main_content1.len_block));
 
-    time64_t end_timestamp;
     get_milli_timestamp(&end_timestamp);
 
-    fprintf(stderr, "pttdb.create_main_from_fd_test1_full_read_main_content: elapsed time: %lld\n", end_timestamp - start_timestamp);
+    fprintf(stderr, "pttdb.create_main_from_fd_test1_full_read_main_content: read: elapsed time: %lld\n", end_timestamp - start_timestamp);
 
     free(str_content);
 }

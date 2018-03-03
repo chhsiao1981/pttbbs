@@ -88,14 +88,6 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origi
         return error_code;
     }
 
-    char *str = bson_as_canonical_extended_json(&main_id_bson, NULL);
-    fprintf(stderr, "create_main_from_fd: to db-update-one: main_id_bson: %s\n", str);
-    bson_free(str); 
-
-    str = bson_as_canonical_extended_json(&main_bson, NULL);
-    fprintf(stderr, "create_main_from_fd: to db-update-one: main_bson: %s\n", str);
-    bson_free(str); 
-
     error_code = db_update_one(MONGO_MAIN, &main_id_bson, &main_bson, true);
     bson_destroy(&main_bson);
     bson_destroy(&main_id_bson);
@@ -514,10 +506,6 @@ read_main_header(UUID main_id, MainHeader *main_header)
     bson_init(&key);
     bson_append_bin(&key, "the_id", -1, main_id, UUIDLEN);
 
-    char *str = bson_as_canonical_extended_json(&key, NULL);
-    fprintf(stderr, "pttdb.read_main_header: to db_find_one: key: %s\n", str);
-    bson_free(str);
-
     bson_t db_result;
     bson_init(&db_result);
     error_code = db_find_one(MONGO_MAIN, &key, NULL, &db_result);
@@ -610,7 +598,6 @@ read_main_content(UUID main_content_id, int block_id, MainContent *main_content)
 
     bson_status = bson_append_bin(&key, "the_id", -1, main_content_id, UUIDLEN);
     if (!bson_status) {
-        fprintf(stderr, "pttdb.read_main_content: unable to append the_id\n");
         bson_destroy(&key);
         bson_destroy(&db_result);
         return S_ERR;
@@ -618,7 +605,6 @@ read_main_content(UUID main_content_id, int block_id, MainContent *main_content)
 
     bson_status = bson_append_int32(&key, "block_id", -1, block_id);
     if (!bson_status) {
-        fprintf(stderr, "pttdb.read_main_content: unable to append block_id\n");
         bson_destroy(&key);
         bson_destroy(&db_result);
         return S_ERR;
@@ -626,7 +612,6 @@ read_main_content(UUID main_content_id, int block_id, MainContent *main_content)
 
     error_code = db_find_one(MONGO_MAIN_CONTENT, &key, NULL, &db_result);
     if (error_code) {
-        fprintf(stderr, "pttdb.read_main_content: unable to find_one\n");
         bson_destroy(&key);
         bson_destroy(&db_result);
         return error_code;
@@ -634,7 +619,6 @@ read_main_content(UUID main_content_id, int block_id, MainContent *main_content)
 
     error_code = _deserialize_main_content_block_bson(&db_result, main_content);
     if (error_code) {
-        fprintf(stderr, "pttdb.read_main_content: unable to deserialize\n");
         bson_destroy(&key);
         bson_destroy(&db_result);
         return error_code;
@@ -924,10 +908,6 @@ _serialize_main_bson(MainHeader *main_header, bson_t *main_bson)
 Err
 _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
 {
-    char *str = bson_as_canonical_extended_json(main_bson, NULL);
-    fprintf(stderr, "pttdb._deserialize_main_bson: main_bson: %s aidu_t: %d\n", str, sizeof(aidu_t));
-    bson_free(str);
-
     Err error_code;
     error_code = bson_get_value_int32(main_bson, "version", &main_header->version);
     if (error_code) return error_code;

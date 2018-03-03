@@ -345,13 +345,11 @@ bson_get_value_int32(bson_t *b, char *name, int *value)
 
     status = bson_iter_init_find(&iter, b, name);
     if (!status) {
-        //fprintf(stderr, "[ERROR] bson_get_value_int32: unable to init\n");
         return S_ERR;
     }
 
     status = BSON_ITER_HOLDS_INT32(&iter);
     if (!status) {
-        //fprintf(stderr, "[ERROR] bson_get_value_int32: not int32\n");
         return S_ERR;
     }
 
@@ -376,18 +374,15 @@ bson_get_value_int64(bson_t *b, char *name, long int *value)
 
     status = bson_iter_init_find(&iter, b, name);
     if (!status) {
-        //fprintf(stderr, "[ERROR] bson_get_value_int32: unable to init\n");
         return S_ERR;
     }
 
     status = BSON_ITER_HOLDS_INT64(&iter);
     if (!status) {
-        //fprintf(stderr, "[ERROR] bson_get_value_int32: not int32\n");
         return S_ERR;
     }
 
     *value = bson_iter_int64(&iter);
-    fprintf(stderr, "util_db.bson_get_value_int64: name: %s value: %ld\n", name, *value);
 
     return S_OK;
 }
@@ -448,13 +443,11 @@ bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len)
 
     status = bson_iter_init_find(&iter, b, name);
     if (!status) {
-        fprintf(stderr, "util_db.bson_get_value_bin: unable to find: name: %s\n", name);
         return S_ERR;
     }
 
     status = BSON_ITER_HOLDS_BINARY(&iter);
     if (!status) {
-        fprintf(stderr, "util_db.bson_get_value_bin: not bin: name: %s\n", name);
         return S_ERR;
     }
 
@@ -463,7 +456,6 @@ bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len)
     bson_iter_binary(&iter, &subtype, p_len, &p_value);
     int len = *p_len;
     if(len > max_len) {
-        fprintf(stderr, "bson_get_value_bin: len: %d max_len: %d\n", len, max_len);
         len = max_len;
         error = S_ERR_BUFFER_LEN;
     }
