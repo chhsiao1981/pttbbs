@@ -287,6 +287,8 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origi
     bson_t main_id_bson;
     bson_t main_bson;
 
+    char debug_uuid[UUIDLEN + 1] = {};
+
     error_code = get_milli_timestamp(&create_milli_timestamp);
     if (error_code) return error_code;
 
@@ -297,8 +299,11 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origi
     if (error_code) return error_code;
 
     // main_header
-    fprintf(stderr, "pttdb.create_main_from_fd: sizeof(UUID): %d\n", sizeof(UUID));
+    strlcpy(debug_uuid, main_id, sizeof(UUID));
+    fprintf(stderr, "pttdb.create_main_from_fd: sizeof(UUID): %d main_id: %s\n", sizeof(UUID), debug_uuid);
     strlcpy(main_header.the_id, main_id, sizeof(UUID));
+    strlcpy(debug_uuid, main_header.the_id, sizeof(UUID));
+    fprintf(stderr, "pttdb.create_main_from_fd: main_header.the_id: %s\n", debug_uuid);
     strlcpy(main_header.content_id, content_id, sizeof(UUID));
     strlcpy(main_header.update_content_id, content_id, sizeof(UUID));
     main_header.aid = aid;
