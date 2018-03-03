@@ -990,6 +990,12 @@ void MyEnvironment::SetUp() {
         fprintf(stderr, "[ERROR] UNABLE TO init mongo collections\n");
         return;
     }
+
+    FILE *f = fopen("test_data/test1.txt", "w");
+    for(int i = 0; i < 10000; i++) {
+        fprintf(f, "%c", 64 + (i % 26));
+    }
+    fclose(f);
 }
 
 void MyEnvironment::TearDown() {
