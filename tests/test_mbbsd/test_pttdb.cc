@@ -11,7 +11,7 @@ time64_t START_MILLI_TIMESTAMP = 1514764800000;
 // 2019-01-01
 time64_t END_MILLI_TIMESTAMP = 1546300800000;
 
-int fd = 0;
+int FD = 0;
 
 TEST(pttdb, get_milli_timestamp) {
     time64_t t;
@@ -145,6 +145,57 @@ TEST(pttdb, uuid_to_milli_timestamp) {
 
     EXPECT_GE(milli_timestamp, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
+}
+
+TEST(pttdb, create_main_from_fd) {
+    int fd = open("test/test1.txt", O_RDONLY);
+
+    aidu_t aid = 12345;
+    char title[TTLEN + 1] = {};
+    char poster[IDLEN + 1] = {};
+    char ip[IPV4LEN + 1] = {};
+    char origin[MAX_ORIGIN_LEN + 1] = {};
+    char web_link[MAX_WEB_LINK_LEN + 1] = {};
+    int len = 10000;    
+    UUID main_id;
+
+    strcpy(title, "test_title");
+    strcpy(poster, "test_poster");
+    strcpy(ip, "test_ip");
+    strcpy(origin, "ptt.cc");
+    strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
+
+    Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id);
+    EXPECT_EQ(S_OK, error_code);
+
+    MainHeader main_header;
+
+    error_code = read_main_header(main_id, &main_header);
+    EXPECT_EQ(S_OK, error_code);
+    EXPECT_EQ(0, strncmp((char *)main_id, (char *)main_header.the_id));
+    EXPECT_EQ(0, strncmp((char *)main_header.content_id, (char *)main_header.update_content_id));
+    EXPECT_EQ(aid, main_header.aid);
+    EXPECT_EQ(LIVE_STATUS_ALIVE, main_header.status);
+
+    EXPECT_STREQ(poster, main_header.status_updater);
+    EXPECT_STREQ(ip, main_header.status_update_ip);
+    
+    EXPECT_STREQ(title, main_header.title);
+    EXPECT_STREQ(poster, main_header.poster);
+    EXPECT_STREQ(ip, main_header.ip);
+    EXPECT_STREQ(poster, main_header.updater);
+    EXPECT_STREQ(ip, main_header.update_ip);
+
+    EXPECT_STREQ(origin, main_header.origin);
+    EXPECT_STREQ(web_link, main_header.web_link);
+
+    EXPECT_EQ(0, main_header.reset_karma);
+
+    EXPECT_EQ(len, main_header.len_total);
+    EXPECT_EQ(2, main_header.n_total_block);
+    EXPECT_EQ(0, main_header.n_total_line);
+
+    close(fd);
 }
 
 TEST(pttdb, len_main) {
@@ -977,8 +1028,8 @@ public:
 void MyEnvironment::SetUp() {
     Err err = S_OK;
 
-    fd = open("log.test_pttdb.err", O_WRONLY|O_CREAT|O_TRUNC, 0660);
-    dup2(fd, 2);
+    FD = open("log.test_pttdb.err", O_WRONLY|O_CREAT|O_TRUNC, 0660);
+    dup2(FD, 2);
 
     err = init_mongo_global();
     if(err != S_OK) {
@@ -1002,9 +1053,9 @@ void MyEnvironment::TearDown() {
     free_mongo_collections();
     free_mongo_global();
 
-    if(fd) {
-        close(fd);
-        fd = 0;
+    if(FD) {
+        close(FD);
+        FD = 0;
     }
 }
 

@@ -272,7 +272,7 @@ n_line_post(UUID main_id, int *n_line) {
  * @return Err
  */
 Err
-create_main_from_fd(aidu_t aid, char *title, char *poster, unsigned char *ip, unsigned char *origin, unsigned char *web_link, int len, int fd_content, UUID main_id)
+create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id)
 {
 
     Err error_code = S_OK;
