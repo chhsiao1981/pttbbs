@@ -472,7 +472,7 @@ _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID cont
             return error_code;
         }
 
-        *n_block++;
+        (*n_block)++;
         error_code = _split_main_contents_init_main_content(main_content_block, main_id, content_id, *n_block);
         if (error_code) {
             return error_code;
@@ -485,7 +485,7 @@ _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID cont
             return error_code;
         }
 
-        *n_block++;
+        (*n_block)++;
         error_code = _split_main_contents_init_main_content(main_content_block, main_id, content_id, *n_block);
         if (error_code) {
             return error_code;
