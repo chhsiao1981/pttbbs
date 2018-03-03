@@ -762,7 +762,7 @@ read_main_header(UUID main_id, MainHeader *main_header)
     bson_append_bin(&key, "the_id", -1, main_id, UUIDLEN);
 
     char *str = bson_as_canonical_extended_json(&key, NULL);
-    fprintf(stderr, "pttdb.read_main_header: to db_find_one: key: %s\n", key);
+    fprintf(stderr, "pttdb.read_main_header: to db_find_one: key: %s\n", str);
     bson_free(str);
 
     bson_t db_result;
