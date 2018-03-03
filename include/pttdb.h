@@ -211,9 +211,6 @@ Err delete_main(UUID main_id, char *updater, char *ip);
 Err delete_main_by_aid(aidu_t aid, char *updater, char *ip);
 
 Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content, UUID content_id);
-/*
-Err check_main(UUID main_id);
-*/
 
 /**********
  * Comments
