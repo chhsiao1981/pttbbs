@@ -1184,7 +1184,7 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
     bson_free(str);
 
     Err error_code;
-    error_code = bson_get_value_int64(main_bson, "version", &main_header->version);
+    error_code = bson_get_value_int32(main_bson, "version", &main_header->version);
     if (error_code) return error_code;
 
     int len;
