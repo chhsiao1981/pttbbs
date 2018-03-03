@@ -10,19 +10,26 @@ extern "C" {
 #endif
 
 // Mongo Post
-#define MONGO_POST_DBNAME "post"
-
 #define MONGO_MAIN_NAME "main"
 #define MONGO_MAIN_CONTENT_NAME "main_content"
 
 // Mongo Test
-#define MONGO_TEST_DBNAME "test"
-
 #define MONGO_TEST_NAME "test"
 
 // Mongo the id
 #define MONGO_THE_ID "the_id"
 #define MONGO_BLOCK_ID "block_id"
+
+enum
+{
+    MONGO_POST_DBNAME,
+    MONGO_TEST_DBNAME,
+};
+
+const char *DEFAULT_MONGO_DB[] = {
+    "post",
+    "test",
+};
 
 enum {
     MONGO_MAIN,
@@ -36,7 +43,7 @@ enum {
 // initialization / free
 Err init_mongo_global();
 Err free_mongo_global();
-Err init_mongo_collections();
+Err init_mongo_collections(char **db_name);
 Err free_mongo_collections();
 
 // db-ops

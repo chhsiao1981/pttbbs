@@ -1031,6 +1031,11 @@ public:
 void MyEnvironment::SetUp() {
     Err err = S_OK;
 
+    const char *db_name[] = {
+        "test_post",
+        "test",
+    }
+
     FD = open("log.test_pttdb.err", O_WRONLY|O_CREAT|O_TRUNC, 0660);
     dup2(FD, 2);
 
@@ -1039,7 +1044,7 @@ void MyEnvironment::SetUp() {
         fprintf(stderr, "[ERROR] UNABLE TO init mongo global\n");
         return;
     }
-    err = init_mongo_collections();
+    err = init_mongo_collections(db_name);
     if(err != S_OK) {
         fprintf(stderr, "[ERROR] UNABLE TO init mongo collections\n");
         return;
