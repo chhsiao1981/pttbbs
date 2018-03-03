@@ -387,6 +387,7 @@ bson_get_value_int64(bson_t *b, char *name, long int *value)
     }
 
     *value = bson_iter_int64(&iter);
+    fprintf(stderr, "util_db.bson_get_value_int64: name: %s value: %ld\n", name, *value);
 
     return S_OK;
 }
