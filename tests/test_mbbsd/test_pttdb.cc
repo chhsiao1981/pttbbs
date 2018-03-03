@@ -771,13 +771,14 @@ TEST(pttdb, serialize_update_main_bson) {
 
     error_code = _serialize_update_main_bson(content_id, updater, update_ip, update_milli_timestamp, n_line, n_block, len, &main_bson);
 
-    bson_status = bson_get_value_bin(&main_bson, "content_id", UUIDLEN, result_content_id);
+    int tmp;
+    bson_status = bson_get_value_bin(&main_bson, "content_id", UUIDLEN, result_content_id, &tmp);
     EXPECT_EQ(bson_status, true);
 
-    bson_status = bson_get_value_bin(&main_bson, "updater", IDLEN, result_updater);
+    bson_status = bson_get_value_bin(&main_bson, "updater", IDLEN, result_updater, &tmp);
     EXPECT_EQ(bson_status, true);
 
-    bson_status = bson_get_value_bin(&main_bson, "update_ip", IPV4LEN, result_update_ip);
+    bson_status = bson_get_value_bin(&main_bson, "update_ip", IPV4LEN, result_update_ip, &tmp);
     EXPECT_EQ(bson_status, true);
 
     bson_status = bson_get_value_int64(&main_bson, "update_milli_timestamp", &result_update_milli_timestamp);
