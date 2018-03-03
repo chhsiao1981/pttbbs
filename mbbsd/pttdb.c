@@ -464,7 +464,7 @@ _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID cont
     Err error_code;
 
     //1 more line
-    *n_line++;
+    (*n_line)++;
 
     // check for max-lines in block-buf.
     if (main_content_block->n_line >= MAX_BUF_LINES) {
