@@ -297,6 +297,7 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origi
     if (error_code) return error_code;
 
     // main_header
+    fprintf(stderr, "pttdb.create_main_from_fd: sizeof(UUID): %d\n", sizeof(UUID));
     strlcpy(main_header.the_id, main_id, sizeof(UUID));
     strlcpy(main_header.content_id, content_id, sizeof(UUID));
     strlcpy(main_header.update_content_id, content_id, sizeof(UUID));
