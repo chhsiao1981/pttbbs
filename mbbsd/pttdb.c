@@ -463,11 +463,8 @@ _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID cont
 {
     Err error_code;
 
-    //1 more line
-    (*n_line)++;
-
     // check for max-lines in block-buf.
-    if (main_content_block->n_line >= MAX_BUF_LINES) {
+    if (main_content_block->n_line > MAX_BUF_LINES) {
         error_code = _split_main_contents_save_main_content_block(main_content_block);
         if (error_code) {
             return error_code;
@@ -479,7 +476,7 @@ _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID cont
         }
     }
     // XXX should never happen.
-    else if (main_content_block->len_block + bytes_in_line >= MAX_BUF_BLOCK) {
+    else if (main_content_block->len_block + bytes_in_line > MAX_BUF_BLOCK) {
         error_code = _split_main_contents_save_main_content_block(main_content_block);
         if (error_code) {
             return error_code;
@@ -493,7 +490,13 @@ _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID cont
 
     strncpy(main_content_block->buf_block + main_content_block->len_block, line, bytes_in_line);
     main_content_block->len_block += bytes_in_line;
-    main_content_block->n_line++;
+
+    //1 more line
+    if(line[bytes_in_line - 2] == '\r' && line[bytes_in_line - 1] == '\n') {
+        (*n_line)++;
+        main_content_block->n_line++;
+    }
+
 
     return S_OK;
 }
