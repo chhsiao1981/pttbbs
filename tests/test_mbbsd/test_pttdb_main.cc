@@ -68,7 +68,7 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
     MainContent main_content0;
     MainContent main_content1;
 
-    char *str_content = malloc(len);
+    char *str_content = (char *)malloc(len);
     fd = open("data_test/test1.txt", O_RDONLY);
     read(fd, str_content, len);
     close(fd);
@@ -79,7 +79,7 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
     error_code = read_main_content(main_header.content_id, 1, &main_content1);
     EXPECT_EQ(S_OK, error_code);
 
-    EXPECT_EQ(len, main_content0.len_block + main_content_block2);
+    EXPECT_EQ(len, main_content0.len_block + main_content1.len_block);
     EXPECT_EQ(main_header.n_total_line, main_content0.n_line + main_content1.n_line);
     EXPECT_EQ(0, strncmp((char *)main_content0.buf, str_content, main_content0.len_block));
     EXPECT_EQ(0, strncmp((char *)main_content1.buf, str_content + main_content0.len_block, main_content1.len_block));
