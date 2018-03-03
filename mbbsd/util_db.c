@@ -53,7 +53,7 @@ free_mongo_global()
  * @details client, collections.
  */
 Err
-init_mongo_collections(char **db_name);
+init_mongo_collections(char **db_name)
 {
     if(db_name == NULL) {
         db_name = DEFAULT_MONGO_DB;
