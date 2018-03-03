@@ -1422,5 +1422,10 @@ get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offs
     *p_line++ = *p_buf++;
     *bytes_in_new_line = bytes - offset_buf;
 
+    // XXX special case for all block as a continuous string. Although it's not end yet, it forms a block.
+    if(*bytes_in_new_line == MAX_BUF_SIZE) {
+        return S_OK;
+    }
+
     return S_ERR;
 }
