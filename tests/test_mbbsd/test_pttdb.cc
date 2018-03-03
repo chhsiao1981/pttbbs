@@ -151,7 +151,7 @@ TEST(pttdb, create_main_from_fd) {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
-    int fd = open("test/test1.txt", O_RDONLY);
+    int fd = open("data_test/test1.txt", O_RDONLY);
 
     aidu_t aid = 12345;
     char title[TTLEN + 1] = {};
