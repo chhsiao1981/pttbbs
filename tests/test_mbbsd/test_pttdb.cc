@@ -771,6 +771,10 @@ TEST(pttdb, serialize_update_main_bson) {
 
     error_code = _serialize_update_main_bson(content_id, updater, update_ip, update_milli_timestamp, n_line, n_block, len, &main_bson);
 
+    char *str = bson_as_canonical_extended_json(&main_bson, NULL);
+    fprintf(stderr, "after serialize: str: %s\n", str);
+    bson_free(str);
+
     int tmp;
     bson_status = bson_get_value_bin(&main_bson, "content_id", UUIDLEN, (char *)result_content_id, &tmp);
     EXPECT_EQ(bson_status, true);
