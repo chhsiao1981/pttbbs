@@ -403,6 +403,10 @@ TEST(pttdb, read_main_header) {
     Err error = _serialize_main_bson(&main_header, &main_bson);
     EXPECT_EQ(S_OK, error);
 
+    char *str = bson_as_canonical_extended_json(&main_bson, NULL);
+    fprintf(stderr, "test_pttdb.read_main_header: to db_update_one: main_bson: %s\n", str);
+    bson_free(str);
+
     error = db_update_one(MONGO_MAIN, &main_bson, &main_bson, true);
     EXPECT_EQ(S_OK, error);
 
