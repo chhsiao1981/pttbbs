@@ -1127,7 +1127,7 @@ void MyEnvironment::SetUp() {
     }
     fclose(f);
 
-    FILE *f = fopen("data_test/test2.txt", "w");
+    f = fopen("data_test/test2.txt", "w");
     for(int i = 0; i < 10000; i++) {
         fprintf(f, "%c", 64 + (i % 26));
     }
