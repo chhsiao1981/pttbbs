@@ -1035,13 +1035,11 @@ delete_main_by_aid(aidu_t aid, char *updater, char *ip) {
  * @return [description]
  */
 Err 
-update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content)
+update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content, UUID content_id)
 {
     Err error_code = S_OK;
     int n_line;
     int n_block;
-
-    UUID content_id;
 
     time64_t update_milli_timestamp;
 
