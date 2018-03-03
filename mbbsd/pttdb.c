@@ -339,6 +339,14 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origi
         return error_code;
     }
 
+    char *str = bson_as_canonical_extended_json(&main_id_bson, NULL);
+    fprintf(stderr, "create_main_from_fd: to db-update-one: main_id_bson: %s\n", str);
+    bson_free(str); 
+
+    char *str = bson_as_canonical_extended_json(&main_bson, NULL);
+    fprintf(stderr, "create_main_from_fd: to db-update-one: main_bson: %s\n", str);
+    bson_free(str); 
+
     error_code = db_update_one(MONGO_MAIN, &main_id_bson, &main_bson, true);
     bson_destroy(&main_bson);
     bson_destroy(&main_id_bson);
