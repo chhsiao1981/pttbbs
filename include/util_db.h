@@ -38,7 +38,7 @@ enum {
 // initialization / free
 Err init_mongo_global();
 Err free_mongo_global();
-Err init_mongo_collections(char **db_name);
+Err init_mongo_collections(const char *db_name[]);
 Err free_mongo_collections();
 
 // db-ops
