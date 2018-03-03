@@ -1064,7 +1064,7 @@ void MyEnvironment::SetUp() {
         for(int i = 0; i < 1000; i++) {
             fprintf(f, "%c", 64 + (i % 26));
         }
-        fprintf(f, "\n");
+        fprintf(f, "\r\n");
     }
     fclose(f);
 }
