@@ -311,6 +311,8 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origi
     strcpy(main_header.title, title);
     strcpy(main_header.poster, poster);
     strcpy(main_header.ip, ip);
+    strcpy(main_header.updater, poster);
+    strcpy(main_header.update_ip, ip);
     main_header.create_milli_timestamp = create_milli_timestamp;
     main_header.update_milli_timestamp = create_milli_timestamp;
     strcpy(main_header.origin, origin);
