@@ -776,26 +776,27 @@ TEST(pttdb, serialize_update_main_bson) {
     bson_free(str);
 
     int tmp;
-    bson_status = bson_get_value_bin(&main_bson, "content_id", UUIDLEN, (char *)result_content_id, &tmp);
-    EXPECT_EQ(bson_status, true);
 
-    bson_status = bson_get_value_bin(&main_bson, "updater", IDLEN, result_updater, &tmp);
-    EXPECT_EQ(bson_status, true);
+    error_code = bson_get_value_bin(&main_bson, "content_id", UUIDLEN, (char *)result_content_id, &tmp);
+    EXPECT_EQ(S_OK, error_code);
 
-    bson_status = bson_get_value_bin(&main_bson, "update_ip", IPV4LEN, result_update_ip, &tmp);
-    EXPECT_EQ(bson_status, true);
+    error_code = bson_get_value_bin(&main_bson, "updater", IDLEN, result_updater, &tmp);
+    EXPECT_EQ(S_OK, error_code);
 
-    bson_status = bson_get_value_int64(&main_bson, "update_milli_timestamp", (long *)&result_update_milli_timestamp);
-    EXPECT_EQ(bson_status, true);
+    error_code = bson_get_value_bin(&main_bson, "update_ip", IPV4LEN, result_update_ip, &tmp);
+    EXPECT_EQ(S_OK, error_code);
 
-    bson_status = bson_get_value_int32(&main_bson, "n_total_line", &result_n_line);
-    EXPECT_EQ(bson_status, true);
+    error_code = bson_get_value_int64(&main_bson, "update_milli_timestamp", (long *)&result_update_milli_timestamp);
+    EXPECT_EQ(S_OK, error_code);
 
-    bson_status = bson_get_value_int32(&main_bson, "n_total_block", &result_n_block);
-    EXPECT_EQ(bson_status, true);
+    error_code = bson_get_value_int32(&main_bson, "n_total_line", &result_n_line);
+    EXPECT_EQ(S_OK, error_code);
 
-    bson_status = bson_get_value_int32(&main_bson, "len_total", &result_len);
-    EXPECT_EQ(bson_status, true);
+    error_code = bson_get_value_int32(&main_bson, "n_total_block", &result_n_block);
+    EXPECT_EQ(S_OK, error_code);
+
+    error_code = bson_get_value_int32(&main_bson, "len_total", &result_len);
+    EXPECT_EQ(S_OK, error_code);
 
     EXPECT_EQ(0, strncmp((char *)content_id, (char *)result_content_id, UUIDLEN));
     EXPECT_STREQ(updater, result_updater);
