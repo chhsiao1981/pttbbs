@@ -1180,7 +1180,7 @@ Err
 _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
 {
     char *str = bson_as_canonical_extended_json(main_bson, NULL);
-    fprintf(stderr, "pttdb._deserialize_main_bson: main_bson: %s\n", str);
+    fprintf(stderr, "pttdb._deserialize_main_bson: main_bson: %s aidu_t: %d\n", str, sizeof(aidu_t));
     bson_free(str);
 
     Err error_code;
