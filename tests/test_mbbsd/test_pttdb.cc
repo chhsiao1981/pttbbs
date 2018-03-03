@@ -173,7 +173,7 @@ TEST(pttdb, create_main_from_fd) {
     Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id);
     EXPECT_EQ(S_OK, error_code);
 
-    strncpy(tmp_main_id, main_id, UUIDLEN);
+    strncpy((char *)tmp_main_id, main_id, UUIDLEN);
     fprintf(stderr, "test_pttdb.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
 
     MainHeader main_header;
