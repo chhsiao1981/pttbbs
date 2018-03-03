@@ -227,7 +227,7 @@ _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID cont
     main_content_block->len_block += bytes_in_line;
 
     //1 more line
-    if(line[bytes_in_line - 2] == '\r' && line[bytes_in_line - 1] == '\n') {
+    if (line[bytes_in_line - 2] == '\r' && line[bytes_in_line - 1] == '\n') {
         (*n_line)++;
         main_content_block->n_line++;
     }
@@ -754,7 +754,7 @@ delete_main_by_aid(aidu_t aid, char *updater, char *ip) {
 /**
  * @brief [brief description]
  * @details [long description]
- * 
+ *
  * @param main_id [description]
  * @param title [description]
  * @param updater [description]
@@ -763,7 +763,7 @@ delete_main_by_aid(aidu_t aid, char *updater, char *ip) {
  * @param fd_content [description]
  * @return [description]
  */
-Err 
+Err
 update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content, UUID content_id)
 {
     Err error_code = S_OK;
@@ -773,14 +773,14 @@ update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int f
     time64_t update_milli_timestamp;
 
     error_code = get_milli_timestamp(&update_milli_timestamp);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = gen_content_uuid_with_db(MONGO_MAIN_CONTENT, content_id);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     // main-contents
     error_code = _split_main_contents(fd_content, len, main_id, content_id, &n_line, &n_block);
-    if(error_code) {
+    if (error_code) {
         return error_code;
     }
 
@@ -799,14 +799,14 @@ update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int f
 
     // update: content_id, update_content_id, updater, update_ip, update_milli_timestamp, n_total_line, n_total_block, len_total
     error_code = _serialize_update_main_bson(content_id, updater, update_ip, update_milli_timestamp, n_line, n_block, len, &main_bson);
-    if(error_code) {
+    if (error_code) {
         bson_destroy(&main_id_bson);
         bson_destroy(&main_bson);
         return error_code;
     }
 
     error_code = db_update_one(MONGO_MAIN, &main_id_bson, &main_bson, false);
-    if(error_code) {
+    if (error_code) {
         bson_destroy(&main_bson);
         bson_destroy(&main_id_bson);
         return error_code;
@@ -979,7 +979,7 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
 /**
  * @brief [brief description]
  * @details [long description]
- * 
+ *
  * @param content_id [description]
  * @param updater [description]
  * @param p [description]

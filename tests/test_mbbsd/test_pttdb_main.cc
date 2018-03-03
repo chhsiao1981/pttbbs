@@ -814,7 +814,7 @@ TEST(pttdb, delete_main) {
     char **fields;
     int n_fields = 3;
     fields = (char **)malloc(sizeof(char *) * n_fields);
-    for(int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
         fields[i] = (char *)malloc(30);
     }
     strcpy(fields[0], "status");
@@ -835,7 +835,7 @@ TEST(pttdb, delete_main) {
     bson_get_value_bin(&result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
     bson_get_value_bin(&result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
 
-    for(int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
         free(fields[i]);
     }
     free(fields);
@@ -895,7 +895,7 @@ TEST(pttdb, delete_main_by_aid) {
     char **fields;
     int n_fields = 3;
     fields = (char **)malloc(sizeof(char *) * n_fields);
-    for(int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
         fields[i] = (char *)malloc(30);
     }
     strcpy(fields[0], "status");
@@ -915,13 +915,13 @@ TEST(pttdb, delete_main_by_aid) {
 
     char *str = bson_as_canonical_extended_json(&result, NULL);
     fprintf(stderr, "test_pttdb.delete_main_by_aid: after db_find_one_with_fields: result: %s\n", str);
-    bson_free(str); 
+    bson_free(str);
 
     bson_get_value_int32(&result, "status", &result_status);
     bson_get_value_bin(&result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
     bson_get_value_bin(&result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
 
-    for(int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
         free(fields[i]);
     }
     free(fields);
@@ -1121,7 +1121,7 @@ public:
 void MyEnvironment::SetUp() {
     Err err = S_OK;
 
-    FD = open("log.test_pttdb_main.err", O_WRONLY|O_CREAT|O_TRUNC, 0660);
+    FD = open("log.test_pttdb_main.err", O_WRONLY | O_CREAT | O_TRUNC, 0660);
     dup2(FD, 2);
 
     const char *db_name[] = {
@@ -1130,19 +1130,19 @@ void MyEnvironment::SetUp() {
     };
 
     err = init_mongo_global();
-    if(err != S_OK) {
+    if (err != S_OK) {
         fprintf(stderr, "[ERROR] UNABLE TO init mongo global\n");
         return;
     }
     err = init_mongo_collections(db_name);
-    if(err != S_OK) {
+    if (err != S_OK) {
         fprintf(stderr, "[ERROR] UNABLE TO init mongo collections\n");
         return;
     }
 
     FILE *f = fopen("data_test/test1.txt", "w");
-    for(int j = 0; j < 10; j++) {
-        for(int i = 0; i < 1000; i++) {
+    for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < 1000; i++) {
             fprintf(f, "%c", 64 + (i % 26));
         }
         fprintf(f, "\r\n");
@@ -1150,7 +1150,7 @@ void MyEnvironment::SetUp() {
     fclose(f);
 
     f = fopen("data_test/test2.txt", "w");
-    for(int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 10000; i++) {
         fprintf(f, "%c", 64 + (i % 26));
     }
     fclose(f);
@@ -1160,7 +1160,7 @@ void MyEnvironment::TearDown() {
     free_mongo_collections();
     free_mongo_global();
 
-    if(FD) {
+    if (FD) {
         close(FD);
         FD = 0;
     }

@@ -60,7 +60,7 @@ free_mongo_global()
 Err
 init_mongo_collections(const char *db_name[])
 {
-    if(db_name == NULL) {
+    if (db_name == NULL) {
         db_name = DEFAULT_MONGO_DB;
     }
 
@@ -99,7 +99,7 @@ free_mongo_collections()
 /**
  * @brief set if not exists
  * @details [long description]
- * 
+ *
  * @param collection [description]
  * @param key [description]
  */
@@ -162,7 +162,7 @@ db_set_if_not_exists(int collection, bson_t *key)
 /**
  * @brief update one key / val
  * @details [long description]
- * 
+ *
  * @param collection [description]
  * @param key [description]
  * @param val [description]
@@ -235,7 +235,7 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
     }
 
     if (mongoc_cursor_error(cursor, &error)) {
-        mongoc_cursor_destroy(cursor);        
+        mongoc_cursor_destroy(cursor);
         return S_ERR;
     }
 
@@ -256,7 +256,7 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
 /**
  * @brief [brief description]
  * @details [long description]
- * 
+ *
  * @param collection [description]
  * @param key [description]
  * @param fields [description]
@@ -271,27 +271,27 @@ db_find_one_with_fields(int collection, bson_t *key, char **fields, int n_fields
     bool bson_status;
     bson_init(&b_fields);
 
-    for(int i = 0; i < n_fields; i++) {
+    for (int i = 0; i < n_fields; i++) {
         bson_status = bson_append_bool(&b_fields, fields[i], -1, true);
-        if(!bson_status) {
+        if (!bson_status) {
             bson_destroy(&b_fields);
             return S_ERR;
         }
     }
     bson_status = bson_append_bool(&b_fields, "_id", -1, false);
-    if(!bson_status) {
+    if (!bson_status) {
         bson_destroy(&b_fields);
         return S_ERR;
     }
 
     error_code = db_find_one(collection, key, &b_fields, result);
-    if(error_code) {
+    if (error_code) {
         bson_destroy(&b_fields);
         return error_code;
     }
 
     bson_destroy(&b_fields);
-    return S_OK;    
+    return S_OK;
 }
 
 
@@ -311,7 +311,7 @@ _DB_FORCE_DROP_COLLECTION(int collection)
 /**
  * @brief exists the name in the bson-struct
  * @details [long description]
- * 
+ *
  * @param b the bson-struct
  * @param name name
  */
@@ -332,7 +332,7 @@ bson_exists(bson_t *b, char *name)
 /**
  * @brief get int32 value in bson
  * @details [long description]
- * 
+ *
  * @param b [description]
  * @param name [description]
  * @param value [description]
@@ -361,7 +361,7 @@ bson_get_value_int32(bson_t *b, char *name, int *value)
 /**
  * @brief get int64 value in bson
  * @details [long description]
- * 
+ *
  * @param b [description]
  * @param name [description]
  * @param value [description]
@@ -390,7 +390,7 @@ bson_get_value_int64(bson_t *b, char *name, long int *value)
 /**
  * @brief find binary in the bson-struct
  * @details [long description]
- * 
+ *
  * @param b [description]
  * @param name [description]
  * @param value [MUST-NOT initialized and need to free!]
@@ -419,7 +419,7 @@ bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *p_len)
     *value = malloc(tmp_len + 1);
     memcpy(*value, p_value, tmp_len);
     (*value)[tmp_len] = 0;
-    *p_len = tmp_len;    
+    *p_len = tmp_len;
 
     return S_OK;
 }
@@ -427,7 +427,7 @@ bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *p_len)
 /**
  * @brief get binary value without init
  * @details [long description]
- * 
+ *
  * @param b [description]
  * @param name [description]
  * @param max_len max-length of the buffer
@@ -455,12 +455,12 @@ bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len)
     Err error = S_OK;
     bson_iter_binary(&iter, &subtype, p_len, &p_value);
     int len = *p_len;
-    if(len > max_len) {
+    if (len > max_len) {
         len = max_len;
         error = S_ERR_BUFFER_LEN;
     }
     memcpy(value, p_value, len);
-    if(len < max_len) {
+    if (len < max_len) {
         value[len + 1] = 0;
     }
 
