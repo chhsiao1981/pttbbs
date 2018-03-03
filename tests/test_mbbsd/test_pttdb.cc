@@ -319,7 +319,7 @@ TEST(pttdb, create_main_from_fd_test1_full) {
 
     EXPECT_EQ(len, main_header.len_total);
     EXPECT_EQ(2, main_header.n_total_block);
-    EXPECT_EQ(9, main_header.n_total_line);
+    EXPECT_EQ(10, main_header.n_total_line);
 
     close(fd);
 }
