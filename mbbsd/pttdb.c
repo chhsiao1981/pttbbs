@@ -398,7 +398,7 @@ _split_main_contents(int fd_content, int len, UUID main_id, UUID content_id, int
     bzero(&main_content_block, sizeof(MainContent));
 
     *n_block = 0;
-    error_code = _split_main_contents_init_main_content(&main_content_block, main_id, content_id, *n_block);
+    error_code = _split_main_contents_init_main_content(&main_content_block, main_id, content_id, n_block);
     if (error_code) {
         return error_code;
     }
@@ -473,8 +473,7 @@ _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID cont
             return error_code;
         }
 
-        (*n_block)++;
-        error_code = _split_main_contents_init_main_content(main_content_block, main_id, content_id, *n_block);
+        error_code = _split_main_contents_init_main_content(main_content_block, main_id, content_id, n_block);
         if (error_code) {
             return error_code;
         }
@@ -486,8 +485,7 @@ _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID cont
             return error_code;
         }
 
-        (*n_block)++;
-        error_code = _split_main_contents_init_main_content(main_content_block, main_id, content_id, *n_block);
+        error_code = _split_main_contents_init_main_content(main_content_block, main_id, content_id, n_block);
         if (error_code) {
             return error_code;
         }
@@ -511,7 +509,7 @@ _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID cont
  * @return Err
  */
 Err
-_split_main_contents_init_main_content(MainContent *main_content_block, UUID main_id, UUID content_id, int block_id)
+_split_main_contents_init_main_content(MainContent *main_content_block, UUID main_id, UUID content_id, int *block_id)
 {
     if (main_content_block->len_block) {
         bzero(main_content_block->buf_block, main_content_block->len_block);
@@ -520,7 +518,9 @@ _split_main_contents_init_main_content(MainContent *main_content_block, UUID mai
     main_content_block->n_line = 0;
     strncpy(main_content_block->the_id, content_id, sizeof(UUID));
     strncpy(main_content_block->main_id, main_id, sizeof(UUID));
-    main_content_block->block_id = block_id;
+    main_content_block->block_id = *block_id;
+
+    (*block_id)++;
 
     return S_OK;
 }

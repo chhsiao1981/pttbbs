@@ -23,7 +23,7 @@ Err _serialize_content_uuid_bson(UUID uuid, const char *key, int block_id, bson_
 
 Err _split_main_contents(int fd_content, int len, UUID main_id, UUID content_id, int *n_line, int *n_block);
 Err _split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID content_id, MainContent *main_content_block, int *n_line, int *n_block);
-Err _split_main_contents_init_main_content(MainContent *main_content_block, UUID main_id, UUID content_id, int block_id);
+Err _split_main_contents_init_main_content(MainContent *main_content_block, UUID main_id, UUID content_id, int *block_id);
 
 Err _split_main_contents_save_main_content_block(MainContent *main_content_block);
 
