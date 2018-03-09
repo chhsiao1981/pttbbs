@@ -30,8 +30,6 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origi
     bson_t main_id_bson;
     bson_t main_bson;
 
-    char debug_uuid[UUIDLEN + 1] = {};
-
     error_code = get_milli_timestamp(&create_milli_timestamp);
     if (error_code) return error_code;
 
@@ -42,9 +40,7 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origi
     if (error_code) return error_code;
 
     // main_header
-    strncpy(debug_uuid, main_id, sizeof(UUID));
     strncpy(main_header.the_id, main_id, sizeof(UUID));
-    strncpy(debug_uuid, main_header.the_id, sizeof(UUID));
     strncpy(main_header.content_id, content_id, sizeof(UUID));
     strncpy(main_header.update_content_id, content_id, sizeof(UUID));
     main_header.aid = aid;

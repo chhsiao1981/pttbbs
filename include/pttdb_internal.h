@@ -35,6 +35,11 @@ Err _serialize_main_content_block_bson(MainContent *main_content_block, bson_t *
 Err _deserialize_main_content_block_bson(bson_t *main_content_block_bson, MainContent *main_content_block);
 
 /**********
+ * Comment
+ **********/
+Err _serialize_comment_bson(Comment *comment, bson_t *comment_bson);
+
+/**********
  * Misc
  **********/
 
