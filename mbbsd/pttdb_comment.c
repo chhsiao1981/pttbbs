@@ -145,7 +145,7 @@ _serialize_comment_bson(Comment *comment, bson_t *comment_bson)
     bson_status = bson_append_int32(comment_bson, "len", -1, comment->len);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_bin(comment_bson, "buf", -1, comment->buf, MAX_BUF_COMMENT);
+    bson_status = bson_append_bin(comment_bson, "buf", -1, comment->buf, comment->len);
     if (!bson_status) return S_ERR;
 
     return S_OK;
