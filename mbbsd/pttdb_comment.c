@@ -1,6 +1,15 @@
 #include "pttdb.h"
 #include "pttdb_internal.h"
 
+Karma _KARMA_BY_COMMENT_TYPE[] = {
+    KARMA_GOOD,
+    KARMA_BAD,
+    KARMA_ARROW,
+    0,
+    KARMA_FORWARD,
+    KARMA_OTHER,
+}
+
 /**
  * @brief [brief description]
  * @details [long description]
@@ -13,7 +22,7 @@
  * @param comment_id [description]
  */
 Err
-create_comment(UUID main_id, char *poster, char *ip, int len, char *content, UUID comment_id)
+create_comment(UUID main_id, char *poster, char *ip, int len, char *content, CommentType comment_type, UUID comment_id)
 {
     Err error_code = S_OK;
 
@@ -35,6 +44,9 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, UUI
     comment.status = LIVE_STATUS_ALIVE;
     strcpy(comment.status_updater, poster);
     strcpy(comment.status_update_ip, ip);
+
+    comment.comment_type = comment_type;
+    comment.karma = _KARMA_BY_COMMENT_TYPE[comment_type];
 
     strcpy(comment.poster, poster);
     strcpy(comment.ip, ip);
@@ -100,7 +112,16 @@ _serialize_comment_bson(Comment *comment, bson_t *comment_bson)
     bson_status = bson_append_bin(comment_bson, "status_updater", -1, comment->status_updater, IDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_bin(comment_bson, "status_updater_ip", -1, comment->status_updater_ip, IPV4LEN);
+    bson_status = bson_append_bin(comment_bson, "status_update_ip", -1, comment->status_update_ip, IPV4LEN);
+    if (!bson_status) return S_ERR;
+
+    bson_status = bson_append_int32(comment_bson, "comment_type", -1, comment->comment_type);
+    if (!bson_status) return S_ERR;
+
+    bson_status = bson_append_int32(comment_bson, "karma", -1, comment->karma);
+    if (!bson_status) return S_ERR;
+
+    bson_status = bson_append_int32(comment_bson, "status", -1, comment->status);
     if (!bson_status) return S_ERR;
 
     bson_status = bson_append_bin(comment_bson, "poster", -1, comment->poster, IDLEN);
@@ -128,4 +149,68 @@ _serialize_comment_bson(Comment *comment, bson_t *comment_bson)
     if (!bson_status) return S_ERR;
 
     return S_OK;
+}
+
+/**
+ * @brief [brief description]
+ * @details [long description]
+ * 
+ * @param comment_bson [description]
+ * @param comment [description]
+ * 
+ * @return [description]
+ */
+Err
+_deserialize_comment_bson(bson_t *comment_bson, Comment *comment)
+{
+    Err error_code;
+
+    int len;
+    error_code = bson_get_value_int32(comment_bson, "version", &comment->version);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_bin(comment_bson, "the_id", UUIDLEN, comment->the_id, &len);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_bin(comment_bson, "main_id", UUIDLEN, comment->main_id, &len);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_int32(comment_bson, "status", &comment->status);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_int32(comment_bson, "comment_type", &comment->comment_type);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_int32(comment_bson, "karma", &comment->karma);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_bin(comment_bson, "status_updater", IDLEN, &comment->status_updater, &len);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_bin(comment_bson, "status_update_ip", IPV4LEN, &comment->status_update_ip, &len);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_bin(comment_bson, "poster", IDLEN, &comment->poster, &len);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_bin(comment_bson, "ip", IPV4LEN, &comment->ip, &len);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_int64(main_bson, "create_milli_timestamp", &comment->create_milli_timestamp);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_bin(comment_bson, "updater", IDLEN, &comment->updater, &len);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_bin(comment_bson, "update_ip", IPV4LEN, &comment->update_ip, &len);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_int64(main_bson, "update_milli_timestamp", &comment->update_milli_timestamp);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_int32(main_bson, "len", &comment->len);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_bin(comment_bson, "buf", MAX_BUF_COMMENT, comment->buf, &len);
+    if (error_code) return error_code;
 }

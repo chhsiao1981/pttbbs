@@ -38,6 +38,7 @@ Err _deserialize_main_content_block_bson(bson_t *main_content_block_bson, MainCo
  * Comment
  **********/
 Err _serialize_comment_bson(Comment *comment, bson_t *comment_bson);
+Err _deserialize_comment_bson(bson_t *comment_bson, Comment *comment);
 
 /**********
  * Misc

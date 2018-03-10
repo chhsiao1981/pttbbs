@@ -28,20 +28,20 @@ typedef long long int time64_t;
 typedef unsigned char UUID[UUIDLEN];
 typedef unsigned char _UUID[_UUIDLEN];
 
-enum {
-    COMMENTTYPE_GOOD,
-    COMMENTTYPE_BAD,
-    COMMENTTYPE_ARROW,
-    COMMENTTYPE_SIZE,
+enum CommentType {
+    COMMENT_TYPE_GOOD,
+    COMMENT_TYPE_BAD,
+    COMMENT_TYPE_ARROW,
+    COMMENT_TYPE_SIZE,
 
-    COMMENTTYPE_FORWARD,                       // hack for forward
-    COMMENTTYPE_OTHER,                         // hack for other
+    COMMENT_TYPE_FORWARD,                       // hack for forward
+    COMMENT_TYPE_OTHER,                         // hack for other
 
-    COMMENTTYPE_MAX     = COMMENTTYPE_SIZE - 1,
-    COMMENTTYPE_DEFAULT = COMMENTTYPE_GOOD,
+    COMMENT_TYPE_MAX     = COMMENT_TYPE_SIZE - 1,
+    COMMENT_TYPE_DEFAULT = COMMENT_TYPE_GOOD,
 };
 
-enum {
+enum Karma {
     KARMA_GOOD = 1,
     KARMA_BAD = -1,
     KARMA_ARROW = 0,
@@ -49,7 +49,7 @@ enum {
     KARMA_OTHER = 0,
 };
 
-enum {
+enum LiveStatus {
     LIVE_STATUS_ALIVE,
     LIVE_STATUS_DELETED,
 };
@@ -66,7 +66,7 @@ typedef struct MainHeader {
     UUID update_content_id;                          // updating content-id, not effective if content_id == update_content_id
     aidu_t aid;                                      // aid
 
-    unsigned int status;                            // status of the main.
+    LiveStatus status;                               // status of the main.
     char status_updater[IDLEN + 1];                  // last user updating the status
     char status_update_ip[IPV4LEN + 1];              // last ip updating the status
 
@@ -105,17 +105,17 @@ typedef struct MainContent {
  * Comments
  **********/
 typedef struct Comment {
-    unsigned int version;                           // version
+    unsigned int version;                            // version
 
     UUID the_id;                                     // comment-id
     UUID main_id;                                    // corresponding main-id
 
-    unsigned int status;                            // status
+    LiveStatus status;                               // status
     char status_updater[IDLEN + 1];                  // last user updaing the status
     char status_update_ip[IPV4LEN + 1];              // last ip updating the status
 
-    unsigned int rec_type;                          // recommendation-type.
-    int karma;                                       // karma
+    CommentType comment_type;                        // comment-type.
+    Karma karma;                                     // karma
 
     char poster[IDLEN + 1];                          // creater
     char ip[IPV4LEN + 1];                            // create-ip
@@ -215,9 +215,9 @@ Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, i
 /**********
  * Comments
  **********/
-/*
-Err create_comment(UUID main_id, char *poster, char *ip, int len, char *content, UUID *comment_id);
+Err create_comment(UUID main_id, char *poster, char *ip, int len, char *content, CommentType comment_type, UUID *comment_id);
 
+/*
 Err count_karma_by_main(UUID main_id);
 Err len_comments_by_main(UUID main_id);
 Err n_line_comments_by_main(UUID main_id);
