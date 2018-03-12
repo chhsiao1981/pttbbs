@@ -86,11 +86,11 @@ TEST(pttdb, delete_comment) {
 
     bson_t query;
     bson_t result;
-    
+
     bson_init(&query);
     bson_init(&result);
 
-    bson_append_bin(&query, "the_id", -1, main_header.the_id, UUIDLEN);
+    bson_append_bin(&query, "the_id", -1, comment.the_id, UUIDLEN);
 
     error = db_find_one_with_fields(MONGO_MAIN, &query, fields, n_fields, &result);
     int result_status;
