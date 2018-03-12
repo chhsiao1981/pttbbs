@@ -97,7 +97,7 @@ _serialize_comment_bson(Comment *comment, bson_t *comment_bson)
 {
     bool bson_status;
 
-    bson_status = bson_append_int32(main_bson, "version", -1, comment->version);
+    bson_status = bson_append_int32(comment_bson, "version", -1, comment->version);
     if (!bson_status) return S_ERR;
 
     bson_status = bson_append_bin(comment_bson, "the_id", -1, comment->the_id, UUIDLEN);
@@ -196,7 +196,7 @@ _deserialize_comment_bson(bson_t *comment_bson, Comment *comment)
     error_code = bson_get_value_bin(comment_bson, "ip", IPV4LEN, &comment->ip, &len);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_int64(main_bson, "create_milli_timestamp", &comment->create_milli_timestamp);
+    error_code = bson_get_value_int64(comment_bson, "create_milli_timestamp", &comment->create_milli_timestamp);
     if (error_code) return error_code;
 
     error_code = bson_get_value_bin(comment_bson, "updater", IDLEN, &comment->updater, &len);
@@ -205,10 +205,10 @@ _deserialize_comment_bson(bson_t *comment_bson, Comment *comment)
     error_code = bson_get_value_bin(comment_bson, "update_ip", IPV4LEN, &comment->update_ip, &len);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_int64(main_bson, "update_milli_timestamp", &comment->update_milli_timestamp);
+    error_code = bson_get_value_int64(comment_bson, "update_milli_timestamp", &comment->update_milli_timestamp);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_int32(main_bson, "len", &comment->len);
+    error_code = bson_get_value_int32(comment_bson, "len", &comment->len);
     if (error_code) return error_code;
 
     error_code = bson_get_value_bin(comment_bson, "buf", MAX_BUF_COMMENT, comment->buf, &len);
