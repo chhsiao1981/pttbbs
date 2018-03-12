@@ -110,12 +110,12 @@ typedef struct Comment {
     UUID the_id;                                     // comment-id
     UUID main_id;                                    // corresponding main-id
 
-    LiveStatus status;                               // status
+    enum LiveStatus status;                               // status
     char status_updater[IDLEN + 1];                  // last user updaing the status
     char status_update_ip[IPV4LEN + 1];              // last ip updating the status
 
-    CommentType comment_type;                        // comment-type.
-    Karma karma;                                     // karma
+    enum CommentType comment_type;                        // comment-type.
+    enum Karma karma;                                     // karma
 
     char poster[IDLEN + 1];                          // creater
     char ip[IPV4LEN + 1];                            // create-ip

@@ -22,7 +22,7 @@ Karma _KARMA_BY_COMMENT_TYPE[] = {
  * @param comment_id [description]
  */
 Err
-create_comment(UUID main_id, char *poster, char *ip, int len, char *content, CommentType comment_type, UUID comment_id)
+create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enum CommentType comment_type, UUID comment_id)
 {
     Err error_code = S_OK;
 
