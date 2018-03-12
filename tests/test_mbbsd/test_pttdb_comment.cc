@@ -52,6 +52,65 @@ TEST(pttdb, create_comment) {
     EXPECT_STREQ(content, comment.buf);
 }
 
+TEST(pttdb, delete_comment) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+
+    UUID main_id;
+    char poster[IDLEN + 1] = {};
+    char ip[IPV4LEN + 1] = {};
+    char content[] = "temp_content";
+    int len = strlen(content);
+    enum CommentType comment_type = COMMENT_TYPE_GOOD;
+
+    UUID comment_id;
+    UUID tmp_comment_id;
+
+    gen_uuid(main_id);
+    Err error_code = create_comment(main_id, poster, ip, len, content, comment_type, comment_id);
+    EXPECT_EQ(S_OK, error_code);
+
+    char del_updater[IDLEN + 1] = "del_updater";
+    char status_update_ip[IPV4LEN + 1] = "10.1.1.4";
+    error = delete_main(comment_id, del_updater, status_update_ip);
+    EXPECT_EQ(S_OK, error);
+
+    char **fields;
+    int n_fields = 3;
+    fields = (char **)malloc(sizeof(char *) * n_fields);
+    for (int i = 0; i < 3; i++) {
+        fields[i] = (char *)malloc(30);
+    }
+    strcpy(fields[0], "status");
+    strcpy(fields[1], "status_updater");
+    strcpy(fields[2], "status_update_ip");
+
+    bson_init(&query);
+    bson_init(&result);
+
+    bson_append_bin(&query, "the_id", -1, main_header.the_id, UUIDLEN);
+
+    error = db_find_one_with_fields(MONGO_MAIN, &query, fields, n_fields, &result);
+    int result_status;
+    char result_status_updater[MAX_BUF_SIZE];
+    char result_status_update_ip[MAX_BUF_SIZE];
+    bson_get_value_int32(&result, "status", &result_status);
+    bson_get_value_bin(&result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
+    bson_get_value_bin(&result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
+
+    for (int i = 0; i < 3; i++) {
+        free(fields[i]);
+    }
+    free(fields);
+
+    EXPECT_EQ(LIVE_STATUS_DELETED, result_status);
+    EXPECT_STREQ(del_updater, result_status_updater);
+    EXPECT_STREQ(status_update_ip, result_status_update_ip);
+
+    bson_destroy(&query);
+    bson_destroy(&result);
+}
+
+
 TEST(pttdb_comment, serialize_comment_bson) {
     Comment comment = {};
     Comment comment2 = {};

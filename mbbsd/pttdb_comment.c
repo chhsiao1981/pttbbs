@@ -119,6 +119,67 @@ read_comment(UUID comment_id, Comment *comment)
 /**
  * @brief [brief description]
  * @details [long description]
+ *
+ * @param main_id [description]
+ * @param updater [description]
+ * @param char [description]
+ * @return [description]
+ */
+Err
+delete_comment(UUID comment_id, char *updater, char *ip) {
+    Err error_code;
+    bool bson_status;
+
+    bson_t key;
+    bson_init(&key);
+
+    bson_t val;
+    bson_init(&val);
+
+    bson_status = bson_append_bin(&key, "the_id", -1, comment_id, UUIDLEN);
+    if (!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return S_ERR;
+    }
+
+    bson_status = bson_append_bin(&val, "status_updater", -1, updater, IDLEN);
+    if (!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return S_ERR;
+    }
+
+    bson_status = bson_append_int32(&val, "status", -1, LIVE_STATUS_DELETED);
+    if (!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return S_ERR;
+    }
+
+    bson_status = bson_append_bin(&val, "status_update_ip", -1, ip, IPV4LEN);
+    if (!bson_status) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return S_ERR;
+    }
+
+    error_code = db_update_one(MONGO_COMMENT, &key, &val, true);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&val);
+        return error_code;
+    }
+
+    bson_destroy(&key);
+    bson_destroy(&val);
+
+    return S_OK;
+}
+
+/**
+ * @brief [brief description]
+ * @details [long description]
  * 
  * @param comment [description]
  * @param comment_bson [description]

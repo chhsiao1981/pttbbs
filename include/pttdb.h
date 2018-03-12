@@ -220,6 +220,8 @@ Err create_comment(UUID main_id, char *poster, char *ip, int len, char *content,
 
 Err read_comment(UUID comment_id, Comment *comment);
 
+Err delete_comment(UUID comment_id, char *updater, char *ip);
+
 /*
 Err count_karma_by_main(UUID main_id);
 Err len_comments_by_main(UUID main_id);
