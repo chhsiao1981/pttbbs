@@ -105,7 +105,7 @@ free_mongo_collections()
  * @param key [description]
  */
 Err
-db_set_if_not_exists(int collection, bson_t *key)
+db_set_if_not_exists(enum MongoDBId collection, bson_t *key)
 {
     bool status;
 
@@ -170,7 +170,7 @@ db_set_if_not_exists(int collection, bson_t *key)
  * @param is_upsert [description]
  */
 Err
-db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
+db_update_one(enum MongoDBId collection, bson_t *key, bson_t *val, bool is_upsert)
 {
     bool status;
 
@@ -224,7 +224,7 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
  * @param result result (MUST-NOT initialized and need to bson_destroy)
  */
 Err
-db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
+db_find_one(enum MongoDBId collection, bson_t *key, bson_t *fields, bson_t *result)
 {
     mongoc_cursor_t *cursor = mongoc_collection_find(MONGO_COLLECTIONS[collection], MONGOC_QUERY_NONE, 0, 1, 0, key, fields, NULL);
 
@@ -266,7 +266,7 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
  * @param result [description]
  */
 Err
-db_find_one_with_fields(int collection, bson_t *key, char **fields, int n_fields, bson_t *result)
+db_find_one_with_fields(enum MongoDBId collection, bson_t *key, char **fields, int n_fields, bson_t *result)
 {
     Err error_code;
     bson_t b_fields;
@@ -298,7 +298,7 @@ db_find_one_with_fields(int collection, bson_t *key, char **fields, int n_fields
 
 
 Err
-_DB_FORCE_DROP_COLLECTION(int collection)
+_DB_FORCE_DROP_COLLECTION(enum MongoDBId collection)
 {
     bool status;
     bson_error_t error;

@@ -27,10 +27,12 @@ enum
     MONGO_TEST_DBNAME,
 };
 
-enum {
+enum MongoDBId {
     MONGO_MAIN,
     MONGO_MAIN_CONTENT,
     MONGO_COMMENT,
+    MONGO_COMMENT_REPLY,
+    MONGO_COMMENT_REPLY_CONTENT,
 
     MONGO_TEST,
 
@@ -44,10 +46,10 @@ Err init_mongo_collections(const char *db_name[]);
 Err free_mongo_collections();
 
 // db-ops
-Err db_set_if_not_exists(int collection, bson_t *key);
-Err db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert);
-Err db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result);
-Err db_find_one_with_fields(int collection, bson_t *key, char **fields, int n_fields, bson_t *result);
+Err db_set_if_not_exists(enum MongoDBId collection, bson_t *key);
+Err db_update_one(enum MongoDBId collection, bson_t *key, bson_t *val, bool is_upsert);
+Err db_find_one(enum MongoDBId collection, bson_t *key, bson_t *fields, bson_t *result);
+Err db_find_one_with_fields(enum MongoDBId collection, bson_t *key, char **fields, int n_fields, bson_t *result);
 
 // bson-ops
 #define bson_append_bin(b, key, key_length, bin, length) bson_append_binary(b, key, key_length, BSON_SUBTYPE_BINARY, bin, length)

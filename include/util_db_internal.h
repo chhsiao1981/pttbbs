@@ -14,7 +14,7 @@ extern "C" {
  **********/
 
 // XXX NEVER USE UNLESS IN TEST
-Err _DB_FORCE_DROP_COLLECTION(int collection);
+Err _DB_FORCE_DROP_COLLECTION(enum MongoDBId collection);
 
 #ifdef __cplusplus
 }

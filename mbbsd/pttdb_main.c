@@ -122,11 +122,11 @@ _split_main_contents(int fd_content, int len, UUID main_id, UUID content_id, int
     int buf_size = 0;
     int bytes_in_line = 0;
     int bytes_in_new_line = 0;
-    MainContent main_content_block;
+    Content content_block;
 
     // init
     bzero(line, sizeof(line));
-    bzero(&main_content_block, sizeof(MainContent));
+    bzero(&content_block, sizeof(Content));
 
     *n_block = 0;
     error_code = _split_main_contents_init_main_content(&main_content_block, main_id, content_id, n_block);

@@ -49,6 +49,7 @@ enum Karma {
 };
 
 enum LiveStatus {
+    LIVE_STATUS_NEW,
     LIVE_STATUS_ALIVE,
     LIVE_STATUS_DELETED,
 };
@@ -103,6 +104,21 @@ typedef struct MainContent {
 } MainContent;
 
 /**********
+ * Content
+ **********/
+typedef struct Content {
+    UUID the_id;                                     // content-id
+    UUID ref_id;                                     // corresponding ref_id
+
+    int block_id;                                    // corresponding block-id
+
+    int len_block;                                   // size of this block.
+    int n_line;                                      // n-line of this block.
+
+    char buf_block[MAX_BUF_BLOCK + 1];               // buf
+} Content;
+
+/**********
  * Comments
  **********/
 typedef struct Comment {
@@ -143,7 +159,7 @@ typedef struct CommentReplyHeader {
     UUID comment_id;                                 // corresponding comment-id
     UUID main_id;                                    // corresponding main-id
 
-    unsigned int status;                            // status
+    enum LiveStatus status;                          // status
     char status_updater[IDLEN + 1];                  // last user updating status
     char status_update_ip[IPV4LEN + 1];              // last ip updating the status
 
@@ -169,7 +185,6 @@ typedef struct CommentReplyContent {
     int n_line;                                      // lines of the block
     char buf_block[MAX_BUF_BLOCK + 1];               // buf
 } CommentReplyContent;
-
 
 /**********
  * Milli-timestamp
@@ -213,6 +228,10 @@ Err delete_main_by_aid(aidu_t aid, char *updater, char *ip);
 
 Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content, UUID content_id);
 
+/*
+Err read_main_contents_by_main(UUID main_id, int offset_block_id, int max_n_contents, MainContent **main_contents, int *n_contents);
+*/
+
 /**********
  * Comments
  **********/
@@ -228,18 +247,14 @@ Err len_comments_by_main(UUID main_id);
 Err n_line_comments_by_main(UUID main_id);
 Err read_comments_by_main(UUID main_id, time4_t create_timestamp, char *poster, int max_n_comments, int *n_read_comments, Comment *comments);
 Err read_comments_by_main_aid(aidu_t aid, time4_t create_timestamp, char *poster, int max_n_comments, int *n_read_comments, Comment *comments);
-
-Err update_comment(UUID comment_id, char *updater, unsigned char *ip, int len, char *content);
-
-Err delete_comment(UUID the_id, char *updater, unsigned char *ip);
 */
 
 /**********
  * CommentReply
  **********/
-/*
-Err create_comment_reply(UUID main_id, UUID comment_id, char *poster, unsigned char *ip, int len, char *content, UUID *comment_reply_id);
+Err create_comment_reply_from_fd(UUID main_id, UUID comment_id, char *poster, char *ip, int len, char *content, UUID comment_reply_id, UUID comment_reply_content_id);
 
+/*
 Err len_comment_reply_by_main(UUID main_id);
 
 Err n_line_comment_reply_by_main(UUID main_id);
