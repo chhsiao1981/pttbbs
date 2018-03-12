@@ -46,7 +46,7 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enu
     strcpy(comment.status_update_ip, ip);
 
     comment.comment_type = comment_type;
-    comment.karma = _KARMA_BY_COMMENT_TYPE[comment_type];
+    comment.karma = KARMA_BY_COMMENT_TYPE[comment_type];
 
     strcpy(comment.poster, poster);
     strcpy(comment.ip, ip);
