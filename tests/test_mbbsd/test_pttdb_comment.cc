@@ -16,12 +16,15 @@ TEST(pttdb, create_comment) {
     enum CommentType comment_type = COMMENT_TYPE_GOOD;
 
     UUID comment_id;
+    UUID tmp_comment_id;
 
     gen_uuid(main_id);
     Err error_code = create_comment(main_id, poster, ip, len, content, comment_type, comment_id);
     EXPECT_EQ(S_OK, error_code);
 
     Comment comment  = {};
+
+    strncpy(tmp_comment_id, comment_id, UUIDLEN);
 
     error_code = read_comment(comment_id, &comment);
     EXPECT_EQ(S_OK, error_code);
