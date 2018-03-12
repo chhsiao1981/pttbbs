@@ -5,6 +5,50 @@
 #include "pttdb_internal.h"
 #include "util_db_internal.h"
 
+TEST(pttdb, create_comment) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+
+    UUID main_id;
+    char poster[IDLEN + 1] = {};
+    char ip[IPV4LEN + 1] = {};
+    char content[] = "temp_content";
+    int len = strlen(content);
+    enum CommentType comment_type = COMMENT_TYPE_GOOD;
+
+    UUID comment_id;
+
+    gen_uuid(main_id);
+    Err error_code = create_comment(main_id, poster, ip, len, content, comment_type, comment_id);
+    EXPECT_EQ(S_OK, error_code);
+
+    Comment comment  = {};
+
+    error_code = read_comment(comment_id, &comment);
+    EXPECT_EQ(S_OK, error_code);
+
+    EXPECT_EQ(0, strncmp((char *)tmp_comment_id, (char *)comment.the_id, UUIDLEN));
+
+    EXPECT_EQ(0, strncmp((char *)main_id, (char *)comment.main_id, UUIDLEN));
+    EXPECT_EQ(LIVE_STATUS_ALIVE, comment.status);
+
+    EXPECT_STREQ(poster, comment.status_updater);
+    EXPECT_STREQ(ip, comment.status_update_ip);
+
+    EXPECT_EQ(comment_type, comment.comment_type);    
+    EXPECT_EQ(KARMA_GOOD, comment.karma);
+
+    EXPECT_STREQ(poster, comment.poster);
+    EXPECT_STREQ(ip, comment.ip);
+
+    EXPECT_STREQ(poster, comment.updater);
+    EXPECT_STREQ(ip, comment.update_ip);
+
+    EXPECT_EQ(comment.create_milli_timestamp, comment.update_milli_timestamp);
+
+    EXPECT_EQ(len, comment.len);
+    EXPECT_STREQ(content, comment.buf);
+}
+
 TEST(pttdb_comment, serialize_comment_bson) {
     Comment comment = {};
     Comment comment2 = {};

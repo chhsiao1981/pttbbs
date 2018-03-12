@@ -37,6 +37,7 @@ enum CommentType {
     COMMENT_TYPE_FORWARD,                       // hack for forward
     COMMENT_TYPE_OTHER,                         // hack for other
 
+    COMMENT_TYPE_N_TYPE,
     COMMENT_TYPE_MAX     = COMMENT_TYPE_SIZE - 1,
     COMMENT_TYPE_DEFAULT = COMMENT_TYPE_GOOD,
 };
@@ -45,14 +46,14 @@ enum Karma {
     KARMA_GOOD = 1,
     KARMA_BAD = -1,
     KARMA_ARROW = 0,
-    KARMA_FORWARD = 0,
-    KARMA_OTHER = 0,
 };
 
 enum LiveStatus {
     LIVE_STATUS_ALIVE,
     LIVE_STATUS_DELETED,
 };
+
+extern enum Karma KARMA_BY_COMMENT_TYPE[COMMENT_TYPE_N_TYPE];
 
 /**********
  * Main
@@ -216,6 +217,8 @@ Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, i
  * Comments
  **********/
 Err create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enum CommentType comment_type, UUID comment_id);
+
+Err read_comment(UUID comment_id, Comment *comment);
 
 /*
 Err count_karma_by_main(UUID main_id);

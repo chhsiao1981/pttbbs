@@ -1,13 +1,13 @@
 #include "pttdb.h"
 #include "pttdb_internal.h"
 
-enum Karma _KARMA_BY_COMMENT_TYPE[] = {
+enum Karma KARMA_BY_COMMENT_TYPE[] = {
     KARMA_GOOD,
     KARMA_BAD,
     KARMA_ARROW,
     0,
-    KARMA_FORWARD,
-    KARMA_OTHER,
+    0,                   // forward
+    0,                   // other
 };
 
 /**
@@ -80,6 +80,37 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enu
         return error_code;
     }
 
+    return S_OK;
+}
+
+Err
+read_comment(UUID comment_id, Comment *comment)
+{
+    Err error_code;    
+    bson_t key;
+    bson_t db_result;
+
+    bson_init(&key);
+    bson_init(&db_result);
+
+    bson_append_bin(&key, "the_id", -1, comment_id, UUIDLEN);
+
+    error_code = db_find_one(MONGO_COMMENT, &key, NULL, &db_result);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+
+    error_code = _deserialize_comment_bson(&db_result, comment);
+    if (error_code) {
+        bson_destroy(&key);
+        bson_destroy(&db_result);
+        return error_code;
+    }
+
+    bson_destroy(&key);
+    bson_destroy(&db_result);
     return S_OK;
 }
 
