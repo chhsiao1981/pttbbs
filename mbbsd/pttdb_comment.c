@@ -1,7 +1,7 @@
 #include "pttdb.h"
 #include "pttdb_internal.h"
 
-Karma _KARMA_BY_COMMENT_TYPE[] = {
+enum Karma _KARMA_BY_COMMENT_TYPE[] = {
     KARMA_GOOD,
     KARMA_BAD,
     KARMA_ARROW,
