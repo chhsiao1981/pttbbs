@@ -24,7 +24,7 @@ TEST(pttdb, create_comment) {
 
     Comment comment  = {};
 
-    strncpy(tmp_comment_id, comment_id, UUIDLEN);
+    memcpy(tmp_comment_id, comment_id, UUIDLEN);
 
     error_code = read_comment(comment_id, &comment);
     EXPECT_EQ(S_OK, error_code);
