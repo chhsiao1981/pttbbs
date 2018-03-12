@@ -12,6 +12,7 @@ extern "C" {
 // Mongo Post
 #define MONGO_MAIN_NAME "main"
 #define MONGO_MAIN_CONTENT_NAME "main_content"
+#define MONGO_COMMENT_NAME ="comment"
 
 // Mongo Test
 #define MONGO_TEST_NAME "test"
@@ -29,6 +30,7 @@ enum
 enum {
     MONGO_MAIN,
     MONGO_MAIN_CONTENT,
+    MONGO_COMMENT,
 
     MONGO_TEST,
 
