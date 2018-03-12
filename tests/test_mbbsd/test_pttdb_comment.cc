@@ -84,6 +84,9 @@ TEST(pttdb, delete_comment) {
     strcpy(fields[1], "status_updater");
     strcpy(fields[2], "status_update_ip");
 
+    bson_t query;
+    bson_t result;
+    
     bson_init(&query);
     bson_init(&result);
 
