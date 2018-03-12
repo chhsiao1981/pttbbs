@@ -51,9 +51,9 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enu
     strcpy(comment.poster, poster);
     strcpy(comment.ip, ip);
     comment.create_milli_timestamp = create_milli_timestamp;
-    strcpy(comment.updater, updater);
+    strcpy(comment.updater, poster);
     strcpy(comment.update_ip, ip);
-    comment.update_milli_timestamp = update_milli_timestamp;
+    comment.update_milli_timestamp = create_milli_timestamp;
     comment.len = len;
     strncpy(comment.buf, content, len);
 
