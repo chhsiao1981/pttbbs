@@ -61,6 +61,7 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enu
     bson_init(&comment_bson);
     error_code = _serialize_comment_bson(&comment, &comment_bson);
     if(error_code) {
+        fprintf(stderr, "unable to serialize comment bson\n");
         bson_destroy(&comment_bson);
         return error_code;
     }
@@ -77,6 +78,7 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enu
     bson_destroy(&comment_bson);
     bson_destroy(&comment_id_bson);
     if(error_code) {
+        fprintf(stderr, "unable to db-update\n");
         return error_code;
     }
 
