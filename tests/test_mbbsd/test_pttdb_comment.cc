@@ -66,8 +66,8 @@ TEST(pttdb, delete_comment) {
     UUID tmp_comment_id;
 
     gen_uuid(main_id);
-    Err error_code = create_comment(main_id, poster, ip, len, content, comment_type, comment_id);
-    EXPECT_EQ(S_OK, error_code);
+    Err error = create_comment(main_id, poster, ip, len, content, comment_type, comment_id);
+    EXPECT_EQ(S_OK, error);
 
     char del_updater[IDLEN + 1] = "del_updater";
     char status_update_ip[IPV4LEN + 1] = "10.1.1.4";
