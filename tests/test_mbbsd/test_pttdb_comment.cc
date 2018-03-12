@@ -71,7 +71,7 @@ TEST(pttdb, delete_comment) {
 
     char del_updater[IDLEN + 1] = "del_updater";
     char status_update_ip[IPV4LEN + 1] = "10.1.1.4";
-    error = delete_main(comment_id, del_updater, status_update_ip);
+    error = delete_comment(comment_id, del_updater, status_update_ip);
     EXPECT_EQ(S_OK, error);
 
     char **fields;
