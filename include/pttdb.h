@@ -66,7 +66,7 @@ typedef struct MainHeader {
     UUID update_content_id;                          // updating content-id, not effective if content_id == update_content_id
     aidu_t aid;                                      // aid
 
-    LiveStatus status;                               // status of the main.
+    enum LiveStatus status;                               // status of the main.
     char status_updater[IDLEN + 1];                  // last user updating the status
     char status_update_ip[IPV4LEN + 1];              // last ip updating the status
 
