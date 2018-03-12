@@ -200,6 +200,7 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
     // reply
     status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, &reply, &error);
     if (!status) {
+        fprintf(stderr, "util_db.db_update_one: unable to mongo-collection-update-one: e: %s\n", error.message);
         bson_destroy(set_val);
         bson_destroy(opts);
         bson_destroy(&reply);
