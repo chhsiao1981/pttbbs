@@ -8,7 +8,7 @@ enum Karma _KARMA_BY_COMMENT_TYPE[] = {
     0,
     KARMA_FORWARD,
     KARMA_OTHER,
-}
+};
 
 /**
  * @brief [brief description]
