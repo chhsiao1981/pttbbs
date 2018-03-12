@@ -154,9 +154,6 @@ _serialize_comment_bson(Comment *comment, bson_t *comment_bson)
     bson_status = bson_append_int32(comment_bson, "karma", -1, comment->karma);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_int32(comment_bson, "status", -1, comment->status);
-    if (!bson_status) return S_ERR;
-
     bson_status = bson_append_bin(comment_bson, "poster", -1, comment->poster, IDLEN);
     if (!bson_status) return S_ERR;
 
