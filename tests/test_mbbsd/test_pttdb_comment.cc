@@ -92,7 +92,7 @@ TEST(pttdb, delete_comment) {
 
     bson_append_bin(&query, "the_id", -1, comment_id, UUIDLEN);
 
-    error = db_find_one_with_fields(MONGO_MAIN, &query, fields, n_fields, &result);
+    error = db_find_one_with_fields(MONGO_COMMENT, &query, fields, n_fields, &result);
     int result_status;
     char result_status_updater[MAX_BUF_SIZE];
     char result_status_update_ip[MAX_BUF_SIZE];
