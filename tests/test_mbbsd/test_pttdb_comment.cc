@@ -46,8 +46,8 @@ TEST(pttdb_comment, serialize_comment_bson) {
 
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(comment.version, comment2.version);
-    EXPECT_EQ(0, strncmp((char *)comment.the_id, (char *)comment2.the_id), UUIDLEN);
-    EXPECT_EQ(0, strncmp((char *)comment.main_id, (char *)comment2.main_id), UUIDLEN);
+    EXPECT_EQ(0, strncmp((char *)comment.the_id, (char *)comment2.the_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)comment.main_id, (char *)comment2.main_id, UUIDLEN));
     EXPECT_EQ(comment.status, comment2.status);
     EXPECT_STREQ(comment.status_updater, comment2.status_updater);
     EXPECT_STREQ(comment.status_update_ip, comment2.status_update_ip);
