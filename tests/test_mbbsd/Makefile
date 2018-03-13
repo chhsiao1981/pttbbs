@@ -76,7 +76,7 @@ MBBSD_OBJS+=	${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/pttdb_content_block.o ${MBBSD_DIR
 TEST_PROGS=	test_dummy
 
 .if $(MONGO_CLIENT_URL)
-TEST_PROGS+=	test_pttdb test_content_block test_pttdb_misc test_util_db
+TEST_PROGS+=	test_pttdb test_pttdb_content_block test_pttdb_misc test_util_db
 .endif
 
 ##########
