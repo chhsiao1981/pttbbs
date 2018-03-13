@@ -141,17 +141,17 @@ db_set_if_not_exists(int collection, bson_t *key)
     bson_init(&opts);
     // XXX reply is initialized in update-one
 
-    status = bson_append_document(set_val, "$setOnInsert", -1, key);
+    status = bson_append_document(&set_val, "$setOnInsert", -1, key);
     if (!status) error_code = S_ERR;
 
     if(!error_code) {
-        status = bson_append_bool(opts, "upsert", -1, is_upsert);
+        status = bson_append_bool(&opts, "upsert", -1, is_upsert);
         if (!status) error_code = S_ERR;
     }
 
     // reply
     if(!error_code) {
-        status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, &reply, &error);
+        status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, &set_val, &opts, &reply, &error);
         if (!status) error_code = S_ERR;
     }
     else { // XXX hack for reply
