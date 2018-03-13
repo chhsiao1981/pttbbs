@@ -119,7 +119,7 @@ TEST(util_db, db_find_one_with_fields) {
 
     int int_result;
     char *fields[] = {
-        "the_val";
+        "the_val"
     };
 
     error = db_find_one_with_fields(MONGO_TEST, key, fields, 1, &result);
