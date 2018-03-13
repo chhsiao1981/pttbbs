@@ -232,14 +232,14 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
 {
     Err error_code = S_OK;
     bool status;
-    
+
     bson_error_t error;
     bson_t *p_result;
 
     bson_t opts;
     bson_init(&opts);
 
-    status = bson_append_int64(&opts, "limit", 1);
+    status = bson_append_int64(&opts, "limit", -1, 1);
     if(!status) error_code = S_ERR;
 
     if(!error_code) {
