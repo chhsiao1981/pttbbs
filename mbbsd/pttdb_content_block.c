@@ -248,7 +248,7 @@ _serialize_content_block_bson(ContentBlock *content_block, bson_t *content_block
     bson_status = bson_append_bin(content_block_bson, "the_id", -1, content_block->the_id, UUIDLEN);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_bin(content_block_bson, "id", -1, content_block->id, UUIDLEN);
+    bson_status = bson_append_bin(content_block_bson, "ref_id", -1, content_block->ref_id, UUIDLEN);
     if (!bson_status) return S_ERR;
 
     bson_status = bson_append_int32(content_block_bson, "block_id", -1, content_block->block_id);
@@ -284,7 +284,7 @@ _deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *conten
     error_code = bson_get_value_bin(content_block_bson, "the_id", UUIDLEN, content_block->the_id, &len);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_bin(content_block_bson, "id", UUIDLEN, content_block->id, &len);
+    error_code = bson_get_value_bin(content_block_bson, "ref_id", UUIDLEN, content_block->ref_id, &len);
     if (error_code) return error_code;
 
     error_code = bson_get_value_int32(content_block_bson, "block_id", &content_block->block_id);
