@@ -42,7 +42,6 @@ split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, en
     int bytes = 0;
     int buf_size = 0;
     int bytes_in_line = 0;
-    int bytes_in_new_line = 0;
     ContentBlock content_block = {};
 
     // init
@@ -178,7 +177,7 @@ _init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, i
     content_block->len_block = 0;
     content_block->n_line = 0;
     memcpy(content_block->the_id, content_id, sizeof(UUID));
-    memcpy(content_block->ref_id, content_id, sizeof(UUID));
+    memcpy(content_block->ref_id, ref_id, sizeof(UUID));
 
     content_block->block_id = *n_block;
     (*n_block)++;
@@ -199,15 +198,15 @@ _save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
     error_code = _serialize_content_block_bson(content_block, &content_block_bson);
 
     if(error_code == S_OK) {
-        error_code = _serialize_content_id_bson(content->the_id, MONGO_THE_ID, content->block_id, &content_id_bson);
+        error_code = _serialize_content_uuid_bson(content_block->the_id, MONGO_THE_ID, content_block->block_id, &content_block_id_bson);
     }
     
     if(error_code == S_OK) {
-        error_code = db_update_one(mongo_db_id, &content_id_bson, &content_bson, true);
+        error_code = db_update_one(mongo_db_id, &content_block_id_bson, &content_block_bson, true);
     }
 
-    bson_destroy(&content_bson);
-    bson_destroy(&content_id_bson);
+    bson_destroy(&content_block_bson);
+    bson_destroy(&content_block_id_bson);
 
     return error_code;
 }
