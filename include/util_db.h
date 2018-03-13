@@ -53,7 +53,7 @@ Err db_find_with_fields(int collection, bson_t *key, char **fields, int n_fields
 Err db_remove(int collection, bson_t *key);
 
 // bson-ops
-#define _BCON_BIN(bin, length) BCON_BINARY(BSON_SUBTYPE_BINARY, bin, length);
+#define BCON_BINARY(bin, length) BCON_BIN(BSON_SUBTYPE_BINARY, bin, length);
 #define bson_append_bin(b, key, key_length, bin, length) bson_append_binary(b, key, key_length, BSON_SUBTYPE_BINARY, bin, length)
 
 Err bson_exists(bson_t *b, char *name, bool *is_exist);
@@ -61,6 +61,8 @@ Err bson_get_value_int32(bson_t *b, char *name, int *value);
 Err bson_get_value_int64(bson_t *b, char *name, long int *value);
 Err bson_get_value_bin_not_initialized(bson_t *b, char *name, char **value, int *p_len);
 Err bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len);
+
+Err bson_safe_destroy(bson_t **b);
 
 
 #ifdef __cplusplus

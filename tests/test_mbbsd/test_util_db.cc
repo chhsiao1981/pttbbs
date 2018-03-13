@@ -6,34 +6,22 @@
 
 TEST(util_db, db_set_if_not_exists) {
     Err error;
-    Err error2;
 
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
-    bson_t b;
-    bson_init(&b);
+    bson_t *b = BCON_NEW("test", BCON_INT32(1));
 
-    bson_append_int32(&b, "test", -1, 1);
-
-    error = db_set_if_not_exists(MONGO_TEST, &b);
-    fprintf(stderr, "after db_set_if_not_exists: error: %d\n", error);
+    error = db_set_if_not_exists(MONGO_TEST, b);
     EXPECT_EQ(S_OK, error);
 
-    if(error != S_OK) {
-        bson_destroy(&b);
-        return;
-    }
-
-    error2 = db_set_if_not_exists(MONGO_TEST, &b);
-    EXPECT_EQ(S_ERR_ALREADY_EXISTS, error2);
-    if(error2 != S_ERR_ALREADY_EXISTS) {
-        bson_destroy(&b);
-        return;
+    if(!error) {
+        error = db_set_if_not_exists(MONGO_TEST, b);
+        EXPECT_EQ(S_ERR_ALREADY_EXISTS, error);
     }
 
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
-    bson_destroy(&b);
+    bson_safe_destroy(&b);
 
 }
 
@@ -42,26 +30,16 @@ TEST(util_db, db_update_one) {
 
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
-    bson_t key;
-    bson_t val;
-    bson_init(&key);
-    bson_init(&val);
+    bson_t *key = BCON_NEW("the_key", BCON_BINARY("key0", 4));
+    bson_t *val = BCON_NEW("the_val", BCON_BINARY("val0", 4));
 
-    bson_append_utf8(&key, "the_key", -1, "key0", 4);
-    bson_append_utf8(&val, "the_val", -1, "val0", 4);
-
-    error = db_update_one(MONGO_TEST, &key, &val, true);
+    error = db_update_one(MONGO_TEST, key, val, true);
     EXPECT_EQ(S_OK, error);
-    if(error != S_OK) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return;
-    }
 
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
-    bson_destroy(&key);
-    bson_destroy(&val);
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&val);
 
 }
 
@@ -70,49 +48,26 @@ TEST(util_db, db_find_one) {
 
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
-    bson_t key;
-    bson_t val;
-    bson_init(&key);
-    bson_init(&val);
-
-    bson_append_int32(&key, "the_key", -1, 4);
-    bson_append_int32(&val, "the_val", -1, 5);
+    bson_t *key = BCON_NEW("the_key", BCON_INT32(4));
+    bson_t *val = BCON_NEW("the_val", BCON_INT32(5));
 
     error = db_update_one(MONGO_TEST, &key, &val, true);
     EXPECT_EQ(S_OK, error);
-    if(error != S_OK) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return;
-    }
 
-    bson_t result;
-    error = db_find_one(MONGO_TEST, &key, NULL, &result);
+    // result
+    bson_t *result = NULL;
+
+    error = db_find_one(MONGO_TEST, key, NULL, &result);
     EXPECT_EQ(S_OK, error);
-    if(error != S_OK) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        bson_destroy(&result);
-        return;
-    }
 
     int int_result;
-    error = bson_get_value_int32(&result, "the_key", &int_result);
+    error = bson_get_value_int32(result, "the_key", &int_result);
     EXPECT_EQ(S_OK, error);
-    if(error != S_OK) {
-        fprintf(stderr, "unable to bson_get_value_int32\n");
-        bson_destroy(&key);
-        bson_destroy(&val);
-        bson_destroy(&result);
-        return;
-    }
     EXPECT_EQ(4, int_result);
 
-    fprintf(stderr, "after bson_get_value_int32\n");
-
-    bson_destroy(&key);
-    bson_destroy(&val);
-    bson_destroy(&result);
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&val);
+    bson_safe_destroy(&result);
 }
 
 TEST(util_db, db_find_one2_with_fields) {
@@ -120,33 +75,18 @@ TEST(util_db, db_find_one2_with_fields) {
 
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
-    bson_t key;
-    bson_t val;
-    bson_t fields;
-    bson_t result;
-
-    int int_result;
-
-    bson_init(&key);
-    bson_init(&val);
-    bson_destroy(&fields);
-
-    bson_append_int32(&key, "the_key", -1, 4);
-    bson_append_int32(&val, "the_val", -1, 5);
-
-    bson_append_bool(fields, "the_val", -1, true);
+    bson_t *key = BCON_NEW("the_key", BCON_INT32(4));
+    bson_t *val = BCON_NEW("the_val", BCON_INT32(5));
 
     error = db_update_one(MONGO_TEST, &key, &val, true);
     EXPECT_EQ(S_OK, error);
-    
-    if(error) // XXX hack for result
-        bson_init(&result);
-    }
 
-    if(!error) {
-        error = db_find_one(MONGO_TEST, &key, NULL, &result);
-        EXPECT_EQ(S_OK, error);
-    }
+    int int_result;
+    bson_t *fields = BCON_NEW("the_val", BCON_BOOL(true));
+    bson_t *result = NULL;
+
+    error = db_find_one(MONGO_TEST, key, NULL, &result);
+    EXPECT_EQ(S_OK, error);
 
     if(!error) {
         error = bson_get_value_int32(&result, "the_key", &int_result);
@@ -154,15 +94,28 @@ TEST(util_db, db_find_one2_with_fields) {
     }
 
     if(!error) {
-        error = bson_get_value_int32(&result, "the_val", &int_result);
+        error = bson_get_value_int32(result, "the_val", &int_result);
         EXPECT_EQ(S_OK, error);
         EXPECT_EQ(int_result, 5)
     }
 
-    bson_destroy(&key);
-    bson_destroy(&val);
-    bson_destroy(&fields);
-    bson_destroy(&result);
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&val);
+    bson_safe_destroy(&fields);
+    bson_safe_destroy(&result);
+}
+
+TEST(util_db, bson_safe_destroy) {
+    bson_t *b = NULL;
+    Err error = bson_safe_destroy(b);
+    EXPECT_EQ(S_OK, error);
+}
+
+TEST(util_db, bson_safe_destroy2) {
+    bson_t *b = bson_new();
+    Err error = bson_safe_destroy(&b);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(NULL, b);
 }
 
 /**********

@@ -176,36 +176,18 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
     Err error_code = S_OK;
     bool status;
 
-    bson_t set_val;
-    bson_t opts;
+    bson_t *set_val = BCON_NEW("$set", BCON_DOCUMENT(val));
+    bson_t *opts = BCON_NEW("upsert", BCON_BOOL(is_upsert));
 
     bson_t reply;
     bson_error_t error;
 
-    bson_init(&set_val);
-    bson_init(&opts);
-
-    status = bson_append_document(&set_val, "$set", -1, val);
+    status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, &set_val, &opts, &reply, &error);
     if (!status) error_code = S_ERR;
-
-    // opts
-    if(!error_code) {
-        status = bson_append_bool(&opts, "upsert", -1, is_upsert);
-        if (!status) error_code = S_ERR;
-    }
-
-    // reply
-    if(!error_code) {
-        status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, &set_val, &opts, &reply, &error);
-        if (!status) error_code = S_ERR;
-    }
-    else { // XXX hack for reply
-        bson_init(&reply);
-    }
-
-    bson_destroy(&set_val);
-    bson_destroy(&opts);
     bson_destroy(&reply);
+
+    bson_destroy(set_val);
+    bson_destroy(opts);
 
     return error_code;
 }
@@ -214,7 +196,7 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
  * @brief find one result in db
  * @details
  *          Example:
- *                bson_t *key = BCON_NEW("a", _BCON_BIN("test", 4));
+ *                bson_t *key = BCON_NEW("a", BCON_BINARY("test", 4));
  *                bson_t *result = NULL;
  *                db_find_one(collection, key, NULL, &result);
  *                
@@ -496,4 +478,15 @@ bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len)
     }
 
     return error;
+}
+
+Err
+bson_safe_destroy(bson_t **b)
+{
+    if(*b == NULL) return S_OK;
+
+    bson_destroy(*b);
+    *b = NULL;
+
+    return S_OK;
 }
