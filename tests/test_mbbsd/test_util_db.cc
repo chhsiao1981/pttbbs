@@ -89,6 +89,10 @@ TEST(util_db, db_find_one2_with_fields) {
     error = db_find_one(MONGO_TEST, key, NULL, &result);
     EXPECT_EQ(S_OK, error);
 
+    char *str = bson_as_canonical_extended_json(result);
+    fprintf(stderr, "test_db_find_one2_with_fields: result: %s\n", str);
+    free(str);
+
     if(!error) {
         error = bson_get_value_int32(result, (char *)"the_key", &int_result);
         EXPECT_EQ(S_ERR, error);
