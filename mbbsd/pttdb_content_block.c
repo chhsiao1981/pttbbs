@@ -97,6 +97,8 @@ init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, in
     memcpy(content_block->ref_id, ref_id, sizeof(UUID));
 
     content_block->block_id = block_id;
+
+    return S_OK;
 }
 
 
@@ -151,7 +153,7 @@ associate_content_block(ContentBlock *content_block, char *buf_block, int max_bu
 }
 
 Err
-dissociate_content_block(ContentBlock, *content_block)
+dissociate_content_block(ContentBlock *content_block)
 {
     if (content_block->buf_block == NULL) return S_OK;
 
