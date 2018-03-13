@@ -198,7 +198,7 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
 
     // opts
     if(!error_code) {
-        status = bson_append_bool(&opts, "upsert", -1, &is_upsert);
+        status = bson_append_bool(&opts, "upsert", -1, is_upsert);
         if (!status) error_code = S_ERR;
     }
 
@@ -211,8 +211,8 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
         bson_init(&reply);
     }
 
-    bson_destroy(set_val);
-    bson_destroy(opts);
+    bson_destroy(&set_val);
+    bson_destroy(&opts);
     bson_destroy(&reply);
 
     return error_code;
