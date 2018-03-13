@@ -135,7 +135,6 @@ db_set_if_not_exists(int collection, bson_t *key)
     bson_error_t error;
 
     bool is_upsert = true;
-    int n_upserted;
 
     bson_init(&set_val);
     bson_init(&opts);
