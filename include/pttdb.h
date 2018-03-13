@@ -233,8 +233,8 @@ Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, i
 /**********
  * ContentBlock
  **********/
-Err split_contents(char *buf, int bytes, UUID ref_id, UUID conten_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);
-Err split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID conten_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);
+Err split_contents(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);
+Err split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);
 
 /*
 Err read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content);

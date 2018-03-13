@@ -14,7 +14,7 @@
  * @param n_block [description]
  */
 Err
-split_contents(char *buf, int bytes, UUID ref_id, UUID conten_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block) {
+split_contents(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block) {
     Err error_code = S_OK;
     int bytes_in_line = 0;
     char line[MAX_BUF_SIZE] = {};
