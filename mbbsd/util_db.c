@@ -132,8 +132,6 @@ db_set_if_not_exists(int collection, bson_t *key)
     bson_t *set_val = NULL;
     bson_t *opts = NULL;
 
-    int n_upserted_id;
-
     bool is_exist;
 
     set_val = BCON_NEW("$setOnInsert", BCON_DOCUMENT(key));
@@ -157,8 +155,8 @@ db_set_if_not_exists(int collection, bson_t *key)
         if (is_exist) error_code = S_ERR_ALREADY_EXISTS;
     }
 
-    bson_destroy(&set_val);
-    bson_destroy(&opts);
+    bson_destroy(set_val);
+    bson_destroy(opts);
 
     return error_code;
 }
@@ -214,7 +212,15 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
 
 /**
  * @brief find one result in db
- * @details [long description]
+ * @details
+ *          Example:
+ *                bson_t *key = BCON_NEW("a", _BCON_BIN("test", 4));
+ *                bson_t *result = NULL;
+ *                db_find_one(collection, key, NULL, &result);
+ *                
+ *                if(result) {
+ *                    bson_destroy(result);
+ *                }
  *
  * @param collection [description]
  * @param key [description]
@@ -224,51 +230,42 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
 Err
 db_find_one(int collection, bson_t *key, bson_t *fields, bson_t **result)
 {
+    int n_results;
+    return df_find(collection, key, fields, 1, &n_results, result);
+}
+
+
+Err
+db_find(int collection, bson_t *key, bson_t *fields, int max_n_results, int *n_results, bson_t **results)
+{
     Err error_code = S_OK;
 
     bool status;
-    bson_error_t error;
-    const bson_t *p_result;
-    int len = 0;
-    mongoc_cursor_t *cursor = NULL;
 
-    bson_t opts;
-    bson_init(&opts);
-
-    status = bson_append_int64(&opts, "limit", -1, 1);
-    if(!status) error_code = S_ERR;
-
-    if(!error_code) {
+    bson_t *opts = BCON_NEW("limit", BCON_INT64(max_n_results));
+    if(fields) {
         status = bson_append_document(&opts, "projection", -1, fields);
         if(!status) error_code = S_ERR;
     }
 
-    if(!error)
     if(!error_code) {
-        cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, &opts, NULL);
+        mongoc_cursor_t mongo_cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, &opts, NULL);
 
+        const bson_t *p_result;
+        int len = 0;
         while (mongoc_cursor_next(cursor, &p_result)) {
-            bson_copy_to(p_result, result);
+            bson_copy_to(p_result, results++);
             len++;
         }
+        *n_results = len;
 
-        if (mongoc_cursor_error(cursor, &error)) {
-            error_code = S_ERR;
-        }
+        if (mongoc_cursor_error(cursor, &error)) error_code = S_ERR;
+
+        mongoc_cursor_destroy(cursor);        
     }    
 
     if(!error_code) {
-        if (len == 0) error_code = S_ERR_NOT_EXISTS;
-    }
-
-    if(!error_code) {
-        if (len > 1) error_code = S_ERR_FOUND_MULTI;
-    }
-
-    // clean-up
-    if(cursor) {
-        mongoc_cursor_destroy(cursor);
-        cursor = NULL;
+        if (*n_results == 0) error_code = S_ERR_NOT_EXISTS;
     }
 
     bson_destroy(&opts);
@@ -287,15 +284,23 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t **result)
  * @param result [description]
  */
 Err
-db_find_one_with_fields(int collection, bson_t *key, char **fields, int n_fields, bson_t *result)
+db_find_one_with_fields(int collection, bson_t *key, char **fields, int n_fields, bson_t **result)
+{
+    int n_results;
+    return db_find_with_fields(collection, key, fields, n_fields, 1, &n_results, result);
+}
+
+Err
+db_find_with_fields(int collection, bson_t *key, char **fields, int n_fields, int max_n_results, int *n_results, bson_t **results)
 {
     Err error_code = S_OK;
-    bson_t b_fields;
+
     bool bson_status;
-    bson_init(&b_fields);
+
+    bson_t *b_fields = bson_new();
 
     for (int i = 0; i < n_fields; i++) {
-        bson_status = bson_append_bool(&b_fields, fields[i], -1, true);
+        bson_status = bson_append_bool(b_fields, fields[i], -1, true);
         if (!bson_status) error_code = S_ERR;
 
         if(error_code) break;
@@ -307,10 +312,11 @@ db_find_one_with_fields(int collection, bson_t *key, char **fields, int n_fields
     }
 
     if(!error_code) {
-        error_code = db_find_one(collection, key, &b_fields, result);
+        error_code = db_find(collection, key, b_fields, max_n_results, n_results, results);
     }
 
-    bson_destroy(&b_fields);
+    bson_destroy(b_fields);
+
     return error_code;
 }
 
@@ -422,7 +428,7 @@ bson_get_value_int64(bson_t *b, char *name, long int *value)
  * @param len received length
  */
 Err
-bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *p_len)
+bson_get_value_bin_not_initialized(bson_t *b, char *name, char **value, int *p_len)
 {
     bool status;
     bson_subtype_t subtype;

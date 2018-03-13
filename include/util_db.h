@@ -46,17 +46,20 @@ Err free_mongo_collections();
 // db-ops
 Err db_set_if_not_exists(int collection, bson_t *key);
 Err db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert);
-Err db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result);
-Err db_find_one_with_fields(int collection, bson_t *key, char **fields, int n_fields, bson_t *result);
+Err db_find_one(int collection, bson_t *key, bson_t *fields, bson_t **result);
+Err db_find_one_with_fields(int collection, bson_t *key, char **fields, int n_fields, bson_t **result);
+Err db_find(int collection, bson_t *key, bson_t *fields, int max_n_results, int *n_results, bson_t **results);
+Err db_find_with_fields(int collection, bson_t *key, char **fields, int n_fields, int max_n_results, int *n_results, bson_t **results);
 Err db_remove(int collection, bson_t *key);
 
 // bson-ops
+#define _BCON_BIN(bin length) BCON_BINARY(BSON_SUBTYPE_BINARY, bin, length);
 #define bson_append_bin(b, key, key_length, bin, length) bson_append_binary(b, key, key_length, BSON_SUBTYPE_BINARY, bin, length)
 
 Err bson_exists(bson_t *b, char *name, bool *is_exist);
 Err bson_get_value_int32(bson_t *b, char *name, int *value);
 Err bson_get_value_int64(bson_t *b, char *name, long int *value);
-Err bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *p_len);
+Err bson_get_value_bin_not_initialized(bson_t *b, char *name, char **value, int *p_len);
 Err bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len);
 
 
