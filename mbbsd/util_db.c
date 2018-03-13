@@ -236,6 +236,7 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
     bson_error_t error;
     bson_t *p_result;
     int len = 0;
+    mongoc_cursor_t *cursor = NULL;
 
     bson_t opts;
     bson_init(&opts);
@@ -249,7 +250,7 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
     }
 
     if(!error_code) {
-        mongoc_cursor_t *cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, &opts, NULL);
+        cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, &opts, NULL);
 
         while (mongoc_cursor_next(cursor, &p_result)) {
             bson_copy_to(p_result, result);
