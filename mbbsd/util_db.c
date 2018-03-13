@@ -243,7 +243,12 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
     if(!status) error_code = S_ERR;
 
     if(!error_code) {
-        mongoc_cursor_t *cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], MONGOC_QUERY_NONE, 0, 1, 0, key, fields, NULL);
+        status = bson_append_document(&opts, "projection", fields);
+        if(!status) error_code = S_ERR;
+    }
+
+    if(!error_code) {
+        mongoc_cursor_t *cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, opts, NULL);
 
         int len = 0;
 
