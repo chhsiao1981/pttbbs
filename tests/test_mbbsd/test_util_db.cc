@@ -86,7 +86,7 @@ TEST(util_db, db_find_one2_with_fields) {
     bson_t *fields = BCON_NEW("the_val", BCON_BOOL(true));
     bson_t *result = NULL;
 
-    error = db_find_one(MONGO_TEST, key, NULL, &result);
+    error = db_find_one(MONGO_TEST, key, fields, &result);
     EXPECT_EQ(S_OK, error);
 
     char *str = bson_as_canonical_extended_json(result, NULL);
