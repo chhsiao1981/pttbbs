@@ -129,13 +129,10 @@ db_set_if_not_exists(int collection, bson_t *key)
 
     bool status;
 
-    bson_t *set_val = NULL;
-    bson_t *opts = NULL;
+    bson_t *set_val = BCON_NEW("$setOnInsert", BCON_DOCUMENT(key));
+    bson_t *opts = BCON_NEW("upsert", BCON_BOOL(true));
 
-    bool is_exist;
-
-    set_val = BCON_NEW("$setOnInsert", BCON_DOCUMENT(key));
-    opts = BCON_NEW("upsert", BCON_BOOL(true));
+    bool is_upserted_id_exist;
 
 
     // reply
@@ -146,13 +143,13 @@ db_set_if_not_exists(int collection, bson_t *key)
         status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, &reply, &error);
         if (!status) error_code = S_ERR;
 
-        bson_exists(&reply, "upsertedId", &is_exist);
+        bson_exists(&reply, "upsertedId", &is_upserted_id_exist);
 
         bson_destroy(&reply);
     }
 
     if(!error_code) {
-        if (is_exist) error_code = S_ERR_ALREADY_EXISTS;
+        if (!is_upserted_id_exist) error_code = S_ERR_ALREADY_EXISTS;
     }
 
     bson_destroy(set_val);
