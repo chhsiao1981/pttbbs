@@ -255,8 +255,8 @@ db_find(int collection, bson_t *key, bson_t *fields, int max_n_results, int *n_r
         int len = 0;
         while (mongoc_cursor_next(cursor, &p_result)) {
             bson_copy_to(p_result, *results);
-            len++;
             results++;
+            len++;
         }
         *n_results = len;
 
