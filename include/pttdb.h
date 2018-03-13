@@ -103,6 +103,21 @@ typedef struct MainContent {
 } MainContent;
 
 /**********
+ * Content
+ **********/
+typedef struct Content {
+    UUID the_id;                                     // content-id
+    UUID ref_id;                                     // corresponding ref-id
+
+    int block_id;                                    // corresponding block-id
+
+    int len_block;                                   // size of this block.
+    int n_line;                                      // n-line of this block.
+
+    char *buf_block;                                 // buf
+} Content;
+
+/**********
  * Comments
  **********/
 typedef struct Comment {
@@ -212,6 +227,17 @@ Err delete_main(UUID main_id, char *updater, char *ip);
 Err delete_main_by_aid(aidu_t aid, char *updater, char *ip);
 
 Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content, UUID content_id);
+
+/**********
+ * Content
+ **********/
+Err split_contents(char *buf, int bytes, UUID ref_id, UUID conten_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);
+Err split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID conten_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);
+
+Err read_content(UUID content_id, int block_id, enum MongoDBId mongo_db_id, Content *content);
+Err read_contents(UUID ref_id, int max_n_blocks, int offset_block_id, enum MongoDBId mongo_db_id, Content **content, int *n_blocks);
+
+Err delete_content(UUID content_id, enum MongoDBId mongo_db_id);
 
 /**********
  * Comments
