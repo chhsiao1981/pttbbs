@@ -138,7 +138,7 @@ gen_content_uuid_with_db(int collection, UUID uuid)
         error_code = gen_uuid(uuid);
 
         if(!error_code) {
-            error_code = _serialize_content_uuid_bson(uuid, &uuid_bson);
+            error_code = _serialize_content_uuid_bson(uuid, 0, &uuid_bson);
         }
 
         if(!error_code) {
