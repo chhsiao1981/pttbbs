@@ -224,7 +224,7 @@ _split_contents_deal_with_last_line_block(int bytes_in_line, char *line, UUID re
     }
 
     // last block
-    if (content_block.len_block) {
+    if (content_block->len_block) {
         error_code = _save_content_block(content_block, mongo_db_id);
         if (error_code) return error_code;
     }
