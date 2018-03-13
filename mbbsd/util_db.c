@@ -250,6 +250,7 @@ db_find(int collection, bson_t *key, bson_t *fields, int max_n_results, int *n_r
 
     if(!error_code) {
         mongoc_cursor_t *cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, opts, NULL);
+        bson_error_t error;
 
         const bson_t *p_result;
         int len = 0;
@@ -269,7 +270,7 @@ db_find(int collection, bson_t *key, bson_t *fields, int max_n_results, int *n_r
         if (*n_results == 0) error_code = S_ERR_NOT_EXISTS;
     }
 
-    bson_destroy(&opts);
+    bson_destroy(opts);
 
     return error_code;
 }
@@ -308,7 +309,7 @@ db_find_with_fields(int collection, bson_t *key, char **fields, int n_fields, in
     }
 
     if(!error_code) {
-        bson_status = bson_append_bool(&b_fields, "_id", -1, false);
+        bson_status = bson_append_bool(b_fields, "_id", -1, false);
         if (!bson_status) error_code = S_ERR;
     }
 
