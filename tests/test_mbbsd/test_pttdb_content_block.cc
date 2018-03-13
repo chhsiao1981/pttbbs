@@ -7,7 +7,7 @@
 
 TEST(pttdb, init_content_block) {
     Err error;
-    ContentBlock content_block = {}
+    ContentBlock content_block = {};
 
     error = init_content_block(&content_block);
     EXPECT_EQ(S_OK, error);

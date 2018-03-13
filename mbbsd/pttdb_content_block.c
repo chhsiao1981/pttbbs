@@ -256,8 +256,6 @@ _split_contents_deal_with_last_line_block(int bytes_in_line, char *line, UUID re
 Err
 _serialize_content_block_bson(ContentBlock *content_block, bson_t **content_block_bson)
 {
-    bool bson_status;
-
     *content_block_bson = BCON_NEW(
         "the_id", BCON_BINARY(content_block->the_id, UUIDLEN),
         "ref_id", BCON_BINARY(content_block->ref_id, UUIDLEN),
