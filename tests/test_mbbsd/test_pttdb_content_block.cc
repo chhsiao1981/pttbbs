@@ -29,7 +29,7 @@ TEST(pttdb, serialize_content_block_bson) {
     EXPECT_EQ(S_OK, error);
 
     // post-op
-    bson_destroy(&b);
+    bson_safe_destroy(&b);
 
     // expect
     EXPECT_EQ(0, strncmp((char *)content_block.the_id, (char *)content_block2.the_id, UUIDLEN));
