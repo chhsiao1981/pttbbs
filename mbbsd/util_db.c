@@ -231,7 +231,7 @@ Err
 db_find_one(int collection, bson_t *key, bson_t *fields, bson_t **result)
 {
     int n_results;
-    return df_find(collection, key, fields, 1, &n_results, result);
+    return db_find(collection, key, fields, 1, &n_results, result);
 }
 
 
@@ -244,12 +244,12 @@ db_find(int collection, bson_t *key, bson_t *fields, int max_n_results, int *n_r
 
     bson_t *opts = BCON_NEW("limit", BCON_INT64(max_n_results));
     if(fields) {
-        status = bson_append_document(&opts, "projection", -1, fields);
+        status = bson_append_document(opts, "projection", -1, fields);
         if(!status) error_code = S_ERR;
     }
 
     if(!error_code) {
-        mongoc_cursor_t *mongo_cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, &opts, NULL);
+        mongoc_cursor_t *cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, opts, NULL);
 
         const bson_t *p_result;
         int len = 0;
