@@ -3,21 +3,21 @@
 #include "util_db_internal.h"
 
 const char *DEFAULT_MONGO_DB[] = {
-    "post",
-    "test",
+    "post",      //MONGO_POST_DBNAME
+    "test",      //MONGO_TEST_DBNAME
 };
 
 /**********
  * Globally Available
  **********/
-mongoc_uri_t *MONGO_URI;
-mongoc_client_pool_t *MONGO_CLIENT_POOL;
+mongoc_uri_t *MONGO_URI = NULL;
+mongoc_client_pool_t *MONGO_CLIENT_POOL = NULL;
 
 /**********
  * In-thread Available
  **********/
-mongoc_client_t *MONGO_CLIENT;
-mongoc_collection_t **MONGO_COLLECTIONS;
+mongoc_client_t *MONGO_CLIENT = NULL;
+mongoc_collection_t **MONGO_COLLECTIONS = NULL;
 
 /**********
  * Mongo
@@ -37,6 +37,7 @@ init_mongo_global()
 
     MONGO_CLIENT_POOL = mongoc_client_pool_new(MONGO_URI);
     mongoc_client_pool_set_error_api(MONGO_CLIENT_POOL, MONGOC_ERROR_API_VERSION_2);
+
     return S_OK;
 }
 
@@ -47,9 +48,18 @@ init_mongo_global()
 Err
 free_mongo_global()
 {
-    mongoc_client_pool_destroy(MONGO_CLIENT_POOL);
-    mongoc_uri_destroy(MONGO_URI);
+    if(MONGO_CLIENT_POOL) {
+        mongoc_client_pool_destroy(MONGO_CLIENT_POOL);
+        MONGO_CLIENT_POOL = NULL;
+    }
+
+    if(MONGO_URI) {
+        mongoc_uri_destroy(MONGO_URI);
+        MONGO_URI = NULL;
+    }
+
     mongoc_cleanup();
+
     return S_OK;
 }
 
@@ -87,12 +97,20 @@ init_mongo_collections(const char *db_name[])
 Err
 free_mongo_collections()
 {
+    // mongo-collections
+    if(!MONGO_COLLECTIONS) return S_OK;
+
     for (int i = 0; i < N_MONGO_COLLECTIONS; i++) {
         mongoc_collection_destroy(MONGO_COLLECTIONS[i]);
     }
     free(MONGO_COLLECTIONS);
+    MONGO_COLLECTIONS = NULL;
+
+    // mongo-client
+    if(!MONGO_CLIENT) return S_OK;
 
     mongoc_client_pool_push(MONGO_CLIENT_POOL, MONGO_CLIENT);
+    MONGO_CLIENT = NULL;
 
     return S_OK;
 }
@@ -107,57 +125,49 @@ free_mongo_collections()
 Err
 db_set_if_not_exists(int collection, bson_t *key)
 {
+    Err error_code = S_OK;
+
     bool status;
 
-    bson_t *set_val;
-    bson_t *opts;
+    bson_t set_val;
+    bson_t opts;
     bson_t reply;
-
     bson_error_t error;
-    Err error_code;
+
     bool is_upsert = true;
     int n_upserted;
 
-    // set_val
-    set_val = bson_new();
+    bson_init(&set_val);
+    bson_init(&opts);
+    // XXX reply is initialized in update-one
+
     status = bson_append_document(set_val, "$setOnInsert", -1, key);
-    if (!status) {
-        bson_destroy(set_val);
-        return S_ERR;
-    }
+    if (!status) error_code = S_ERR;
 
-    // opts
-    opts = bson_new();
-
-    status = bson_append_bool(opts, "upsert", -1, is_upsert);
-    if (!status) {
-        bson_destroy(set_val);
-        bson_destroy(opts);
-        return S_ERR;
+    if(!error_code) {
+        status = bson_append_bool(opts, "upsert", -1, is_upsert);
+        if (!status) error_code = S_ERR;
     }
 
     // reply
-    status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, &reply, &error);
-    if (!status) {
-        bson_destroy(set_val);
-        bson_destroy(opts);
-        bson_destroy(&reply);
-        return S_ERR;
+    if(!error_code) {
+        status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, &reply, &error);
+        if (!status) error_code = S_ERR;
+    }
+    else { // XXX hack for reply
+        bson_init(&reply);
     }
 
-    error_code = bson_exists(&reply, "upsertedId");
-    if (error_code) {
-        bson_destroy(set_val);
-        bson_destroy(opts);
-        bson_destroy(&reply);
-        return S_ERR_ALREADY_EXISTS;
+    if(!error_code) {
+        error_code = bson_exists(&reply, "upsertedId");
+        if (error_code) error_code = S_ERR_ALREADY_EXISTS;
     }
 
-    bson_destroy(set_val);
-    bson_destroy(opts);
+    bson_destroy(&set_val);
+    bson_destroy(&opts);
     bson_destroy(&reply);
 
-    return S_OK;
+    return error_code;
 }
 
 /**
@@ -172,46 +182,41 @@ db_set_if_not_exists(int collection, bson_t *key)
 Err
 db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
 {
+    Err error_code = S_OK;
     bool status;
 
-    bson_t *set_val;
-    bson_t *opts;
+    bson_t set_val;
+    bson_t opts;
 
     bson_t reply;
     bson_error_t error;
 
-    // set_val
-    set_val = bson_new();
+    bson_init(&set_val);
+    bson_init(&opts);
+
     status = bson_append_document(set_val, "$set", -1, val);
-    if (!status) {
-        bson_destroy(set_val);
-        return S_ERR;
-    }
+    if (!status) error_code = S_ERR;
 
     // opts
-    opts = bson_new();
-    status = bson_append_bool(opts, "upsert", -1, &is_upsert);
-    if (!status) {
-        bson_destroy(set_val);
-        bson_destroy(opts);
-        return S_ERR;
+    if(!error_code) {
+        status = bson_append_bool(opts, "upsert", -1, &is_upsert);
+        if (!status) error_code = S_ERR;
     }
 
     // reply
-    status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, &reply, &error);
-    if (!status) {
-        fprintf(stderr, "util_db.db_update_one: unable to mongo-collection-update-one: e: %s\n", error.message);
-        bson_destroy(set_val);
-        bson_destroy(opts);
-        bson_destroy(&reply);
-        return S_ERR;
+    if(!error_code) {
+        status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, &reply, &error);
+        if (!status) error_code = S_ERR;
+    }
+    else { // XXX hack for reply
+        bson_init(&reply);
     }
 
     bson_destroy(set_val);
     bson_destroy(opts);
     bson_destroy(&reply);
 
-    return S_OK;
+    return error_code;
 }
 
 /**
@@ -226,33 +231,33 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
 Err
 db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
 {
+    Err error_code = S_OK;
+
     mongoc_cursor_t *cursor = mongoc_collection_find(MONGO_COLLECTIONS[collection], MONGOC_QUERY_NONE, 0, 1, 0, key, fields, NULL);
 
     bson_error_t error;
     bson_t *p_result;
     int len = 0;
+
     while (mongoc_cursor_next(cursor, &p_result)) {
         bson_copy_to(p_result, result);
         len++;
     }
 
     if (mongoc_cursor_error(cursor, &error)) {
-        mongoc_cursor_destroy(cursor);
-        return S_ERR;
+        error_code = S_ERR;
     }
 
     if (len == 0) {
-        mongoc_cursor_destroy(cursor);
-        return S_ERR_NOT_EXISTS;
+        error_code = S_ERR_NOT_EXISTS;
     }
 
     if (len > 1) {
-        mongoc_cursor_destroy(cursor);
-        return S_ERR_FOUND_MULTI;
+        error_code = S_ERR_FOUND_MULTI;
     }
 
     mongoc_cursor_destroy(cursor);
-    return S_OK;
+    return error_code;
 }
 
 /**
@@ -268,34 +273,43 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
 Err
 db_find_one_with_fields(int collection, bson_t *key, char **fields, int n_fields, bson_t *result)
 {
-    Err error_code;
+    Err error_code = S_OK;
     bson_t b_fields;
     bool bson_status;
     bson_init(&b_fields);
 
     for (int i = 0; i < n_fields; i++) {
         bson_status = bson_append_bool(&b_fields, fields[i], -1, true);
-        if (!bson_status) {
-            bson_destroy(&b_fields);
-            return S_ERR;
-        }
-    }
-    bson_status = bson_append_bool(&b_fields, "_id", -1, false);
-    if (!bson_status) {
-        bson_destroy(&b_fields);
-        return S_ERR;
+        if (!bson_status) error_code = S_ERR;
+
+        if(error_code) break;
     }
 
-    error_code = db_find_one(collection, key, &b_fields, result);
-    if (error_code) {
-        bson_destroy(&b_fields);
-        return error_code;
+    if(!error_code) {
+        bson_status = bson_append_bool(&b_fields, "_id", -1, false);
+        if (!bson_status) error_code = S_ERR;
+    }
+
+    if(!error_code) {
+        error_code = db_find_one(collection, key, &b_fields, result);
     }
 
     bson_destroy(&b_fields);
-    return S_OK;
+    return error_code;
 }
 
+Err
+db_remove(int collection, bson_t *key)
+{
+    Err error_code = S_OK;
+    bson_error_t error;
+    bool status;
+
+    status = mongoc_collection_delete_many(MONGO_COLLECTIONS[collection], key, NULL, NULL, &error)
+    if(!status) error_code = S_ERR;
+
+    return error_code;
+}
 
 Err
 _DB_FORCE_DROP_COLLECTION(int collection)
@@ -303,9 +317,7 @@ _DB_FORCE_DROP_COLLECTION(int collection)
     bool status;
     bson_error_t error;
     status = mongoc_collection_drop(MONGO_COLLECTIONS[collection], &error);
-    if (!status) {
-        return S_ERR;
-    }
+    if (!status) return S_ERR;
 
     return S_OK;
 }
@@ -324,9 +336,7 @@ bson_exists(bson_t *b, char *name)
     bson_iter_t iter;
 
     status = bson_iter_init_find(&iter, b, name);
-    if (!status) {
-        return S_ERR;
-    }
+    if (!status) return S_ERR;
 
     return S_OK;
 }
@@ -346,14 +356,10 @@ bson_get_value_int32(bson_t *b, char *name, int *value)
     bson_iter_t iter;
 
     status = bson_iter_init_find(&iter, b, name);
-    if (!status) {
-        return S_ERR;
-    }
+    if (!status) return S_ERR;
 
     status = BSON_ITER_HOLDS_INT32(&iter);
-    if (!status) {
-        return S_ERR;
-    }
+    if (!status) return S_ERR;
 
     *value = bson_iter_int32(&iter);
 
@@ -375,14 +381,10 @@ bson_get_value_int64(bson_t *b, char *name, long int *value)
     bson_iter_t iter;
 
     status = bson_iter_init_find(&iter, b, name);
-    if (!status) {
-        return S_ERR;
-    }
+    if (!status) return S_ERR;
 
     status = BSON_ITER_HOLDS_INT64(&iter);
-    if (!status) {
-        return S_ERR;
-    }
+    if (!status) return S_ERR;
 
     *value = bson_iter_int64(&iter);
 
@@ -406,19 +408,18 @@ bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *p_len)
     bson_iter_t iter;
 
     status = bson_iter_init_find(&iter, b, name);
-    if (!status) {
-        return S_ERR;
-    }
+    if (!status) return S_ERR;
 
     status = BSON_ITER_HOLDS_BINARY(&iter);
-    if (!status) {
-        return S_ERR;
-    }
+    if (!status) return S_ERR;
 
     char *p_value;
     int tmp_len;
     bson_iter_binary(&iter, &subtype, &tmp_len, &p_value);
+
     *value = malloc(tmp_len + 1);
+    if(!value) return S_ERR;
+
     memcpy(*value, p_value, tmp_len);
     (*value)[tmp_len] = 0;
     *p_len = tmp_len;
@@ -438,29 +439,28 @@ bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *p_len)
  */
 Err
 bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len)
-{
+{    
+    Err error = S_OK;
+
     bool status;
     bson_subtype_t subtype;
     bson_iter_t iter;
 
     status = bson_iter_init_find(&iter, b, name);
-    if (!status) {
-        return S_ERR;
-    }
+    if (!status) return S_ERR;
 
     status = BSON_ITER_HOLDS_BINARY(&iter);
-    if (!status) {
-        return S_ERR;
-    }
+    if (!status) return S_ERR;
 
     char *p_value;
-    Err error = S_OK;
     bson_iter_binary(&iter, &subtype, p_len, &p_value);
+
     int len = *p_len;
     if (len > max_len) {
         len = max_len;
         error = S_ERR_BUFFER_LEN;
     }
+
     memcpy(value, p_value, len);
     if (len < max_len) {
         value[len + 1] = 0;

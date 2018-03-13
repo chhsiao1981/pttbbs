@@ -119,9 +119,7 @@ gen_uuid_with_db(int collection, UUID uuid)
         error_code = db_set_if_not_exists(collection, &uuid_bson);
         bson_destroy(&uuid_bson);
 
-        if (!error_code) {
-            return S_OK;
-        }
+        if (!error_code) return S_OK;
     }
 
     return error_code;
@@ -157,9 +155,7 @@ gen_content_uuid_with_db(int collection, UUID uuid)
         error_code = db_set_if_not_exists(collection, &uuid_bson);
         bson_destroy(&uuid_bson);
 
-        if (!error_code) {
-            return S_OK;
-        }
+        if (!error_code) return S_OK;
     }
 
     return error_code;
@@ -272,9 +268,7 @@ get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offs
     *bytes_in_new_line = bytes - offset_buf;
 
     // XXX special case for all block as a continuous string. Although it's not end yet, it forms a block.
-    if(*bytes_in_new_line == MAX_BUF_SIZE) {
-        return S_OK;
-    }
+    if(*bytes_in_new_line == MAX_BUF_SIZE) return S_OK;
 
     return S_ERR;
 }

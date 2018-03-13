@@ -103,9 +103,9 @@ typedef struct MainContent {
 } MainContent;
 
 /**********
- * Content
+ * ContentBlock
  **********/
-typedef struct Content {
+typedef struct ContentBlock {
     UUID the_id;                                     // content-id
     UUID ref_id;                                     // corresponding ref-id
 
@@ -115,7 +115,7 @@ typedef struct Content {
     int n_line;                                      // n-line of this block.
 
     char *buf_block;                                 // buf
-} Content;
+} ContentBlock;
 
 /**********
  * Comments
@@ -210,6 +210,7 @@ Err n_line_post(UUID main_id, int *n_line);
 /**********
  * Main
  **********/
+/*
 Err create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id, UUID content_id);
 
 Err len_main(UUID main_id, int *len);
@@ -227,26 +228,29 @@ Err delete_main(UUID main_id, char *updater, char *ip);
 Err delete_main_by_aid(aidu_t aid, char *updater, char *ip);
 
 Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content, UUID content_id);
+*/
 
 /**********
- * Content
+ * ContentBlock
  **********/
 Err split_contents(char *buf, int bytes, UUID ref_id, UUID conten_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);
 Err split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID conten_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);
 
-Err read_content(UUID content_id, int block_id, enum MongoDBId mongo_db_id, Content *content);
-Err read_contents(UUID ref_id, int max_n_blocks, int offset_block_id, enum MongoDBId mongo_db_id, Content **content, int *n_blocks);
+Err read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content);
+Err read_content_blocks(UUID ref_id, int max_n_blocks, int offset_block_id, enum MongoDBId mongo_db_id, ContentBlock **content, int *n_blocks);
 
 Err delete_content(UUID content_id, enum MongoDBId mongo_db_id);
 
 /**********
  * Comments
  **********/
+/*
 Err create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enum CommentType comment_type, UUID comment_id);
 
 Err read_comment(UUID comment_id, Comment *comment);
 
 Err delete_comment(UUID comment_id, char *updater, char *ip);
+*/
 
 /*
 Err count_karma_by_main(UUID main_id);

@@ -39,8 +39,8 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enu
     if (error_code) return error_code;
 
     // comment
-    strncpy(comment.the_id, comment_id, sizeof(UUID));
-    strncpy(comment.main_id, main_id, sizeof(UUID));
+    memcpy(comment.the_id, comment_id, sizeof(UUID));
+    memcpy(comment.main_id, main_id, sizeof(UUID));
     comment.status = LIVE_STATUS_ALIVE;
     strcpy(comment.status_updater, poster);
     strcpy(comment.status_update_ip, ip);
@@ -55,7 +55,7 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enu
     strcpy(comment.update_ip, ip);
     comment.update_milli_timestamp = create_milli_timestamp;
     comment.len = len;
-    strncpy(comment.buf, content, len);
+    memcpy(comment.buf, content, len);
 
     // db-comment
     bson_init(&comment_bson);
