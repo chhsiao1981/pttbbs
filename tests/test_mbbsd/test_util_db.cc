@@ -61,7 +61,7 @@ TEST(util_db, db_find_one) {
     EXPECT_EQ(S_OK, error);
 
     int int_result;
-    error = bson_get_value_int32(result, "the_key", &int_result);
+    error = bson_get_value_int32(result, (char *)"the_key", &int_result);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(4, int_result);
 
@@ -89,12 +89,12 @@ TEST(util_db, db_find_one2_with_fields) {
     EXPECT_EQ(S_OK, error);
 
     if(!error) {
-        error = bson_get_value_int32(result, "the_key", &int_result);
+        error = bson_get_value_int32(result, (char *)"the_key", &int_result);
         EXPECT_EQ(S_ERR, error);
     }
 
     if(!error) {
-        error = bson_get_value_int32(result, "the_val", &int_result);
+        error = bson_get_value_int32(result, (char *)"the_val", &int_result);
         EXPECT_EQ(S_OK, error);
         EXPECT_EQ(int_result, 5);
     }
