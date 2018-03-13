@@ -117,14 +117,16 @@ TEST(util_db, db_find_one_with_fields) {
     error = db_update_one(MONGO_TEST, key, val, true);
     EXPECT_EQ(S_OK, error);
 
-    int int_result;
     char *fields[] = {
         "the_val"
     };
 
+    bson_t *result = NULL;
+
     error = db_find_one_with_fields(MONGO_TEST, key, fields, 1, &result);
     EXPECT_EQ(S_OK, error);
 
+    int int_result;
     if(!error) {
         error = bson_get_value_int32(result, (char *)"the_key", &int_result);
         EXPECT_EQ(S_ERR, error);
@@ -138,7 +140,6 @@ TEST(util_db, db_find_one_with_fields) {
 
     bson_safe_destroy(&key);
     bson_safe_destroy(&val);
-    bson_safe_destroy(&fields);
     bson_safe_destroy(&result);
 }
 
