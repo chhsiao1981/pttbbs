@@ -474,7 +474,7 @@ bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len)
     if (!status) return S_ERR;
 
     char *p_value;
-    bson_iter_binary(&iter, &subtype, (unsigned int *)p_len, &p_value);
+    bson_iter_binary(&iter, &subtype, (unsigned int *)p_len, (unsigned char **)&p_value);
 
     int tmp_len = *p_len;
     if (tmp_len > max_len) {
