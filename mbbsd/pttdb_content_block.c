@@ -214,6 +214,8 @@ _save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
 Err
 _split_contents_deal_with_last_line_block(int bytes_in_line, char *line, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, ContentBlock *content_block, int *n_line, int *n_block)
 {
+    Err error_code = S_OK;
+
     // last line
     if (bytes_in_line) {
         // Main-op
