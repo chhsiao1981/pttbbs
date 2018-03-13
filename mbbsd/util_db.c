@@ -129,42 +129,36 @@ db_set_if_not_exists(int collection, bson_t *key)
 
     bool status;
 
-    bson_t set_val;
-    bson_t opts;
-    bson_t reply;
-    bson_error_t error;
+    bson_t *set_val = NULL;
+    bson_t *opts = NULL;
 
-    bool is_upsert = true;
+    int n_upserted_id;
 
-    bson_init(&set_val);
-    bson_init(&opts);
-    // XXX reply is initialized in update-one
+    bool is_exist;
 
-    status = bson_append_document(&set_val, "$setOnInsert", -1, key);
-    if (!status) error_code = S_ERR;
+    set_val = BCON_NEW("$setOnInsert", BCON_TYPE_DOCUMENT(key));
+    opts = BCON_NEW("upsert", BCON_TYPE_BOOL(true));
 
-    if(!error_code) {
-        status = bson_append_bool(&opts, "upsert", -1, is_upsert);
-        if (!status) error_code = S_ERR;
-    }
 
     // reply
     if(!error_code) {
-        status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, &set_val, &opts, &reply, &error);
+        bson_t reply;
+        bson_error_t error;
+
+        status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, &reply, &error);
         if (!status) error_code = S_ERR;
-    }
-    else { // XXX hack for reply
-        bson_init(&reply);
+
+        bson_exists(&reply, "upsertedId", &is_exist);
+
+        bson_destroy(&reply);
     }
 
     if(!error_code) {
-        error_code = bson_exists(&reply, "upsertedId");
-        if (error_code) error_code = S_ERR_ALREADY_EXISTS;
+        if (is_exist) error_code = S_ERR_ALREADY_EXISTS;
     }
 
     bson_destroy(&set_val);
     bson_destroy(&opts);
-    bson_destroy(&reply);
 
     return error_code;
 }
@@ -228,11 +222,11 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
  * @param result result (MUST-NOT initialized and need to bson_destroy)
  */
 Err
-db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
+db_find_one(int collection, bson_t *key, bson_t *fields, bson_t **result)
 {
     Err error_code = S_OK;
-    bool status;
 
+    bool status;
     bson_error_t error;
     const bson_t *p_result;
     int len = 0;
@@ -249,6 +243,7 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
         if(!status) error_code = S_ERR;
     }
 
+    if(!error)
     if(!error_code) {
         cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, &opts, NULL);
 
@@ -351,13 +346,18 @@ _DB_FORCE_DROP_COLLECTION(int collection)
  * @param name name
  */
 Err
-bson_exists(bson_t *b, char *name)
+bson_exists(bson_t *b, char *name, bool *is_exist)
 {
     bool status;
     bson_iter_t iter;
 
     status = bson_iter_init_find(&iter, b, name);
-    if (!status) return S_ERR;
+    if (!status) {
+        *is_exist = false;
+    }
+    else  {
+        *is_exist = true;
+    }
 
     return S_OK;
 }

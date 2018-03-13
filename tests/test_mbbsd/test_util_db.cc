@@ -115,6 +115,56 @@ TEST(util_db, db_find_one) {
     bson_destroy(&result);
 }
 
+TEST(util_db, db_find_one2_with_fields) {
+    Err error;
+
+    _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
+
+    bson_t key;
+    bson_t val;
+    bson_t fields;
+    bson_t result;
+
+    int int_result;
+
+    bson_init(&key);
+    bson_init(&val);
+    bson_destroy(&fields);
+
+    bson_append_int32(&key, "the_key", -1, 4);
+    bson_append_int32(&val, "the_val", -1, 5);
+
+    bson_append_bool(fields, "the_val", -1, true);
+
+    error = db_update_one(MONGO_TEST, &key, &val, true);
+    EXPECT_EQ(S_OK, error);
+    
+    if(error) // XXX hack for result
+        bson_init(&result);
+    }
+
+    if(!error) {
+        error = db_find_one(MONGO_TEST, &key, NULL, &result);
+        EXPECT_EQ(S_OK, error);
+    }
+
+    if(!error) {
+        error = bson_get_value_int32(&result, "the_key", &int_result);
+        EXPECT_EQ(S_ERR, error);
+    }
+
+    if(!error) {
+        error = bson_get_value_int32(&result, "the_val", &int_result);
+        EXPECT_EQ(S_OK, error);
+        EXPECT_EQ(int_result, 5)
+    }
+
+    bson_destroy(&key);
+    bson_destroy(&val);
+    bson_destroy(&fields);
+    bson_destroy(&result);
+}
+
 /**********
  * MAIN
  */
