@@ -67,10 +67,9 @@ Err
 delete_content(UUID content_id, enum MongoDBId mongo_db_id)
 {
     Err error_code = S_OK;
-    bool bson_status;
     bson_t *key = BCON_NEW("the_id", BCON_BINARY(content_id, UUIDLEN));
 
-    error_code = db_remove(mongo_db_id, &key);
+    error_code = db_remove(mongo_db_id, key);
 
     bson_destroy(key);
 
@@ -188,7 +187,7 @@ _save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
     error_code = _serialize_content_block_bson(content_block, &content_block_bson);
 
     if(!error_code) {
-        error_code = _serialize_content_uuid_bson(content_block->the_id, MONGO_THE_ID, content_block->block_id, &content_block_id_bson);
+        error_code = _serialize_content_uuid_bson(content_block->the_id, content_block->block_id, &content_block_id_bson);
     }
     
     if(!error_code) {
@@ -241,7 +240,7 @@ _serialize_content_block_bson(ContentBlock *content_block, bson_t **content_bloc
         "block_id", BCON_INT32(content_block->block_id),
         "len_block", BCON_INT32(content_block->len_block),
         "n_line", BCON_INT32(content_block->n_line),
-        "buf_block", BCON_BINARY(content_block->content_block->len_block)
+        "buf_block", BCON_BINARY(content_block->buf_block, content_block->len_block)
         );
 
     return S_OK;
