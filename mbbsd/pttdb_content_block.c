@@ -260,15 +260,15 @@ _serialize_content_block_bson(ContentBlock *content_block, bson_t *content_block
     bson_status = bson_append_int32(content_block_bson, "n_line", -1, content_block->n_line);
     if (!bson_status) return S_ERR;
 
-    bson_status = bson_append_bin(content_block_bson, "buf_block", -1, content_block->buf_block, content_block->len_block);
+    bson_status = bson_append_bin(content_block_bson, "buf_block", -1, (unsigned char *)content_block->buf_block, content_block->len_block);
     if (!bson_status) return S_ERR;
 
     return S_OK;
 }
 
 /**
- * @brief Deserialize bson to main-content-block
- * @details [long description]
+ * @brief Deserialize bson to content-block
+ * @details Deserialize bson to content-block (receive only len_block, not dealing with '\0' in the end)
  *
  * @param main_content_block_bson [description]
  * @param main_content_block [description]
@@ -281,10 +281,10 @@ _deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *conten
     Err error_code;
 
     int len;
-    error_code = bson_get_value_bin(content_block_bson, "the_id", UUIDLEN, content_block->the_id, &len);
+    error_code = bson_get_value_bin(content_block_bson, "the_id", UUIDLEN, (char *)content_block->the_id, &len);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_bin(content_block_bson, "ref_id", UUIDLEN, content_block->ref_id, &len);
+    error_code = bson_get_value_bin(content_block_bson, "ref_id", UUIDLEN, (char *)content_block->ref_id, &len);
     if (error_code) return error_code;
 
     error_code = bson_get_value_int32(content_block_bson, "block_id", &content_block->block_id);
@@ -296,7 +296,7 @@ _deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *conten
     error_code = bson_get_value_int32(content_block_bson, "n_line", &content_block->n_line);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_bin(content_block_bson, "buf_block", current_block->len_block, content_block->buf_block, &len);
+    error_code = bson_get_value_bin(content_block_bson, "buf_block", content_block->len_block, content_block->buf_block, &len);
     if (error_code) return error_code;
 
     return S_OK;
