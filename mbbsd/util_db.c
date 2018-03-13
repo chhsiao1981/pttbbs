@@ -193,18 +193,18 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
     bson_init(&set_val);
     bson_init(&opts);
 
-    status = bson_append_document(set_val, "$set", -1, val);
+    status = bson_append_document(&set_val, "$set", -1, val);
     if (!status) error_code = S_ERR;
 
     // opts
     if(!error_code) {
-        status = bson_append_bool(opts, "upsert", -1, &is_upsert);
+        status = bson_append_bool(&opts, "upsert", -1, &is_upsert);
         if (!status) error_code = S_ERR;
     }
 
     // reply
     if(!error_code) {
-        status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, &reply, &error);
+        status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, &set_val, &opts, &reply, &error);
         if (!status) error_code = S_ERR;
     }
     else { // XXX hack for reply
