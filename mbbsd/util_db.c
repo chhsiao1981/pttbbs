@@ -248,7 +248,7 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
     }
 
     if(!error_code) {
-        mongoc_cursor_t *cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, opts, NULL);
+        mongoc_cursor_t *cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, &opts, NULL);
 
         int len = 0;
 
