@@ -118,7 +118,7 @@ TEST(util_db, db_find_one_with_fields) {
     EXPECT_EQ(S_OK, error);
 
     char *fields[] = {
-        "the_val"
+        (char *)"the_val"
     };
 
     bson_t *result = NULL;
