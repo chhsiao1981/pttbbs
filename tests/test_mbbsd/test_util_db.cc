@@ -127,16 +127,44 @@ TEST(util_db, db_find_one_with_fields) {
     EXPECT_EQ(S_OK, error);
 
     int int_result;
-    if(!error) {
-        error = bson_get_value_int32(result, (char *)"the_key", &int_result);
-        EXPECT_EQ(S_ERR, error);
-    }
+    error = bson_get_value_int32(result, (char *)"the_key", &int_result);
+    EXPECT_EQ(S_ERR, error);
 
-    if(!error) {
-        error = bson_get_value_int32(result, (char *)"the_val", &int_result);
-        EXPECT_EQ(S_OK, error);
-        EXPECT_EQ(int_result, 5);
-    }
+    error = bson_get_value_int32(result, (char *)"the_val", &int_result);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(int_result, 5);
+
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&val);
+    bson_safe_destroy(&result);
+}
+
+TEST(util_db, db_remove) {
+    Err error;
+
+    _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
+
+    bson_t *key = BCON_NEW("the_key", BCON_INT32(4));
+    bson_t *val = BCON_NEW("the_val", BCON_INT32(5));
+
+    error = db_update_one(MONGO_TEST, key, val, true);
+    EXPECT_EQ(S_OK, error);
+
+    char *fields[] = {
+        (char *)"the_val"
+    };
+
+    bson_t *result = NULL;
+
+    error = db_remove(MONGO_TEST, key);
+    EXPECT_EQ(S_OK, error);
+
+    int int_result;
+    error = bson_get_value_int32(result, (char *)"the_key", &int_result);
+    EXPECT_EQ(S_ERR, error);
+
+    error = bson_get_value_int32(result, (char *)"the_val", &int_result);
+    EXPECT_EQ(S_ERR, error);
 
     bson_safe_destroy(&key);
     bson_safe_destroy(&val);

@@ -14,8 +14,8 @@ extern "C" {
 /**********
  * UUID
  **********/
-Err _serialize_uuid_bson(UUID uuid, const char *key, bson_t *uuid_bson);
-Err _serialize_content_uuid_bson(UUID uuid, const char *key, int block_id, bson_t *uuid_bson);
+Err _serialize_uuid_bson(UUID uuid, bson_t **uuid_bson);
+Err _serialize_content_uuid_bson(UUID uuid, int block_id, bson_t **uuid_bson);
 
 /**********
  * Main
@@ -48,7 +48,7 @@ Err _init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_i
 Err _save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id);
 Err _split_contents_deal_with_last_line_block(int bytes_in_line, char *line, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, ContentBlock *content_block, int *n_line, int *n_block);
 
-Err _serialize_content_block_bson(ContentBlock *content_block, bson_t *content_block_bson);
+Err _serialize_content_block_bson(ContentBlock *content_block, bson_t **content_block_bson);
 Err _deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *content_block);
 
 /**********

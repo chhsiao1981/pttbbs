@@ -99,23 +99,20 @@ Err
 gen_uuid_with_db(int collection, UUID uuid)
 {
     Err error_code = S_OK;
-    bson_t uuid_bson;
+    bson_t *uuid_bson = NULL;
 
     for (int i = 0; i < N_GEN_UUID_WITH_DB; i++) {
         error_code = gen_uuid(uuid);
-        if (error_code) {
-            continue;
+
+        if(!error_code) {
+            error_code = _serialize_uuid_bson(uuid, &uuid_bson);
         }
 
-        bson_init(&uuid_bson);
-        error_code = _serialize_uuid_bson(uuid, MONGO_THE_ID, &uuid_bson);
-        if (error_code) {
-            bson_destroy(&uuid_bson);
-            continue;
+        if(!error_code) {
+            error_code = db_set_if_not_exists(collection, uuid_bson);
         }
 
-        error_code = db_set_if_not_exists(collection, &uuid_bson);
-        bson_destroy(&uuid_bson);
+        bson_safe_destroy(&uuid_bson);
 
         if (!error_code) return S_OK;
     }
@@ -135,23 +132,20 @@ Err
 gen_content_uuid_with_db(int collection, UUID uuid)
 {
     Err error_code = S_OK;
-    bson_t uuid_bson;
+    bson_t *uuid_bson = NULL;
 
     for (int i = 0; i < N_GEN_UUID_WITH_DB; i++) {
         error_code = gen_uuid(uuid);
-        if (error_code) {
-            continue;
+
+        if(!error_code) {
+            error_code = _serialize_content_uuid_bson(uuid, &uuid_bson);
         }
 
-        bson_init(&uuid_bson);
-        error_code = _serialize_content_uuid_bson(uuid, MONGO_THE_ID, 0, &uuid_bson);
-        if (error_code) {
-            bson_destroy(&uuid_bson);
-            continue;
+        if(!error_code) {
+            error_code = db_set_if_not_exists(collection, uuid_bson);
         }
 
-        error_code = db_set_if_not_exists(collection, &uuid_bson);
-        bson_destroy(&uuid_bson);
+        bson_safe_destroy(&uuid_bson);
 
         if (!error_code) return S_OK;
     }
@@ -168,10 +162,11 @@ gen_content_uuid_with_db(int collection, UUID uuid)
  * @return Err
  */
 Err
-_serialize_uuid_bson(UUID uuid, const char *key, bson_t *uuid_bson)
+_serialize_uuid_bson(UUID uuid, bson_t **uuid_bson)
 {
-    bool bson_status = bson_append_bin(uuid_bson, key, -1, uuid, UUIDLEN);
-    if (!bson_status) return S_ERR;
+    *uuid_bson = BCON_NEW(
+        MONGO_THE_ID, BCON_BINARY(uuid, UUIDLEN)
+        );
 
     return S_OK;
 }
@@ -185,13 +180,12 @@ _serialize_uuid_bson(UUID uuid, const char *key, bson_t *uuid_bson)
  * @return Err
  */
 Err
-_serialize_content_uuid_bson(UUID uuid, const char *key, int block_id, bson_t *uuid_bson)
+_serialize_content_uuid_bson(UUID uuid, int block_id, bson_t **uuid_bson)
 {
-    bool bson_status = bson_append_bin(uuid_bson, key, -1, uuid, UUIDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(uuid_bson, MONGO_BLOCK_ID, -1, block_id);
-    if (!bson_status) return S_ERR;
+    *uuid_bson = BCON_NEW(
+        MONGO_THE_ID, BCON_BINARY(uuid, UUIDLEN),
+        MONGO_BLOCK_ID, BCON_INT32(block_id)
+        );
 
     return S_OK;
 }
@@ -249,7 +243,9 @@ get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offs
     }
 
     // check \r\n in buf.
-    for (int i = offset_buf; i < bytes - 1; i++) {
+    int max_new_lines = MAX_BUF_SIZE - offset_line;
+    int iter_bytes = (bytes - offset_buf <= max_new_lines) ? bytes : max_new_lines;
+    for (int i = offset_buf; i < iter_bytes - 1; i++) {
         if (*p_buf == '\r' && *(p_buf + 1) == '\n') {
             *p_line = '\r';
             *(p_line + 1) = '\n';
@@ -263,10 +259,10 @@ get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offs
 
     // last char
     *p_line++ = *p_buf++;
-    *bytes_in_new_line = bytes - offset_buf;
+    *bytes_in_new_line = iter_bytes - offset_buf;
 
     // XXX special case for all block as a continuous string. Although it's not end yet, it forms a block.
-    if(*bytes_in_new_line == MAX_BUF_SIZE) return S_OK;
+    if(*bytes_in_new_line == max_new_lines) return S_OK;
 
     return S_ERR;
 }
