@@ -43,8 +43,6 @@ Err _split_contents_core(char *buf, int bytes, UUID ref_id, UUID content_id, enu
 
 Err _split_contents_core_core(char *line, int bytes_in_line, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, ContentBlock *content_block, int *n_line, int *n_block);
 
-
-Err _init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int *block_id);
 Err _save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id);
 Err _split_contents_deal_with_last_line_block(int bytes_in_line, char *line, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, ContentBlock *content_block, int *n_line, int *n_block);
 

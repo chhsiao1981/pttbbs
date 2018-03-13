@@ -5,6 +5,19 @@
 #include "pttdb_internal.h"
 #include "util_db_internal.h"
 
+TEST(pttdb, init_content_block) {
+    Err error;
+    ContentBlock content_block = {}
+
+    error = init_content_block(&content_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_NE(NULL, content_block->buf_block);
+
+    error = destroy_content_block(&content_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(NULL, content_block->buf_block);
+}
+
 TEST(pttdb, serialize_content_block_bson) {
     ContentBlock content_block = {};
     ContentBlock content_block2 = {};

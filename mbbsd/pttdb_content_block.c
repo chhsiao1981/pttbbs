@@ -18,20 +18,24 @@ split_contents(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBI
     Err error_code = S_OK;
     int bytes_in_line = 0;
     char line[MAX_BUF_SIZE] = {};
+
     ContentBlock content_block = {};
 
     // init
     *n_block = 0;
-    error_code = _init_content_block(&content_block, ref_id, content_id, n_block);
-    if(error_code) return error_code;
+    error_code = init_content_block(&content_block, ref_id, content_id, n_block);
 
-    error_code = _split_contents_core(buf, bytes, ref_id, content_id, mongo_db_id, n_line, n_block, line, &bytes_in_line, &content_block);
-    if(error_code) return error_code;
+    if(!error_code) {
+        error_code = _split_contents_core(buf, bytes, ref_id, content_id, mongo_db_id, n_line, n_block, line, &bytes_in_line, &content_block);
+    }
 
-    error_code = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, content_id, mongo_db_id, &content_block, n_line, n_block);
-    if(error_code) return error_code;
+    if(!error_code) {
+        error_code = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, content_id, mongo_db_id, &content_block, n_line, n_block);
+    }
 
-    return S_OK;
+    destroy_content_block(&content_block);
+
+    return error_code;
 }
 
 Err
@@ -46,21 +50,24 @@ split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, en
 
     // init
     *n_block = 0;
-    error_code = _init_content_block(&content_block, ref_id, content_id, n_block);
-    if(error_code) return error_code;
+    error_code = init_content_block(&content_block, ref_id, content_id, n_block);
 
-    // while-loop
-    while ((buf_size = len < MAX_BUF_SIZE ? len : MAX_BUF_SIZE) && (bytes = read(fd_content, buf, buf_size)) > 0) {
-        error_code = _split_contents_core(buf, bytes, ref_id, content_id, mongo_db_id, n_line, n_block, line, &bytes_in_line, &content_block);
-        if(error_code) return error_code;
+    if(!error_code) {
+        while ((buf_size = len < MAX_BUF_SIZE ? len : MAX_BUF_SIZE) && (bytes = read(fd_content, buf, buf_size)) > 0) {
+            error_code = _split_contents_core(buf, bytes, ref_id, content_id, mongo_db_id, n_line, n_block, line, &bytes_in_line, &content_block);
+            if(error_code) break;
 
-        len -= bytes;
+            len -= bytes;
+        }
     }
 
-    error_code = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, content_id, mongo_db_id, &content_block, n_line, n_block);
-    if(error_code) return error_code;
+    if(!error_code) {
+        error_code = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, content_id, mongo_db_id, &content_block, n_line, n_block);
+    }
 
-    return S_OK;
+    destroy_content_block(&content_block);
+
+    return error_code;
 }
 
 Err
@@ -77,6 +84,50 @@ delete_content(UUID content_id, enum MongoDBId mongo_db_id)
 }
 
 
+/**
+ * @brief [brief description]
+ * @details initialize new content-block with block-id as current n_block.
+ * 
+ * @param content_block [description]
+ * @param ref_id [description]
+ * @param content_id [description]
+ * @param n_block [description]
+ */
+Err
+init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int *n_block)
+{
+    if(content_block->buf_block == NULL) {
+        content_block->buf_block = malloc(MAX_BUF_SIZE);
+        if(content_block->buf_block == NULL) return S_ERR;
+
+        bzero(content_block->buf_block, MAX_BUF_SIZE);
+    }
+    
+    if(content_block->len_block) {
+        bzero(content_block->buf_block, content_block->len_block);
+    }
+
+    content_block->len_block = 0;
+    content_block->n_line = 0;
+    memcpy(content_block->the_id, content_id, sizeof(UUID));
+    memcpy(content_block->ref_id, ref_id, sizeof(UUID));
+
+    content_block->block_id = *n_block;
+    (*n_block)++;
+
+    return S_OK;
+}
+
+Err
+destroy_content_block(ContentBlock *content_block)
+{
+    if(content_block->buf_block == NULL) return S_OK;    
+
+    free(content_block->buf_block);
+    content_block->buf_block = NULL;
+
+    return S_OK;
+}
 
 /**
  * @brief core for split contents.
@@ -126,7 +177,7 @@ _split_contents_core_core(char *line, int bytes_in_line, UUID ref_id, UUID conte
         error_code = _save_content_block(content_block, mongo_db_id);
         if(error_code) return error_code;
 
-        error_code = _init_content_block(content_block, ref_id, content_id, n_block);
+        error_code = init_content_block(content_block, ref_id, content_id, n_block);
         if(error_code) return error_code;
     }
     // check for max-buf in block-buf
@@ -134,7 +185,7 @@ _split_contents_core_core(char *line, int bytes_in_line, UUID ref_id, UUID conte
         error_code = _save_content_block(content_block, mongo_db_id);
         if(error_code) return error_code;
 
-        error_code = _init_content_block(content_block, ref_id, content_id, n_block);
+        error_code = init_content_block(content_block, ref_id, content_id, n_block);
         if(error_code) return error_code;
     }
 
@@ -146,33 +197,6 @@ _split_contents_core_core(char *line, int bytes_in_line, UUID ref_id, UUID conte
         (*n_line)++;
         content_block->n_line++;
     }
-
-    return S_OK;
-}
-
-/**
- * @brief [brief description]
- * @details initialize new content-block with block-id as current n_block.
- * 
- * @param content_block [description]
- * @param ref_id [description]
- * @param content_id [description]
- * @param n_block [description]
- */
-Err
-_init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int *n_block)
-{
-    if(content_block->len_block) {
-        bzero(content_block->buf_block, content_block->len_block);
-    }
-
-    content_block->len_block = 0;
-    content_block->n_line = 0;
-    memcpy(content_block->the_id, content_id, sizeof(UUID));
-    memcpy(content_block->ref_id, ref_id, sizeof(UUID));
-
-    content_block->block_id = *n_block;
-    (*n_block)++;
 
     return S_OK;
 }

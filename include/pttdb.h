@@ -243,6 +243,9 @@ Err read_content_blocks(UUID ref_id, int max_n_blocks, int offset_block_id, enum
 
 Err delete_content(UUID content_id, enum MongoDBId mongo_db_id);
 
+Err init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int *block_id);
+Err destroy_content_block(ContentBlock *content_block);
+
 /**********
  * Comments
  **********/
