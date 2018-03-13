@@ -53,7 +53,6 @@ gen_uuid(UUID uuid)
     unsigned short *p_short_rand_num;
 
     unsigned short *p_short;
-    unsigned int *p_int;
     unsigned char *p_char;
     _UUID _uuid;
 
@@ -74,7 +73,7 @@ gen_uuid(UUID uuid)
 
     // first 40 chars as random, but 6th char is version (6 for now)
     p_rand = (long int *)_uuid;
-    for (int i = 0; i < (_UUIDLEN - 8) / sizeof(long int); i++) {
+    for (int i = 0; i < (_UUIDLEN - 8) / (int)sizeof(long int); i++) {
         rand_num = random();
         *p_rand = rand_num;
         p_rand++;
@@ -201,8 +200,8 @@ Err
 uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp)
 {
     _UUID _uuid;
-    time64_t *p_uuid = _uuid + 40;
-    b64_pton(uuid, _uuid, _UUIDLEN);
+    time64_t *p_uuid = (time64_t *)(_uuid + 40);
+    b64_pton((char *)uuid, _uuid, _UUIDLEN);
 
     *milli_timestamp = *p_uuid;
     *milli_timestamp >>= 16;
