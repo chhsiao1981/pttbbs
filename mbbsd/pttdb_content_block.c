@@ -114,7 +114,7 @@ _split_contents_core(char *buf, int bytes, UUID ref_id, UUID content_id, enum Mo
         if (error_code) break;
 
         // Main-op
-        error_code = _split_contents_core_core(line, *bytes_in_line, ref_id, content_id, content_block, n_line, n_block);
+        error_code = _split_contents_core_core(line, *bytes_in_line, ref_id, content_id, mongo_db_id, content_block, n_line, n_block);
         if (error_code) return error_code;
 
         // reset line
