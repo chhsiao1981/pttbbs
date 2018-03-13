@@ -159,6 +159,8 @@ dissociate_content_block(ContentBlock *content_block)
 
     content_block->buf_block = NULL;
     content_block->max_buf_len = 0;
+
+    return S_OK;
 }
 
 /**
