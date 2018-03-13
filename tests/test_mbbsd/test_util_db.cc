@@ -150,10 +150,6 @@ TEST(util_db, db_remove) {
     error = db_update_one(MONGO_TEST, key, val, true);
     EXPECT_EQ(S_OK, error);
 
-    char *fields[] = {
-        (char *)"the_val"
-    };
-
     bson_t *result = NULL;
 
     error = db_remove(MONGO_TEST, key);
