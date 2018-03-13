@@ -219,13 +219,13 @@ _split_contents_deal_with_last_line_block(int bytes_in_line, char *line, UUID re
     // last line
     if (bytes_in_line) {
         // Main-op
-        error_code = _split_contents_core_core(line, bytes_in_line, ref_id, content_id, content_block, n_line, n_block);
+        error_code = _split_contents_core_core(line, bytes_in_line, ref_id, content_id, mongo_db_id, content_block, n_line, n_block);
         if (error_code) return error_code;
     }
 
     // last block
     if (content_block.len_block) {
-        error_code = _save_content_block(content, mongo_db_id);
+        error_code = _save_content_block(content_block, mongo_db_id);
         if (error_code) return error_code;
     }
 
