@@ -42,8 +42,8 @@ Err _deserialize_main_content_block_bson(bson_t *main_content_block_bson, MainCo
 Err _split_contents_core(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block, bool is_deal_wtih_last_line_block);
 Err _split_contents_core_core(char *line, int bytes_in_line, UUID ref_id, UUID content_id, ContentBlock *content, int *n_line, int *n_block);
 
-Err _init_content_block(Content *content, UUID ref_id, UUID content_id, int *block_id);
-Err _save_content_block(Content *content, enum MongoDBId mongo_db_id);
+Err _init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int *block_id);
+Err _save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id);
 Err _split_contents_deal_with_last_line_block(int bytes_in_line, char *line, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, ContentBlock *content_block, int *n_line, int *n_block);
 
 Err _serialize_content_block_bson(ContentBlock *content_block, bson_t *content_block_bson);
