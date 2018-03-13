@@ -234,7 +234,7 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
     bool status;
 
     bson_error_t error;
-    bson_t *p_result;
+    const bson_t *p_result;
     int len = 0;
     mongoc_cursor_t *cursor = NULL;
 

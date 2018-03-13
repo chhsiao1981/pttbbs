@@ -11,7 +11,7 @@ TEST(pttdb, serialize_content_block_bson) {
 
     // initialize
     gen_uuid(content_block.the_id);
-    gen_uuid(content_block.main_id);
+    gen_uuid(content_block.ref_id);
     content_block.block_id = 53;    
     content_block.n_line = 2;
     const char str[] = "test123\r\n";
@@ -58,7 +58,7 @@ void MyEnvironment::SetUp() {
     FD = open("log.test_pttdb_content_block.err", O_WRONLY | O_CREAT | O_TRUNC, 0660);
     dup2(FD, 2);
 
-    const char *DEFAULT_MONGO_DB[] = {
+    const char *db_name[] = {
         "test_post",      //MONGO_POST_DBNAME
         "test",      //MONGO_TEST_DBNAME
     };
