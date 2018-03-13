@@ -270,6 +270,7 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
         if (len > 1) error_code = S_ERR_FOUND_MULTI;
     }
 
+    // clean-up
     if(cursor) {
         mongoc_cursor_destroy(cursor);
         cursor = NULL;
