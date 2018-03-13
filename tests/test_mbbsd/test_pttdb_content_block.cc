@@ -19,14 +19,13 @@ TEST(pttdb, serialize_content_block_bson) {
     memcpy(content_block.buf_block, str, strlen(str));
 
     // init-op
-    bson_t b;
-    bson_init(&b);
+    bson_t *b = NULL;
     
     // do-op
     Err error = _serialize_content_block_bson(&content_block, &b);
     EXPECT_EQ(S_OK, error);
 
-    error = _deserialize_content_block_bson(&b, &content_block2);
+    error = _deserialize_content_block_bson(b, &content_block2);
     EXPECT_EQ(S_OK, error);
 
     // post-op
