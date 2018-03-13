@@ -182,7 +182,7 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
     bson_t reply;
     bson_error_t error;
 
-    status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, &set_val, &opts, &reply, &error);
+    status = mongoc_collection_update_one(MONGO_COLLECTIONS[collection], key, set_val, opts, &reply, &error);
     if (!status) error_code = S_ERR;
     bson_destroy(&reply);
 
