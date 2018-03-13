@@ -50,7 +50,6 @@ gen_uuid(UUID uuid)
 
     long int rand_num;
     long int *p_rand;
-    int n_i;
     unsigned short *p_short_rand_num;
 
     unsigned short *p_short;
@@ -64,7 +63,7 @@ gen_uuid(UUID uuid)
 
     milli_timestamp <<= 16;
     p_char = (unsigned char *)&milli_timestamp;
-    
+
     p_milli_timestamp = (time64_t *)(_uuid + 40);
     *p_milli_timestamp = milli_timestamp;
 
@@ -74,7 +73,7 @@ gen_uuid(UUID uuid)
     *p_short = *p_short_rand_num;
 
     // first 40 chars as random, but 6th char is version (6 for now)
-    p_rand = _uuid;
+    p_rand = (long int *)_uuid;
     for (int i = 0; i < (_UUIDLEN - 8) / sizeof(long int); i++) {
         rand_num = random();
         *p_rand = rand_num;
