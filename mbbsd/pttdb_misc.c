@@ -62,15 +62,15 @@ gen_uuid(UUID uuid)
     error_code = get_milli_timestamp(&milli_timestamp);
     if (error_code) return error_code;
 
-    p_char = &milli_timestamp;
     milli_timestamp <<= 16;
-    p_char = &milli_timestamp;
-    p_milli_timestamp = _uuid + 40;
+    p_char = (unsigned char *)&milli_timestamp;
+    
+    p_milli_timestamp = (time64_t *)(_uuid + 40);
     *p_milli_timestamp = milli_timestamp;
 
     rand_num = random();
-    p_short_rand_num = &rand_num;
-    p_short = _uuid + 40;
+    p_short_rand_num = (unsigned short *)&rand_num;
+    p_short = (unsigned short*)(_uuid + 40);
     *p_short = *p_short_rand_num;
 
     // first 40 chars as random, but 6th char is version (6 for now)
