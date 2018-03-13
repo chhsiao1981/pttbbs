@@ -53,7 +53,7 @@ Err db_find_with_fields(int collection, bson_t *key, char **fields, int n_fields
 Err db_remove(int collection, bson_t *key);
 
 // bson-ops
-#define BCON_BINARY(bin, length) BCON_BIN(BSON_SUBTYPE_BINARY, bin, length);
+#define BCON_BINARY(bin, length) BCON_BIN(BSON_SUBTYPE_BINARY, bin, length)
 #define bson_append_bin(b, key, key_length, bin, length) bson_append_binary(b, key, key_length, BSON_SUBTYPE_BINARY, bin, length)
 
 Err bson_exists(bson_t *b, char *name, bool *is_exist);
