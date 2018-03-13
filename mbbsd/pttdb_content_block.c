@@ -192,7 +192,7 @@ _save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
     }
     
     if(!error_code) {
-        error_code = db_update_one(mongo_db_id, &content_block_id_bson, &content_block_bson, true);
+        error_code = db_update_one(mongo_db_id, content_block_id_bson, content_block_bson, true);
     }
 
     bson_safe_destroy(&content_block_bson);
