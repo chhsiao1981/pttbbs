@@ -57,7 +57,7 @@ TEST(util_db, db_find_one) {
     // result
     bson_t *result = NULL;
 
-    fprintf(stderr, "test_db_find_one: to db_find_one");
+    fprintf(stderr, "test_db_find_one: to db_find_one\n");
     error = db_find_one(MONGO_TEST, key, NULL, &result);
     EXPECT_EQ(S_OK, error);
 
