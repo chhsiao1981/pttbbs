@@ -235,6 +235,7 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
 
     bson_error_t error;
     bson_t *p_result;
+    int len = 0;
 
     bson_t opts;
     bson_init(&opts);
@@ -249,8 +250,6 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
 
     if(!error_code) {
         mongoc_cursor_t *cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, &opts, NULL);
-
-        int len = 0;
 
         while (mongoc_cursor_next(cursor, &p_result)) {
             bson_copy_to(p_result, result);
@@ -322,7 +321,7 @@ db_remove(int collection, bson_t *key)
     bson_error_t error;
     bool status;
 
-    status = mongoc_collection_delete_many(MONGO_COLLECTIONS[collection], key, NULL, NULL, &error)
+    status = mongoc_collection_delete_many(MONGO_COLLECTIONS[collection], key, NULL, NULL, &error);
     if(!status) error_code = S_ERR;
 
     return error_code;
