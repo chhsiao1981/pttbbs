@@ -249,7 +249,7 @@ db_find(int collection, bson_t *key, bson_t *fields, int max_n_results, int *n_r
     }
 
     if(!error_code) {
-        mongoc_cursor_t mongo_cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, &opts, NULL);
+        mongoc_cursor_t *mongo_cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, &opts, NULL);
 
         const bson_t *p_result;
         int len = 0;
