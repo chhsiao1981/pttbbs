@@ -28,7 +28,7 @@ split_contents(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBI
     error_code = _split_contents_core(buf, bytes, ref_id, content_id, mongo_db_id, n_line, n_block, line, &bytes_in_line, &content_block);
     if(error_code) return error_code;
 
-    error_code = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, content_id, mongo_db_id, content_block, n_line, n_block);
+    error_code = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, content_id, mongo_db_id, &content_block, n_line, n_block);
     if(error_code) return error_code;
 
     return S_OK;
@@ -58,7 +58,7 @@ split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, en
         len -= bytes;
     }
 
-    error_code = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, content_id, mongo_db_id, content_block, n_line, n_block);
+    error_code = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, content_id, mongo_db_id, &content_block, n_line, n_block);
     if(error_code) return error_code;
 
     return S_OK;
