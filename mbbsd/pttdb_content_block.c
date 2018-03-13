@@ -189,7 +189,7 @@ _init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, i
 Err
 _save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
 {
-    Error error_code;
+    Err error_code;
     bson_t content_block_bson;
     bson_t content_block_id_bson;
 
