@@ -136,7 +136,7 @@ db_set_if_not_exists(int collection, bson_t *key)
 
     bool is_exist;
 
-    set_val = BCON_NEW("$setOnInsert", BCON_TYPE_DOCUMENT(key));
+    set_val = BCON_NEW("$setOnInsert", BCON_TYPE_DOCUMENT(*key));
     opts = BCON_NEW("upsert", BCON_TYPE_BOOL(true));
 
 
