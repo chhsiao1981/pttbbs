@@ -9,7 +9,12 @@ TEST(pttdb, init_content_block) {
     Err error;
     ContentBlock content_block = {};
 
-    error = init_content_block(&content_block);
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id);
+    gen_uuid(content_id);
+
+    error = init_content_block(&content_block, ref_id, content_id, 0);
     EXPECT_EQ(S_OK, error);
     EXPECT_NE(NULL, content_block->buf_block);
 
