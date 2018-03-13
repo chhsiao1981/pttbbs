@@ -434,9 +434,9 @@ bson_get_value_bin_with_init(bson_t *b, char *name, char **value, int *p_len)
     status = BSON_ITER_HOLDS_BINARY(&iter);
     if (!status) return S_ERR;
 
-    char *p_value;
+    const char *p_value;
     int tmp_len;
-    bson_iter_binary(&iter, &subtype, &tmp_len, &p_value);
+    bson_iter_binary(&iter, &subtype, (unsigned int *)&tmp_len, (const unsigned char **)&p_value);
 
     *value = malloc(tmp_len + 1);
     if(!value) return S_ERR;
@@ -474,17 +474,17 @@ bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len)
     if (!status) return S_ERR;
 
     char *p_value;
-    bson_iter_binary(&iter, &subtype, p_len, &p_value);
+    bson_iter_binary(&iter, &subtype, (unsigned int *)p_len, &p_value);
 
-    int len = *p_len;
-    if (len > max_len) {
-        len = max_len;
+    int tmp_len = *p_len;
+    if (tmp_len > max_len) {
+        tmp_len = max_len;
         error = S_ERR_BUFFER_LEN;
     }
 
-    memcpy(value, p_value, len);
-    if (len < max_len) {
-        value[len + 1] = 0;
+    memcpy(value, p_value, tmp_len);
+    if (tmp_len < max_len) {
+        value[tmp_len + 1] = 0;
     }
 
     return error;
