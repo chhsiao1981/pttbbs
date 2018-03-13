@@ -89,7 +89,7 @@ TEST(util_db, db_find_one2_with_fields) {
     error = db_find_one(MONGO_TEST, key, NULL, &result);
     EXPECT_EQ(S_OK, error);
 
-    char *str = bson_as_canonical_extended_json(result);
+    char *str = bson_as_canonical_extended_json(result, NULL);
     fprintf(stderr, "test_db_find_one2_with_fields: result: %s\n", str);
     free(str);
 
