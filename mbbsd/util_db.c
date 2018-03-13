@@ -243,7 +243,7 @@ db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
     if(!status) error_code = S_ERR;
 
     if(!error_code) {
-        status = bson_append_document(&opts, "projection", fields);
+        status = bson_append_document(&opts, "projection", -1, fields);
         if(!status) error_code = S_ERR;
     }
 
