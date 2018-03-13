@@ -27,7 +27,7 @@ enum
     MONGO_TEST_DBNAME,
 };
 
-enum {
+enum MongoDBId {
     MONGO_MAIN,
     MONGO_MAIN_CONTENT,
     MONGO_COMMENT,
