@@ -30,8 +30,8 @@ TEST(util_db, db_update_one) {
 
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
-    bson_t *key = BCON_NEW("the_key", BCON_BINARY("key0", 4));
-    bson_t *val = BCON_NEW("the_val", BCON_BINARY("val0", 4));
+    bson_t *key = BCON_NEW("the_key", BCON_BINARY((const unsigned char *)"key0", 4));
+    bson_t *val = BCON_NEW("the_val", BCON_BINARY((const unsigned char *)"val0", 4));
 
     error = db_update_one(MONGO_TEST, key, val, true);
     EXPECT_EQ(S_OK, error);
