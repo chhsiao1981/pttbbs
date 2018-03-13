@@ -16,7 +16,8 @@ TEST(pttdb, init_content_block) {
 
     error = init_content_block(&content_block, ref_id, content_id, 0);
     EXPECT_EQ(S_OK, error);
-    EXPECT_NE(NULL, content_block->buf_block);
+    EXPECT_EQ(NULL, content_block->buf_block);
+    EXPECT_EQ
 
     error = destroy_content_block(&content_block);
     EXPECT_EQ(S_OK, error);

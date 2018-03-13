@@ -114,6 +114,7 @@ typedef struct ContentBlock {
     int len_block;                                   // size of this block.
     int n_line;                                      // n-line of this block.
 
+    int max_buf_len;                                 // max buf len (not in db)
     char *buf_block;                                 // buf
 } ContentBlock;
 
@@ -243,8 +244,12 @@ Err read_content_blocks(UUID ref_id, int max_n_blocks, int offset_block_id, enum
 
 Err delete_content(UUID content_id, enum MongoDBId mongo_db_id);
 
-Err init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int *block_id);
+Err init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id);
+Err init_content_block_with_buf(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id);
 Err destroy_content_block(ContentBlock *content_block);
+
+Err associate_content_block(ContentBlock *content_block, char *buf_block, int max_buf_len);
+Err dissociate_content_block(ContentBlock *content_block);
 
 /**********
  * Comments

@@ -4,7 +4,7 @@
 /**
  * @brief [brief description]
  * @details [long description]
- * 
+ *
  * @param buf [description]
  * @param bytes [description]
  * @param ref_id [description]
@@ -22,14 +22,14 @@ split_contents(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBI
     ContentBlock content_block = {};
 
     // init
-    *n_block = 0;
-    error_code = init_content_block(&content_block, ref_id, content_id, n_block);
+    error_code = init_content_block_with_buf(&content_block, ref_id, content_id, *n_block);
+    (*n_block)++;
 
-    if(!error_code) {
+    if (!error_code) {
         error_code = _split_contents_core(buf, bytes, ref_id, content_id, mongo_db_id, n_line, n_block, line, &bytes_in_line, &content_block);
     }
 
-    if(!error_code) {
+    if (!error_code) {
         error_code = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, content_id, mongo_db_id, &content_block, n_line, n_block);
     }
 
@@ -50,18 +50,19 @@ split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, en
 
     // init
     *n_block = 0;
-    error_code = init_content_block(&content_block, ref_id, content_id, n_block);
+    error_code = init_content_block_with_buf(&content_block, ref_id, content_id, *n_block);
+    (*n_block)++;
 
-    if(!error_code) {
+    if (!error_code) {
         while ((buf_size = len < MAX_BUF_SIZE ? len : MAX_BUF_SIZE) && (bytes = read(fd_content, buf, buf_size)) > 0) {
             error_code = _split_contents_core(buf, bytes, ref_id, content_id, mongo_db_id, n_line, n_block, line, &bytes_in_line, &content_block);
-            if(error_code) break;
+            if (error_code) break;
 
             len -= bytes;
         }
     }
 
-    if(!error_code) {
+    if (!error_code) {
         error_code = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, content_id, mongo_db_id, &content_block, n_line, n_block);
     }
 
@@ -83,27 +84,10 @@ delete_content(UUID content_id, enum MongoDBId mongo_db_id)
     return error_code;
 }
 
-
-/**
- * @brief [brief description]
- * @details initialize new content-block with block-id as current n_block.
- * 
- * @param content_block [description]
- * @param ref_id [description]
- * @param content_id [description]
- * @param n_block [description]
- */
 Err
-init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int *n_block)
+init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id)
 {
-    if(content_block->buf_block == NULL) {
-        content_block->buf_block = malloc(MAX_BUF_SIZE);
-        if(content_block->buf_block == NULL) return S_ERR;
-
-        bzero(content_block->buf_block, MAX_BUF_SIZE);
-    }
-    
-    if(content_block->len_block) {
+    if (content_block->len_block) {
         bzero(content_block->buf_block, content_block->len_block);
     }
 
@@ -112,8 +96,33 @@ init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, in
     memcpy(content_block->the_id, content_id, sizeof(UUID));
     memcpy(content_block->ref_id, ref_id, sizeof(UUID));
 
-    content_block->block_id = *n_block;
-    (*n_block)++;
+    content_block->block_id = block_id;
+}
+
+
+/**
+ * @brief [brief description]
+ * @details initialize new content-block with block-id as current n_block.
+ *
+ * @param content_block [description]
+ * @param ref_id [description]
+ * @param content_id [description]
+ * @param n_block [description]
+ */
+Err
+init_content_block_with_buf(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id)
+{
+    if (content_block->buf_block == NULL) {
+        content_block->buf_block = malloc(MAX_BUF_SIZE);
+        if (content_block->buf_block == NULL) return S_ERR;
+
+        content_block->max_buf_len = MAX_BUF_SIZE;
+
+        bzero(content_block->buf_block, MAX_BUF_SIZE);
+    }
+
+    error_code = init_content_block(content_block, ref_id, content_id, block_id);
+    if (error_code) return error_code;
 
     return S_OK;
 }
@@ -121,19 +130,40 @@ init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, in
 Err
 destroy_content_block(ContentBlock *content_block)
 {
-    if(content_block->buf_block == NULL) return S_OK;    
+    if (content_block->buf_block == NULL) return S_OK;
 
     free(content_block->buf_block);
     content_block->buf_block = NULL;
+    content_block->max_buf_len = 0;
 
     return S_OK;
+}
+
+Err
+associate_content_block(ContentBlock *content_block, char *buf_block, int max_buf_len)
+{
+    if(content_block->buf_block != NULL) return S_ERR;
+
+    content_block->buf_block = buf_block;
+    content_block->max_buf_len = max_buf_len;
+
+    return S_OK;
+}
+
+Err
+dissociate_content_block(ContentBlock, *content_block)
+{
+    if (content_block->buf_block == NULL) return S_OK;
+
+    content_block->buf_block = NULL;
+    content_block->max_buf_len = 0;
 }
 
 /**
  * @brief core for split contents.
  * @details core for split contents. No need to deal with last line block if used by split_contents_from_fd
  *          (There are multiple input-bufs in split_contents_from_fd and split_contents_from_fd will take care of last line-block)
- * 
+ *
  * @param buf [description]
  * @param bytes [description]
  * @param ref_id [description]
@@ -173,27 +203,23 @@ _split_contents_core_core(char *line, int bytes_in_line, UUID ref_id, UUID conte
     Err error_code;
 
     // check for max-lines in block-buf
-    if(content_block->n_line  > MAX_BUF_LINES) {
-        error_code = _save_content_block(content_block, mongo_db_id);
-        if(error_code) return error_code;
-
-        error_code = init_content_block(content_block, ref_id, content_id, n_block);
-        if(error_code) return error_code;
-    }
     // check for max-buf in block-buf
-    else if (content_block->len_block + bytes_in_line > MAX_BUF_BLOCK) {
+    if (content_block->n_line  > MAX_BUF_LINES ||
+        content_block->len_block + bytes_in_line > MAX_BUF_BLOCK) {
+        
         error_code = _save_content_block(content_block, mongo_db_id);
-        if(error_code) return error_code;
+        if (error_code) return error_code;
 
-        error_code = init_content_block(content_block, ref_id, content_id, n_block);
-        if(error_code) return error_code;
+        error_code = init_content_block(content_block, ref_id, content_id, *n_block);
+        (*n_block)++;
+        if (error_code) return error_code;
     }
 
     memcpy(content_block->buf_block + content_block->len_block, line, bytes_in_line);
     content_block->len_block += bytes_in_line;
 
     // 1 more line
-    if(line[bytes_in_line - 2] == '\r' && line[bytes_in_line - 1] == '\n') {
+    if (line[bytes_in_line - 2] == '\r' && line[bytes_in_line - 1] == '\n') {
         (*n_line)++;
         content_block->n_line++;
     }
@@ -210,11 +236,11 @@ _save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
 
     error_code = _serialize_content_block_bson(content_block, &content_block_bson);
 
-    if(!error_code) {
+    if (!error_code) {
         error_code = _serialize_content_uuid_bson(content_block->the_id, content_block->block_id, &content_block_id_bson);
     }
-    
-    if(!error_code) {
+
+    if (!error_code) {
         error_code = db_update_one(mongo_db_id, content_block_id_bson, content_block_bson, true);
     }
 
@@ -257,13 +283,13 @@ Err
 _serialize_content_block_bson(ContentBlock *content_block, bson_t **content_block_bson)
 {
     *content_block_bson = BCON_NEW(
-        "the_id", BCON_BINARY(content_block->the_id, UUIDLEN),
-        "ref_id", BCON_BINARY(content_block->ref_id, UUIDLEN),
-        "block_id", BCON_INT32(content_block->block_id),
-        "len_block", BCON_INT32(content_block->len_block),
-        "n_line", BCON_INT32(content_block->n_line),
-        "buf_block", BCON_BINARY((unsigned char *)content_block->buf_block, content_block->len_block)
-        );
+                              "the_id", BCON_BINARY(content_block->the_id, UUIDLEN),
+                              "ref_id", BCON_BINARY(content_block->ref_id, UUIDLEN),
+                              "block_id", BCON_INT32(content_block->block_id),
+                              "len_block", BCON_INT32(content_block->len_block),
+                              "n_line", BCON_INT32(content_block->n_line),
+                              "buf_block", BCON_BINARY((unsigned char *)content_block->buf_block, content_block->len_block)
+                          );
 
     return S_OK;
 }
