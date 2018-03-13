@@ -91,16 +91,14 @@ TEST(pttdb, serialize_uuid_bson) {
     bzero(_uuid, sizeof(_UUID));
     b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
 
-    bson_t uuid_bson;
-    bson_init(&uuid_bson);
+    bson_t *uuid_bson = NULL;
 
-    Err error = _serialize_uuid_bson(uuid, MONGO_THE_ID, &uuid_bson);
-    str = bson_as_canonical_extended_json (&uuid_bson, NULL);
+    Err error = _serialize_uuid_bson(uuid, &uuid_bson);
+    str = bson_as_canonical_extended_json(uuid_bson, NULL);
     strcpy(buf, str);
-
     bson_free (str);
 
-    bson_destroy(&uuid_bson);
+    bson_safe_destroy(&uuid_bson);
 
     fprintf(stderr, "buf: %s\n", buf);
 
@@ -117,16 +115,15 @@ TEST(pttdb, serialize_content_uuid_bson) {
     bzero(_uuid, sizeof(_UUID));
     b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
 
-    bson_t uuid_bson;
-    bson_init(&uuid_bson);
+    bson_t *uuid_bson;
 
-    Err error = _serialize_content_uuid_bson(uuid, MONGO_THE_ID, 0, &uuid_bson);
-    str = bson_as_canonical_extended_json (&uuid_bson, NULL);
+    Err error = _serialize_content_uuid_bson(uuid, 0, &uuid_bson);
+    str = bson_as_canonical_extended_json(uuid_bson, NULL);
     strcpy(buf, str);
 
     bson_free (str);
 
-    bson_destroy(&uuid_bson);
+    bson_safe_destroy(&uuid_bson);
 
     EXPECT_EQ(S_OK, error);
     EXPECT_STREQ("{ \"the_id\" : { \"$binary\" : { \"base64\": \"QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQQ==\", \"subType\" : \"00\" } }, \"block_id\" : { \"$numberInt\" : \"0\" } }", buf);
@@ -264,6 +261,24 @@ TEST(pttdb, get_line_from_buf_n_only) {
     EXPECT_EQ(S_ERR, error);
     EXPECT_EQ(13, bytes_in_new_line);
     EXPECT_STREQ("A\n0123456789", line);
+}
+
+TEST(pttdb, get_line_from_buf_line_with_max_buf_size) {
+    int len_buf = 22;
+    char buf[MAX_BUF_SIZE] = {};
+    char line[MAX_BUF_SIZE] = {};
+    int offset_buf = 0;
+    int offset_line = MAX_BUF_SIZE - 10;
+    int bytes_in_new_line = 0;
+
+    strcpy(buf, "01234567890123456789\r\n");
+
+    for(int i = 0; i < MAX_BUF_SIZE - 10; i++) line[i] = 'A';
+
+    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, &bytes_in_new_line);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(10, bytes_in_new_line);
+    EXPECT_EQ(0, strncmp("0123456789", line + MAX_BUF_SIZE - 10, 10));
 }
 
 TEST(pttdb, get_line_from_buf_partial_line_break) {
