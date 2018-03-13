@@ -35,7 +35,7 @@ split_contents(char *buf, int bytes, UUID ref_id, UUID conten_id, enum MongoDBId
 }
 
 Err
-split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, int *line, int *n_block) {
+split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block) {
     Err error_code = S_OK;
     char buf[MAX_BUF_SIZE] = {};
     char line[MAX_BUF_SIZE] = {};
