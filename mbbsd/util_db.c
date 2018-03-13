@@ -231,31 +231,44 @@ Err
 db_find_one(int collection, bson_t *key, bson_t *fields, bson_t *result)
 {
     Err error_code = S_OK;
-
-    mongoc_cursor_t *cursor = mongoc_collection_find(MONGO_COLLECTIONS[collection], MONGOC_QUERY_NONE, 0, 1, 0, key, fields, NULL);
-
+    bool status;
+    
     bson_error_t error;
     bson_t *p_result;
-    int len = 0;
 
-    while (mongoc_cursor_next(cursor, &p_result)) {
-        bson_copy_to(p_result, result);
-        len++;
+    bson_t opts;
+    bson_init(&opts);
+
+    status = bson_append_int64(&opts, "limit", 1);
+    if(!status) error_code = S_ERR;
+
+    if(!error_code) {
+        mongoc_cursor_t *cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], MONGOC_QUERY_NONE, 0, 1, 0, key, fields, NULL);
+
+        int len = 0;
+
+        while (mongoc_cursor_next(cursor, &p_result)) {
+            bson_copy_to(p_result, result);
+            len++;
+        }
+
+        if (mongoc_cursor_error(cursor, &error)) {
+            error_code = S_ERR;
+        }
+    }    
+
+    if(!error_code) {
+        if (len == 0) error_code = S_ERR_NOT_EXISTS;
     }
 
-    if (mongoc_cursor_error(cursor, &error)) {
-        error_code = S_ERR;
-    }
-
-    if (len == 0) {
-        error_code = S_ERR_NOT_EXISTS;
-    }
-
-    if (len > 1) {
-        error_code = S_ERR_FOUND_MULTI;
+    if(!error_code) {
+        if (len > 1) error_code = S_ERR_FOUND_MULTI;
     }
 
     mongoc_cursor_destroy(cursor);
+
+    bson_destroy(&opts);
+
     return error_code;
 }
 
