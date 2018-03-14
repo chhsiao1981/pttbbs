@@ -559,6 +559,8 @@ TEST(pttdb, split_contents_core3)
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(2, n_line);
     EXPECT_EQ(4, n_block);
+
+    // the rest 3618-block in the current block.
     EXPECT_EQ(0, bytes_in_line);
     EXPECT_EQ(1, content_block.n_line);
     EXPECT_STREQ(buf + 102 + 8192 * 2, content_block.buf_block);
@@ -568,6 +570,7 @@ TEST(pttdb, split_contents_core3)
     ContentBlock content_block2 = {};
     init_content_block_buf_block(&content_block2);
 
+    // only the 1st line get into the block-0.
     error = read_content_block(content_id, 0, MONGO_MAIN_CONTENT, &content_block2);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(102, content_block2.len_block);
@@ -576,6 +579,7 @@ TEST(pttdb, split_contents_core3)
     error = reset_content_block_buf_block(&content_block2);
     EXPECT_EQ(S_OK, error);
 
+    // the 1st 8192-block in the block-1
     error = read_content_block(content_id, 1, MONGO_MAIN_CONTENT, &content_block2);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(8192, content_block2.len_block);
@@ -584,6 +588,7 @@ TEST(pttdb, split_contents_core3)
     error = reset_content_block_buf_block(&content_block2);
     EXPECT_EQ(S_OK, error);
 
+    // the 2nd 8192-block in the block-2
     error = read_content_block(content_id, 2, MONGO_MAIN_CONTENT, &content_block2);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(8192, content_block2.len_block);
@@ -592,7 +597,81 @@ TEST(pttdb, split_contents_core3)
     error = reset_content_block_buf_block(&content_block2);
     EXPECT_EQ(S_OK, error);
 
-    destroy_content_block(&content_block2);    
+    destroy_content_block(&content_block2);
+    destroy_content_block(&content_block);
+}
+
+TEST(pttdb, split_contents_core4)
+{
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    ContentBlock content_block = {};
+    char buf[MAX_BUF_SIZE * 4] = {};
+    char *p_buf = buf;
+    sprintf(p_buf, "test456789test456789test456789test456789test456789test456789test456789test456789test456789test456789\r\n");
+    p_buf += 102;
+
+    for (int i = 0; i < 200; i++) {
+        sprintf(p_buf, "test456789test456789test456789test456789test456789test456789test456789test456789test456789test456789");
+        p_buf += 100;
+    }
+    int bytes = strlen(buf);
+
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id);
+    gen_uuid(content_id);
+
+    int n_block = 0;
+    init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
+    n_block++;
+
+    int n_line = 0;
+    char line[MAX_BUF_SIZE];
+    int bytes_in_line = 0;
+    Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, &bytes_in_line, &content_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(2, n_line);
+    EXPECT_EQ(4, n_block);
+
+    // the rest 3618-block in the line.
+    EXPECT_EQ(3168, bytes_in_line);
+    EXPECT_STREQ(buf + 102 + 8192 * 2, line);
+    EXPECT_EQ(0, content_block.n_line);
+    EXPECT_EQ(0, content_block.len_block);
+    EXPECT_EQ(3, content_block.block_id);
+
+    ContentBlock content_block2 = {};
+    init_content_block_buf_block(&content_block2);
+
+    // only the 1st line get into the block-0.
+    error = read_content_block(content_id, 0, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(102, content_block2.len_block);
+    EXPECT_EQ(0, strncmp(buf, content_block2.buf_block, 102));
+    EXPECT_EQ(1, content_block2.n_line);
+    error = reset_content_block_buf_block(&content_block2);
+    EXPECT_EQ(S_OK, error);
+
+    // the 1st 8192-block in the block-1
+    error = read_content_block(content_id, 1, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(8192, content_block2.len_block);
+    EXPECT_EQ(0, strncmp(buf + 102, content_block2.buf_block, 8192));
+    EXPECT_EQ(0, content_block2.n_line);
+    error = reset_content_block_buf_block(&content_block2);
+    EXPECT_EQ(S_OK, error);
+
+    // the 2nd 8192-block in the block-2
+    error = read_content_block(content_id, 2, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(8192, content_block2.len_block);
+    EXPECT_EQ(0, strncmp(buf + 102 + 8192, content_block2.buf_block, 8192));
+    EXPECT_EQ(0, content_block2.n_line);
+    error = reset_content_block_buf_block(&content_block2);
+    EXPECT_EQ(S_OK, error);
+
+    destroy_content_block(&content_block2);
     destroy_content_block(&content_block);
 }
 
