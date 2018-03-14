@@ -66,6 +66,8 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
     EXPECT_EQ(2, main_header.n_total_block);
     EXPECT_EQ(9, main_header.n_total_line);
 
+    fprintf(stderr, "test_pttdb.create_main_from_fd: to read content_block\n");
+
     // read content-block
     ContentBlock content_block0;
     ContentBlock content_block1;
