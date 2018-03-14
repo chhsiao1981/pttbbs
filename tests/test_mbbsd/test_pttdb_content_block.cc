@@ -242,7 +242,6 @@ TEST(pttdb, read_content_blocks)
         EXPECT_EQ(i, content_blocks[i].block_id);
     }
 
-
     for(int i = 0; i < 10; i++) {
         destroy_content_block(&content_blocks[i]);
         bson_safe_destroy(&b[i]);
