@@ -39,7 +39,7 @@ TEST(pttdb, init_content_block_with_buf_block) {
 
     error = init_content_block_with_buf_block(&content_block, ref_id, content_id, 3);
     EXPECT_EQ(S_OK, error);
-    EXPECT_NE(NULL, content_block.buf_block);
+    EXPECT_NE(NULL, (unsigned long)content_block.buf_block);
     EXPECT_EQ(MAX_BUF_SIZE, content_block.max_buf_len);
     EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block.ref_id, UUIDLEN));
     EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_block.the_id, UUIDLEN));
