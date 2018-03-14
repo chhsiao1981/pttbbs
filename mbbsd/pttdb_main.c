@@ -464,28 +464,43 @@ _serialize_main_bson(MainHeader *main_header, bson_t **main_bson)
 Err
 _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
 {
+    fprintf(stderr, "pttdb_main._deserialze_main_bson: start\n");
     Err error_code;
     error_code = bson_get_value_int32(main_bson, "version", (int *)&main_header->version);
     if (error_code) return error_code;
+
+    fprintf(stderr, "pttdb_main._deserialze_main_bson: after version\n");
 
     int len;
     error_code = bson_get_value_bin(main_bson, "the_id", UUIDLEN, (char *)main_header->the_id, &len);
     if (error_code) return error_code;
 
+    fprintf(stderr, "pttdb_main._deserialze_main_bson: after the_id\n");
+
     error_code = bson_get_value_bin(main_bson, "content_id", UUIDLEN, (char *)main_header->content_id, &len);
     if (error_code) return error_code;
+
+    fprintf(stderr, "pttdb_main._deserialze_main_bson: after content_id\n");
 
     error_code = bson_get_value_bin(main_bson, "update_content_id", UUIDLEN, (char *)main_header->update_content_id, &len);
     if (error_code) return error_code;
 
+    fprintf(stderr, "pttdb_main._deserialze_main_bson: after update_content_id\n");
+
     error_code = bson_get_value_int64(main_bson, "aid", (long *)&main_header->aid);
     if (error_code) return error_code;
+
+    fprintf(stderr, "pttdb_main._deserialze_main_bson: after aid\n");
 
     error_code = bson_get_value_int32(main_bson, "status", (int *)&main_header->status);
     if (error_code) return error_code;
 
+    fprintf(stderr, "pttdb_main._deserialze_main_bson: after status\n");
+
     error_code = bson_get_value_bin(main_bson, "status_updater", IDLEN, main_header->status_updater, &len);
     if (error_code) return error_code;
+
+    fprintf(stderr, "pttdb_main._deserialze_main_bson: after status_updater\n");
 
     error_code = bson_get_value_bin(main_bson, "status_update_ip", IPV4LEN, main_header->status_update_ip, &len);
     if (error_code) return error_code;
