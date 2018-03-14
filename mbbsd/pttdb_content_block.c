@@ -242,6 +242,7 @@ read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDB
     bzero(db_results, sizeof(bson_t *) * max_n_block);
 
     error_code = _read_content_blocks_get_db_results(db_results, content_id, max_n_block, block_id, mongo_db_id, n_block);
+    fprintf(stderr, "pttdb_content_block.read_content_blocks: after get db_results: error_code: %d n_block: %d\n", error_code, *n_block);
 
     // db_results to content-blocks
     int tmp_n_block = *n_block;
