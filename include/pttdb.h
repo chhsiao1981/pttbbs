@@ -242,7 +242,7 @@ Err read_content_blocks(UUID content_id, int max_n_blocks, int offset_block_id, 
 */
 
 Err save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id);
-Err read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, ContentBlock **content_block);
+Err read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_block);
 
 Err delete_content(UUID content_id, enum MongoDBId mongo_db_id);
 
