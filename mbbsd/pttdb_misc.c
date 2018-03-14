@@ -244,8 +244,9 @@ get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offs
 
     // check \r\n in buf.
     int max_new_lines = MAX_BUF_SIZE - offset_line;
-    int iter_bytes = (bytes - offset_buf <= max_new_lines) ? bytes : max_new_lines;
-    for (int i = offset_buf; i < iter_bytes - 1; i++) {
+    int iter_bytes = (bytes - offset_buf <= max_new_lines) ? (bytes - offset_buf) : max_new_lines;
+    int end_bytes = iter_bytes + offset_buf;
+    for (int i = offset_buf; i < end_bytes - 1; i++) {
         if (*p_buf == '\r' && *(p_buf + 1) == '\n') {
             *p_line = '\r';
             *(p_line + 1) = '\n';
@@ -259,9 +260,9 @@ get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offs
 
     // last char
     *p_line++ = *p_buf++;
-    *bytes_in_new_line = iter_bytes - offset_buf;
+    *bytes_in_new_line = end_bytes - offset_buf;
 
-    fprintf(stderr, "pttdb_misc.get_line_from_buf: offset_line: %d max_new_lines: %d bytes: %d iter_bytes: %d offset_buf: %d bytes_in_new_line: %d\n", offset_line, max_new_lines, bytes, iter_bytes, offset_buf, *bytes_in_new_line);
+    fprintf(stderr, "pttdb_misc.get_line_from_buf: offset_line: %d max_new_lines: %d bytes: %d iter_bytes: %d end_bytes: %d offset_buf: %d bytes_in_new_line: %d\n", offset_line, max_new_lines, bytes, iter_bytes, end_bytes, offset_buf, *bytes_in_new_line);
 
     // XXX special case for all block as a continuous string. Although it's not end yet, it forms a block.
     if(*bytes_in_new_line == max_new_lines) return S_OK;
