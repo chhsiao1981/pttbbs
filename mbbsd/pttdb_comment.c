@@ -221,4 +221,6 @@ _deserialize_comment_bson(bson_t *comment_bson, Comment *comment)
 
     error_code = bson_get_value_bin(comment_bson, "buf", MAX_BUF_COMMENT, comment->buf, &len);
     if (error_code) return error_code;
+
+    return S_OK;
 }
