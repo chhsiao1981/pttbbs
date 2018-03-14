@@ -492,7 +492,7 @@ _split_contents_core(char *buf, int bytes, UUID ref_id, UUID content_id, enum Mo
         if (error_code) break;
 
         // Main-op
-        error_code = _split_contents_core_core(line, *bytes_in_line, ref_id, content_id, mongo_db_id, content_block, n_line, n_block);
+        error_code = _split_contents_core_one_line(line, *bytes_in_line, ref_id, content_id, mongo_db_id, content_block, n_line, n_block);
         if (error_code) return error_code;
 
         // reset line
@@ -504,7 +504,7 @@ _split_contents_core(char *buf, int bytes, UUID ref_id, UUID content_id, enum Mo
 }
 
 Err
-_split_contents_core_core(char *line, int bytes_in_line, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, ContentBlock *content_block, int *n_line, int *n_block)
+_split_contents_core_one_line(char *line, int bytes_in_line, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, ContentBlock *content_block, int *n_line, int *n_block)
 {
     Err error_code;
 
@@ -541,7 +541,7 @@ _split_contents_deal_with_last_line_block(int bytes_in_line, char *line, UUID re
     // last line
     if (bytes_in_line) {
         // Main-op
-        error_code = _split_contents_core_core(line, bytes_in_line, ref_id, content_id, mongo_db_id, content_block, n_line, n_block);
+        error_code = _split_contents_core_one_line(line, bytes_in_line, ref_id, content_id, mongo_db_id, content_block, n_line, n_block);
         if (error_code) return error_code;
     }
 
