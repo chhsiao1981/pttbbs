@@ -439,6 +439,8 @@ _cmp_sort_by_block_id(const void *a, const void *b)
     error_code = bson_get_value_int32(tmp_b, "block_id", &block_id_b);
     if (error_code) block_id_b = -1;
 
+    fprintf(stderr, "pttdb_content_block.cmp: a: %d b: %d\n", block_id_a, block_id_b);
+
     return block_id_a - block_id_b;
 }
 
