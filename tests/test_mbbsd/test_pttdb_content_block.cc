@@ -526,7 +526,7 @@ TEST(pttdb, split_contents_core2)
     destroy_content_block(&content_block);
 }
 
-TEST(pttdb, split_contents_core2)
+TEST(pttdb, split_contents_core3)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
