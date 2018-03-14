@@ -426,8 +426,10 @@ _sort_by_block_id(bson_t **db_results, int n_block)
 int
 _cmp_sort_by_block_id(const void *a, const void *b)
 {
-    bson_t *tmp_a = (bson_t *)(*a);
-    bson_t *tmp_b = (bson_t *)(*b);
+    bson_t **tmp_tmp_a = (bson_t **)a;
+    bson_t *tmp_a = (*tmp_tmp_a);
+    bson_t **tmp_tmp_b = (bson_t **)b;
+    bson_t *tmp_b = (*tmp_tmp_b);
     int block_id_a = 0;
     int block_id_b = 0;
 
