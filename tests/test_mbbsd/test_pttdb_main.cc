@@ -391,10 +391,10 @@ TEST(pttdb, create_main_from_fd_test1_full_read_main_content) {
     error_code = read_content_block(main_header.content_id, 1, MONGO_MAIN_CONTENT, &content_block1);
     EXPECT_EQ(S_OK, error_code);
 
-    EXPECT_EQ(len, main_content0.len_block + main_content1.len_block);
-    EXPECT_EQ(main_header.n_total_line, main_content0.n_line + main_content1.n_line);
-    EXPECT_EQ(0, strncmp((char *)main_content0.buf_block, str_content, main_content0.len_block));
-    EXPECT_EQ(0, strncmp((char *)main_content1.buf_block, str_content + main_content0.len_block, main_content1.len_block));
+    EXPECT_EQ(len, content_block0.len_block + content_block1.len_block);
+    EXPECT_EQ(main_header.n_total_line, content_block0.n_line + content_block1.n_line);
+    EXPECT_EQ(0, strncmp((char *)content_block0.buf_block, str_content, content_block0.len_block));
+    EXPECT_EQ(0, strncmp((char *)content_block1.buf_block, str_content + content_block0.len_block, content_block1.len_block));
 
     get_milli_timestamp(&end_timestamp);
 
@@ -625,7 +625,7 @@ TEST(pttdb, n_line_main_by_aid) {
     Err error = _serialize_main_bson(&main_header, &main_bson);
     EXPECT_EQ(S_OK, error);
 
-    error = db_update_one(MONGO_MAIN, fmain_bson, main_bson, true);
+    error = db_update_one(MONGO_MAIN, main_bson, main_bson, true);
     EXPECT_EQ(S_OK, error);
 
     int n_line;
@@ -830,9 +830,9 @@ TEST(pttdb, delete_main) {
     int result_status;
     char result_status_updater[MAX_BUF_SIZE];
     char result_status_update_ip[MAX_BUF_SIZE];
-    bson_get_value_int32(result, "status", &result_status);
-    bson_get_value_bin(result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
-    bson_get_value_bin(result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
+    bson_get_value_int32(result, (char *)"status", &result_status);
+    bson_get_value_bin(result, (char *)"status_updater", MAX_BUF_SIZE, result_status_updater, &len);
+    bson_get_value_bin(result, (char *)"status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
 
     for (int i = 0; i < 3; i++) {
         free(fields[i]);
@@ -911,9 +911,9 @@ TEST(pttdb, delete_main_by_aid) {
     fprintf(stderr, "test_pttdb.delete_main_by_aid: after db_find_one_with_fields: result: %s\n", str);
     bson_free(str);
 
-    bson_get_value_int32(result, "status", &result_status);
-    bson_get_value_bin(result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
-    bson_get_value_bin(result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
+    bson_get_value_int32(result, (char *)"status", &result_status);
+    bson_get_value_bin(result, (char *)"status_updater", MAX_BUF_SIZE, result_status_updater, &len);
+    bson_get_value_bin(result, (char *)"status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
 
     for (int i = 0; i < 3; i++) {
         free(fields[i]);
@@ -992,7 +992,7 @@ TEST(pttdb, serialize_main_bson) {
 }
 
 TEST(pttdb, serialize_update_main_bson) {
-    Err error_code S_OK;
+    Err error_code = S_OK;
     UUID content_id;
     char updater[IDLEN + 1] = {};
     char update_ip[IPV4LEN + 1] = {};
@@ -1023,25 +1023,25 @@ TEST(pttdb, serialize_update_main_bson) {
 
     int tmp = 0;
 
-    error_code = bson_get_value_bin(&main_bson, "content_id", UUIDLEN, (char *)result_content_id, &tmp);
+    error_code = bson_get_value_bin(main_bson, (char *)"content_id", UUIDLEN, (char *)result_content_id, &tmp);
     EXPECT_EQ(S_OK, error_code);
 
-    error_code = bson_get_value_bin(&main_bson, "updater", IDLEN, result_updater, &tmp);
+    error_code = bson_get_value_bin(main_bson, (char *)"updater", IDLEN, result_updater, &tmp);
     EXPECT_EQ(S_OK, error_code);
 
-    error_code = bson_get_value_bin(&main_bson, "update_ip", IPV4LEN, result_update_ip, &tmp);
+    error_code = bson_get_value_bin(main_bson, (char *)"update_ip", IPV4LEN, result_update_ip, &tmp);
     EXPECT_EQ(S_OK, error_code);
 
-    error_code = bson_get_value_int64(&main_bson, "update_milli_timestamp", (long *)&result_update_milli_timestamp);
+    error_code = bson_get_value_int64(main_bson, (char *)"update_milli_timestamp", (long *)&result_update_milli_timestamp);
     EXPECT_EQ(S_OK, error_code);
 
-    error_code = bson_get_value_int32(&main_bson, "n_total_line", &result_n_line);
+    error_code = bson_get_value_int32(main_bson, (char *)"n_total_line", &result_n_line);
     EXPECT_EQ(S_OK, error_code);
 
-    error_code = bson_get_value_int32(&main_bson, "n_total_block", &result_n_block);
+    error_code = bson_get_value_int32(main_bson, (char *)"n_total_block", &result_n_block);
     EXPECT_EQ(S_OK, error_code);
 
-    error_code = bson_get_value_int32(&main_bson, "len_total", &result_len);
+    error_code = bson_get_value_int32(main_bson, (char *)"len_total", &result_len);
     EXPECT_EQ(S_OK, error_code);
 
     EXPECT_EQ(0, strncmp((char *)content_id, (char *)result_content_id, UUIDLEN));
