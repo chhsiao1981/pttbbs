@@ -193,6 +193,13 @@ save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
     bson_t *content_block_bson = NULL;
     bson_t *content_block_id_bson = NULL;
 
+    char tmp_ref_id[UUIDLEN + 1] = {}
+    char tmp_the_id[UUIDLEN + 1] = {}
+    memcpy(tmp_ref_id, content_block->ref_id, UUIDLEN);
+    memcpy(tmp_the_id, content_block->the_id, UUIDLEN);
+
+    fprintf(stderr, "pttdb_content_block.save_content_block: ref_id: %s the_id: %s block_id: %d\n", tmp_ref_id, tmp_the_id, content_block->block_id);
+
     error_code = _serialize_content_block_bson(content_block, &content_block_bson);
 
     if (!error_code) {
