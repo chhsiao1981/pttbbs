@@ -112,9 +112,9 @@ delete_comment(UUID comment_id, char *updater, char *ip) {
                   );
 
     bson_t *val = BCON_NEW(
-                      "status_updater", BCON_BINARY(updater, IDLEN),
+                      "status_updater", BCON_BINARY((unsigned char *)updater, IDLEN),
                       "status", BCON_INT32(LIVE_STATUS_DELETED),
-                      "status_update_ip", BCON_BINARY(ip, IPV4LEN)
+                      "status_update_ip", BCON_BINARY((unsigned char *)ip, IPV4LEN)
                   );
 
     error_code = db_update_one(MONGO_COMMENT, key, val, true);
@@ -142,18 +142,18 @@ _serialize_comment_bson(Comment *comment, bson_t **comment_bson)
                         "the_id", BCON_BINARY(comment->the_id, UUIDLEN),
                         "main_id", BCON_BINARY(comment->main_id, UUIDLEN),
                         "status", BCON_INT32(comment->status),
-                        "status_updater", BCON_BINARY(comment->status_updater, IDLEN),
-                        "status_update_ip", BCON_BINARY(comment->status_update_ip, IPV4LEN),
+                        "status_updater", BCON_BINARY((unsigned char *)comment->status_updater, IDLEN),
+                        "status_update_ip", BCON_BINARY((unsigned char *)comment->status_update_ip, IPV4LEN),
                         "comment_type", BCON_INT32(comment->comment_type),
                         "karma", BCON_INT32(comment->karma),
-                        "poster", BCON_BINARY(comment->poster, IDLEN),
-                        "ip", BCON_BINARY(comment->ip, IPV4LEN),
+                        "poster", BCON_BINARY((unsigned char *)comment->poster, IDLEN),
+                        "ip", BCON_BINARY((unsigned char *)comment->ip, IPV4LEN),
                         "create_milli_timestamp", BCON_INT64(comment->create_milli_timestamp),
-                        "updater", BCON_BINARY(comment->updater, IDLEN),
-                        "update_ip", BCON_BINARY(comment->update_ip, IPV4LEN),
+                        "updater", BCON_BINARY((unsigned char *)comment->updater, IDLEN),
+                        "update_ip", BCON_BINARY((unsigned char *)comment->update_ip, IPV4LEN),
                         "update_milli_timestamp", BCON_INT64(comment->update_milli_timestamp),
                         "len", BCON_INT32(comment->len),
-                        "buf", BCON_BINARY(comment->buf, comment->len)
+                        "buf", BCON_BINARY((unsigned char *)comment->buf, comment->len)
                     );
 
     return S_OK;
