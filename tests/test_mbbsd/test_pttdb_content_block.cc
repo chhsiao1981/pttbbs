@@ -200,6 +200,43 @@ TEST(pttdb, serialize_content_block_bson) {
     destroy_content_block(&content_block2);
 }
 
+TEST(pttdb, read_content_blocks_get_db_results)
+{
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+    
+    bson_t *b[10];
+    UUID content_id;
+    UUID ref_id;
+
+    gen_uuid(content_id);
+    gen_uuid(ref_id);
+    for(int i = 0; i < 10; i++) {
+        b[i] = BCON_NEW(
+            "the_id", BCON_BINARY(content_id, UUIDLEN),
+            "block_id", BCON_INT32(i),
+            "ref_id", BCON_BINARY(ref_id, UUIDLEN),
+            "len_block", BCON_INT32(5),
+            "n_line", BCON_INT32(0),
+            "buf_block", BCON_BINARY("test1", 5)
+            );
+        db_update_one(MONGO_MAIN_CONTENT, b[i], b[i], true);
+    }
+
+    bson_t *b2[10] = {};
+    int n_block;
+    Err error = _read_content_blocks_get_db_results(b2, content_id, 10, 0, MONGO_MAIN_CONTENT, &n_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(10, n_block);
+
+    error = _ensure_block_ids(b2, 0, 10);
+    EXPECT_EQ(S_OK, error);
+
+    for(int i = 0; i < 10; i++) {
+        bson_safe_destroy(&b[i]);
+        bson_safe_destroy(&b2[i]);
+    }
+}
+
 TEST(pttdb, form_b_array_block_ids)
 {
     bson_t *b = bson_new();
