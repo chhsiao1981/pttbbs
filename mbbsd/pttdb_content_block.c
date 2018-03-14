@@ -113,7 +113,7 @@ init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, in
 Err
 init_content_block_with_buf_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id)
 {
-    Err error_code = init_content_block_buf_block(content_block)
+    Err error_code = init_content_block_buf_block(content_block);
 
     if(error_code) return error_code;
 
