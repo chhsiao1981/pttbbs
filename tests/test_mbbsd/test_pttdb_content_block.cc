@@ -205,12 +205,28 @@ TEST(pttdb, form_b_array_block_ids)
     bson_t *b = bson_new();
 
     Err error = _form_b_array_block_ids(5, 10, b);
+    EXPECT_EQ(S_OK, error);
 
     char *str = bson_as_canonical_extended_json(b, NULL);
+    EXPECT_EQ("{ \"$in\" : [ { \"$numberInt\" : \"5\" }, { \"$numberInt\" : \"6\" }, { \"$numberInt\" : \"7\" }, { \"$numberInt\" : \"8\" }, { \"$numberInt\" : \"9\" }, { \"$numberInt\" : \"10\" }, { \"$numberInt\" : \"11\" }, { \"$numberInt\" : \"12\" }, { \"$numberInt\" : \"13\" }, { \"$numberInt\" : \"14\" } ] }", str);
     fprintf(stderr, "test_pttdb_content_block.form_b_array_block_ids: str: %s\n", str);
     free(str);
 
     bson_safe_destroy(&b);
+}
+
+TEST(pttdb, ensure_block_ids)
+{
+    bson_t *b[10];
+    for(int i = 0; i < 10; i++) {
+        b[i] = BCON_NEW("block_id", BCON_INT32(i));
+    }
+
+    Err error = _ensure_block_ids(b, 0, 10);
+    EXPECT_EQ(S_OK, error);
+
+    Err error = _ensure_block_ids(b, 1, 10);
+    EXPECT_EQ(S_ERR, error);
 }
 
 /**********
