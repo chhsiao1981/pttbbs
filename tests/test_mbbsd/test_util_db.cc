@@ -155,12 +155,9 @@ TEST(util_db, db_remove) {
     error = db_remove(MONGO_TEST, key);
     EXPECT_EQ(S_OK, error);
 
-    int int_result;
-    error = bson_get_value_int32(result, (char *)"the_key", &int_result);
-    EXPECT_EQ(S_ERR, error);
-
-    error = bson_get_value_int32(result, (char *)"the_val", &int_result);
-    EXPECT_EQ(S_ERR, error);
+    error = db_find_one(MONGO_TEST, key, NULL, &result);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(NULL, result);
 
     bson_safe_destroy(&key);
     bson_safe_destroy(&val);
