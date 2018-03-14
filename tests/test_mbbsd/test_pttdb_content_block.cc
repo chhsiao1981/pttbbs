@@ -517,7 +517,7 @@ TEST(pttdb, split_contents_core_one_line2_reaching_max_line)
     Err error = _split_contents_core_one_line(line, bytes_in_line, ref_id, content_id, MONGO_MAIN_CONTENT, &content_block, &n_line, &n_block);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(2, n_block);
-    EXPECT_EQ(101, n_line);
+    EXPECT_EQ(MAX_BUF_LINES + 1, n_line);
 
     EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block.ref_id, UUIDLEN));
     EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_block.the_id, UUIDLEN));
@@ -535,7 +535,7 @@ TEST(pttdb, split_contents_core_one_line2_reaching_max_line)
     EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block2.ref_id, UUIDLEN));
     EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_block2.the_id, UUIDLEN));
     EXPECT_EQ(0, content_block2.block_id);
-    EXPECT_EQ(strlen(line), content_block2.len_block);
+    EXPECT_EQ(strlen(origin_line), content_block2.len_block);
     EXPECT_STREQ(origin_line, content_block2.buf_block);
 
     destroy_content_block(&content_block2);
