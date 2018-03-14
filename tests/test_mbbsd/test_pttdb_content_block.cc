@@ -251,6 +251,23 @@ TEST(pttdb, ensure_block_ids2)
     }
 }
 
+TEST(pttdb, sort_by_block_id)
+{
+    bson_t *b[10];
+    for(int i = 0; i < 10; i++) {
+        b[i] = BCON_NEW("block_id", BCON_INT32(9 - i));
+    }
+    Err error = _sort_by_block_id(b, 10);
+    EXPECT_EQ(S_OK, error)    
+
+    error = _ensure_block_ids(b, 0, 10);
+    EXPECT_EQ(S_OK, error);
+
+    for(int i = 0; i < 10; i++) {
+        bson_safe_destroy(&b[i]);
+    }
+}
+
 /**********
  * MAIN
  */
