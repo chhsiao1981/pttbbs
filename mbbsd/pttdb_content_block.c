@@ -132,8 +132,8 @@ init_content_block_buf_block(ContentBlock *content_block)
     if(content_block->buf_block == NULL) return S_ERR;
 
     content_block->max_buf_len = MAX_BUF_SIZE;
-    content_block->len_block = 0;
     bzero(content_block->buf_block, MAX_BUF_SIZE);    
+    content_block->len_block = 0;
 
     return S_OK;
 }
