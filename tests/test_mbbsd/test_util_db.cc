@@ -156,7 +156,7 @@ TEST(util_db, db_remove) {
     EXPECT_EQ(S_OK, error);
 
     error = db_find_one(MONGO_TEST, key, NULL, &result);
-    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(S_ERR, error);
     EXPECT_EQ(NULL, result);
 
     bson_safe_destroy(&key);
