@@ -5,6 +5,48 @@
 #include "pttdb_internal.h"
 #include "util_db_internal.h"
 
+TEST(pttdb, save_content_block) {
+    Err error;
+
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id);
+    gen_uuid(content_id);
+
+    ContentBlock content_block = {};
+    ContentBlock content_block2 = {};
+
+    error = init_content_block(&content_block, ref_id, content_id, 3);
+    EXPECT_EQ(S_OK, error);
+    error = init_content_block_buf_block(&content_block2);
+    EXPECT_EQ(S_OK, error);
+
+    error = _save_content_block(&content_block, MONGO_MAIN_CONTENT);
+    EXPECT_EQ(S_ERR, error);
+
+    char buf[] = "test_buf\r\ntest2";
+    int len_buf = strlen(buf);
+    associate_content_block(&content_block, buf, len_buf);
+    content_block.len_block = len_buf;
+    content_block.n_line = 1;
+
+    error = _save_content_block(&content_block, MONGO_MAIN_CONTENT);
+    EXPECT_EQ(S_OK, error);
+
+    error = read_content_block(content_id, 3, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_OK, error);
+
+    EXPECT_EQ(0, strncmp(content_block2.buf_block, buf, len_buf));
+    EXPECT_EQ(len_buf + 1, content_block2.max_buf_len);
+    EXPECT_EQ(len_buf, content_block2.len_block);
+    EXPECT_EQ(1, content_block2.n_line);
+
+    destroy_content_block(&content_block);
+    destroy_content_block(&content_block2);
+}
+
 TEST(pttdb, init_content_block) {
     Err error;
     ContentBlock content_block = {};
@@ -83,12 +125,17 @@ TEST(pttdb, serialize_content_block_bson) {
     ContentBlock content_block = {};
     ContentBlock content_block2 = {};
 
+    init_content_block_buf_block(&content_block);
+    init_content_block_buf_block(&content_block2);
+
     // initialize
+    UUID the_id;
+    UUID ref_id;
     gen_uuid(content_block.the_id);
     gen_uuid(content_block.ref_id);
-    content_block.block_id = 53;    
-    content_block.n_line = 2;
-    const char str[] = "test123\r\n";
+    content_block.block_id = 53;
+    content_block.n_line = 1;
+    char str[] = "test123\r\n";
     content_block.len_block = strlen(str);
     memcpy(content_block.buf_block, str, strlen(str));
 
@@ -112,6 +159,9 @@ TEST(pttdb, serialize_content_block_bson) {
     EXPECT_EQ(content_block.len_block, content_block2.len_block);
     EXPECT_EQ(content_block.n_line, content_block2.n_line);
     EXPECT_STREQ(content_block.buf_block, content_block2.buf_block);
+
+    destroy_content_block(&content_block);
+    destroy_content_block(&content_block2);
 }
 
 /**********

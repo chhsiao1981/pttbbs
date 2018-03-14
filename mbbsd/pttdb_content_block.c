@@ -101,7 +101,6 @@ init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, in
     return S_OK;
 }
 
-
 /**
  * @brief [brief description]
  * @details initialize new content-block with block-id as current n_block.
@@ -114,17 +113,27 @@ init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, in
 Err
 init_content_block_with_buf_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id)
 {
-    if (content_block->buf_block == NULL) {
-        content_block->buf_block = malloc(MAX_BUF_SIZE);
-        if (content_block->buf_block == NULL) return S_ERR;
+    Err error_code = init_content_block_buf_block(content_block)
 
-        content_block->max_buf_len = MAX_BUF_SIZE;
+    if(error_code) return error_code;
 
-        bzero(content_block->buf_block, MAX_BUF_SIZE);
-    }
-
-    Err error_code = init_content_block(content_block, ref_id, content_id, block_id);
+    error_code = init_content_block(content_block, ref_id, content_id, block_id);
     if (error_code) return error_code;
+
+    return S_OK;
+}
+
+Err
+init_content_block_buf_block(ContentBlock *content_block)
+{
+    if(content_block->buf_block != NULL) return S_OK;
+
+    content_block->buf_block = malloc(MAX_BUF_SIZE);
+    if(content_block->buf_block == NULL) return S_ERR;
+
+    content_block->max_buf_len = MAX_BUF_SIZE;
+    content_block->len_block = 0;
+    bzero(content_block->buf_block, MAX_BUF_SIZE);    
 
     return S_OK;
 }
@@ -232,9 +241,11 @@ _split_contents_core_core(char *line, int bytes_in_line, UUID ref_id, UUID conte
 }
 
 Err
-_save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
+save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
 {
     Err error_code = S_OK;
+    if(content_block->buf_block == NULL) return S_ERR;
+
     bson_t *content_block_bson = NULL;
     bson_t *content_block_id_bson = NULL;
 
@@ -250,6 +261,32 @@ _save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
 
     bson_safe_destroy(&content_block_bson);
     bson_safe_destroy(&content_block_id_bson);
+
+    return error_code;
+}
+
+Err
+read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_block)
+{
+    Err error_code = S_OK;
+
+    if(content_block->buf_block == NULL) return S_ERR;
+
+    bson_t *key = BCON_NEW(
+        "the_id", BCON_BINARY(content_id, UUIDLEN),
+        "block_id", BCON_INT32(block_id)
+        );
+
+    bson_t *db_result = NULL;
+
+    error_code = db_find_one(mongo_db_id, key, NULL, db_result);
+
+    if(!error_code) {
+        error_code = _deserialize_content_block_bson(db_result, content_block);
+    }
+
+    bson_safe_destroy(&db_result);
+    bson_safe_destroy(&key);
 
     return error_code;
 }
@@ -311,6 +348,8 @@ Err
 _deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *content_block)
 {
     Err error_code;
+
+    if(content_block->buf_block == NULL) return S_ERR;
 
     int len;
     error_code = bson_get_value_bin(content_block_bson, "the_id", UUIDLEN, (char *)content_block->the_id, &len);
