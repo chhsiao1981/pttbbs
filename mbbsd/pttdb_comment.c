@@ -83,10 +83,10 @@ read_comment(UUID comment_id, Comment *comment)
                   );
 
     bson_t *db_result = NULL;
-    error_code = db_find_one(MONGO_COMMENT, &key, NULL, &db_result);
+    error_code = db_find_one(MONGO_COMMENT, key, NULL, &db_result);
 
     if (!error_code) {
-        error_code = _deserialize_comment_bson(&db_result, comment);
+        error_code = _deserialize_comment_bson(db_result, comment);
     }
 
     bson_safe_destroy(&key);
