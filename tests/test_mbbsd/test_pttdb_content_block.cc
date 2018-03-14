@@ -20,8 +20,6 @@ TEST(pttdb, save_content_block) {
 
     error = init_content_block(&content_block, ref_id, content_id, 3);
     EXPECT_EQ(S_OK, error);
-    error = init_content_block_buf_block(&content_block2);
-    EXPECT_EQ(S_OK, error);
 
     char buf[] = "test_buf\r\ntest2";
     int len_buf = strlen(buf);
@@ -29,6 +27,10 @@ TEST(pttdb, save_content_block) {
     content_block.len_block = len_buf;
     content_block.n_line = 1;
 
+    error = init_content_block_buf_block(&content_block2);
+    EXPECT_EQ(S_OK, error);
+
+    // save
     error = save_content_block(&content_block, MONGO_MAIN_CONTENT);
     EXPECT_EQ(S_OK, error);
 
