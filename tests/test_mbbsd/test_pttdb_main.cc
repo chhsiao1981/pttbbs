@@ -1009,8 +1009,6 @@ TEST(pttdb, serialize_update_main_bson) {
     int result_n_block;
     int result_len;
 
-    bool bson_status;
-
     strcpy(updater, "updater1");
     strcpy(update_ip, "10.1.1.5");
     get_milli_timestamp(&update_milli_timestamp);
