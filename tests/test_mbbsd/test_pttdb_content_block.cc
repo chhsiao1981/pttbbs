@@ -228,9 +228,11 @@ TEST(pttdb, read_content_blocks)
     }
 
     int len;
-    Err error = read_content_blocks(content_id, 10, 0, MONGO_MAIN_CONTENT, content_blocks, &len);
+    int n_block;
+    Err error = read_content_blocks(content_id, 10, 0, MONGO_MAIN_CONTENT, content_blocks, &n_block, &len);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, len);
+    EXPECT_EQ(10, n_block);
+    EXPECT_EQ(50, len);
     for(int i = 0; i < 10; i++) {
         EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_blocks[i].content_id, UUIDLEN));
         EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_blocks[i].ref_id, UUIDLEN));
