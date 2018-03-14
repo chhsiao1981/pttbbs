@@ -421,7 +421,7 @@ _serialize_main_bson(MainHeader *main_header, bson_t **main_bson)
         "the_id", BCON_BINARY(main_header->the_id, UUIDLEN),
         "content_id", BCON_BINARY(main_header->content_id, UUIDLEN),
         "update_content_id", BCON_BINARY(main_header->update_content_id, UUIDLEN),
-        "aid", BCON_INT64(main_header->aid);
+        "aid", BCON_INT64(main_header->aid),
         "status", BCON_INT32(main_header->status),
         "status_updater", BCON_BINARY((unsigned char *)main_header->status_updater, UUIDLEN),
         "status_update_ip", BCON_BINARY((unsigned char *)main_header->status_update_ip, UUIDLEN),
