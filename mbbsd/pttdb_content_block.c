@@ -401,8 +401,8 @@ _form_b_array_block_ids(int block_id, int max_n_block, bson_t *b)
 
     bool status;
 
-    BSON_APPEND_DOCUMENT_BEGIN (b, "$in", &child);
-    for (i = 0; i < max_n_block; ++i) {
+    BSON_APPEND_ARRAY_BEGIN(b, "$in", &child);
+    for (int i = 0; i < max_n_block; i++) {
         keylen = bson_uint32_to_string(i, &key, buf, sizeof(buf));
         status = bson_append_int32(&child, key, (int)keylen, block_id + i);
         if(!status) {
@@ -410,7 +410,7 @@ _form_b_array_block_ids(int block_id, int max_n_block, bson_t *b)
             break;
         }
     }
-    BSON_APPEND_DOCUMENT_END(b, &child);
+    bson_append_array_end(b, &child);
 
     return error_code;
 }
