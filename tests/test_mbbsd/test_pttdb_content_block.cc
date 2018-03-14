@@ -483,7 +483,7 @@ TEST(pttdb, split_contents_core)
     EXPECT_EQ(2, n_block);
     EXPECT_EQ(0, bytes_in_line);
     EXPECT_EQ(318, content_block.n_line);
-    EXPECT_STREQ(p_buf + 8184, content_block.buf_block);
+    EXPECT_STREQ(buf + 8184, content_block.buf_block);
     EXPECT_EQ(3816, content_block.len_block);
 
     destroy_content_block(&content_block);
