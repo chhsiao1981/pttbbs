@@ -225,7 +225,7 @@ TEST(pttdb, ensure_block_ids)
     Err error = _ensure_block_ids(b, 0, 10);
     EXPECT_EQ(S_OK, error);
 
-    Err error = _ensure_block_ids(b, 1, 10);
+    error = _ensure_block_ids(b, 1, 10);
     EXPECT_EQ(S_ERR, error);
 }
 
