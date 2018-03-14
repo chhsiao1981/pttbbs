@@ -40,7 +40,7 @@ TEST(pttdb, save_content_block) {
     EXPECT_EQ(S_OK, error);
 
     EXPECT_EQ(0, strncmp(content_block2.buf_block, buf, len_buf));
-    EXPECT_EQ(len_buf + 1, content_block2.max_buf_len);
+    EXPECT_EQ(MAX_BUF_SIZE, content_block2.max_buf_len);
     EXPECT_EQ(len_buf, content_block2.len_block);
     EXPECT_EQ(1, content_block2.n_line);
 
