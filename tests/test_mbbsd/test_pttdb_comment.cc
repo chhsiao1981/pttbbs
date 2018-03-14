@@ -22,7 +22,7 @@ TEST(pttdb, create_comment) {
     Err error_code = create_comment(main_id, poster, ip, len, content, comment_type, comment_id);
     EXPECT_EQ(S_OK, error_code);
 
-    Comment comment  = {};
+    Comment comment = {};
 
     memcpy(tmp_comment_id, comment_id, UUIDLEN);
 
@@ -84,22 +84,19 @@ TEST(pttdb, delete_comment) {
     strcpy(fields[1], "status_updater");
     strcpy(fields[2], "status_update_ip");
 
-    bson_t query;
-    bson_t result;
+    bson_t *query = BCON_NEW(
+        "the_id", BCON_BINARY(comment_id, UUIDLEN)
+        );
+    bson_t *result = NULL;
 
-    bson_init(&query);
-    bson_init(&result);
-
-    bson_append_bin(&query, "the_id", -1, comment_id, UUIDLEN);
-
-    error = db_find_one_with_fields(MONGO_COMMENT, &query, fields, n_fields, &result);
+    error = db_find_one_with_fields(MONGO_COMMENT, query, fields, n_fields, &result);
     EXPECT_EQ(S_OK, error);
     int result_status;
     char result_status_updater[MAX_BUF_SIZE];
     char result_status_update_ip[MAX_BUF_SIZE];
-    bson_get_value_int32(&result, "status", &result_status);
-    bson_get_value_bin(&result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
-    bson_get_value_bin(&result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
+    bson_get_value_int32(result, "status", &result_status);
+    bson_get_value_bin(result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
+    bson_get_value_bin(result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
 
     for (int i = 0; i < 3; i++) {
         free(fields[i]);
@@ -110,8 +107,8 @@ TEST(pttdb, delete_comment) {
     EXPECT_STREQ(del_updater, result_status_updater);
     EXPECT_STREQ(status_update_ip, result_status_update_ip);
 
-    bson_destroy(&query);
-    bson_destroy(&result);
+    bson_safe_destroy(&query);
+    bson_safe_destroy(&result);
 }
 
 
@@ -140,8 +137,7 @@ TEST(pttdb_comment, serialize_comment_bson) {
     strcpy(comment.buf, "test_buf");
     comment.len = strlen(comment.buf);
 
-    bson_t comment_bson;
-    bson_init(&comment_bson);
+    bson_t *comment_bson = NULL;
 
     Err error = _serialize_comment_bson(&comment, &comment_bson);
     EXPECT_EQ(S_OK, error);
@@ -152,7 +148,7 @@ TEST(pttdb_comment, serialize_comment_bson) {
 
     error = _deserialize_comment_bson(&comment_bson, &comment2);
 
-    bson_destroy(&comment_bson);
+    bson_safe_destroy(&comment_bson);
 
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(comment.version, comment2.version);

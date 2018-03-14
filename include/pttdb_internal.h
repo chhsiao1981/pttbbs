@@ -46,10 +46,10 @@ Err _deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *co
 /**********
  * Comment
  **********/
-/*
-Err _serialize_comment_bson(Comment *comment, bson_t *comment_bson);
+
+Err _serialize_comment_bson(Comment *comment, bson_t **comment_bson);
 Err _deserialize_comment_bson(bson_t *comment_bson, Comment *comment);
-*/
+
 
 /**********
  * Misc

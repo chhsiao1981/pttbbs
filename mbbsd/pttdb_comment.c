@@ -13,7 +13,7 @@ enum Karma KARMA_BY_COMMENT_TYPE[] = {
 /**
  * @brief [brief description]
  * @details [long description]
- * 
+ *
  * @param main_id [description]
  * @param poster [description]
  * @param ip [description]
@@ -29,8 +29,6 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enu
     time64_t create_milli_timestamp;
 
     Comment comment = {};
-    bson_t comment_id_bson;
-    bson_t comment_bson;
 
     error_code = get_milli_timestamp(&create_milli_timestamp);
     if (error_code) return error_code;
@@ -58,62 +56,42 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enu
     memcpy(comment.buf, content, len);
 
     // db-comment
-    bson_init(&comment_bson);
+    bson_t *comment_id_bson = NULL;
+    bson_t *comment_bson = NULL;
+
     error_code = _serialize_comment_bson(&comment, &comment_bson);
-    if(error_code) {
-        fprintf(stderr, "unable to serialize comment bson\n");
-        bson_destroy(&comment_bson);
-        return error_code;
+    if (!error_code) {
+        error_code = _serialize_uuid_bson(comment_id, &comment_id_bson);
     }
 
-    bson_init(&comment_id_bson);
-    error_code = _serialize_uuid_bson(comment_id, MONGO_THE_ID, &comment_id_bson);
-    if(error_code) {
-        bson_destroy(&comment_bson);
-        bson_destroy(&comment_id_bson);
-        return error_code;
+    if (!error_code) {
+        error_code = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
     }
 
-    error_code = db_update_one(MONGO_COMMENT, &comment_id_bson, &comment_bson, true);
-    bson_destroy(&comment_bson);
-    bson_destroy(&comment_id_bson);
-    if(error_code) {
-        fprintf(stderr, "unable to db-update\n");
-        return error_code;
-    }
+    bson_safe_destroy(&comment_bson);
+    bson_safe_destroy(&comment_id_bson);
 
-    return S_OK;
+    return error_code;
 }
 
 Err
 read_comment(UUID comment_id, Comment *comment)
 {
-    Err error_code;    
-    bson_t key;
-    bson_t db_result;
+    Err error_code = S_OK;
+    bson_t *key = BCON_NEW(
+                      "the_id", BCON_BINARY(comment_id, UUIDLEN)
+                  );
 
-    bson_init(&key);
-    bson_init(&db_result);
-
-    bson_append_bin(&key, "the_id", -1, comment_id, UUIDLEN);
-
+    bson_t *db_result = NULL;
     error_code = db_find_one(MONGO_COMMENT, &key, NULL, &db_result);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&db_result);
-        return error_code;
+
+    if (!error_code) {
+        error_code = _deserialize_comment_bson(&db_result, comment);
     }
 
-    error_code = _deserialize_comment_bson(&db_result, comment);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&db_result);
-        return error_code;
-    }
-
-    bson_destroy(&key);
-    bson_destroy(&db_result);
-    return S_OK;
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&db_result);
+    return error_code;
 }
 
 /**
@@ -127,117 +105,56 @@ read_comment(UUID comment_id, Comment *comment)
  */
 Err
 delete_comment(UUID comment_id, char *updater, char *ip) {
-    Err error_code;
-    bool bson_status;
+    Err error_code = S_OK;
 
-    bson_t key;
-    bson_init(&key);
+    bson_t *key = BCON_NEW(
+                      "the_id", BCON_BINARY(comment_id, UUIDLEN)
+                  );
 
-    bson_t val;
-    bson_init(&val);
+    bson_t *val = BCON_NEW(
+                      "status_updater", BCON_BINARY(updater, IDLEN),
+                      "status", BCON_INT32(LIVE_STATUS_DELETED),
+                      "status_update_ip", BCON_BINARY(ip, IPV4LEN)
+                  );
 
-    bson_status = bson_append_bin(&key, "the_id", -1, comment_id, UUIDLEN);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return S_ERR;
-    }
+    error_code = db_update_one(MONGO_COMMENT, key, val, true);
 
-    bson_status = bson_append_bin(&val, "status_updater", -1, updater, IDLEN);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return S_ERR;
-    }
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&val);
 
-    bson_status = bson_append_int32(&val, "status", -1, LIVE_STATUS_DELETED);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return S_ERR;
-    }
-
-    bson_status = bson_append_bin(&val, "status_update_ip", -1, ip, IPV4LEN);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return S_ERR;
-    }
-
-    error_code = db_update_one(MONGO_COMMENT, &key, &val, true);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return error_code;
-    }
-
-    bson_destroy(&key);
-    bson_destroy(&val);
-
-    return S_OK;
+    return error_code;
 }
 
 /**
  * @brief [brief description]
  * @details [long description]
- * 
+ *
  * @param comment [description]
  * @param comment_bson [description]
- * 
+ *
  * @return [description]
  */
 Err
-_serialize_comment_bson(Comment *comment, bson_t *comment_bson)
+_serialize_comment_bson(Comment *comment, bson_t **comment_bson)
 {
-    bool bson_status;
-
-    bson_status = bson_append_int32(comment_bson, "version", -1, comment->version);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(comment_bson, "the_id", -1, comment->the_id, UUIDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(comment_bson, "main_id", -1, comment->main_id, UUIDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(comment_bson, "status", -1, comment->status);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(comment_bson, "status_updater", -1, comment->status_updater, IDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(comment_bson, "status_update_ip", -1, comment->status_update_ip, IPV4LEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(comment_bson, "comment_type", -1, comment->comment_type);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(comment_bson, "karma", -1, comment->karma);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(comment_bson, "poster", -1, comment->poster, IDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(comment_bson, "ip", -1, comment->ip, IPV4LEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int64(comment_bson, "create_milli_timestamp", -1, comment->create_milli_timestamp);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(comment_bson, "updater", -1, comment->updater, IDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(comment_bson, "update_ip", -1, comment->update_ip, IPV4LEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int64(comment_bson, "update_milli_timestamp", -1, comment->update_milli_timestamp);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(comment_bson, "len", -1, comment->len);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(comment_bson, "buf", -1, comment->buf, comment->len);
-    if (!bson_status) return S_ERR;
+    *comment_bson = BCON_NEW(
+                        "version", BCON_INT32(comment->version),
+                        "the_id", BCON_BINARY(comment->the_id, UUIDLEN),
+                        "main_id", BCON_BINARY(comment->main_id, UUIDLEN),
+                        "status", BCON_INT32(comment->status),
+                        "status_updater", BCON_BINARY(comment->status_updater, IDLEN),
+                        "status_update_ip", BCON_BINARY(comment->status_update_ip, IPV4LEN),
+                        "comment_type", BCON_INT32(comment->comment_type),
+                        "karma", BCON_INT32(comment->karma),
+                        "poster", BCON_BINARY(comment->poster, IDLEN),
+                        "ip", BCON_BINARY(comment->ip, IPV4LEN),
+                        "create_milli_timestamp", BCON_INT64(comment->create_milli_timestamp),
+                        "updater", BCON_BINARY(comment->updater, IDLEN),
+                        "update_ip", BCON_BINARY(comment->update_ip, IPV4LEN),
+                        "update_milli_timestamp", BCON_INT64(comment->update_milli_timestamp),
+                        "len", BCON_INT32(comment->len),
+                        "buf", BCON_BINARY(comment->buf, comment->len)
+                    );
 
     return S_OK;
 }
@@ -245,10 +162,10 @@ _serialize_comment_bson(Comment *comment, bson_t *comment_bson)
 /**
  * @brief [brief description]
  * @details [long description]
- * 
+ *
  * @param comment_bson [description]
  * @param comment [description]
- * 
+ *
  * @return [description]
  */
 Err

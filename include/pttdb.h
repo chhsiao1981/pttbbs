@@ -241,13 +241,13 @@ Err dissociate_content_block(ContentBlock *content_block);
 /**********
  * Comments
  **********/
-/*
+
 Err create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enum CommentType comment_type, UUID comment_id);
 
 Err read_comment(UUID comment_id, Comment *comment);
 
 Err delete_comment(UUID comment_id, char *updater, char *ip);
-*/
+
 
 /*
 Err count_karma_by_main(UUID main_id);
