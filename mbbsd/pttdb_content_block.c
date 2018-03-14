@@ -198,8 +198,6 @@ save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
     memcpy(tmp_ref_id, content_block->ref_id, UUIDLEN);
     memcpy(tmp_the_id, content_block->the_id, UUIDLEN);
 
-    fprintf(stderr, "pttdb_content_block.save_content_block: ref_id: %s the_id: %s block_id: %d\n", tmp_ref_id, tmp_the_id, content_block->block_id);
-
     error_code = _serialize_content_block_bson(content_block, &content_block_bson);
 
     if (!error_code) {
@@ -235,14 +233,9 @@ read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, Co
         error_code = db_find_one(mongo_db_id, key, NULL, &db_result);
     }
 
-    char *str = bson_as_canonical_extended_json(db_result, NULL);
-    fprintf(stderr, "pttdb_content_block.read_content_block: after db_find_one: db_result: %s\n", str);
-    bson_free(str);
-
     if (!error_code) {
         error_code = _deserialize_content_block_bson(db_result, content_block);
     }
-    fprintf(stderr, "pttdb_content_block.read_content_block: after deserialize_content_block_bson\n");
 
     bson_safe_destroy(&db_result);
     bson_safe_destroy(&key);
@@ -509,7 +502,6 @@ _split_contents_core(char *buf, int bytes, UUID ref_id, UUID content_id, enum Mo
     for (int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
         error_code = get_line_from_buf(buf, offset_buf, bytes, line, *bytes_in_line, &bytes_in_new_line);
         *bytes_in_line += bytes_in_new_line;
-        fprintf(stderr, "pttdb_content_block._split_contents_core: after get line from buf: e: %d bytes_in_line: %d bytes_in_new_line: %d line: %s\n", error_code, *bytes_in_line, bytes_in_new_line, line);
         // unable to get more lines from buf
         if (error_code) break;
 
@@ -619,22 +611,14 @@ _deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *conten
     error_code = bson_get_value_bin(content_block_bson, "the_id", UUIDLEN, (char *)content_block->the_id, &len);
     if (error_code) return error_code;
 
-    fprintf(stderr, "pttdb_content_block._deserialize_content_block_bson: after the_id\n");
-
     error_code = bson_get_value_bin(content_block_bson, "ref_id", UUIDLEN, (char *)content_block->ref_id, &len);
     if (error_code) return error_code;
-
-    fprintf(stderr, "pttdb_content_block._deserialize_content_block_bson: after ref_id\n");
 
     error_code = bson_get_value_int32(content_block_bson, "block_id", &content_block->block_id);
     if (error_code) return error_code;
 
-    fprintf(stderr, "pttdb_content_block._deserialize_content_block_bson: after block_id\n");
-
     error_code = bson_get_value_int32(content_block_bson, "len_block", &content_block->len_block);
     if (error_code) return error_code;
-
-    fprintf(stderr, "pttdb_content_block._deserialize_content_block_bson: after len_block\n");
 
     if (content_block->max_buf_len < content_block->len_block) {
         content_block->len_block = 0;
@@ -644,12 +628,8 @@ _deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *conten
     error_code = bson_get_value_int32(content_block_bson, "n_line", &content_block->n_line);
     if (error_code) return error_code;
 
-    fprintf(stderr, "pttdb_content_block._deserialize_content_block_bson: after n_line\n");
-
     error_code = bson_get_value_bin(content_block_bson, "buf_block", content_block->len_block, content_block->buf_block, &len);
     if (error_code) return error_code;
-
-    fprintf(stderr, "pttdb_content_block._deserialize_content_block_bson: after buf_block\n");
 
 
     return S_OK;

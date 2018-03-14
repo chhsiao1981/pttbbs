@@ -69,8 +69,8 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
     fprintf(stderr, "test_pttdb_main.create_main_from_fd: to read content_block\n");
 
     // read content-block
-    ContentBlock content_block0;
-    ContentBlock content_block1;
+    ContentBlock content_block0 = {};
+    ContentBlock content_block1 = {};
 
     init_content_block_buf_block(&content_block0);
     init_content_block_buf_block(&content_block1);
