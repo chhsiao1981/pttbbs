@@ -505,12 +505,12 @@ TEST(pttdb, split_contents_core_one_line2_reaching_max_line)
     n_block++;
 
     char origin_line[MAX_BUF_SIZE] = {};
-    char *p_char = content_block->buf_block;
+    char *p_char = content_block.buf_block;
     for(int i = 0; i < MAX_BUF_LINES; i++) {
         sprintf(p_char, "test1\r\n");
         p_char += strlen(p_char);
     }
-    content_block.len_block = strlen(content_block->buf_block);
+    content_block.len_block = strlen(content_block.buf_block);
     content_block.n_line = MAX_BUF_LINES;
     strcpy(origin_line, content_block.buf_block);
 
