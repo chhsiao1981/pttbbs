@@ -63,15 +63,15 @@ TEST(pttdb, associate_content_block) {
     error = init_content_block(&content_block, ref_id, content_id, 3);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(NULL, content_block.buf_block);
-    EXPECT_EQ(0, content_block.max_len_buf);
+    EXPECT_EQ(0, content_block.max_buf_len);
     EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block.ref_id, UUIDLEN));
     EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_block.the_id, UUIDLEN));
     EXPECT_EQ(3, content_block.block_id);
 
     char buf[20];
     error = associate_content_block(&content_block, buf, 20);
-    EXPECT_EQ(buf, content_block->buf_block);
-    EXPECT_EQ(20, content_block->max_buf_len);
+    EXPECT_EQ(buf, content_block.buf_block);
+    EXPECT_EQ(20, content_block.max_buf_len);
 
     error = dissociate_content_block(&content_block);
     EXPECT_EQ(S_OK, error);
