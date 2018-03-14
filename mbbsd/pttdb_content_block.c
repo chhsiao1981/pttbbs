@@ -22,6 +22,7 @@ split_contents(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBI
     ContentBlock content_block = {};
 
     // init
+    (*n_block) = 0;
     error_code = init_content_block_with_buf_block(&content_block, ref_id, content_id, *n_block);
     (*n_block)++;
 

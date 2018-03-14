@@ -452,6 +452,41 @@ TEST(pttdb, sort_by_block_id)
     }
 }
 
+TEST(pttdb, split_contents_core_one_line)
+{
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    ContentBlock content_block = {};
+    char line[] = "testtesttesttest\r\n";
+    int bytes_in_line = strlen(line);
+    int n_line = 100;
+    int n_block = 0;
+
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id);
+    gen_uuid(content_id);
+
+    init_content_block_with_buf_block(&content_block, ref_id, content_id, &n_block);
+    n_block++;
+
+    Err error = _split_contents_core_one_line(line, bytes_in_line, ref_id, content_id, MONGO_MAIN_CONTENT, &content_block, &n_line, &n_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1, n_block);
+    EXPECT_EQ(101, n_line);
+
+    EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block.ref_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)the_id, (char *)content_block.the_id, UUIDLEN));
+    EXPECT_EQ(0, content_block.block_id);
+    EXPECT_EQ(bytes_in_line, content_block.len_block);
+    EXPECT_STREQ(line, content_block.buf_block);
+    EXPECT_EQ(1, content_block.n_line);
+    EXPECT_EQ(MAX_BUF_SIZE, content_block.max_buf_len);
+
+    destroy_content_block(&content_block);
+
+}
+
 TEST(pttdb, split_contents_deal_with_last_line_block)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
