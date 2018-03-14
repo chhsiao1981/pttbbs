@@ -467,7 +467,7 @@ TEST(pttdb, split_contents_core_one_line)
     gen_uuid(ref_id);
     gen_uuid(content_id);
 
-    init_content_block_with_buf_block(&content_block, ref_id, content_id, &n_block);
+    init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
     n_block++;
 
     Err error = _split_contents_core_one_line(line, bytes_in_line, ref_id, content_id, MONGO_MAIN_CONTENT, &content_block, &n_line, &n_block);
@@ -476,7 +476,7 @@ TEST(pttdb, split_contents_core_one_line)
     EXPECT_EQ(101, n_line);
 
     EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block.ref_id, UUIDLEN));
-    EXPECT_EQ(0, strncmp((char *)the_id, (char *)content_block.the_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_block.the_id, UUIDLEN));
     EXPECT_EQ(0, content_block.block_id);
     EXPECT_EQ(bytes_in_line, content_block.len_block);
     EXPECT_STREQ(line, content_block.buf_block);
