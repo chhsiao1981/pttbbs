@@ -18,8 +18,8 @@ TEST(pttdb, init_content_block) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(NULL, content_block.buf_block);
     EXPECT_EQ(0, content_block.max_buf_len);
-    EXPECT_EQ(0, strncmp(ref_id, content_block.ref_id, UUIDLEN));
-    EXPECT_EQ(0, strncmp(content_id, content_block.the_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block.ref_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_block.the_id, UUIDLEN));
     EXPECT_EQ(3, content_block.block_id);
 
     error = destroy_content_block(&content_block);
@@ -41,8 +41,8 @@ TEST(pttdb, init_content_block_with_buf_block) {
     EXPECT_EQ(S_OK, error);
     EXPECT_NE(NULL, content_block.buf_block);
     EXPECT_EQ(MAX_BUF_SIZE, content_block.max_buf_len);
-    EXPECT_EQ(0, strncmp(ref_id, content_block.ref_id, UUIDLEN));
-    EXPECT_EQ(0, strncmp(content_id, content_block.the_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block.ref_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_block.the_id, UUIDLEN));
     EXPECT_EQ(3, content_block.block_id);
 
     error = destroy_content_block(&content_block);
@@ -64,8 +64,8 @@ TEST(pttdb, associate_content_block) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(NULL, content_block.buf_block);
     EXPECT_EQ(0, content_block.max_len_buf);
-    EXPECT_EQ(0, strncmp(ref_id, content_block.ref_id, UUIDLEN));
-    EXPECT_EQ(0, strncmp(content_id, content_block.the_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block.ref_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_block.the_id, UUIDLEN));
     EXPECT_EQ(3, content_block.block_id);
 
     char buf[20];
