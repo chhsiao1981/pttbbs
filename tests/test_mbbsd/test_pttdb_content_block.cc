@@ -200,7 +200,7 @@ TEST(pttdb, serialize_content_block_bson) {
     destroy_content_block(&content_block2);
 }
 
-TEST(pttdb, read_content_blocks)
+TEST(pttdb, dynamic_read_content_blocks)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
     
