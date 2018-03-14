@@ -235,9 +235,14 @@ read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, Co
         error_code = db_find_one(mongo_db_id, key, NULL, &db_result);
     }
 
+    char *str = bson_as_canonical_extended_json(db_result, NULL);
+    fprintf(stderr, "pttdb_content_block.read_content_block: after db_find_one: db_result: %s\n", str);
+    bson_free(str);
+
     if (!error_code) {
         error_code = _deserialize_content_block_bson(db_result, content_block);
     }
+    fprintf(stderr, "pttdb_content_block.read_content_block: after deserialize_content_block_bson\n");
 
     bson_safe_destroy(&db_result);
     bson_safe_destroy(&key);
