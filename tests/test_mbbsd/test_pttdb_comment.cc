@@ -63,7 +63,6 @@ TEST(pttdb, delete_comment) {
     enum CommentType comment_type = COMMENT_TYPE_GOOD;
 
     UUID comment_id;
-    UUID tmp_comment_id;
 
     gen_uuid(main_id);
     Err error = create_comment(main_id, poster, ip, len, content, comment_type, comment_id);
@@ -94,9 +93,9 @@ TEST(pttdb, delete_comment) {
     int result_status;
     char result_status_updater[MAX_BUF_SIZE];
     char result_status_update_ip[MAX_BUF_SIZE];
-    bson_get_value_int32(result, "status", &result_status);
-    bson_get_value_bin(result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
-    bson_get_value_bin(result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
+    bson_get_value_int32(result, (char *)"status", &result_status);
+    bson_get_value_bin(result, (char *)"status_updater", MAX_BUF_SIZE, result_status_updater, &len);
+    bson_get_value_bin(result, (char *)"status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
 
     for (int i = 0; i < 3; i++) {
         free(fields[i]);
@@ -142,11 +141,11 @@ TEST(pttdb_comment, serialize_comment_bson) {
     Err error = _serialize_comment_bson(&comment, &comment_bson);
     EXPECT_EQ(S_OK, error);
 
-    char *str = bson_as_canonical_extended_json(&comment_bson, NULL);
+    char *str = bson_as_canonical_extended_json(comment_bson, NULL);
     fprintf(stderr, "comment_bson: %s\n", str);
     bson_free(str);
 
-    error = _deserialize_comment_bson(&comment_bson, &comment2);
+    error = _deserialize_comment_bson(comment_bson, &comment2);
 
     bson_safe_destroy(&comment_bson);
 
