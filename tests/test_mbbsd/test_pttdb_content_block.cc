@@ -224,7 +224,7 @@ TEST(pttdb, read_content_blocks)
 
     ContentBlock content_blocks[10];
     for(int i = 0; i < 10; i++) {
-        init_content_block_buf_block(content_blocks[i]);
+        init_content_block_buf_block(&content_blocks[i]);
     }
 
     int len;
