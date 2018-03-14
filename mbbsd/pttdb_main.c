@@ -26,9 +26,7 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origi
 
     time64_t create_milli_timestamp;
 
-    MainHeader main_header;
-    bson_t main_id_bson;
-    bson_t main_bson;
+    MainHeader main_header = {};
 
     error_code = get_milli_timestamp(&create_milli_timestamp);
     if (error_code) return error_code;
@@ -40,9 +38,9 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origi
     if (error_code) return error_code;
 
     // main_header
-    strncpy(main_header.the_id, main_id, sizeof(UUID));
-    strncpy(main_header.content_id, content_id, sizeof(UUID));
-    strncpy(main_header.update_content_id, content_id, sizeof(UUID));
+    memcpy(main_header.the_id, main_id, sizeof(UUID));
+    memcpy(main_header.content_id, content_id, sizeof(UUID));
+    memcpy(main_header.update_content_id, content_id, sizeof(UUID));
     main_header.aid = aid;
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, poster);
@@ -59,244 +57,32 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origi
     main_header.reset_karma = 0;
 
     // main_contents
-    error_code = _split_main_contents(fd_content, len, main_id, content_id, &n_line, &n_block);
-    if (error_code) {
-        return error_code;
-    }
+    error_code = split_contents_from_fd(fd_content, len, main_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block);
+    if (error_code) return error_code;
 
     // db-main
     main_header.len_total = len;
     main_header.n_total_line = n_line;
     main_header.n_total_block = n_block;
 
-    bson_init(&main_bson);
-    error_code = _serialize_main_bson(&main_header, &main_bson);
-    if (error_code) {
-        bson_destroy(&main_bson);
-        return error_code;
+    bson_t *main_id_bson = NULL;
+    bson_t *main_bson = NULL;
+    if(!error_code) {
+        error_code = _serialize_main_bson(&main_header, &main_bson);
     }
 
-    bson_init(&main_id_bson);
-    error_code = _serialize_uuid_bson(main_id, MONGO_THE_ID, &main_id_bson);
-    if (error_code) {
-        bson_destroy(&main_bson);
-        bson_destroy(&main_id_bson);
-        return error_code;
+    if (!error_code) {
+        error_code = _serialize_uuid_bson(main_id, &main_id_bson);
     }
 
-    error_code = db_update_one(MONGO_MAIN, &main_id_bson, &main_bson, true);
-    bson_destroy(&main_bson);
-    bson_destroy(&main_id_bson);
-    if (error_code) {
-        return error_code;
+    if(!error_code) {
+        error_code = db_update_one(MONGO_MAIN, main_id_bson, main_bson, true);
     }
 
-    return S_OK;
-}
+    bson_safe_destroy(&main_bson);
+    bson_safe_destroy(&main_id_bson);
 
-/**
- * @brief Split main-content from fd to main-content-blocks.
- * @details Split main-content from fd to main-content-blocks:
- *          1. init
- *          2. read from buffer.
- *          2.1.    get one line from buffer.
- *          2.2.    do split-main-content-core from the line.
- *          3. deal with last-line.
- *
- * @param fd_content fd
- * @param len len to read from fd_content.
- * @param main_id main_id
- * @param content_id content_id
- * @param n_line n_line (to-compute)
- * @param n_block n_block (to-compute)
- * @return Err
- */
-Err
-_split_main_contents(int fd_content, int len, UUID main_id, UUID content_id, int *n_line, int *n_block)
-{
-    Err error_code;
-    char buf[MAX_BUF_SIZE];
-    char line[MAX_BUF_SIZE];
-
-    int bytes = 0;
-    int buf_size = 0;
-    int bytes_in_line = 0;
-    int bytes_in_new_line = 0;
-    MainContent main_content_block;
-
-    // init
-    bzero(line, sizeof(line));
-    bzero(&main_content_block, sizeof(MainContent));
-
-    *n_block = 0;
-    error_code = _split_main_contents_init_main_content(&main_content_block, main_id, content_id, n_block);
-    if (error_code) {
-        return error_code;
-    }
-
-    // while-loop
-    while ((buf_size = len < MAX_BUF_SIZE ? len : MAX_BUF_SIZE) && (bytes = read(fd_content, buf, buf_size)) > 0) {
-        for (int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
-            error_code = get_line_from_buf(buf, offset_buf, bytes, line, bytes_in_line, &bytes_in_new_line);
-            bytes_in_line += bytes_in_new_line;
-            if (error_code) {
-                break;
-            }
-
-            // Main-op
-            error_code = _split_main_contents_core(line, bytes_in_line, main_id, content_id, &main_content_block, n_line, n_block);
-            if (error_code) {
-                return error_code;
-            }
-
-            // reset line
-            bzero(line, sizeof(char) * bytes_in_line);
-            bytes_in_line = 0;
-        }
-
-        len -= bytes;
-    }
-    // last line
-    if (bytes_in_line) {
-        // Main-op
-        error_code = _split_main_contents_core(line, bytes_in_line, main_id, content_id, &main_content_block, n_line, n_block);
-        if (error_code) {
-            return error_code;
-        }
-    }
-    // last block
-    if (main_content_block.len_block) {
-        error_code = _split_main_contents_save_main_content_block(&main_content_block);
-        if (error_code) {
-            return error_code;
-        }
-    }
-
-    return S_OK;
-}
-
-/**
- * @brief Core of _split_main_contents.
- * @details Core of _split_main_content.
- *          1. 1 more line.
- *          2. check whether the buffer exceeds limits.
- *          3. setup content->buffer, content->len, content->line.
- *
- * @param line line
- * @param bytes_in_line bytes_in_line
- * @param main_content_block main_content_block
- * @param n_line n_line
- * @param n_block n_block
- * @return Err
- */
-Err
-_split_main_contents_core(char *line, int bytes_in_line, UUID main_id, UUID content_id, MainContent *main_content_block, int *n_line, int *n_block)
-{
-    Err error_code;
-
-    // check for max-lines in block-buf.
-    if (main_content_block->n_line > MAX_BUF_LINES) {
-        error_code = _split_main_contents_save_main_content_block(main_content_block);
-        if (error_code) {
-            return error_code;
-        }
-
-        error_code = _split_main_contents_init_main_content(main_content_block, main_id, content_id, n_block);
-        if (error_code) {
-            return error_code;
-        }
-    }
-    // XXX should never happen.
-    else if (main_content_block->len_block + bytes_in_line > MAX_BUF_BLOCK) {
-        error_code = _split_main_contents_save_main_content_block(main_content_block);
-        if (error_code) {
-            return error_code;
-        }
-
-        error_code = _split_main_contents_init_main_content(main_content_block, main_id, content_id, n_block);
-        if (error_code) {
-            return error_code;
-        }
-    }
-
-    strncpy(main_content_block->buf_block + main_content_block->len_block, line, bytes_in_line);
-    main_content_block->len_block += bytes_in_line;
-
-    //1 more line
-    if (line[bytes_in_line - 2] == '\r' && line[bytes_in_line - 1] == '\n') {
-        (*n_line)++;
-        main_content_block->n_line++;
-    }
-
-
-    return S_OK;
-}
-
-/**
- * @brief Initialize main-content
- * @details Set main_id, content_id, and block_id. Others as 0
- *
- * @param main_content_block main-content-block
- * @param main_id main_id
- * @param content_id content_id
- * @param n_block block_id
- * @return Err
- */
-Err
-_split_main_contents_init_main_content(MainContent *main_content_block, UUID main_id, UUID content_id, int *block_id)
-{
-    if (main_content_block->len_block) {
-        bzero(main_content_block->buf_block, main_content_block->len_block);
-    }
-    main_content_block->len_block = 0;
-    main_content_block->n_line = 0;
-    strncpy(main_content_block->the_id, content_id, sizeof(UUID));
-    strncpy(main_content_block->main_id, main_id, sizeof(UUID));
-    main_content_block->block_id = *block_id;
-
-    (*block_id)++;
-
-    return S_OK;
-}
-
-/**
- * @brief Save main-content-block
- * @details Save main-content-block
- *
- * @param main_content_block main-content-block
- * @return Err
- */
-Err
-_split_main_contents_save_main_content_block(MainContent *main_content_block)
-{
-    Err error_code;
-    bson_t main_content_block_bson;
-    bson_t main_content_block_uuid_bson;
-
-    bson_init(&main_content_block_bson);
-
-    error_code = _serialize_main_content_block_bson(main_content_block, &main_content_block_bson);
-    if (error_code) {
-        bson_destroy(&main_content_block_bson);
-        return error_code;
-    }
-
-    bson_init(&main_content_block_uuid_bson);
-    error_code = _serialize_content_uuid_bson(main_content_block->the_id, MONGO_THE_ID, main_content_block->block_id, &main_content_block_uuid_bson);
-    if (error_code) {
-        bson_destroy(&main_content_block_bson);
-        bson_destroy(&main_content_block_uuid_bson);
-        return error_code;
-    }
-
-    error_code = db_update_one(MONGO_MAIN_CONTENT, &main_content_block_uuid_bson, &main_content_block_bson, true);
-    bson_destroy(&main_content_block_uuid_bson);
-    bson_destroy(&main_content_block_bson);
-    if (error_code) {
-        return error_code;
-    }
-
-    return S_OK;
+    return error_code;
 }
 
 /**
@@ -311,39 +97,30 @@ _split_main_contents_save_main_content_block(MainContent *main_content_block)
 Err
 len_main(UUID main_id, int *len)
 {
-    Err error_code;
-    bson_t key;
-    bson_init(&key);
-    bson_append_bin(&key, "the_id", -1, main_id, UUIDLEN);
+    Err error_code = S_OK;
+    bson_t *key = BCON_NEW(
+        "the_id", BCON_BINARY(main_id, UUIDLEN)
+        );
 
-    bson_t fields;
-    bson_init(&fields);
-    bson_append_bool(&fields, "_id", -1, false);
-    bson_append_bool(&fields, "the_id", -1, true);
-    bson_append_bool(&fields, "len_total", -1, true);
+    bson_t *fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "the_id", BCON_BOOL(true),
+        "len_total", BCON_BOOL(true)
+        );
 
-    bson_t db_result;
-    bson_init(&db_result);
-    error_code = db_find_one(MONGO_MAIN, &key, &fields, &db_result);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&fields);
-        bson_destroy(&db_result);
-        return error_code;
+    bson_t *db_result = NULL;
+
+    error_code = db_find_one(MONGO_MAIN, key, fields, &db_result);
+
+    if(!error_code) {
+        error_code = bson_get_value_int32(db_result, "len_total", len);
     }
 
-    error_code = bson_get_value_int32(&db_result, "len_total", len);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&fields);
-        bson_destroy(&db_result);
-        return error_code;
-    }
-    bson_destroy(&key);
-    bson_destroy(&fields);
-    bson_destroy(&db_result);
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&fields);
+    bson_safe_destroy(&db_result);
 
-    return S_OK;
+    return error_code;
 }
 
 /**
@@ -356,39 +133,28 @@ len_main(UUID main_id, int *len)
 Err
 len_main_by_aid(aidu_t aid, int *len)
 {
-    Err error_code;
-    bson_t key;
-    bson_init(&key);
-    bson_append_int32(&key, "aid", -1, aid);
+    Err error_code = S_OK;
+    bson_t *key = BCON_NEW(
+        "aid", BCON_INT64(aid)
+        );
 
-    bson_t fields;
-    bson_init(&fields);
-    bson_append_bool(&fields, "_id", -1, false);
-    bson_append_bool(&fields, "aid", -1, true);
-    bson_append_bool(&fields, "len_total", -1, true);
+    bson_t *fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "aid", BCON_BOOL(true),
+        "len_total", BCON_BOOL(true)
+        );
 
-    bson_t db_result;
-    bson_init(&db_result);
-    error_code = db_find_one(MONGO_MAIN, &key, &fields, &db_result);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&fields);
-        bson_destroy(&db_result);
-        return error_code;
+    bson_t *db_result = NULL;
+    error_code = db_find_one(MONGO_MAIN, key, fields, &db_result);
+    if(!error_code) {
+        error_code = bson_get_value_int32(&db_result, "len_total", len);
     }
 
-    error_code = bson_get_value_int32(&db_result, "len_total", len);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&fields);
-        bson_destroy(&db_result);
-        return error_code;
-    }
-    bson_destroy(&key);
-    bson_destroy(&fields);
-    bson_destroy(&db_result);
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&fields);
+    bson_safe_destroy(&db_result);
 
-    return S_OK;
+    return error_code;
 }
 
 /**
@@ -403,39 +169,29 @@ len_main_by_aid(aidu_t aid, int *len)
 Err
 n_line_main(UUID main_id, int *n_line)
 {
-    Err error_code;
-    bson_t key;
-    bson_init(&key);
-    bson_append_bin(&key, "the_id", -1, main_id, UUIDLEN);
+    Err error_code = S_OK;
+    bson_t *key = BCON_NEW(
+        "the_id", BCON_BINARY(main_id, UUIDLEN)
+        );
 
-    bson_t fields;
-    bson_init(&fields);
-    bson_append_bool(&fields, "_id", -1, false);
-    bson_append_bool(&fields, "the_id", -1, true);
-    bson_append_bool(&fields, "n_total_line", -1, true);
+    bson_t *fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "the_id", BCON_BOOL(true),
+        "n_total_line", BCON_BOOL(true)
+        );
 
-    bson_t db_result;
-    bson_init(&db_result);
-    error_code = db_find_one(MONGO_MAIN, &key, &fields, &db_result);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&fields);
-        bson_destroy(&db_result);
-        return error_code;
+    bson_t *db_result = NULL;
+    error_code = db_find_one(MONGO_MAIN, key, fields, &db_result);
+
+    if(!error_code) {
+        error_code = bson_get_value_int32(&db_result, "n_total_line", n_line);
     }
 
-    error_code = bson_get_value_int32(&db_result, "n_total_line", n_line);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&fields);
-        bson_destroy(&db_result);
-        return error_code;
-    }
-    bson_destroy(&key);
-    bson_destroy(&fields);
-    bson_destroy(&db_result);
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&fields);
+    bson_safe_destroy(&db_result);
 
-    return S_OK;
+    return error_code;
 }
 
 /**
@@ -450,39 +206,29 @@ n_line_main(UUID main_id, int *n_line)
 Err
 n_line_main_by_aid(aidu_t aid, int *n_line)
 {
-    Err error_code;
-    bson_t key;
-    bson_init(&key);
-    bson_append_int64(&key, "aid", -1, aid);
+    Err error_code = S_OK;
+    bson_t *key = BCON_NEW(
+        "aid", BCON_INT64(aid)
+        );
 
-    bson_t fields;
-    bson_init(&fields);
-    bson_append_bool(&fields, "_id", -1, false);
-    bson_append_bool(&fields, "aid", -1, true);
-    bson_append_bool(&fields, "n_total_line", -1, true);
+    bson_t *fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "aid", BCON_BOOL(true),
+        "n_total_line", BCON_BOOL(true)
+        );
 
-    bson_t db_result;
-    bson_init(&db_result);
-    error_code = db_find_one(MONGO_MAIN, &key, &fields, &db_result);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&fields);
-        bson_destroy(&db_result);
-        return error_code;
+    bson_t *db_result = NULL;
+    error_code = db_find_one(MONGO_MAIN, key, fields, &db_result);
+
+    if(!error_code) {
+        error_code = bson_get_value_int32(&db_result, "n_total_line", n_line);
     }
 
-    error_code = bson_get_value_int32(&db_result, "n_total_line", n_line);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&fields);
-        bson_destroy(&db_result);
-        return error_code;
-    }
-    bson_destroy(&key);
-    bson_destroy(&fields);
-    bson_destroy(&db_result);
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&fields);
+    bson_safe_destroy(&db_result);
 
-    return S_OK;
+    return error_code;
 }
 
 /**
@@ -497,30 +243,22 @@ n_line_main_by_aid(aidu_t aid, int *n_line)
 Err
 read_main_header(UUID main_id, MainHeader *main_header)
 {
-    Err error_code;
-    bson_t key;
-    bson_init(&key);
-    bson_append_bin(&key, "the_id", -1, main_id, UUIDLEN);
+    Err error_code = S_OK;
+    bson_t *key = BCON_NEW(
+        "the_id", BCON_BINARY(main_id, UUIDLEN)
+        );
 
-    bson_t db_result;
-    bson_init(&db_result);
-    error_code = db_find_one(MONGO_MAIN, &key, NULL, &db_result);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&db_result);
-        return error_code;
+
+    bson_t *db_result = NULL;
+    error_code = db_find_one(MONGO_MAIN, key, NULL, &db_result);
+
+    if(!error_code) {
+        error_code = _deserialize_main_bson(&db_result, main_header);
     }
 
-    error_code = _deserialize_main_bson(&db_result, main_header);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&db_result);
-        return error_code;
-    }
-
-    bson_destroy(&key);
-    bson_destroy(&db_result);
-    return S_OK;
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&db_result);
+    return error_code;
 }
 
 /**
@@ -535,94 +273,22 @@ read_main_header(UUID main_id, MainHeader *main_header)
 Err
 read_main_header_by_aid(aidu_t aid, MainHeader *main_header)
 {
-    Err error_code;
-    bson_t key;
-    bson_t db_result;
-    bool bson_status;
+    Err error_code = S_OK;
+    bson_t *key = BCON_NEW(
+        "aid", BCON_INT64(aid)
+        );
 
-    bson_init(&key);
 
-    bson_init(&db_result);
+    bson_t *db_result = NULL;
+    error_code = db_find_one(MONGO_MAIN, key, NULL, &db_result);
 
-    bson_status = bson_append_int64(&key, "aid", -1, aid);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&db_result);
-        return S_ERR;
+    if(!error_code) {
+        error_code = _deserialize_main_bson(&db_result, main_header);
     }
 
-    error_code = db_find_one(MONGO_MAIN, &key, NULL, &db_result);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&db_result);
-        return error_code;
-    }
-
-    error_code = _deserialize_main_bson(&db_result, main_header);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&db_result);
-        return error_code;
-    }
-
-    bson_destroy(&key);
-    bson_destroy(&db_result);
-    return S_OK;
-}
-
-/**
- * @brief [brief description]
- * @details [long description]
- *
- * @param main_content_id [description]
- * @param block_id [description]
- * @param max_n_main_content [description]
- * @param n_read_main_content [description]
- * @param main_content [description]
- * @return [description]
- */
-Err
-read_main_content(UUID main_content_id, int block_id, MainContent *main_content)
-{
-    Err error_code;
-    bson_t key;
-    bson_t db_result;
-    bool bson_status;
-
-    bson_init(&key);
-    bson_init(&db_result);
-
-    bson_status = bson_append_bin(&key, "the_id", -1, main_content_id, UUIDLEN);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&db_result);
-        return S_ERR;
-    }
-
-    bson_status = bson_append_int32(&key, "block_id", -1, block_id);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&db_result);
-        return S_ERR;
-    }
-
-    error_code = db_find_one(MONGO_MAIN_CONTENT, &key, NULL, &db_result);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&db_result);
-        return error_code;
-    }
-
-    error_code = _deserialize_main_content_block_bson(&db_result, main_content);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&db_result);
-        return error_code;
-    }
-
-    bson_destroy(&key);
-    bson_destroy(&db_result);
-    return S_OK;
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&db_result);
+    return error_code;
 }
 
 /**
@@ -636,54 +302,24 @@ read_main_content(UUID main_content_id, int block_id, MainContent *main_content)
  */
 Err
 delete_main(UUID main_id, char *updater, char *ip) {
-    Err error_code;
-    bool bson_status;
+    Err error_code = S_OK;
 
-    bson_t key;
-    bson_init(&key);
+    bson_t *key = BCON_NEW(
+        "the_id", BCON_BINARY(main_id, UUIDLEN)
+        );
 
-    bson_t val;
-    bson_init(&val);
+    bson_t *val = BCON_NEW(
+        "status_updater", BCON_BINARY(updater, IDLEN),
+        "status", BCON_INT32(LIVE_STATUS_DELETED),
+        "status_update_ip", BCON_BINARY(ip, IPV4LEN)
+        );
 
-    bson_status = bson_append_bin(&key, "the_id", -1, main_id, UUIDLEN);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return S_ERR;
-    }
+    error_code = db_update_one(MONGO_MAIN, key, val, true);
 
-    bson_status = bson_append_bin(&val, "status_updater", -1, updater, IDLEN);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return S_ERR;
-    }
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&val);
 
-    bson_status = bson_append_int32(&val, "status", -1, LIVE_STATUS_DELETED);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return S_ERR;
-    }
-
-    bson_status = bson_append_bin(&val, "status_update_ip", -1, ip, IPV4LEN);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return S_ERR;
-    }
-
-    error_code = db_update_one(MONGO_MAIN, &key, &val, true);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return error_code;
-    }
-
-    bson_destroy(&key);
-    bson_destroy(&val);
-
-    return S_OK;
+    return error_code;
 }
 
 /**
@@ -697,54 +333,24 @@ delete_main(UUID main_id, char *updater, char *ip) {
  */
 Err
 delete_main_by_aid(aidu_t aid, char *updater, char *ip) {
-    Err error_code;
-    bool bson_status;
+    Err error_code = S_OK;
 
-    bson_t key;
-    bson_init(&key);
+    bson_t *key = BCON_NEW(
+        "aid", BCON_INT64(aid)
+        );
 
-    bson_t val;
-    bson_init(&val);
+    bson_t *val = BCON_NEW(
+        "status_updater", BCON_BINARY(updater, IDLEN),
+        "status", BCON_INT32(LIVE_STATUS_DELETED),
+        "status_update_ip", BCON_BINARY(ip, IPV4LEN)
+        );
 
-    bson_status = bson_append_int64(&key, "aid", -1, aid);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return S_ERR;
-    }
+    error_code = db_update_one(MONGO_MAIN, key, val, true);
 
-    bson_status = bson_append_bin(&val, "status_updater", -1, updater, IDLEN);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return S_ERR;
-    }
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&val);
 
-    bson_status = bson_append_int32(&val, "status", -1, LIVE_STATUS_DELETED);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return S_ERR;
-    }
-
-    bson_status = bson_append_bin(&val, "status_update_ip", -1, ip, IPV4LEN);
-    if (!bson_status) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return S_ERR;
-    }
-
-    error_code = db_update_one(MONGO_MAIN, &key, &val, true);
-    if (error_code) {
-        bson_destroy(&key);
-        bson_destroy(&val);
-        return error_code;
-    }
-
-    bson_destroy(&key);
-    bson_destroy(&val);
-
-    return S_OK;
+    return error_code;
 }
 
 /**
@@ -775,42 +381,28 @@ update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int f
     if (error_code) return error_code;
 
     // main-contents
-    error_code = _split_main_contents(fd_content, len, main_id, content_id, &n_line, &n_block);
-    if (error_code) {
-        return error_code;
-    }
+    error_code = split_contents_from_fd(fd_content, len, main_id, content_id, &n_line, &n_block);
+    if (error_code) return error_code;
 
     // db-main
-    bson_t main_id_bson;
-    bson_t main_bson;
-    bson_init(&main_id_bson);
-    bson_init(&main_bson);
+    bson_t *main_id_bson = NULL;
+    bson_t *main_bson = NULL;
 
-    error_code = _serialize_uuid_bson(main_id, MONGO_THE_ID, &main_id_bson);
-    if (error_code) {
-        bson_destroy(&main_id_bson);
-        bson_destroy(&main_bson);
-        return error_code;
-    }
+    error_code = _serialize_uuid_bson(main_id, &main_id_bson);
 
     // update: content_id, update_content_id, updater, update_ip, update_milli_timestamp, n_total_line, n_total_block, len_total
-    error_code = _serialize_update_main_bson(content_id, updater, update_ip, update_milli_timestamp, n_line, n_block, len, &main_bson);
-    if (error_code) {
-        bson_destroy(&main_id_bson);
-        bson_destroy(&main_bson);
-        return error_code;
+    if(!error_code) {
+        error_code = _serialize_update_main_bson(content_id, updater, update_ip, update_milli_timestamp, n_line, n_block, len, &main_bson);
     }
 
-    error_code = db_update_one(MONGO_MAIN, &main_id_bson, &main_bson, false);
-    if (error_code) {
-        bson_destroy(&main_bson);
-        bson_destroy(&main_id_bson);
-        return error_code;
+    if(!error_code) {
+        error_code = db_update_one(MONGO_MAIN, main_id_bson, main_bson, false);
     }
 
-    bson_destroy(&main_bson);
-    bson_destroy(&main_id_bson);
-    return S_OK;
+    bson_safe_destroy(&main_bson);
+    bson_safe_destroy(&main_id_bson);
+
+    return error_code;
 }
 
 /**
@@ -822,72 +414,32 @@ update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int f
  * @return Err
  */
 Err
-_serialize_main_bson(MainHeader *main_header, bson_t *main_bson)
+_serialize_main_bson(MainHeader *main_header, bson_t **main_bson)
 {
-    bool bson_status;
-
-    bson_status = bson_append_int32(main_bson, "version", -1, main_header->version);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_bson, "the_id", -1, main_header->the_id, UUIDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_bson, "content_id", -1, main_header->content_id, UUIDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_bson, "update_content_id", -1, main_header->update_content_id, UUIDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int64(main_bson, "aid", -1, main_header->aid);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(main_bson, "status", -1, main_header->status);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_bson, "status_updater", -1, main_header->status_updater, IDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_bson, "status_update_ip", -1, main_header->status_update_ip, IPV4LEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_bson, "title", -1, main_header->title, TTLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_bson, "poster", -1, main_header->poster, IDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_bson, "ip", -1, main_header->ip, IPV4LEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int64(main_bson, "create_milli_timestamp", -1, main_header->create_milli_timestamp);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_bson, "updater", -1, main_header->updater, IDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_bson, "update_ip", -1, main_header->update_ip, IPV4LEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int64(main_bson, "update_milli_timestamp", -1, main_header->update_milli_timestamp);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_bson, "origin", -1, main_header->origin, strlen(main_header->origin));
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_bson, "web_link", -1, main_header->web_link, strlen(main_header->web_link));
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(main_bson, "reset_karma", -1, main_header->reset_karma);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(main_bson, "n_total_line", -1, main_header->n_total_line);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(main_bson, "n_total_block", -1, main_header->n_total_block);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(main_bson, "len_total", -1, main_header->len_total);
-    if (!bson_status) return S_ERR;
+    *main_bson = BCON_NEW(
+        "version", BCON_INT32(main_header->version),
+        "the_id", BCON_BINARY(main_header->the_id, UUIDLEN),
+        "content_id", BCON_BINARY(main_header->content_id, UUIDLEN),
+        "update_content_id", BCON_BINARY(main_header->update_content_id, UUIDLEN),
+        "aid", BCON_INT64(main_header->aid);
+        "status", BCON_INT32(main_header->status),
+        "status_updater", BCON_BINARY(main_header->status_updater, UUIDLEN),
+        "status_update_ip", BCON_BINARY(main_header->status_update_ip, UUIDLEN),
+        "title", BCON_BINARY(main_header->title, TTLEN),
+        "poster", BCON_BINARY(main_header->poster, IDLEN),
+        "ip", BCON_BINARY(main_header->ip, IPV4LEN),
+        "create_milli_timestamp", BCON_INT64(main_header->create_milli_timestamp),
+        "updater", BCON_BINARY(main_header->updater, IDLEN),
+        "update_ip", BCON_BINARY(main_header->update_ip,IPV4LEN),
+        "update_milli_timestamp", BCON_INT64(main_header->update_milli_timestamp),
+        "origin", BCON_BINARY(main_header->origin, strlen(main_header->origin)),
+        "web_link", BCON_BINARY(main_header->web_link, strlen(main_header->web_link)),
+        "reset_karma", BCON_INT32(main_header->reset_karma),
+        "n_total_line", BCON_INT32(main_header->n_total_line),
+        "n_total_block", BCON_INT32(main_header->n_total_block),
+        "len_total", BCON_INT32(main_header->len_total),
+        );
+    if(*main_bson == NULL) return S_ERR;
 
     return S_OK;
 }
@@ -986,99 +538,19 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
  * @param main_bson [description]
  */
 Err
-_serialize_update_main_bson(UUID content_id, char *updater, char *update_ip, time64_t update_milli_timestamp, int n_total_line, int n_total_block, int len_total, bson_t *main_bson)
+_serialize_update_main_bson(UUID content_id, char *updater, char *update_ip, time64_t update_milli_timestamp, int n_total_line, int n_total_block, int len_total, bson_t **main_bson)
 {
     bool bson_status;
-    bson_status = bson_append_bin(main_bson, "content_id", -1, content_id, UUIDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_bson, "updater", -1, updater, IDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_bson, "update_ip", -1, update_ip, IPV4LEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int64(main_bson, "update_milli_timestamp", -1, update_milli_timestamp);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(main_bson, "n_total_line", -1, n_total_line);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(main_bson, "n_total_block", -1, n_total_block);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(main_bson, "len_total", -1, len_total);
-    if (!bson_status) return S_ERR;
-
-    return S_OK;
-}
-
-/**
- * @brief Serialize main-content-block to bson
- * @details Serialize main-content-block to bson
- *
- * @param main_content_block main-content-block
- * @param main_content_block_bson main_content_block_bson (to-compute)
- * @return Err
- */
-Err
-_serialize_main_content_block_bson(MainContent *main_content_block, bson_t *main_content_block_bson)
-{
-    bool bson_status;
-
-    bson_status = bson_append_bin(main_content_block_bson, "the_id", -1, main_content_block->the_id, UUIDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_content_block_bson, "main_id", -1, main_content_block->main_id, UUIDLEN);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(main_content_block_bson, "block_id", -1, main_content_block->block_id);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(main_content_block_bson, "len_block", -1, main_content_block->len_block);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_int32(main_content_block_bson, "n_line", -1, main_content_block->n_line);
-    if (!bson_status) return S_ERR;
-
-    bson_status = bson_append_bin(main_content_block_bson, "buf_block", -1, main_content_block->buf_block, main_content_block->len_block);
-    if (!bson_status) return S_ERR;
-
-    return S_OK;
-}
-
-/**
- * @brief Deserialize bson to main-content-block
- * @details [long description]
- *
- * @param main_content_block_bson [description]
- * @param main_content_block [description]
- *
- * @return [description]
- */
-Err
-_deserialize_main_content_block_bson(bson_t *main_content_block_bson, MainContent *main_content_block)
-{
-    Err error_code;
-
-    int len;
-    error_code = bson_get_value_bin(main_content_block_bson, "the_id", UUIDLEN, main_content_block->the_id, &len);
-    if (error_code) return error_code;
-
-    error_code = bson_get_value_bin(main_content_block_bson, "main_id", UUIDLEN, main_content_block->main_id, &len);
-    if (error_code) return error_code;
-
-    error_code = bson_get_value_int32(main_content_block_bson, "block_id", &main_content_block->block_id);
-    if (error_code) return error_code;
-
-    error_code = bson_get_value_int32(main_content_block_bson, "len_block", &main_content_block->len_block);
-    if (error_code) return error_code;
-
-    error_code = bson_get_value_int32(main_content_block_bson, "n_line", &main_content_block->n_line);
-    if (error_code) return error_code;
-
-    error_code = bson_get_value_bin(main_content_block_bson, "buf_block", MAX_BUF_SIZE, main_content_block->buf_block, &len);
-    if (error_code) return error_code;
+    *main_bson = BCON_NEW(
+        "content_id", BCON_BINARY(content_id, UUIDLEN),
+        "updater", BCON_BINARY(updater, IDLEN),
+        "update_ip", BCON_BINARY(update_ip, IPV4LEN),
+        "update_milli_timestamp", BCON_INT64(update_milli_timestamp),
+        "n_total_line", BCON_INT32(n_total_line),
+        "n_total_block", BCON_INT32(n_total_block),
+        "len_total", BCON_INT32(len_total)
+        );
+    if(*main_bson == NULL) return S_ERR;
 
     return S_OK;
 }

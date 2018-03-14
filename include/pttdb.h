@@ -90,18 +90,6 @@ typedef struct MainHeader {
     int len_total;                                   // total-size
 } MainHeader;
 
-typedef struct MainContent {
-    UUID the_id;                                     // content-id
-    UUID main_id;                                    // corresponding main-id
-
-    int block_id;                                    // corresponding block-id
-
-    int len_block;                                   // size of this block.
-    int n_line;                                      // n-line of this block.
-
-    char buf_block[MAX_BUF_BLOCK + 1];               // buf
-} MainContent;
-
 /**********
  * ContentBlock
  **********/
@@ -211,7 +199,6 @@ Err n_line_post(UUID main_id, int *n_line);
 /**********
  * Main
  **********/
-/*
 Err create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id, UUID content_id);
 
 Err len_main(UUID main_id, int *len);
@@ -223,13 +210,10 @@ Err n_line_main_by_aid(aidu_t aid, int *n_line);
 Err read_main_header(UUID main_id, MainHeader *main_header);
 Err read_main_header_by_aid(aidu_t aid, MainHeader *main_header);
 
-Err read_main_content(UUID main_content_id, int block_id, MainContent *main_content);
-
 Err delete_main(UUID main_id, char *updater, char *ip);
 Err delete_main_by_aid(aidu_t aid, char *updater, char *ip);
 
 Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content, UUID content_id);
-*/
 
 /**********
  * ContentBlock

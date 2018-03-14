@@ -29,6 +29,7 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
     strcpy(origin, "ptt.cc");
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
+    // create-main-from-fd
     Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
     EXPECT_EQ(S_OK, error_code);
 
@@ -37,8 +38,8 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
     fprintf(stderr, "test_pttdb.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
 
+    // read main-header
     MainHeader main_header = {};
-
     error_code = read_main_header(main_id, &main_header);
     EXPECT_EQ(S_OK, error_code);
     EXPECT_EQ(0, strncmp((char *)main_id, (char *)main_header.the_id, UUIDLEN));
@@ -65,25 +66,31 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
     EXPECT_EQ(2, main_header.n_total_block);
     EXPECT_EQ(9, main_header.n_total_line);
 
-    MainContent main_content0;
-    MainContent main_content1;
+    // read content-block
+    ContentBlock content_block0;
+    ContentBlock content_block1;
+
+    init_content_block_buf_block(&content_block0);
+    init_content_block_buf_block(&content_block1);
 
     char *str_content = (char *)malloc(len);
     fd = open("data_test/test1.txt", O_RDONLY);
     read(fd, str_content, len);
     close(fd);
 
-    error_code = read_main_content(main_header.content_id, 0, &main_content0);
+    error_code = read_content_block(main_header.content_id, 0, MONGO_MAIN_CONTENT, &content_block0);
     EXPECT_EQ(S_OK, error_code);
 
-    error_code = read_main_content(main_header.content_id, 1, &main_content1);
+    error_code = read_content_block(main_header.content_id, 1, MONGO_MAIN_CONTENT, &content_block1);
     EXPECT_EQ(S_OK, error_code);
 
-    EXPECT_EQ(len, main_content0.len_block + main_content1.len_block);
-    EXPECT_EQ(main_header.n_total_line, main_content0.n_line + main_content1.n_line);
-    EXPECT_EQ(0, strncmp((char *)main_content0.buf_block, str_content, main_content0.len_block));
-    EXPECT_EQ(0, strncmp((char *)main_content1.buf_block, str_content + main_content0.len_block, main_content1.len_block));
+    EXPECT_EQ(len, content_block0.len_block + content_block1.len_block);
+    EXPECT_EQ(main_header.n_total_line, content_block0.n_line + content_block1.n_line);
+    EXPECT_EQ(0, strncmp((char *)content_block0.buf_block, str_content, content_block0.len_block));
+    EXPECT_EQ(0, strncmp((char *)content_block1.buf_block, str_content + content_block0.len_block, content_block1.len_block));
 
+    destroy_content_block(&content_block0);
+    destroy_content_block(&content_block1);
     free(str_content);
 }
 
@@ -112,12 +119,14 @@ TEST(pttdb, create_main_from_fd_test1) {
     strcpy(origin, "ptt.cc");
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
+    // create main from fd
     Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
     EXPECT_EQ(S_OK, error_code);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
     fprintf(stderr, "test_pttdb.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
 
+    // read main-header
     MainHeader main_header = {};
 
     error_code = read_main_header(main_id, &main_header);
@@ -173,6 +182,7 @@ TEST(pttdb, create_main_from_fd_test2_read_main_content) {
     strcpy(origin, "ptt.cc");
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
+    // create main from fd
     Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
     EXPECT_EQ(S_OK, error_code);
 
@@ -181,6 +191,7 @@ TEST(pttdb, create_main_from_fd_test2_read_main_content) {
 
     MainHeader main_header = {};
 
+    // read main-header
     error_code = read_main_header(main_id, &main_header);
     EXPECT_EQ(S_OK, error_code);
     EXPECT_EQ(0, strncmp((char *)main_id, (char *)main_header.the_id, UUIDLEN));
@@ -208,24 +219,31 @@ TEST(pttdb, create_main_from_fd_test2_read_main_content) {
 
     close(fd);
 
-    MainContent main_content0;
-    MainContent main_content1;
+    // read content block
+    ContentBlock content_block0 = {};
+    ContentBlock content_block1 = {};
+
+    init_content_block_buf_block(&content_block0);
+    init_content_block_buf_block(&content_block1);
 
     char *str_content = (char *)malloc(len);
     fd = open("data_test/test2.txt", O_RDONLY);
     read(fd, str_content, len);
     close(fd);
 
-    error_code = read_main_content(main_header.content_id, 0, &main_content0);
+    error_code = read_content_block(main_header.content_id, 0, MONGO_MAIN_CONTENT, &content_block0);
     EXPECT_EQ(S_OK, error_code);
 
-    error_code = read_main_content(main_header.content_id, 1, &main_content1);
+    error_code = read_content_block(main_header.content_id, 1, MONGO_MAIN_CONTENT, &content_block1);
     EXPECT_EQ(S_OK, error_code);
 
-    EXPECT_EQ(len, main_content0.len_block + main_content1.len_block);
-    EXPECT_EQ(main_header.n_total_line, main_content0.n_line + main_content1.n_line);
-    EXPECT_EQ(0, strncmp((char *)main_content0.buf_block, str_content, main_content0.len_block));
-    EXPECT_EQ(0, strncmp((char *)main_content1.buf_block, str_content + main_content0.len_block, main_content1.len_block));
+    EXPECT_EQ(len, content_block0.len_block + content_block1.len_block);
+    EXPECT_EQ(main_header.n_total_line, content_block0.n_line + content_block1.n_line);
+    EXPECT_EQ(0, strncmp((char *)content_block0.buf_block, str_content, content_block0.len_block));
+    EXPECT_EQ(0, strncmp((char *)content_block1.buf_block, str_content + content_block0.len_block, content_block1.len_block));
+
+    destroy_content_block(&content_block0);
+    destroy_content_block(&content_block1);
 
     free(str_content);
 }
@@ -254,6 +272,7 @@ TEST(pttdb, create_main_from_fd_test2) {
     strcpy(origin, "ptt.cc");
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
+    // create main from fd
     Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
     EXPECT_EQ(S_OK, error_code);
 
@@ -262,6 +281,7 @@ TEST(pttdb, create_main_from_fd_test2) {
 
     MainHeader main_header = {};
 
+    // read main-header
     error_code = read_main_header(main_id, &main_header);
     EXPECT_EQ(S_OK, error_code);
     EXPECT_EQ(0, strncmp((char *)main_id, (char *)main_header.the_id, UUIDLEN));
@@ -404,12 +424,14 @@ TEST(pttdb, create_main_from_fd_test1_full) {
     strcpy(origin, "ptt.cc");
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
+    // create main from fd
     Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
     EXPECT_EQ(S_OK, error_code);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
     fprintf(stderr, "test_pttdb.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
 
+    // read main header
     MainHeader main_header = {};
 
     error_code = read_main_header(main_id, &main_header);
@@ -441,9 +463,9 @@ TEST(pttdb, create_main_from_fd_test1_full) {
 }
 
 TEST(pttdb, len_main) {
-    MainHeader main_header = {};
-
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+
+    MainHeader main_header = {};
 
     gen_uuid(main_header.the_id);
     gen_uuid(main_header.content_id);
@@ -466,25 +488,26 @@ TEST(pttdb, len_main) {
     main_header.n_total_block = 20;
     main_header.len_total = 10000;
 
-    bson_t main_bson;
-    bson_init(&main_bson);
+    bson_t *main_bson = NULL;
 
     Err error = _serialize_main_bson(&main_header, &main_bson);
     EXPECT_EQ(S_OK, error);
 
-    error = db_update_one(MONGO_MAIN, &main_bson, &main_bson, true);
+    error = db_update_one(MONGO_MAIN, main_bson, main_bson, true);
     EXPECT_EQ(S_OK, error);
 
     int len;
     error = len_main(main_header.the_id, &len);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(main_header.len_total, len);
+
+    bson_safe_destroy(&main_bson);
 }
 
 TEST(pttdb, len_main_by_aid) {
-    MainHeader main_header = {};
-
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+
+    MainHeader main_header = {};
 
     gen_uuid(main_header.the_id);
     gen_uuid(main_header.content_id);
@@ -507,19 +530,20 @@ TEST(pttdb, len_main_by_aid) {
     main_header.n_total_block = 20;
     main_header.len_total = 10000;
 
-    bson_t main_bson;
-    bson_init(&main_bson);
+    bson_t *main_bson = NULL;
 
     Err error = _serialize_main_bson(&main_header, &main_bson);
     EXPECT_EQ(S_OK, error);
 
-    error = db_update_one(MONGO_MAIN, &main_bson, &main_bson, true);
+    error = db_update_one(MONGO_MAIN, main_bson, main_bson, true);
     EXPECT_EQ(S_OK, error);
 
     int len;
     error = len_main_by_aid(main_header.aid, &len);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(main_header.len_total, len);
+
+    bson_safe_destroy(&main_bson);
 }
 
 TEST(pttdb, n_line_main) {
@@ -548,19 +572,20 @@ TEST(pttdb, n_line_main) {
     main_header.n_total_block = 20;
     main_header.len_total = 10000;
 
-    bson_t main_bson;
-    bson_init(&main_bson);
+    bson_t *main_bson = NULL;
 
     Err error = _serialize_main_bson(&main_header, &main_bson);
     EXPECT_EQ(S_OK, error);
 
-    error = db_update_one(MONGO_MAIN, &main_bson, &main_bson, true);
+    error = db_update_one(MONGO_MAIN, main_bson, main_bson, true);
     EXPECT_EQ(S_OK, error);
 
     int n_line;
     error = n_line_main(main_header.the_id, &n_line);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(main_header.n_total_line, n_line);
+
+    bson_safe_destroy(&main_bson);
 }
 
 TEST(pttdb, n_line_main_by_aid) {
@@ -589,19 +614,20 @@ TEST(pttdb, n_line_main_by_aid) {
     main_header.n_total_block = 20;
     main_header.len_total = 10000;
 
-    bson_t main_bson;
-    bson_init(&main_bson);
+    bson_t *main_bson = NULL;
 
     Err error = _serialize_main_bson(&main_header, &main_bson);
     EXPECT_EQ(S_OK, error);
 
-    error = db_update_one(MONGO_MAIN, &main_bson, &main_bson, true);
+    error = db_update_one(MONGO_MAIN, fmain_bson, main_bson, true);
     EXPECT_EQ(S_OK, error);
 
     int n_line;
     error = n_line_main_by_aid(main_header.aid, &n_line);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(main_header.n_total_line, n_line);
+
+    bson_safe_destroy(&main_bson);
 }
 
 TEST(pttdb, read_main_header) {
@@ -631,17 +657,15 @@ TEST(pttdb, read_main_header) {
     main_header.n_total_block = 20;
     main_header.len_total = 10000;
 
-    bson_t main_bson;
-    bson_init(&main_bson);
-
+    bson_t *main_bson = NULL;
     Err error = _serialize_main_bson(&main_header, &main_bson);
     EXPECT_EQ(S_OK, error);
 
-    char *str = bson_as_canonical_extended_json(&main_bson, NULL);
+    char *str = bson_as_canonical_extended_json(main_bson, NULL);
     fprintf(stderr, "test_pttdb.read_main_header: to db_update_one: main_bson: %s\n", str);
     bson_free(str);
 
-    error = db_update_one(MONGO_MAIN, &main_bson, &main_bson, true);
+    error = db_update_one(MONGO_MAIN, main_bson, main_bson, true);
     EXPECT_EQ(S_OK, error);
 
     error = read_main_header(main_header.the_id, &main_header2);
@@ -668,13 +692,15 @@ TEST(pttdb, read_main_header) {
     EXPECT_EQ(main_header.n_total_line, main_header2.n_total_line);
     EXPECT_EQ(main_header.n_total_block, main_header2.n_total_block);
     EXPECT_EQ(main_header.len_total, main_header2.len_total);
+
+    bson_safe_destroy(&main_bson);
 }
 
 TEST(pttdb, read_main_header_by_aid) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+
     MainHeader main_header = {};
     MainHeader main_header2 = {};
-
-    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
 
     gen_uuid(main_header.the_id);
     gen_uuid(main_header.content_id);
@@ -697,15 +723,16 @@ TEST(pttdb, read_main_header_by_aid) {
     main_header.n_total_block = 20;
     main_header.len_total = 10000;
 
-    bson_t main_bson;
-    bson_init(&main_bson);
+    // db-update
+    bson_t *main_bson = NULL;
 
     Err error = _serialize_main_bson(&main_header, &main_bson);
     EXPECT_EQ(S_OK, error);
 
-    error = db_update_one(MONGO_MAIN, &main_bson, &main_bson, true);
+    error = db_update_one(MONGO_MAIN, main_bson, main_bson, true);
     EXPECT_EQ(S_OK, error);
 
+    // read
     error = read_main_header_by_aid(main_header.aid, &main_header2);
     EXPECT_EQ(S_OK, error);
 
@@ -730,41 +757,8 @@ TEST(pttdb, read_main_header_by_aid) {
     EXPECT_EQ(main_header.n_total_line, main_header2.n_total_line);
     EXPECT_EQ(main_header.n_total_block, main_header2.n_total_block);
     EXPECT_EQ(main_header.len_total, main_header2.len_total);
-}
 
-TEST(pttdb, read_main_content) {
-    MainContent main_content_block = {};
-    MainContent main_content_block2 = {};
-
-    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
-
-    gen_uuid(main_content_block.the_id);
-    gen_uuid(main_content_block.main_id);
-    main_content_block.block_id = 53;
-    main_content_block.len_block = 123;
-    main_content_block.n_line = 2;
-    strcpy(main_content_block.buf_block, "test123\n");
-
-    bson_t b;
-    bson_init(&b);
-
-    Err error = _serialize_main_content_block_bson(&main_content_block, &b);
-    EXPECT_EQ(S_OK, error);
-
-    error = db_update_one(MONGO_MAIN_CONTENT, &b, &b, true);
-    EXPECT_EQ(S_OK, error);
-
-    bson_destroy(&b);
-
-    error = read_main_content(main_content_block.the_id, main_content_block.block_id, &main_content_block2);
-    EXPECT_EQ(S_OK, error);
-
-    EXPECT_EQ(0, strncmp((char *)main_content_block.the_id, (char *)main_content_block2.the_id, UUIDLEN));
-    EXPECT_EQ(0, strncmp((char *)main_content_block.main_id, (char *)main_content_block2.main_id, UUIDLEN));
-    EXPECT_EQ(main_content_block.block_id, main_content_block2.block_id);
-    EXPECT_EQ(main_content_block.len_block, main_content_block2.len_block);
-    EXPECT_EQ(main_content_block.n_line, main_content_block2.n_line);
-    EXPECT_STREQ(main_content_block.buf_block, main_content_block2.buf_block);
+    bson_safe_destroy(&main_bson);
 }
 
 TEST(pttdb, delete_main) {
@@ -793,23 +787,27 @@ TEST(pttdb, delete_main) {
     main_header.n_total_block = 20;
     main_header.len_total = 10000;
 
-    bson_t main_bson;
-    bson_init(&main_bson);
+    // db-update
+    bson_t *main_bson = NULL;
 
     Err error = _serialize_main_bson(&main_header, &main_bson);
     EXPECT_EQ(S_OK, error);
 
-    error = db_update_one(MONGO_MAIN, &main_bson, &main_bson, true);
+    error = db_update_one(MONGO_MAIN, main_bson, main_bson, true);
     EXPECT_EQ(S_OK, error);
 
+    // delete
     int len;
     char del_updater[IDLEN + 1] = "del_updater";
     char status_update_ip[IPV4LEN + 1] = "10.1.1.4";
     error = delete_main(main_header.the_id, del_updater, status_update_ip);
     EXPECT_EQ(S_OK, error);
 
-    bson_t query;
-    bson_t result;
+    // db-find
+    bson_t *query = BCON_NEW(
+        "the_id", BCON_BINARY(main_header.the_id, UUIDLEN)
+        );
+    bson_t *result = NULL;
 
     char **fields;
     int n_fields = 3;
@@ -821,19 +819,14 @@ TEST(pttdb, delete_main) {
     strcpy(fields[1], "status_updater");
     strcpy(fields[2], "status_update_ip");
 
-    bson_init(&query);
-    bson_init(&result);
-
-    bson_append_bin(&query, "the_id", -1, main_header.the_id, UUIDLEN);
-
-    error = db_find_one_with_fields(MONGO_MAIN, &query, fields, n_fields, &result);
+    error = db_find_one_with_fields(MONGO_MAIN, query, fields, n_fields, &result);
 
     int result_status;
     char result_status_updater[MAX_BUF_SIZE];
     char result_status_update_ip[MAX_BUF_SIZE];
-    bson_get_value_int32(&result, "status", &result_status);
-    bson_get_value_bin(&result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
-    bson_get_value_bin(&result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
+    bson_get_value_int32(result, "status", &result_status);
+    bson_get_value_bin(result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
+    bson_get_value_bin(result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
 
     for (int i = 0; i < 3; i++) {
         free(fields[i]);
@@ -844,14 +837,14 @@ TEST(pttdb, delete_main) {
     EXPECT_STREQ(del_updater, result_status_updater);
     EXPECT_STREQ(status_update_ip, result_status_update_ip);
 
-    bson_destroy(&query);
-    bson_destroy(&result);
+    bson_safe_destroy(&query);
+    bson_safe_destroy(&result);
 }
 
 TEST(pttdb, delete_main_by_aid) {
-    MainHeader main_header = {};
-
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+
+    MainHeader main_header = {};
 
     gen_uuid(main_header.the_id);
     gen_uuid(main_header.content_id);
@@ -874,13 +867,11 @@ TEST(pttdb, delete_main_by_aid) {
     main_header.n_total_block = 20;
     main_header.len_total = 10000;
 
-    bson_t main_bson;
-    bson_init(&main_bson);
-
+    bson_t *main_bson = NULL;
     Err error = _serialize_main_bson(&main_header, &main_bson);
     EXPECT_EQ(S_OK, error);
 
-    error = db_update_one(MONGO_MAIN, &main_bson, &main_bson, true);
+    error = db_update_one(MONGO_MAIN, main_bson, main_bson, true);
     EXPECT_EQ(S_OK, error);
 
     int len;
@@ -889,8 +880,10 @@ TEST(pttdb, delete_main_by_aid) {
     error = delete_main_by_aid(main_header.aid, del_updater, status_update_ip);
     EXPECT_EQ(S_OK, error);
 
-    bson_t query;
-    bson_t result;
+    bson_t *query = BCON_NEW(
+        "the_id", BCON_BINARY(main_header.the_id, UUIDLEN)
+        );
+    bson_t *result = NULL;
 
     char **fields;
     int n_fields = 3;
@@ -902,24 +895,19 @@ TEST(pttdb, delete_main_by_aid) {
     strcpy(fields[1], "status_updater");
     strcpy(fields[2], "status_update_ip");
 
-    bson_init(&query);
-    bson_init(&result);
-
-    bson_append_bin(&query, "the_id", -1, main_header.the_id, UUIDLEN);
-
-    error = db_find_one_with_fields(MONGO_MAIN, &query, fields, n_fields, &result);
+    error = db_find_one_with_fields(MONGO_MAIN, query, fields, n_fields, &result);
 
     int result_status;
     char result_status_updater[MAX_BUF_SIZE];
     char result_status_update_ip[MAX_BUF_SIZE];
 
-    char *str = bson_as_canonical_extended_json(&result, NULL);
+    char *str = bson_as_canonical_extended_json(result, NULL);
     fprintf(stderr, "test_pttdb.delete_main_by_aid: after db_find_one_with_fields: result: %s\n", str);
     bson_free(str);
 
-    bson_get_value_int32(&result, "status", &result_status);
-    bson_get_value_bin(&result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
-    bson_get_value_bin(&result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
+    bson_get_value_int32(result, "status", &result_status);
+    bson_get_value_bin(result, "status_updater", MAX_BUF_SIZE, result_status_updater, &len);
+    bson_get_value_bin(result, "status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
 
     for (int i = 0; i < 3; i++) {
         free(fields[i]);
@@ -930,8 +918,8 @@ TEST(pttdb, delete_main_by_aid) {
     EXPECT_STREQ(del_updater, result_status_updater);
     EXPECT_STREQ(status_update_ip, result_status_update_ip);
 
-    bson_destroy(&query);
-    bson_destroy(&result);
+    bson_safe_destroy(&query);
+    bson_safe_destroy(&result);
 }
 
 TEST(pttdb, serialize_main_bson) {
@@ -960,25 +948,16 @@ TEST(pttdb, serialize_main_bson) {
     main_header.n_total_block = 20;
     main_header.len_total = 10000;
 
-    bson_t main_bson;
-    bson_init(&main_bson);
+    bson_t *main_bson = NULL;
 
     Err error = _serialize_main_bson(&main_header, &main_bson);
     EXPECT_EQ(S_OK, error);
 
-    char *str = bson_as_canonical_extended_json(&main_bson, NULL);
+    char *str = bson_as_canonical_extended_json(main_bson, NULL);
     fprintf(stderr, "main_bson: %s\n", str);
     bson_free(str);
 
-    error = _deserialize_main_bson(&main_bson, &main_header2);
-
-    bson_destroy(&main_bson);
-
-    fprintf(stderr, "main_header.the_id: %s main_header2.the_id: %s\n", main_header.the_id, main_header2.the_id);
-
-    fprintf(stderr, "main_header.content_id: %s main_header2.content_id: %s\n", main_header.content_id, main_header2.content_id);
-
-    fprintf(stderr, "main_header.status_update_ip: %s main_header2.status_update_ip: %s\n", main_header.status_update_ip, main_header2.status_update_ip);
+    error = _deserialize_main_bson(main_bson, &main_header2);
 
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(main_header.version, main_header2.version);
@@ -1002,42 +981,12 @@ TEST(pttdb, serialize_main_bson) {
     EXPECT_EQ(main_header.n_total_line, main_header2.n_total_line);
     EXPECT_EQ(main_header.n_total_block, main_header2.n_total_block);
     EXPECT_EQ(main_header.len_total, main_header2.len_total);
-}
 
-TEST(pttdb, serialize_main_content_block_bson) {
-    MainContent main_content_block = {};
-    MainContent main_content_block2 = {};
-
-    gen_uuid(main_content_block.the_id);
-    gen_uuid(main_content_block.main_id);
-    main_content_block.block_id = 53;
-    main_content_block.len_block = 123;
-    main_content_block.n_line = 2;
-    strcpy(main_content_block.buf_block, "test123\n");
-
-    bson_t b;
-    bson_init(&b);
-
-    Err error = _serialize_main_content_block_bson(&main_content_block, &b);
-    EXPECT_EQ(S_OK, error);
-
-    char *str = bson_as_canonical_extended_json(&b, NULL);
-    fprintf(stderr, "b: %s\n", str);
-    bson_free(str);
-
-    error = _deserialize_main_content_block_bson(&b, &main_content_block2);
-    EXPECT_EQ(S_OK, error);
-
-    EXPECT_EQ(0, strncmp((char *)main_content_block.the_id, (char *)main_content_block2.the_id, UUIDLEN));
-    EXPECT_EQ(0, strncmp((char *)main_content_block.main_id, (char *)main_content_block2.main_id, UUIDLEN));
-    EXPECT_EQ(main_content_block.block_id, main_content_block2.block_id);
-    EXPECT_EQ(main_content_block.len_block, main_content_block2.len_block);
-    EXPECT_EQ(main_content_block.n_line, main_content_block2.n_line);
-    EXPECT_EQ(0, strncmp((char *)main_content_block.buf_block, (char *)main_content_block2.buf_block, MAX_BUF_SIZE));
+    bson_safe_destroy(&main_bson);
 }
 
 TEST(pttdb, serialize_update_main_bson) {
-    Err error_code;
+    Err error_code S_OK;
     UUID content_id;
     char updater[IDLEN + 1] = {};
     char update_ip[IPV4LEN + 1] = {};
@@ -1063,16 +1012,10 @@ TEST(pttdb, serialize_update_main_bson) {
     n_block = 32;
     len = 2031;
 
-    bson_t main_bson;
-    bson_init(&main_bson);
-
+    bson_t *main_bson = NULL;
     error_code = _serialize_update_main_bson(content_id, updater, update_ip, update_milli_timestamp, n_line, n_block, len, &main_bson);
 
-    char *str = bson_as_canonical_extended_json(&main_bson, NULL);
-    fprintf(stderr, "after serialize: str: %s\n", str);
-    bson_free(str);
-
-    int tmp;
+    int tmp = 0;
 
     error_code = bson_get_value_bin(&main_bson, "content_id", UUIDLEN, (char *)result_content_id, &tmp);
     EXPECT_EQ(S_OK, error_code);
@@ -1103,7 +1046,7 @@ TEST(pttdb, serialize_update_main_bson) {
     EXPECT_EQ(n_block, result_n_block);
     EXPECT_EQ(len, result_len);
 
-    bson_destroy(&main_bson);
+    bson_safe_destroy(&main_bson);
 
 }
 
