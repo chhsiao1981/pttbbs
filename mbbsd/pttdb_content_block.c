@@ -76,10 +76,13 @@ delete_content(UUID content_id, enum MongoDBId mongo_db_id)
 {
     Err error_code = S_OK;
     bson_t *key = BCON_NEW("the_id", BCON_BINARY(content_id, UUIDLEN));
+    if (key == NULL) error_code = S_ERR_INIT;
 
-    error_code = db_remove(mongo_db_id, key);
+    if (!error_code) {
+        error_code = db_remove(mongo_db_id, key);
+    }
 
-    bson_destroy(key);
+    bson_safe_destroy(key);
 
     return error_code;
 }
@@ -115,7 +118,7 @@ init_content_block_with_buf_block(ContentBlock *content_block, UUID ref_id, UUID
 {
     Err error_code = init_content_block_buf_block(content_block);
 
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     error_code = reset_content_block(content_block, ref_id, content_id, block_id);
     if (error_code) return error_code;
@@ -126,13 +129,13 @@ init_content_block_with_buf_block(ContentBlock *content_block, UUID ref_id, UUID
 Err
 init_content_block_buf_block(ContentBlock *content_block)
 {
-    if(content_block->buf_block != NULL) return S_OK;
+    if (content_block->buf_block != NULL) return S_OK;
 
     content_block->buf_block = malloc(MAX_BUF_SIZE);
-    if(content_block->buf_block == NULL) return S_ERR;
+    if (content_block->buf_block == NULL) return S_ERR;
 
     content_block->max_buf_len = MAX_BUF_SIZE;
-    bzero(content_block->buf_block, MAX_BUF_SIZE);    
+    bzero(content_block->buf_block, MAX_BUF_SIZE);
     content_block->len_block = 0;
 
     return S_OK;
@@ -153,7 +156,7 @@ destroy_content_block(ContentBlock *content_block)
 Err
 associate_content_block(ContentBlock *content_block, char *buf_block, int max_buf_len)
 {
-    if(content_block->buf_block != NULL) return S_ERR;
+    if (content_block->buf_block != NULL) return S_ERR;
 
     content_block->buf_block = buf_block;
     content_block->max_buf_len = max_buf_len;
@@ -176,7 +179,7 @@ Err
 save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
 {
     Err error_code = S_OK;
-    if(content_block->buf_block == NULL) return S_ERR;
+    if (content_block->buf_block == NULL) return S_ERR;
 
     bson_t *content_block_bson = NULL;
     bson_t *content_block_id_bson = NULL;
@@ -202,18 +205,21 @@ read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, Co
 {
     Err error_code = S_OK;
 
-    if(content_block->buf_block == NULL) return S_ERR;
+    if (content_block->buf_block == NULL) return S_ERR;
 
     bson_t *key = BCON_NEW(
-        "the_id", BCON_BINARY(content_id, UUIDLEN),
-        "block_id", BCON_INT32(block_id)
-        );
+                      "the_id", BCON_BINARY(content_id, UUIDLEN),
+                      "block_id", BCON_INT32(block_id)
+                  );
+    if (key == NULL) error_code = S_ERR;
 
     bson_t *db_result = NULL;
 
-    error_code = db_find_one(mongo_db_id, key, NULL, &db_result);
+    if (!error_code) {
+        error_code = db_find_one(mongo_db_id, key, NULL, &db_result);
+    }
 
-    if(!error_code) {
+    if (!error_code) {
         error_code = _deserialize_content_block_bson(db_result, content_block);
     }
 
@@ -221,6 +227,236 @@ read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, Co
     bson_safe_destroy(&key);
 
     return error_code;
+}
+
+Err
+read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_blocks, int *n_block, int *len)
+{
+    Err error_code = S_OK;
+
+    // init db_results
+    bson_t **db_results = malloc(sizeof(bson_t *) * max_n_block);
+
+    if (db_results == NULL) return S_ERR_INIT;
+
+    bzero(db_results, sizeof(bson_t *) * max_n_block);
+
+    error_code = _read_content_blocks_get_db_results(db_results, content_id, max_n_block, block_id, mongo_db_id, n_block);
+
+    // db_results to content-blocks
+    int tmp_n_block = *n_block;
+    bson_t **p_db_results = db_results;
+    ContentBlock *p_content_blocks = content_blocks;
+    char *p_buf = buf;
+    int tmp_len_block;
+    int tmp_len = 0;
+
+    if (!error_code) {
+        for (int i = 0; i < tmp_n_block; i++) {
+            error_code = _deserialize_content_block_bson(*p_db_results, p_content_blocks);
+
+            tmp_len_block = p_content_blocks->len_block;
+
+            p_buf += tmp_len_block;
+            tmp_len += tmp_len_block;
+            p_db_results++;
+            p_content_blocks++;
+
+            if (error_code) break;
+        }
+    }
+
+    *len = tmp_len;
+
+    // free
+    p_db_results = db_results;
+    for (int i = 0; i < tmp_n_block; i++) {
+        bson_safe_destroy(p_db_results);
+        p_db_results++;
+    }
+    free(db_results);
+
+    return error_code;
+}
+
+/**
+ * @brief Cconten
+ * @details content blocks does not init with buf. All the content blocks shares buf
+ *
+ * @param content_id [description]
+ * @param max_n_blocks [description]
+ * @param block_id [description]
+ * @param MongoDBId [description]
+ * @param content_blocks [description]
+ * @param n_blocks [description]
+ */
+Err
+dynamic_read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len);
+{
+    Err error_code = S_OK;
+
+    // init db_results
+    bson_t **db_results = malloc(sizeof(bson_t *) * max_n_block);
+
+    if (db_results == NULL) return S_ERR_INIT;
+
+    bzero(db_results, sizeof(bson_t *) * max_n_block);
+
+    error_code = _read_content_blocks_get_db_results(db_results, content_id, max_n_block, block_id, mongo_db_id, n_block);
+
+    // db_results to content-blocks
+    int tmp_n_block = *n_block;
+    bson_t **p_db_results = db_results;
+    ContentBlock *p_content_blocks = content_blocks;
+    char *p_buf = buf;
+    int tmp_len_block;
+    int tmp_len = 0;
+
+    if (!error_code) {
+        for (int i = 0; i < tmp_n_block; i++) {
+            if (max_buf_size <= 0) {
+                error_code = S_ERR_BUFFER_LEN;
+                break;
+            }
+
+            p_content_blocks->buf_block = p_buf;
+            p_content_blocks->max_buf_size = max_buf_size;
+
+            error_code = _deserialize_content_block_bson(*p_db_results, p_content_blocks);
+
+            tmp_len_block = p_content_blocks->len_block;
+            p_content_blocks->max_buf_size = tmp_len_block;
+
+            max_buf_size -= tmp_len_block;
+            p_buf += tmp_len_block;
+            tmp_len += tmp_len_block;
+            p_db_results++;
+            p_content_blocks++;
+
+            if (error_code) break;
+        }
+    }
+
+    *len = tmp_len;
+
+    // free
+    p_db_results = db_results;
+    for (int i = 0; i < tmp_n_block; i++) {
+        bson_safe_destroy(p_db_results);
+        p_db_results++;
+    }
+    free(db_results);
+
+    return error_code;
+}
+
+Err
+_read_content_blocks_get_db_results(bson_t **db_results, UUID content_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, int *n_block)
+{
+    Err error_code = S_OK;
+
+    bson_t *b_array_block_ids = bson_new();
+    if (b_array_block_ids == NULL) error_code = S_ERR_INIT;
+
+    if (!error_code) {
+        error_code = _form_b_array_block_ids(block_id, max_n_block, b_array_block_ids);
+    }
+
+    bson_t *key = NULL;
+    if (!error_code) {
+        key = BCON_NEW(
+                  "the_id", BCON_BINARY(content_id, UUIDLEN),
+                  "block_id", BCON_DOCUMENT(b_array_block_ids)
+              );
+        if (key == NULL) error_code = S_ERR_INIT;
+    }
+
+    if (!error_code) {
+        error_code = db_find(mongo_db_id, key, NULL, max_n_block, n_block, db_results);
+    }
+
+    int tmp_n_block = *n_block;
+
+    if (!error_code) {
+        error_code = _sort_by_block_id(db_results, tmp_n_block);
+    }
+    if (!error_code) {
+        error_code = _ensure_block_ids(db_results, block_id, tmp_n_block);
+    }
+
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&b_array_block_ids);
+
+    return error_code;
+}
+
+Err
+_form_b_array_block_ids(int block_id, int max_n_block, bson_t *b)
+{
+    Err error_code = S_OK;
+
+    bson_t child;
+    char buf[16];
+    const char *key;
+    size_t keylen;
+
+    bool status;
+
+    BSON_APPEND_DOCUMENT_BEGIN (b, "$in", &child);
+    for (i = 0; i < max_n_block; ++i) {
+        keylen = bson_uint32_to_string(i, &key, buf, sizeof(buf));
+        status = bson_append_int32(&child, key, (int)keylen, block_id + i);
+        if(!status) {
+            error_code = S_ERR_INIT;
+            break;
+        }
+    }
+    BSON_APPEND_DOCUMENT_END(b, &child);
+
+    return error_code;
+}
+
+Err
+_sort_by_block_id(bson_t **db_results, int n_block)
+{
+    qsort(db_results, n_block, sizeof(bson_t *), _cmp_sort_by_block_id);
+
+    return S_OK;
+}
+
+int
+_cmp_sort_by_block_id(void *a, void *b)
+{
+    bson_t *tmp_a = (bson_t *)a;
+    bson_t *tmp_b = (bson_t *)b;
+    int block_id_a = 0;
+    int block_id_b = 0;
+
+    error_code = bson_get_value_int32(tmp_a, "block_id", &block_id_a);
+    if (error_code) block_id_a = -1;
+
+    error_code = bson_get_value_int32(tmp_b, "block_id", &block_id_b);
+    if (error_code) block_id_b = -1;
+
+    return block_id_a - block_id_b;
+}
+
+Err
+_ensure_block_ids(bson_t **db_results, int start_block_id, int n_block)
+{
+    Err error_code = S_OK;
+    bson_t **p_db_results = NULL;
+    int db_block_id;
+    for (int i = 0, p_db_results = db_results; i < n_block; i++, p_db_results++) {
+        error_code = bson_get_value_int32(*p_db_results, "block_id", &db_block_id);
+
+        if (error_code) db_block_id = -1;
+
+        if (db_block_id != i + start_block_id) return S_ERR;
+
+    }
+
+    return S_OK;
 }
 
 /**
@@ -269,7 +505,7 @@ _split_contents_core_core(char *line, int bytes_in_line, UUID ref_id, UUID conte
     // check for max-lines in block-buf
     // check for max-buf in block-buf
     if (content_block->n_line  > MAX_BUF_LINES ||
-        content_block->len_block + bytes_in_line > MAX_BUF_BLOCK) {
+            content_block->len_block + bytes_in_line > MAX_BUF_BLOCK) {
 
         error_code = save_content_block(content_block, mongo_db_id);
         if (error_code) return error_code;
@@ -349,7 +585,7 @@ _deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *conten
 {
     Err error_code;
 
-    if(content_block->buf_block == NULL) return S_ERR;
+    if (content_block->buf_block == NULL) return S_ERR;
 
     int len;
     error_code = bson_get_value_bin(content_block_bson, "the_id", UUIDLEN, (char *)content_block->the_id, &len);
@@ -363,6 +599,11 @@ _deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *conten
 
     error_code = bson_get_value_int32(content_block_bson, "len_block", &content_block->len_block);
     if (error_code) return error_code;
+
+    if (content_block->max_buf_len < content_block->len_block) {
+        content_block->len_block = 0;
+        return S_ERR_BUFFER_LEN;
+    }
 
     error_code = bson_get_value_int32(content_block_bson, "n_line", &content_block->n_line);
     if (error_code) return error_code;

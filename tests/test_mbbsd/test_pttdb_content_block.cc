@@ -200,6 +200,19 @@ TEST(pttdb, serialize_content_block_bson) {
     destroy_content_block(&content_block2);
 }
 
+TEST(pttdb, form_b_array_block_ids)
+{
+    bson_t *b = bson_new();
+
+    Err error = _form_b_array_block_ids(5, 10, b);
+
+    char *str = bson_as_canonical_extended_json(b, NULL);
+    fprintf(stderr, "test_pttdb_content_block.form_b_array_block_ids: str: %s\n", str);
+    free(str);
+
+    bson_safe_destroy(b);
+}
+
 /**********
  * MAIN
  */
