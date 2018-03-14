@@ -637,9 +637,12 @@ TEST(pttdb, split_contents_core4)
     // the rest 3618-block in the line.
     EXPECT_EQ(3616, bytes_in_line);
     EXPECT_STREQ(buf + 102 + 8192 * 2, line);
+
+    // the 2nd 8192-block in the content_block.
     EXPECT_EQ(0, content_block.n_line);
     EXPECT_EQ(8192, content_block.len_block);
     EXPECT_EQ(2, content_block.block_id);
+    EXPECT_EQ(0, strncmp(buf + 102 + 8192, content_block.buf_block, content_block.len_block));
 
     ContentBlock content_block2 = {};
     init_content_block_buf_block(&content_block2);
@@ -662,7 +665,7 @@ TEST(pttdb, split_contents_core4)
     error = reset_content_block_buf_block(&content_block2);
     EXPECT_EQ(S_OK, error);
 
-    // the 2nd 8192-block in the block-2
+    // the 2nd 8192-block not in the db yet.
     error = read_content_block(content_id, 2, MONGO_MAIN_CONTENT, &content_block2);
     EXPECT_EQ(S_ERR_NOT_EXISTS, error);
 
