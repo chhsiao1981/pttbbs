@@ -18,6 +18,7 @@ TEST(pttdb, save_content_block) {
     ContentBlock content_block = {};
     ContentBlock content_block2 = {};
 
+    // init content-block
     error = init_content_block(&content_block, ref_id, content_id, 3);
     EXPECT_EQ(S_OK, error);
 
@@ -27,6 +28,7 @@ TEST(pttdb, save_content_block) {
     content_block.len_block = len_buf;
     content_block.n_line = 1;
 
+    // init content-block2
     error = init_content_block_buf_block(&content_block2);
     EXPECT_EQ(S_OK, error);
 
