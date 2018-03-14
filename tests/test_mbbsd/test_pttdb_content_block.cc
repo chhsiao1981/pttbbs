@@ -48,6 +48,44 @@ TEST(pttdb, save_content_block) {
     destroy_content_block(&content_block2);
 }
 
+TEST(pttdb, read_content_block_forgot_init) {
+    Err error;
+
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id);
+    gen_uuid(content_id);
+
+    ContentBlock content_block = {};
+    ContentBlock content_block2 = {};
+
+    // init content-block
+    error = init_content_block(&content_block, ref_id, content_id, 3);
+    EXPECT_EQ(S_OK, error);
+
+    char buf[] = "test_buf\r\ntest2";
+    int len_buf = strlen(buf);
+    associate_content_block(&content_block, buf, len_buf);
+    content_block.len_block = len_buf;
+    content_block.n_line = 1;
+
+    // init content-block2
+    // error = init_content_block_buf_block(&content_block2);
+    // EXPECT_EQ(S_OK, error);
+
+    // save
+    error = save_content_block(&content_block, MONGO_MAIN_CONTENT);
+    EXPECT_EQ(S_OK, error);
+
+    error = read_content_block(content_id, 3, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_ERR, error);
+
+    dissociate_content_block(&content_block);
+    //destroy_content_block(&content_block2);
+}
+
 TEST(pttdb, init_content_block) {
     Err error;
     ContentBlock content_block = {};
