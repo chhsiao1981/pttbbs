@@ -437,7 +437,7 @@ _serialize_main_bson(MainHeader *main_header, bson_t **main_bson)
         "reset_karma", BCON_INT32(main_header->reset_karma),
         "n_total_line", BCON_INT32(main_header->n_total_line),
         "n_total_block", BCON_INT32(main_header->n_total_block),
-        "len_total", BCON_INT32(main_header->len_total),
+        "len_total", BCON_INT32(main_header->len_total)
         );
     if(*main_bson == NULL) return S_ERR;
 
