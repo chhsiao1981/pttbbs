@@ -565,6 +565,20 @@ TEST(pttdb, split_contents_core3)
     EXPECT_EQ(3618, content_block.len_block);
     EXPECT_EQ(3, content_block.block_id);
 
+    ContentBlock content_block2 = {};
+    init_content_block_buf_block(&content_block2);
+
+    error = read_content_block(content_id, 0, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(102, content_block2.len_block);
+    EXPECT_EQ(0, strncmp(buf, content_block2.buf_block, 102));
+
+    error = read_content_block(content_id, 1, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(8192, content_block2.len_block);
+    EXPECT_EQ(0, strncmp(buf + 102, content_block2.buf_block, 8192));
+
+    destroy_content_block(&content_block2);    
     destroy_content_block(&content_block);
 }
 

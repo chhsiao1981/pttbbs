@@ -249,6 +249,7 @@ Err init_content_block_buf_block(ContentBlock *content_block);
 Err destroy_content_block(ContentBlock *content_block);
 
 Err reset_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id);
+Err reset_content_block_buf_block(ContentBlock *content_block);
 
 Err associate_content_block(ContentBlock *content_block, char *buf_block, int max_buf_len);
 Err dissociate_content_block(ContentBlock *content_block);

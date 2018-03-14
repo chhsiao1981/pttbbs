@@ -91,16 +91,24 @@ delete_content(UUID content_id, enum MongoDBId mongo_db_id)
 Err
 reset_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id)
 {
-    if (content_block->len_block) {
-        bzero(content_block->buf_block, content_block->len_block);
-    }
+    reset_content_block_buf_block(content_block);
 
-    content_block->len_block = 0;
-    content_block->n_line = 0;
     memcpy(content_block->the_id, content_id, sizeof(UUID));
     memcpy(content_block->ref_id, ref_id, sizeof(UUID));
 
     content_block->block_id = block_id;
+
+    return S_OK;
+}
+
+Err
+reset_content_block_buf_block(ContentBlock *content_block)
+{
+    if (!content_block->len_block) return S_OK;
+
+    bzero(content_block->buf_block, content_block->len_block);
+    content_block->len_block = 0;
+    content_block->n_line = 0;
 
     return S_OK;
 }
