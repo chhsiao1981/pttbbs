@@ -279,7 +279,7 @@ read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, Co
 
     bson_t *db_result = NULL;
 
-    error_code = db_find_one(mongo_db_id, key, NULL, db_result);
+    error_code = db_find_one(mongo_db_id, key, NULL, &db_result);
 
     if(!error_code) {
         error_code = _deserialize_content_block_bson(db_result, content_block);
