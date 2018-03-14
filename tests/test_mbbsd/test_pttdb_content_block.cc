@@ -177,7 +177,7 @@ TEST(pttdb, serialize_content_block_bson) {
 
     // init-op
     bson_t *b = NULL;
-    
+
     // do-op
     Err error = _serialize_content_block_bson(&content_block, &b);
     EXPECT_EQ(S_OK, error);
@@ -218,7 +218,7 @@ TEST(pttdb, form_b_array_block_ids)
 TEST(pttdb, ensure_block_ids)
 {
     bson_t *b[10];
-    for(int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++) {
         b[i] = BCON_NEW("block_id", BCON_INT32(i));
     }
 
@@ -228,7 +228,7 @@ TEST(pttdb, ensure_block_ids)
     error = _ensure_block_ids(b, 1, 10);
     EXPECT_EQ(S_ERR, error);
 
-    for(int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++) {
         bson_safe_destroy(&b[i]);
     }
 }
@@ -236,7 +236,7 @@ TEST(pttdb, ensure_block_ids)
 TEST(pttdb, ensure_block_ids2)
 {
     bson_t *b[10];
-    for(int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++) {
         b[i] = BCON_NEW("block_id", BCON_INT32(i + 5));
     }
 
@@ -246,7 +246,7 @@ TEST(pttdb, ensure_block_ids2)
     error = _ensure_block_ids(b, 1, 10);
     EXPECT_EQ(S_ERR, error);
 
-    for(int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++) {
         bson_safe_destroy(&b[i]);
     }
 }
@@ -254,16 +254,16 @@ TEST(pttdb, ensure_block_ids2)
 TEST(pttdb, sort_by_block_id)
 {
     bson_t *b[10];
-    for(int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++) {
         b[i] = BCON_NEW("block_id", BCON_INT32(9 - i));
     }
     Err error = _sort_by_block_id(b, 10);
-    EXPECT_EQ(S_OK, error)    
+    EXPECT_EQ(S_OK, error);
 
     error = _ensure_block_ids(b, 0, 10);
     EXPECT_EQ(S_OK, error);
 
-    for(int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++) {
         bson_safe_destroy(&b[i]);
     }
 }
