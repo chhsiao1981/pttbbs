@@ -463,8 +463,11 @@ _serialize_main_bson(MainHeader *main_header, bson_t **main_bson)
  */
 Err
 _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
-{
-    fprintf(stderr, "pttdb_main._deserialze_main_bson: start\n");
+{    
+    char *str = bson_as_canonical_extended_json(main_bson, NULL);
+    fprintf(stderr, "pttdb_main._deserialze_main_bson: start: main_bson: %s\n", str);
+    bson_free(str);
+    
     Err error_code;
     error_code = bson_get_value_int32(main_bson, "version", (int *)&main_header->version);
     if (error_code) return error_code;
