@@ -461,19 +461,19 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
     if (error_code) return error_code;
 
     int len;
-    error_code = bson_get_value_bin(main_bson, "the_id", UUIDLEN, main_header->the_id, &len);
+    error_code = bson_get_value_bin(main_bson, "the_id", UUIDLEN, (char *)main_header->the_id, &len);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_bin(main_bson, "content_id", UUIDLEN, main_header->content_id, &len);
+    error_code = bson_get_value_bin(main_bson, "content_id", UUIDLEN, (char *)main_header->content_id, &len);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_bin(main_bson, "update_content_id", UUIDLEN, main_header->update_content_id, &len);
+    error_code = bson_get_value_bin(main_bson, "update_content_id", UUIDLEN, (char *)main_header->update_content_id, &len);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_int64(main_bson, "aid", &main_header->aid);
+    error_code = bson_get_value_int64(main_bson, "aid", (long *)&main_header->aid);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_int32(main_bson, "status", &main_header->status);
+    error_code = bson_get_value_int32(main_bson, "status", (int *)&main_header->status);
     if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "status_updater", IDLEN, main_header->status_updater, &len);
@@ -491,7 +491,7 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
     error_code = bson_get_value_bin(main_bson, "ip", IPV4LEN, main_header->ip, &len);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_int64(main_bson, "create_milli_timestamp", &main_header->create_milli_timestamp);
+    error_code = bson_get_value_int64(main_bson, "create_milli_timestamp", (long *)&main_header->create_milli_timestamp);
     if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "updater", IDLEN, main_header->updater, &len);
@@ -500,7 +500,7 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
     error_code = bson_get_value_bin(main_bson, "update_ip", IPV4LEN, main_header->update_ip, &len);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_int64(main_bson, "update_milli_timestamp", &main_header->update_milli_timestamp);
+    error_code = bson_get_value_int64(main_bson, "update_milli_timestamp", (long *)&main_header->update_milli_timestamp);
     if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "origin", MAX_ORIGIN_LEN, main_header->origin, &len);
@@ -540,11 +540,10 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
 Err
 _serialize_update_main_bson(UUID content_id, char *updater, char *update_ip, time64_t update_milli_timestamp, int n_total_line, int n_total_block, int len_total, bson_t **main_bson)
 {
-    bool bson_status;
     *main_bson = BCON_NEW(
         "content_id", BCON_BINARY(content_id, UUIDLEN),
-        "updater", BCON_BINARY(updater, IDLEN),
-        "update_ip", BCON_BINARY(update_ip, IPV4LEN),
+        "updater", BCON_BINARY((unsigned char *)updater, IDLEN),
+        "update_ip", BCON_BINARY((unsigned char *)update_ip, IPV4LEN),
         "update_milli_timestamp", BCON_INT64(update_milli_timestamp),
         "n_total_line", BCON_INT32(n_total_line),
         "n_total_block", BCON_INT32(n_total_block),
