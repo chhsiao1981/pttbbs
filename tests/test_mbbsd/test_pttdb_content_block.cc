@@ -210,7 +210,7 @@ TEST(pttdb, form_b_array_block_ids)
     fprintf(stderr, "test_pttdb_content_block.form_b_array_block_ids: str: %s\n", str);
     free(str);
 
-    bson_safe_destroy(b);
+    bson_safe_destroy(&b);
 }
 
 /**********
