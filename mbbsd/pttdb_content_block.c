@@ -489,7 +489,7 @@ _split_contents_core(char *buf, int bytes, UUID ref_id, UUID content_id, enum Mo
     for (int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
         error_code = get_line_from_buf(buf, offset_buf, bytes, line, *bytes_in_line, &bytes_in_new_line);
         *bytes_in_line += bytes_in_new_line;
-        fprintf(stderr, "after get line from buf: e: %d bytes_in_line: %d bytes_in_new_line: %d line: %s\n", error_code, *bytes_in_line, bytes_in_new_line, line);
+        fprintf(stderr, "pttdb_content_block._split_contents_core: after get line from buf: e: %d bytes_in_line: %d bytes_in_new_line: %d line: %s\n", error_code, *bytes_in_line, bytes_in_new_line, line);
         // unable to get more lines from buf
         if (error_code) break;
 
