@@ -452,6 +452,51 @@ TEST(pttdb, sort_by_block_id)
     }
 }
 
+TEST(pttdb, split_contents_deal_with_last_line_block)
+{
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    ContentBlock content_block = {};
+    UUID the_id;
+    UUID ref_id;
+    gen_uuid(the_id);
+    gen_uuid(ref_id);
+    init_content_block_with_buf_block(&content_block, ref_id, the_id, 0);
+    EXPECT_EQ(MAX_BUF_SIZE, content_block.max_buf_len);
+
+    int bytes_in_line = 10;
+    char line[] = "test1test1";
+    int n_line;
+    int n_block = 1;
+
+    Err error = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, the_id, MONGO_MAIN_CONTENT, &content_block, &n_line, &n_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(0, n_line);
+    EXPECT_EQ(1, n_block);
+    EXPECT_STREQ("test1test1", content_block.buf_block);
+    EXPECT_EQ(0, content_block.n_line);
+    EXPECT_EQ(10, content_block.len_block);
+    EXPECT_EQ(0, strncmp((char *)the_id, (char *)content_block.the_id));
+    EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block.ref_id));
+    EXPECT_EQ(0, content_block.block_id);
+
+    ContentBlock content_block2 = {};
+    init_content_block_buf_block(&content_block2);
+    EXPECT_EQ(MAX_BUF_SIZE, content_block2.max_buf_len);
+
+    error = read_content_block(the_id, 0, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(0, strncmp((char *)content_block2.the_id, (char *)content_block.the_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_block2.ref_id, (char *)content_block.ref_id, UUIDLEN));
+    EXPECT_EQ(0, content_block2.block_id);
+    EXPECT_EQ(10, content_block2.len_block);
+    EXPECT_STREQ("test1test1", content_block2.buf_block);
+    EXPECT_EQ(0, content_block2.n_line);
+
+    destroy_content_block(&content_block2);
+    destroy_content_block(&content_block);
+}
+
 /**********
  * MAIN
  */
