@@ -22,7 +22,7 @@ split_contents(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBI
     ContentBlock content_block = {};
 
     // init
-    error_code = init_content_block_with_buf(&content_block, ref_id, content_id, *n_block);
+    error_code = init_content_block_with_buf_block(&content_block, ref_id, content_id, *n_block);
     (*n_block)++;
 
     if (!error_code) {
@@ -50,7 +50,7 @@ split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, en
 
     // init
     *n_block = 0;
-    error_code = init_content_block_with_buf(&content_block, ref_id, content_id, *n_block);
+    error_code = init_content_block_with_buf_block(&content_block, ref_id, content_id, *n_block);
     (*n_block)++;
 
     if (!error_code) {
@@ -112,7 +112,7 @@ init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, in
  * @param n_block [description]
  */
 Err
-init_content_block_with_buf(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id)
+init_content_block_with_buf_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id)
 {
     if (content_block->buf_block == NULL) {
         content_block->buf_block = malloc(MAX_BUF_SIZE);

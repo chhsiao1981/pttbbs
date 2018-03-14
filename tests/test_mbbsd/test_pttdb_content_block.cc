@@ -14,14 +14,69 @@ TEST(pttdb, init_content_block) {
     gen_uuid(ref_id);
     gen_uuid(content_id);
 
-    error = init_content_block(&content_block, ref_id, content_id, 0);
+    error = init_content_block(&content_block, ref_id, content_id, 3);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(NULL, content_block->buf_block);
-    EXPECT_EQ
+    EXPECT_EQ(NULL, content_block.buf_block);
+    EXPECT_EQ(0, content_block.max_len_buf);
+    EXPECT_EQ(0, strncmp(ref_id, content_block.ref_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp(content_id, content_block.the_id, UUIDLEN));
+    EXPECT_EQ(3, content_block.block_id);
 
     error = destroy_content_block(&content_block);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(NULL, content_block->buf_block);
+    EXPECT_EQ(NULL, content_block.buf_block);
+    EXPECT_EQ(0, content_block.max_len_buf);
+}
+
+TEST(pttdb, init_content_block_with_buf_block) {
+    Err error;
+    ContentBlock content_block = {};
+
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id);
+    gen_uuid(content_id);
+
+    error = init_content_block_with_buf_block(&content_block, ref_id, content_id, 3);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_NE(NULL, content_block.buf_block);
+    EXPECT_EQ(MAX_BUF_SIZE, content_block.max_len_buf);
+    EXPECT_EQ(0, strncmp(ref_id, content_block.ref_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp(content_id, content_block.the_id, UUIDLEN));
+    EXPECT_EQ(3, content_block.block_id);
+
+    error = destroy_content_block(&content_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(NULL, content_block.buf_block);
+    EXPECT_EQ(0, content_block.max_len_buf);
+}
+
+TEST(pttdb, associate_content_block) {
+    Err error;
+    ContentBlock content_block = {};
+
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id);
+    gen_uuid(content_id);
+
+    error = init_content_block(&content_block, ref_id, content_id, 3);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(NULL, content_block.buf_block);
+    EXPECT_EQ(0, content_block.max_len_buf);
+    EXPECT_EQ(0, strncmp(ref_id, content_block.ref_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp(content_id, content_block.the_id, UUIDLEN));
+    EXPECT_EQ(3, content_block.block_id);
+
+    char buf[20];
+    error = associate_content_block(&content_block, buf, 20);
+    EXPECT_EQ(buf, content_block->buf_block);
+    EXPECT_EQ(20, content_block->max_len_buf);
+
+    error = dissociate_content_block(&content_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(NULL, content_block.buf_block);
+    EXPECT_EQ(0, content_block.max_len_buf);
 }
 
 TEST(pttdb, serialize_content_block_bson) {
