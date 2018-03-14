@@ -85,7 +85,7 @@ delete_content(UUID content_id, enum MongoDBId mongo_db_id)
 }
 
 Err
-init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id)
+reset_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id)
 {
     if (content_block->len_block) {
         bzero(content_block->buf_block, content_block->len_block);
@@ -117,7 +117,7 @@ init_content_block_with_buf_block(ContentBlock *content_block, UUID ref_id, UUID
 
     if(error_code) return error_code;
 
-    error_code = init_content_block(content_block, ref_id, content_id, block_id);
+    error_code = reset_content_block(content_block, ref_id, content_id, block_id);
     if (error_code) return error_code;
 
     return S_OK;
@@ -274,7 +274,7 @@ _split_contents_core_core(char *line, int bytes_in_line, UUID ref_id, UUID conte
         error_code = save_content_block(content_block, mongo_db_id);
         if (error_code) return error_code;
 
-        error_code = init_content_block(content_block, ref_id, content_id, *n_block);
+        error_code = reset_content_block(content_block, ref_id, content_id, *n_block);
         (*n_block)++;
         if (error_code) return error_code;
     }

@@ -238,19 +238,19 @@ Err split_contents(char *buf, int bytes, UUID ref_id, UUID content_id, enum Mong
 Err split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);
 
 /*
-Err read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content);
-Err read_content_blocks(UUID ref_id, int max_n_blocks, int offset_block_id, enum MongoDBId mongo_db_id, ContentBlock **content, int *n_blocks);
+Err read_content_blocks(UUID content_id, int max_n_blocks, int offset_block_id, enum MongoDBId mongo_db_id, ContentBlock **content, int *n_blocks);
 */
 
 Err save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id);
-Err read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_block);
+Err read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, ContentBlock **content_block);
 
 Err delete_content(UUID content_id, enum MongoDBId mongo_db_id);
 
-Err init_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id);
 Err init_content_block_with_buf_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id);
 Err init_content_block_buf_block(ContentBlock *content_block);
 Err destroy_content_block(ContentBlock *content_block);
+
+Err reset_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id);
 
 Err associate_content_block(ContentBlock *content_block, char *buf_block, int max_buf_len);
 Err dissociate_content_block(ContentBlock *content_block);

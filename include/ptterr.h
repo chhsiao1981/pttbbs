@@ -15,6 +15,7 @@ typedef char Err;
 #define S_ERR_NOT_EXISTS -4
 #define S_ERR_FOUND_MULTI -5
 #define S_ERR_BUFFER_LEN -6
+#define S_ERR_INIT -7
 
 #ifdef __cplusplus
 }

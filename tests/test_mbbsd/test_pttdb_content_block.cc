@@ -19,7 +19,7 @@ TEST(pttdb, save_content_block) {
     ContentBlock content_block2 = {};
 
     // init content-block
-    error = init_content_block(&content_block, ref_id, content_id, 3);
+    error = reset_content_block(&content_block, ref_id, content_id, 3);
     EXPECT_EQ(S_OK, error);
 
     char buf[] = "test_buf\r\ntest2";
@@ -62,7 +62,7 @@ TEST(pttdb, read_content_block_forgot_init) {
     ContentBlock content_block2 = {};
 
     // init content-block
-    error = init_content_block(&content_block, ref_id, content_id, 3);
+    error = reset_content_block(&content_block, ref_id, content_id, 3);
     EXPECT_EQ(S_OK, error);
 
     char buf[] = "test_buf\r\ntest2";
@@ -86,7 +86,7 @@ TEST(pttdb, read_content_block_forgot_init) {
     //destroy_content_block(&content_block2);
 }
 
-TEST(pttdb, init_content_block) {
+TEST(pttdb, reset_content_block) {
     Err error;
     ContentBlock content_block = {};
 
@@ -95,7 +95,7 @@ TEST(pttdb, init_content_block) {
     gen_uuid(ref_id);
     gen_uuid(content_id);
 
-    error = init_content_block(&content_block, ref_id, content_id, 3);
+    error = reset_content_block(&content_block, ref_id, content_id, 3);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(NULL, content_block.buf_block);
     EXPECT_EQ(0, content_block.max_buf_len);
@@ -103,7 +103,6 @@ TEST(pttdb, init_content_block) {
     EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_block.the_id, UUIDLEN));
     EXPECT_EQ(3, content_block.block_id);
 
-    error = destroy_content_block(&content_block);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(NULL, content_block.buf_block);
     EXPECT_EQ(0, content_block.max_buf_len);
@@ -141,7 +140,7 @@ TEST(pttdb, associate_content_block) {
     gen_uuid(ref_id);
     gen_uuid(content_id);
 
-    error = init_content_block(&content_block, ref_id, content_id, 3);
+    error = reset_content_block(&content_block, ref_id, content_id, 3);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(NULL, content_block.buf_block);
     EXPECT_EQ(0, content_block.max_buf_len);
