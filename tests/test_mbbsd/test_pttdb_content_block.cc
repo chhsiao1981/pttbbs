@@ -480,11 +480,11 @@ TEST(pttdb, split_contents_core)
     Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, &bytes_in_line, &content_block);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(1000, n_line);
-    EXPECT_EQ(2, n_block);
+    EXPECT_EQ(4, n_block);
     EXPECT_EQ(0, bytes_in_line);
-    EXPECT_EQ(318, content_block.n_line);
-    EXPECT_STREQ(buf + 8184, content_block.buf_block);
-    EXPECT_EQ(3816, content_block.len_block);
+    EXPECT_EQ(232, content_block.n_line);
+    EXPECT_STREQ(buf + 9216, content_block.buf_block);
+    EXPECT_EQ(2784, content_block.len_block);
 
     destroy_content_block(&content_block);
 }
