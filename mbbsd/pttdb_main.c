@@ -381,7 +381,7 @@ update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int f
     if (error_code) return error_code;
 
     // main-contents
-    error_code = split_contents_from_fd(fd_content, len, main_id, content_id, &n_line, &n_block);
+    error_code = split_contents_from_fd(fd_content, len, main_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block);
     if (error_code) return error_code;
 
     // db-main
@@ -457,7 +457,7 @@ Err
 _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
 {
     Err error_code;
-    error_code = bson_get_value_int32(main_bson, "version", &main_header->version);
+    error_code = bson_get_value_int32(main_bson, "version", (int *)&main_header->version);
     if (error_code) return error_code;
 
     int len;
