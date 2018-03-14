@@ -147,7 +147,7 @@ len_main_by_aid(aidu_t aid, int *len)
     bson_t *db_result = NULL;
     error_code = db_find_one(MONGO_MAIN, key, fields, &db_result);
     if(!error_code) {
-        error_code = bson_get_value_int32(&db_result, "len_total", len);
+        error_code = bson_get_value_int32(db_result, "len_total", len);
     }
 
     bson_safe_destroy(&key);
@@ -184,7 +184,7 @@ n_line_main(UUID main_id, int *n_line)
     error_code = db_find_one(MONGO_MAIN, key, fields, &db_result);
 
     if(!error_code) {
-        error_code = bson_get_value_int32(&db_result, "n_total_line", n_line);
+        error_code = bson_get_value_int32(db_result, "n_total_line", n_line);
     }
 
     bson_safe_destroy(&key);
@@ -221,7 +221,7 @@ n_line_main_by_aid(aidu_t aid, int *n_line)
     error_code = db_find_one(MONGO_MAIN, key, fields, &db_result);
 
     if(!error_code) {
-        error_code = bson_get_value_int32(&db_result, "n_total_line", n_line);
+        error_code = bson_get_value_int32(db_result, "n_total_line", n_line);
     }
 
     bson_safe_destroy(&key);
@@ -253,7 +253,7 @@ read_main_header(UUID main_id, MainHeader *main_header)
     error_code = db_find_one(MONGO_MAIN, key, NULL, &db_result);
 
     if(!error_code) {
-        error_code = _deserialize_main_bson(&db_result, main_header);
+        error_code = _deserialize_main_bson(db_result, main_header);
     }
 
     bson_safe_destroy(&key);
@@ -283,7 +283,7 @@ read_main_header_by_aid(aidu_t aid, MainHeader *main_header)
     error_code = db_find_one(MONGO_MAIN, key, NULL, &db_result);
 
     if(!error_code) {
-        error_code = _deserialize_main_bson(&db_result, main_header);
+        error_code = _deserialize_main_bson(db_result, main_header);
     }
 
     bson_safe_destroy(&key);
@@ -309,9 +309,9 @@ delete_main(UUID main_id, char *updater, char *ip) {
         );
 
     bson_t *val = BCON_NEW(
-        "status_updater", BCON_BINARY(updater, IDLEN),
-        "status", BCON_INT32(LIVE_STATUS_DELETED),
-        "status_update_ip", BCON_BINARY(ip, IPV4LEN)
+        "status_updater", BCON_BINARY((unsigned char *)updater, IDLEN),
+        "status", BCON_INT32((int)LIVE_STATUS_DELETED),
+        "status_update_ip", BCON_BINARY((unsigned char *)ip, IPV4LEN)
         );
 
     error_code = db_update_one(MONGO_MAIN, key, val, true);
@@ -340,9 +340,9 @@ delete_main_by_aid(aidu_t aid, char *updater, char *ip) {
         );
 
     bson_t *val = BCON_NEW(
-        "status_updater", BCON_BINARY(updater, IDLEN),
-        "status", BCON_INT32(LIVE_STATUS_DELETED),
-        "status_update_ip", BCON_BINARY(ip, IPV4LEN)
+        "status_updater", BCON_BINARY((unsigned char *)updater, IDLEN),
+        "status", BCON_INT32((int)LIVE_STATUS_DELETED),
+        "status_update_ip", BCON_BINARY((unsigned char *)ip, IPV4LEN)
         );
 
     error_code = db_update_one(MONGO_MAIN, key, val, true);
