@@ -82,7 +82,7 @@ delete_content(UUID content_id, enum MongoDBId mongo_db_id)
         error_code = db_remove(mongo_db_id, key);
     }
 
-    bson_safe_destroy(key);
+    bson_safe_destroy(&key);
 
     return error_code;
 }
@@ -247,7 +247,7 @@ read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDB
     int tmp_n_block = *n_block;
     bson_t **p_db_results = db_results;
     ContentBlock *p_content_blocks = content_blocks;
-    char *p_buf = buf;
+
     int tmp_len_block;
     int tmp_len = 0;
 
@@ -257,7 +257,6 @@ read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDB
 
             tmp_len_block = p_content_blocks->len_block;
 
-            p_buf += tmp_len_block;
             tmp_len += tmp_len_block;
             p_db_results++;
             p_content_blocks++;
