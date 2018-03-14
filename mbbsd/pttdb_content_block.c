@@ -433,13 +433,19 @@ _cmp_sort_by_block_id(const void *a, const void *b)
 
     Err error_code = S_OK;
 
+    char *str = bson_as_canonical_extended_json(tmp_a, NULL);
+    char *str2 = bson_as_canonical_extended_json(tmp_b, NULL);
+
     error_code = bson_get_value_int32(tmp_a, "block_id", &block_id_a);
+
     if (error_code) block_id_a = -1;
 
     error_code = bson_get_value_int32(tmp_b, "block_id", &block_id_b);
     if (error_code) block_id_b = -1;
 
-    fprintf(stderr, "pttdb_content_block.cmp: a: %d b: %d\n", block_id_a, block_id_b);
+    fprintf(stderr, "pttdb_content_block.cmp: a: (%d/%s) b: (%d/%s)\n", block_id_a, str, block_id_b, str2);
+    free(str);
+    free(str2);
 
     return block_id_a - block_id_b;
 }
