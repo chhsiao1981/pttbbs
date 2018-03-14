@@ -193,8 +193,8 @@ save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
     bson_t *content_block_bson = NULL;
     bson_t *content_block_id_bson = NULL;
 
-    char tmp_ref_id[UUIDLEN + 1] = {}
-    char tmp_the_id[UUIDLEN + 1] = {}
+    char tmp_ref_id[UUIDLEN + 1] = {};
+    char tmp_the_id[UUIDLEN + 1] = {};
     memcpy(tmp_ref_id, content_block->ref_id, UUIDLEN);
     memcpy(tmp_the_id, content_block->the_id, UUIDLEN);
 
