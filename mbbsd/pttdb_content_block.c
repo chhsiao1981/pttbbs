@@ -313,7 +313,7 @@ dynamic_read_content_blocks(UUID content_id, int max_n_block, int block_id, enum
 
     if (!error_code) {
         for (int i = 0; i < tmp_n_block; i++) {
-            if (max_buf_size <= 0) {
+            if (max_buf_size < 0) {
                 error_code = S_ERR_BUFFER_LEN;
                 break;
             }
