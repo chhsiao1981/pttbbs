@@ -476,8 +476,8 @@ TEST(pttdb, split_contents_deal_with_last_line_block)
     EXPECT_STREQ("test1test1", content_block.buf_block);
     EXPECT_EQ(0, content_block.n_line);
     EXPECT_EQ(10, content_block.len_block);
-    EXPECT_EQ(0, strncmp((char *)the_id, (char *)content_block.the_id), UUIDLEN);
-    EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block.ref_id), UUIDLEN);
+    EXPECT_EQ(0, strncmp((char *)the_id, (char *)content_block.the_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block.ref_id, UUIDLEN));
     EXPECT_EQ(0, content_block.block_id);
 
     ContentBlock content_block2 = {};
