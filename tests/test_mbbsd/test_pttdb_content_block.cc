@@ -23,7 +23,7 @@ TEST(pttdb, save_content_block) {
     error = init_content_block_buf_block(&content_block2);
     EXPECT_EQ(S_OK, error);
 
-    error = _save_content_block(&content_block, MONGO_MAIN_CONTENT);
+    error = save_content_block(&content_block, MONGO_MAIN_CONTENT);
     EXPECT_EQ(S_ERR, error);
 
     char buf[] = "test_buf\r\ntest2";
@@ -32,7 +32,7 @@ TEST(pttdb, save_content_block) {
     content_block.len_block = len_buf;
     content_block.n_line = 1;
 
-    error = _save_content_block(&content_block, MONGO_MAIN_CONTENT);
+    error = save_content_block(&content_block, MONGO_MAIN_CONTENT);
     EXPECT_EQ(S_OK, error);
 
     error = read_content_block(content_id, 3, MONGO_MAIN_CONTENT, &content_block2);
@@ -129,8 +129,6 @@ TEST(pttdb, serialize_content_block_bson) {
     init_content_block_buf_block(&content_block2);
 
     // initialize
-    UUID the_id;
-    UUID ref_id;
     gen_uuid(content_block.the_id);
     gen_uuid(content_block.ref_id);
     content_block.block_id = 53;
