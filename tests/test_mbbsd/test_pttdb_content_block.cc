@@ -222,7 +222,7 @@ TEST(pttdb, read_content_blocks)
         db_update_one(MONGO_MAIN_CONTENT, b[i], b[i], true);
     }
 
-    ContentBlock content_blocks[10];
+    ContentBlock content_blocks[10] = {};
     for(int i = 0; i < 10; i++) {
         init_content_block_buf_block(&content_blocks[i]);
     }
