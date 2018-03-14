@@ -43,7 +43,7 @@ TEST(pttdb, save_content_block) {
     EXPECT_EQ(len_buf, content_block2.len_block);
     EXPECT_EQ(1, content_block2.n_line);
 
-    destroy_content_block(&content_block);
+    dissociate_content_block(&content_block);
     destroy_content_block(&content_block2);
 }
 
