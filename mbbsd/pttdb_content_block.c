@@ -290,7 +290,7 @@ read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDB
  * @param n_blocks [description]
  */
 Err
-dynamic_read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len);
+dynamic_read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len)
 {
     Err error_code = S_OK;
 
