@@ -510,7 +510,7 @@ _split_contents_core_core(char *line, int bytes_in_line, UUID ref_id, UUID conte
 
     // check for max-lines in block-buf
     // check for max-buf in block-buf
-    if (content_block->n_line  > MAX_BUF_LINES ||
+    if (content_block->n_line >= MAX_BUF_LINES ||
             content_block->len_block + bytes_in_line > MAX_BUF_BLOCK) {
 
         error_code = save_content_block(content_block, mongo_db_id);
