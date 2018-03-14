@@ -489,6 +489,43 @@ TEST(pttdb, split_contents_core)
     destroy_content_block(&content_block);
 }
 
+TEST(pttdb, split_contents_core2)
+{
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    ContentBlock content_block = {};
+    char buf[MAX_BUF_SIZE * 2] = {};
+    char *p_buf = buf;
+    for (int i = 0; i < 100; i++) {
+        sprintf(p_buf, "test456789test456789test456789test456789test456789test456789test456789test456789test456789test456789\r\n");
+        p_buf += 102;
+    }
+    int bytes = strlen(buf);
+
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id);
+    gen_uuid(content_id);
+
+    int n_block = 0;
+    init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
+    n_block++;
+
+    int n_line = 0;
+    char line[MAX_BUF_SIZE];
+    int bytes_in_line = 0;
+    Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, &bytes_in_line, &content_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(100, n_line);
+    EXPECT_EQ(2, n_block);
+    EXPECT_EQ(0, bytes_in_line);
+    EXPECT_EQ(20, content_block.n_line);
+    EXPECT_STREQ(buf + 8160, content_block.buf_block);
+    EXPECT_EQ(2040, content_block.len_block);
+
+    destroy_content_block(&content_block);
+}
+
 TEST(pttdb, split_contents_core_one_line)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
