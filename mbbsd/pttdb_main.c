@@ -431,8 +431,8 @@ _serialize_main_bson(MainHeader *main_header, bson_t **main_bson)
         "update_content_id", BCON_BINARY(main_header->update_content_id, UUIDLEN),
         "aid", BCON_INT64(main_header->aid),
         "status", BCON_INT32(main_header->status),
-        "status_updater", BCON_BINARY((unsigned char *)main_header->status_updater, UUIDLEN),
-        "status_update_ip", BCON_BINARY((unsigned char *)main_header->status_update_ip, UUIDLEN),
+        "status_updater", BCON_BINARY((unsigned char *)main_header->status_updater, IDLEN),
+        "status_update_ip", BCON_BINARY((unsigned char *)main_header->status_update_ip, IPV4LEN),
         "title", BCON_BINARY((unsigned char *)main_header->title, TTLEN),
         "poster", BCON_BINARY((unsigned char *)main_header->poster, IDLEN),
         "ip", BCON_BINARY((unsigned char *)main_header->ip, IPV4LEN),
@@ -467,7 +467,7 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
     char *str = bson_as_canonical_extended_json(main_bson, NULL);
     fprintf(stderr, "pttdb_main._deserialze_main_bson: start: main_bson: %s\n", str);
     bson_free(str);
-    
+
     Err error_code;
     error_code = bson_get_value_int32(main_bson, "version", (int *)&main_header->version);
     if (error_code) return error_code;
@@ -508,11 +508,17 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
     error_code = bson_get_value_bin(main_bson, "status_update_ip", IPV4LEN, main_header->status_update_ip, &len);
     if (error_code) return error_code;
 
+    fprintf(stderr, "pttdb_main._deserialze_main_bson: after status_update_ip\n");
+
     error_code = bson_get_value_bin(main_bson, "title", TTLEN, main_header->title, &len);
     if (error_code) return error_code;
 
+    fprintf(stderr, "pttdb_main._deserialze_main_bson: after title\n");
+
     error_code = bson_get_value_bin(main_bson, "poster", IDLEN, main_header->poster, &len);
     if (error_code) return error_code;
+
+    fprintf(stderr, "pttdb_main._deserialze_main_bson: after poster\n");
 
     error_code = bson_get_value_bin(main_bson, "ip", IPV4LEN, main_header->ip, &len);
     if (error_code) return error_code;
