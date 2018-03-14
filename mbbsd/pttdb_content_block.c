@@ -172,6 +172,57 @@ dissociate_content_block(ContentBlock *content_block)
     return S_OK;
 }
 
+Err
+save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
+{
+    Err error_code = S_OK;
+    if(content_block->buf_block == NULL) return S_ERR;
+
+    bson_t *content_block_bson = NULL;
+    bson_t *content_block_id_bson = NULL;
+
+    error_code = _serialize_content_block_bson(content_block, &content_block_bson);
+
+    if (!error_code) {
+        error_code = _serialize_content_uuid_bson(content_block->the_id, content_block->block_id, &content_block_id_bson);
+    }
+
+    if (!error_code) {
+        error_code = db_update_one(mongo_db_id, content_block_id_bson, content_block_bson, true);
+    }
+
+    bson_safe_destroy(&content_block_bson);
+    bson_safe_destroy(&content_block_id_bson);
+
+    return error_code;
+}
+
+Err
+read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_block)
+{
+    Err error_code = S_OK;
+
+    if(content_block->buf_block == NULL) return S_ERR;
+
+    bson_t *key = BCON_NEW(
+        "the_id", BCON_BINARY(content_id, UUIDLEN),
+        "block_id", BCON_INT32(block_id)
+        );
+
+    bson_t *db_result = NULL;
+
+    error_code = db_find_one(mongo_db_id, key, NULL, &db_result);
+
+    if(!error_code) {
+        error_code = _deserialize_content_block_bson(db_result, content_block);
+    }
+
+    bson_safe_destroy(&db_result);
+    bson_safe_destroy(&key);
+
+    return error_code;
+}
+
 /**
  * @brief core for split contents.
  * @details core for split contents. No need to deal with last line block if used by split_contents_from_fd
@@ -238,57 +289,6 @@ _split_contents_core_core(char *line, int bytes_in_line, UUID ref_id, UUID conte
     }
 
     return S_OK;
-}
-
-Err
-save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
-{
-    Err error_code = S_OK;
-    if(content_block->buf_block == NULL) return S_ERR;
-
-    bson_t *content_block_bson = NULL;
-    bson_t *content_block_id_bson = NULL;
-
-    error_code = _serialize_content_block_bson(content_block, &content_block_bson);
-
-    if (!error_code) {
-        error_code = _serialize_content_uuid_bson(content_block->the_id, content_block->block_id, &content_block_id_bson);
-    }
-
-    if (!error_code) {
-        error_code = db_update_one(mongo_db_id, content_block_id_bson, content_block_bson, true);
-    }
-
-    bson_safe_destroy(&content_block_bson);
-    bson_safe_destroy(&content_block_id_bson);
-
-    return error_code;
-}
-
-Err
-read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_block)
-{
-    Err error_code = S_OK;
-
-    if(content_block->buf_block == NULL) return S_ERR;
-
-    bson_t *key = BCON_NEW(
-        "the_id", BCON_BINARY(content_id, UUIDLEN),
-        "block_id", BCON_INT32(block_id)
-        );
-
-    bson_t *db_result = NULL;
-
-    error_code = db_find_one(mongo_db_id, key, NULL, &db_result);
-
-    if(!error_code) {
-        error_code = _deserialize_content_block_bson(db_result, content_block);
-    }
-
-    bson_safe_destroy(&db_result);
-    bson_safe_destroy(&key);
-
-    return error_code;
 }
 
 Err
