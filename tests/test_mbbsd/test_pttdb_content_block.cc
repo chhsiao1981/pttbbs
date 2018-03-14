@@ -227,6 +227,28 @@ TEST(pttdb, ensure_block_ids)
 
     error = _ensure_block_ids(b, 1, 10);
     EXPECT_EQ(S_ERR, error);
+
+    for(int i = 0 i < 10; i++) {
+        bson_safe_destroy(&b[i]);
+    }
+}
+
+TEST(pttdb, ensure_block_ids2)
+{
+    bson_t *b[10];
+    for(int i = 0; i < 10; i++) {
+        b[i] = BCON_NEW("block_id", BCON_INT32(i + 5));
+    }
+
+    Err error = _ensure_block_ids(b, 5, 10);
+    EXPECT_EQ(S_OK, error);
+
+    error = _ensure_block_ids(b, 1, 10);
+    EXPECT_EQ(S_ERR, error);
+
+    for(int i = 0 i < 10; i++) {
+        bson_safe_destroy(&b[i]);
+    }
 }
 
 /**********
