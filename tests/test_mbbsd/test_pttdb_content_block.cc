@@ -234,7 +234,7 @@ TEST(pttdb, read_content_blocks)
     EXPECT_EQ(10, n_block);
     EXPECT_EQ(50, len);
     for(int i = 0; i < 10; i++) {
-        EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_blocks[i].content_id, UUIDLEN));
+        EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_blocks[i].the_id, UUIDLEN));
         EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_blocks[i].ref_id, UUIDLEN));
         EXPECT_EQ(5, content_blocks[i].len_block);
         EXPECT_EQ(0, content_blocks[i].n_line);
@@ -244,7 +244,7 @@ TEST(pttdb, read_content_blocks)
 
 
     for(int i = 0; i < 10; i++) {
-        destroy_content_block(content_blocks[i]);
+        destroy_content_block(&content_blocks[i]);
         bson_safe_destroy(&b[i]);
     }        
 }
