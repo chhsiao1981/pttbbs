@@ -446,9 +446,9 @@ Err
 _ensure_block_ids(bson_t **db_results, int start_block_id, int n_block)
 {
     Err error_code = S_OK;
-    //bson_t **p_db_results = NULL;
     int db_block_id;
-    for (int i = 0, bson_t **p_db_results = db_results; i < n_block; i++, p_db_results++) {
+    bson_t **p_db_results = db_results;
+    for (int i = 0; i < n_block; i++, p_db_results++) {
         error_code = bson_get_value_int32(*p_db_results, "block_id", &db_block_id);
 
         if (error_code) db_block_id = -1;
