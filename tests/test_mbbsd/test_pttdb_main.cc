@@ -36,7 +36,7 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
     close(fd);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
-    fprintf(stderr, "test_pttdb.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
+    fprintf(stderr, "test_pttdb_main.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
 
     // read main-header
     MainHeader main_header = {};
@@ -66,7 +66,7 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
     EXPECT_EQ(2, main_header.n_total_block);
     EXPECT_EQ(9, main_header.n_total_line);
 
-    fprintf(stderr, "test_pttdb.create_main_from_fd: to read content_block\n");
+    fprintf(stderr, "test_pttdb_main.create_main_from_fd: to read content_block\n");
 
     // read content-block
     ContentBlock content_block0;
@@ -85,6 +85,8 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
 
     error_code = read_content_block(main_header.content_id, 1, MONGO_MAIN_CONTENT, &content_block1);
     EXPECT_EQ(S_OK, error_code);
+
+    fprintf(stderr, "test_pttdb_main.create_main_from_fd: to do comparison\n");
 
     EXPECT_EQ(len, content_block0.len_block + content_block1.len_block);
     EXPECT_EQ(main_header.n_total_line, content_block0.n_line + content_block1.n_line);
