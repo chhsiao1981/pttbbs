@@ -217,7 +217,7 @@ TEST(pttdb, read_content_blocks_get_db_results)
             "ref_id", BCON_BINARY(ref_id, UUIDLEN),
             "len_block", BCON_INT32(5),
             "n_line", BCON_INT32(0),
-            "buf_block", BCON_BINARY("test1", 5)
+            "buf_block", BCON_BINARY((unsigned char *)"test1", 5)
             );
         db_update_one(MONGO_MAIN_CONTENT, b[i], b[i], true);
     }
