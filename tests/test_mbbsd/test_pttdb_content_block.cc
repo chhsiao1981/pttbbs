@@ -278,7 +278,7 @@ TEST(pttdb, dynamic_read_content_blocks2)
     int n_block;
     char buf[41] = {};
     Err error = dynamic_read_content_blocks(content_id, 10, 0, MONGO_MAIN_CONTENT, buf, 40, content_blocks, &n_block, &len);
-    EXPECT_EQ(S_ERR, error);
+    EXPECT_EQ(S_ERR_BUFFER_LEN, error);
     EXPECT_EQ(8, n_block);
     EXPECT_EQ(40, len);
     for (int i = 0; i < 8; i++) {

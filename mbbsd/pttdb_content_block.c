@@ -332,7 +332,10 @@ dynamic_read_content_blocks(UUID content_id, int max_n_block, int block_id, enum
             p_db_results++;
             p_content_blocks++;
 
-            if (error_code) break;
+            if (error_code) {
+                *n_block = i;
+                break;
+            }
         }
     }
 
