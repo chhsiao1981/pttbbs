@@ -319,12 +319,12 @@ dynamic_read_content_blocks(UUID content_id, int max_n_block, int block_id, enum
             }
 
             p_content_blocks->buf_block = p_buf;
-            p_content_blocks->max_buf_size = max_buf_size;
+            p_content_blocks->max_buf_len = max_buf_size;
 
             error_code = _deserialize_content_block_bson(*p_db_results, p_content_blocks);
 
             tmp_len_block = p_content_blocks->len_block;
-            p_content_blocks->max_buf_size = tmp_len_block;
+            p_content_blocks->max_buf_len = tmp_len_block;
 
             max_buf_size -= tmp_len_block;
             p_buf += tmp_len_block;
