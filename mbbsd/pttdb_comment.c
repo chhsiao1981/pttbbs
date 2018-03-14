@@ -204,7 +204,7 @@ _deserialize_comment_bson(bson_t *comment_bson, Comment *comment)
     error_code = bson_get_value_bin(comment_bson, "ip", IPV4LEN, comment->ip, &len);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_int64(comment_bson, "create_milli_timestamp", &comment->create_milli_timestamp);
+    error_code = bson_get_value_int64(comment_bson, "create_milli_timestamp", (long *)&comment->create_milli_timestamp);
     if (error_code) return error_code;
 
     error_code = bson_get_value_bin(comment_bson, "updater", IDLEN, comment->updater, &len);
@@ -213,7 +213,7 @@ _deserialize_comment_bson(bson_t *comment_bson, Comment *comment)
     error_code = bson_get_value_bin(comment_bson, "update_ip", IPV4LEN, comment->update_ip, &len);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_int64(comment_bson, "update_milli_timestamp", &comment->update_milli_timestamp);
+    error_code = bson_get_value_int64(comment_bson, "update_milli_timestamp", (long *)&comment->update_milli_timestamp);
     if (error_code) return error_code;
 
     error_code = bson_get_value_int32(comment_bson, "len", &comment->len);
