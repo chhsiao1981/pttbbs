@@ -260,12 +260,6 @@ TEST(pttdb, sort_by_block_id)
     Err error = _sort_by_block_id(b, 10);
     EXPECT_EQ(S_OK, error);
 
-    int temp_i;
-    for(int i = 0; i < 10; i++) {
-        bson_get_value_int32(b[i], "block_id", &temp_i);
-        fprintf(stderr, "sort_by_block_id: after sort: i: %d value: %d\n", i, temp_i);
-    }
-
     error = _ensure_block_ids(b, 0, 10);
     EXPECT_EQ(S_OK, error);
 
