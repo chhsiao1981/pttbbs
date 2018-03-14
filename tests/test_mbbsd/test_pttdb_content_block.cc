@@ -23,9 +23,6 @@ TEST(pttdb, save_content_block) {
     error = init_content_block_buf_block(&content_block2);
     EXPECT_EQ(S_OK, error);
 
-    error = save_content_block(&content_block, MONGO_MAIN_CONTENT);
-    EXPECT_EQ(S_ERR, error);
-
     char buf[] = "test_buf\r\ntest2";
     int len_buf = strlen(buf);
     associate_content_block(&content_block, buf, len_buf);
