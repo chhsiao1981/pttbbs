@@ -164,6 +164,80 @@ TEST(util_db, db_remove) {
     bson_safe_destroy(&result);
 }
 
+TEST(util_db, db_aggregate) {
+    Err error = S_OK;
+
+    _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
+
+    bson_t *key = BCON_NEW("main_id", BCON_INT32(4));
+    bson_t *val = BCON_NEW("len", BCON_INT32(5));
+
+    error = db_update_one(MONGO_TEST, key, val, true);
+    EXPECT_EQ(S_OK, error);
+
+    bson_t *key2 = BCON_NEW("main_id", BCON_INT32(4));
+    bson_t *val2 = BCON_NEW("len", BCON_INT32(10));
+
+    error = db_update_one(MONGO_TEST, key, val, true);
+    EXPECT_EQ(S_OK, error);
+
+    bson_t *pipeline = BCON_NEW(
+        "pipeline", "[",
+            "{",
+                "$match",
+                "{",
+                    "main_id", BCON_BINARY(comment->main_id, UUIDLEN),
+                "}",
+            "}",
+            "{",
+                "$group",
+                "{",
+                    "_id", NULL,
+                    "count", "{",
+                        "$sum", BCON_INT32(1),
+                    "}",
+                    "len", "{",
+                        "$sum", "$len",
+                    "}",
+                "}",
+            "}",
+            "{",
+                "$limit",
+                BCON_INT32(1),
+            "}",
+        "]"
+        );    
+
+    bson_t *result = NULL;
+
+    int n_result;
+    error = db_aggregate(MONGO_TEST, pipeline, 1, &result, &n_result);
+    EXPECT_EQ(S_OK, error);
+
+    EXPECT_EQ(1, n_result);
+
+    int count = 0;
+    int len = 0;
+
+    status = bson_get_value_int32(result, "count", &count);
+    EXPECT_EQ(true, status);
+    EXPECT_EQ(2, count);
+
+    status = bson_get_value_int32(result, "len", &len);
+    EXPECT_EQ(true, status);
+    EXPECT_EQ(15, len);
+
+    bson_safe_destroy(&pipeline);
+
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&val);
+
+    bson_safe_destroy(&key2);
+    bson_safe_destroy(&val2);
+
+    bson_safe_destroy(&result);
+}
+
 TEST(util_db, bson_safe_destroy) {
     bson_t *b = NULL;
     Err error = bson_safe_destroy(&b);

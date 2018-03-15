@@ -239,13 +239,16 @@ Err delete_comment(UUID comment_id, char *updater, char *ip);
 
 Err get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len);
 
+/*
 Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, int *n_read_comments, Comment *comments);
 Err read_comments_by_main_aid(aidu_t aid, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, int *n_read_comments, Comment *comments);
+*/
 
 /**********
  * CommentReply
  **********/
 
+/*
 Err create_comment_reply(UUID main_id, UUID comment_id, char *poster, unsigned char *ip, int len, char *content, UUID comment_reply_id);
 
 Err read_comment_reply_by_comment_id(UUID comment_id, CommentReplyHeader *comment_reply_header);
@@ -260,6 +263,7 @@ Err get_comment_reply_info_by_comment_reply(UUID comment_reply_id, int *n_total_
 Err update_comment_reply(UUID comment_reply_id, char *updater, unsigned char *ip, int len, char *content);
 
 Err delete_comment_reply(UUID comment_reply_id, char *updater, unsigned char *ip);
+*/
 
 
 #ifdef __cplusplus
