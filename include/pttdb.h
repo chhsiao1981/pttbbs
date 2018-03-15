@@ -130,7 +130,7 @@ typedef struct Comment {
     time64_t update_milli_timestamp;                 // last update-time
 
     int len;                                         // size
-    char buf[MAX_BUF_COMMENT + 1];                   // buf
+    char *buf;                                       // buf
 } Comment;
 
 /**********
@@ -225,7 +225,9 @@ Err dissociate_content_block(ContentBlock *content_block);
 Err save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id);
 Err read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_block);
 Err read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_blocks, int *n_block, int *len);
+Err read_content_blocks_by_main(UUID main_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_blocks, int *n_block, int *len);
 Err dynamic_read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len);
+Err dynamic_read_content_blocks_by_main(UUID main_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len);
 
 /**********
  * Comments
@@ -239,6 +241,12 @@ Err delete_comment(UUID comment_id, char *updater, char *ip);
 
 Err get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len);
 Err get_comment_count_by_main(UUID main_id, int *count);
+
+Err init_comment_buf(Comment *comment);
+Err destroy_comment(Comment *comment);
+
+Err associate_comment(Comment *comment, char *buf, int max_buf_len);
+Err dissociate_comment(Comment *comment);
 
 /*
 Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, int *n_read_comments, Comment *comments);

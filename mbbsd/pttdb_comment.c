@@ -29,6 +29,8 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enu
     time64_t create_milli_timestamp;
 
     Comment comment = {};
+    associate_comment(&comment, content, len);
+    comment->len = len;
 
     error_code = get_milli_timestamp(&create_milli_timestamp);
     if (error_code) return error_code;
@@ -52,8 +54,6 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enu
     strcpy(comment.updater, poster);
     strcpy(comment.update_ip, ip);
     comment.update_milli_timestamp = create_milli_timestamp;
-    comment.len = len;
-    memcpy(comment.buf, content, len);
 
     // db-comment
     bson_t *comment_id_bson = NULL;
@@ -70,6 +70,7 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enu
 
     bson_safe_destroy(&comment_bson);
     bson_safe_destroy(&comment_id_bson);
+    dissociate_comment(&comment);
 
     return error_code;
 }
@@ -130,41 +131,37 @@ get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len)
 {
     Err error_code = S_OK;
     bson_t *pipeline = BCON_NEW(
-        "pipeline", "[",
-            "{",
-                "$match",
-                "{",
-                    "main_id", BCON_BINARY(main_id, UUIDLEN),
-                "}",
-            "}",
-            "{",
-                "$group",
-                "{",
-                    "_id", BCON_NULL,
-                    "count", "{",
-                        "$sum", BCON_INT32(1),
-                    "}",
-                    "len", "{",
-                        "$sum", "$len",
-                    "}",
-                "}",
-            "}",
-            "{",
-                "$limit",
-                BCON_INT32(1),
-            "}",
-        "]"
-        );
-    if(pipeline == NULL) error_code = S_ERR;
+                           "pipeline", "[",
+                               "{",
+                                   "$match",
+                                   "{",
+                                       "main_id", BCON_BINARY(main_id, UUIDLEN),
+                                   "}",
+                               "}",
+                               "{",
+                                   "$group",
+                                   "{",
+                                       "_id", BCON_NULL,
+                                       "count", "{",
+                                           "$sum", BCON_INT32(1),
+                                       "}",
+                                       "len", "{",
+                                           "$sum", "$len",
+                                       "}",
+                                   "}",
+                               "}",
+                           "]"
+                       );
+    if (pipeline == NULL) error_code = S_ERR;
 
     bson_t *result = NULL;
 
     int n_result = 0;
-    if(!error_code) {
+    if (!error_code) {
         error_code = db_aggregate(MONGO_COMMENT, pipeline, 1, &result, &n_result);
     }
 
-    if(!error_code) {
+    if (!error_code) {
         error_code = _get_comment_info_by_main_deal_with_result(result, n_result, n_total_comments, total_len);
     }
 
@@ -179,14 +176,66 @@ get_comment_count_by_main(UUID main_id, int *count)
 {
     Err error_code = S_OK;
     bson_t *key = BCON_NEW(
-        "main_id", BCON_BINARY(main_id, UUIDLEN)
-        );
+                      "main_id", BCON_BINARY(main_id, UUIDLEN)
+                  );
 
     error_code = db_count(MONGO_COMMENT, key, count);
 
     bson_safe_destroy(&key);
 
     return error_code;
+}
+
+Err
+init_comment_buf(Comment *comment)
+{
+    if (comment->buf != NULL) return S_OK;
+
+    comment->buf = malloc(MAX_BUF_COMMENT);
+    if (comment->buf == NULL) return S_ERR;
+
+    comment->max_buf_len = MAX_BUF_COMMENT;
+    bzero(comment->buf, MAX_BUF_COMMENT);
+    comment->len = 0;
+
+    return S_OK;
+}
+
+Err
+destroy_comment(Comment *comment)
+{
+    if (comment->buf == NULL) return S_OK;
+
+    free(comment->buf);
+    comment->buf = NULL;
+    comment->max_buf_len = 0;
+    comment->len = 0;
+
+    return S_OK;
+}
+
+Err
+associate_comment(Comment *comment, char *buf, int max_buf_len)
+{
+    if (comment->buf != NULL) return S_ERR;
+
+    comment->buf = buf;
+    comment->max_buf_len = max_buf_len;
+    comment->len = 0;
+
+    return S_OK;
+}
+
+Err
+dissociate_comment(Comment *comment)
+{
+    if (comment->buf == NULL) return S_OK;
+
+    comment->buf = NULL;
+    comment->max_buf_len = 0;
+    comment->len = 0;
+
+    return S_OK;
 }
 
 /*
@@ -300,7 +349,7 @@ _deserialize_comment_bson(bson_t *comment_bson, Comment *comment)
 Err
 _get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_total_comments, int *total_len)
 {
-    if(!n_result) {
+    if (!n_result) {
         *n_total_comments = 0;
         *total_len = 0;
         return S_OK;
@@ -310,7 +359,7 @@ _get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_
 
     error_code = bson_get_value_int32(result, "count", n_total_comments);
 
-    if(!error_code) {
+    if (!error_code) {
         error_code = bson_get_value_int32(result, "len", total_len);
     }
 

@@ -50,6 +50,7 @@ Err _deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *co
 Err _serialize_comment_bson(Comment *comment, bson_t **comment_bson);
 Err _deserialize_comment_bson(bson_t *comment_bson, Comment *comment);
 Err _get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_total_comments, int *total_len);
+Err _dynamic_read_content_blocks_core(bson_t *key, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len);
 
 /**********
  * CommentReply

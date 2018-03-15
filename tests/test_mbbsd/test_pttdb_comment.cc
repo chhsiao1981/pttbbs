@@ -23,6 +23,7 @@ TEST(pttdb, create_comment) {
     EXPECT_EQ(S_OK, error_code);
 
     Comment comment = {};
+    init_comment_buf(&comment);
 
     memcpy(tmp_comment_id, comment_id, UUIDLEN);
 
@@ -37,7 +38,7 @@ TEST(pttdb, create_comment) {
     EXPECT_STREQ(poster, comment.status_updater);
     EXPECT_STREQ(ip, comment.status_update_ip);
 
-    EXPECT_EQ(comment_type, comment.comment_type);    
+    EXPECT_EQ(comment_type, comment.comment_type);
     EXPECT_EQ(KARMA_GOOD, comment.karma);
 
     EXPECT_STREQ(poster, comment.poster);
@@ -50,6 +51,8 @@ TEST(pttdb, create_comment) {
 
     EXPECT_EQ(len, comment.len);
     EXPECT_STREQ(content, comment.buf);
+
+    destroy_comment(&comment);
 }
 
 TEST(pttdb, delete_comment) {
@@ -84,8 +87,8 @@ TEST(pttdb, delete_comment) {
     strcpy(fields[2], "status_update_ip");
 
     bson_t *query = BCON_NEW(
-        "the_id", BCON_BINARY(comment_id, UUIDLEN)
-        );
+                        "the_id", BCON_BINARY(comment_id, UUIDLEN)
+                    );
     bson_t *result = NULL;
 
     error = db_find_one_with_fields(MONGO_COMMENT, query, fields, n_fields, &result);
@@ -114,6 +117,9 @@ TEST(pttdb, delete_comment) {
 TEST(pttdb_comment, serialize_comment_bson) {
     Comment comment = {};
     Comment comment2 = {};
+
+    init_comment_buf(&comment);
+    init_comment_buf(&comment2);
 
     comment.version = 2;
     gen_uuid(comment.the_id);
@@ -166,6 +172,9 @@ TEST(pttdb_comment, serialize_comment_bson) {
     EXPECT_EQ(comment.update_milli_timestamp, comment2.update_milli_timestamp);
     EXPECT_EQ(comment.len, comment2.len);
     EXPECT_STREQ(comment.buf, comment2.buf);
+
+    destroy_comment(&comment);
+    destroy_comment(&comment2);
 }
 
 TEST(pttdb_comment, get_comment_info_by_main) {
