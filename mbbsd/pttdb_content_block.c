@@ -266,12 +266,12 @@ read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDB
 }
 
 Err
-read_content_blocks_by_main(UUID main_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_blocks, int *n_block, int *len)
+read_content_blocks_by_ref(UUID ref_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_blocks, int *n_block, int *len)
 {
     Err error_code = S_OK;
 
     bson_t *key = BCON_NEW(
-                      "main_id", BCON_BINARY(main_id, UUIDLEN)
+                      "ref_id", BCON_BINARY(ref_id, UUIDLEN)
                   );
     if (key == NULL) error_code = S_ERR;
 
@@ -302,20 +302,19 @@ _read_content_blocks_core(bson_t *key, int max_n_block, int block_id, enum Mongo
     bson_t **p_db_results = db_results;
     ContentBlock *p_content_blocks = content_blocks;
 
-    int tmp_len_block;
     int tmp_len = 0;
-
     if (!error_code) {
         for (int i = 0; i < tmp_n_block; i++) {
             error_code = _deserialize_content_block_bson(*p_db_results, p_content_blocks);
 
-            tmp_len_block = p_content_blocks->len_block;
-
-            tmp_len += tmp_len_block;
+            tmp_len += p_content_blocks->len_block;
             p_db_results++;
             p_content_blocks++;
 
-            if (error_code) break;
+            if (error_code) {
+                *n_block = i;
+                break;
+            }
         }
     }
 
@@ -363,12 +362,12 @@ dynamic_read_content_blocks(UUID content_id, int max_n_block, int block_id, enum
 }
 
 Err
-dynamic_read_content_blocks_by_main(UUID main_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len)
+dynamic_read_content_blocks_by_ref(UUID ref_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len)
 {
     Err error_code = S_OK;
 
     bson_t *key = BCON_NEW(
-                      "main_id", BCON_BINARY(main_id, UUIDLEN)
+                      "ref_id", BCON_BINARY(ref_id, UUIDLEN)
                   );
     if(key == NULL) error_code = S_ERR;
 
@@ -398,7 +397,7 @@ _dynamic_read_content_blocks_core(bson_t *key, int max_n_block, int block_id, en
     bson_t **p_db_results = db_results;
     ContentBlock *p_content_blocks = content_blocks;
     char *p_buf = buf;
-    int tmp_len_block;
+    int tmp_len_block = 0;
     int tmp_len = 0;
 
     if (!error_code) {
@@ -415,10 +414,10 @@ _dynamic_read_content_blocks_core(bson_t *key, int max_n_block, int block_id, en
 
             tmp_len_block = p_content_blocks->len_block;
             p_content_blocks->max_buf_len = tmp_len_block;
-
             max_buf_size -= tmp_len_block;
             p_buf += tmp_len_block;
             tmp_len += tmp_len_block;
+
             p_db_results++;
             p_content_blocks++;
 

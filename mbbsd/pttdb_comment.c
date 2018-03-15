@@ -238,13 +238,138 @@ dissociate_comment(Comment *comment)
     return S_OK;
 }
 
-/*
 Err
-read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, int *n_read_comments, Comment *comments)
+read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, Comment *comments, int *n_read_comments, int *len)
 {
 
+    Err error_code = S_OK;
+
+    // init db-results
+    bson_t **db_results = malloc(sizeof(bson_t *) * max_n_comments);
+    if (db_results == NULL) return S_ERR_INIT;
+    bzero(db_results, sizeof(bson_t *) * max_n_comments);
+
+    char op[4];
+    is_ascending ? strcpy(op, "$ge") : strcpy(op, "$le");
+
+    bson_t *key = BCON_NEW(
+        "main_id", BCON_BINARY(main_id, UUIDLEN),
+        "create_milli_timestamp", "{"
+            op, BCON_INT64(create_milli_timestamp),
+        "}"
+        );
+
+    error_code = _read_comments_get_db_results(db_results, key, max_n_comments, is_ascending, mongo_db_id, n_read_comments);
+
+    int tmp_n_read_comments = *n_read_comments;
+    bson_t **p_db_results = db_results;
+    Comment *p_comments = comments;
+
+    int tmp_len = 0;
+    if(!error_code) {
+        for (int i = 0; i < tmp_n_read_comments; i++) {
+            error_code = _deserialize_comment_bson(*p_db_results, p_comments);
+
+            tmp_len += p_comments->len;
+            p_db_results++;
+            p_comments++;
+
+            if (error_code) {
+                *n_read_comments = i;
+                break;
+            }
+        }
+    }
+
+    *len = tmp_len;
+
+    // free
+    p_db_results = db_results;
+    for (int i = 0; i < tmp_n_read_comments; i++) {
+        bson_safe_destroy(p_db_results);
+        p_db_results++;
+    }
+    free(db_results);
+
+    bson_safe_destroy(&key);
+
+    return error_code;
 }
-*/
+
+Err
+dynamic_read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, Comment *comments, int *n_read_comments, int *len)
+{
+
+    Err error_code = S_OK;
+
+    // init db-results
+    bson_t **db_results = malloc(sizeof(bson_t *) * max_n_comments);
+    if (db_results == NULL) return S_ERR_INIT;
+    bzero(db_results, sizeof(bson_t *) * max_n_comments);
+
+    char op[4];
+    is_ascending ? strcpy(op, "$ge") : strcpy(op, "$le");
+
+    bson_t *key = BCON_NEW(
+        "main_id", BCON_BINARY(main_id, UUIDLEN)
+        "create_milli_timestamp", "{"
+            op, BCON_INT64(create_milli_timestamp),
+        "}"
+        );
+
+    error_code = _read_comments_get_db_results(db_results, key, max_n_comments, is_ascending, mongo_db_id, n_read_comments);
+
+    int tmp_n_read_comments = *n_read_comments;
+    bson_t **p_db_results = db_results;
+    Comment *p_comments = comments;
+    char *p_buf = buf;
+    int tmp_len_comment = 0;
+    int tmp_len = 0;
+
+    int tmp_len = 0;
+    if(!error_code) {
+        for (int i = 0; i < tmp_n_read_comments; i++) {
+            if (max_buf_size < 0) {
+                error_code = S_ERR_BUFFER_LEN;
+                break;
+            }
+
+            p_comments->buf = p_buf;
+            p_comments->max_buf_len = max_buf_size;
+
+            error_code = _deserialize_comment_bson(*p_db_results, p_comments);
+
+            tmp_len_comment = p_comments->len;
+            p_comments->max_buf_len = tmp_len_comment;
+            max_buf_size -= tmp_len_comment;
+            p_buf += tmp_len_comment;
+            tmp_len += tmp_len_comment;
+
+            p_db_results++;
+            p_comments++;
+
+            if (error_code) {
+                *n_read_comments = i;
+                break;
+            }
+        }
+    }
+
+    *len = tmp_len;
+
+    // free
+    p_db_results = db_results;
+    for (int i = 0; i < tmp_n_read_comments; i++) {
+        bson_safe_destroy(p_db_results);
+        p_db_results++;
+    }
+    free(db_results);
+
+    bson_safe_destroy(&key);
+
+    return error_code;
+}
+
 
 /**
  * @brief [brief description]
