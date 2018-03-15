@@ -404,6 +404,41 @@ TEST(pttdb_comment, sort_db_results_order2) {
     free(db_results);
 }
 
+TEST(pttdb_comment, read_comments_by_main)
+{
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+
+    Err error = S_OK;
+    UUID main_id = {};
+    UUID comment_id = {};
+    gen_uuid(main_id);
+
+    char poster[IDLEN + 1] = {}
+    int n_comments = 100;
+    for(int i = 0; i < n_comments; i++) {
+        sprintf(poster, "poster%03ld", i);
+        error = create_comment(main_id, poster, "10.1.1.4", 10, "test1test1", COMMENT_TYPE_GOOD, comment_id);
+        EXPECT_EQ(S_OK, error);
+    }
+
+    int n_comments;
+    int len;
+    Comment comments[100] = {};
+    for(int i = 0; i < 100; i++) {
+        init_comment_buf(&comments[i]);
+    }
+    error = read_comments_by_main(main_id, 0, true, 10, MONGO_COMMENT, comments, &n_comments, &len);
+    EXPECT_EQ(S_OK, error);
+    for(int i = 0; i < 10; i++) {
+        sprintf(poster, "poster%03ld", i);
+        EXPECT_EQ(poster, comments[i].poster);
+    }
+
+    for(int i = 0; i < 100; i++) {
+        destroy_comment(&comments[i]);
+    }
+}
+
 /**********
  * MAIN
  */
