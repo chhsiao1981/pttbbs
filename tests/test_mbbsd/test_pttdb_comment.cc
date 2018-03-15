@@ -315,7 +315,7 @@ TEST(pttdb_comment, ensure_db_results_order4) {
     free(db_results);
 }
 
-TEST(pttdb_comment, ensure_db_results_order4) {
+TEST(pttdb_comment, ensure_db_results_order5) {
     int n_results = 100;
     bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
 
