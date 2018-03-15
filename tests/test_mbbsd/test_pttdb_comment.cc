@@ -478,6 +478,42 @@ TEST(pttdb_comment, read_comments_by_main2)
     }
 }
 
+TEST(pttdb_comment, read_comments_by_main)
+{
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+
+    Err error = S_OK;
+    UUID main_id = {};
+    UUID comment_id = {};
+    gen_uuid(main_id);
+
+    char poster[IDLEN + 1] = {};
+    int n_comments = 100;
+    for(int i = 0; i < n_comments; i++) {
+        error = create_comment(main_id, (char *)"poster", (char *)"10.1.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
+        usleep(1000);
+        EXPECT_EQ(S_OK, error);
+    }
+
+    int len;
+    Comment comments[100] = {};
+    for(int i = 0; i < 100; i++) {
+        init_comment_buf(&comments[i]);
+    }
+    error = read_comments_by_main(main_id, 0, (char *)"", true, 10, MONGO_COMMENT, comments, &n_comments, &len);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(100, len);
+    time64_t first_create_milli_timestamp = comments[0].create_milli_timestamp;
+    for(int i = 0; i < 10; i++) {
+        EXPECT_EQ(first_create_milli_timestamp + i, comments[i].create_milli_timestamp);
+    }
+
+    for(int i = 0; i < 100; i++) {
+        destroy_comment(&comments[i]);
+    }
+}
+
 /**********
  * MAIN
  */
