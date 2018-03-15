@@ -886,7 +886,10 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
 
     // get comments
     int len;
-    time64_t future_milli_timestamp = get_milli_timestamp() + 10000;
+    time64_t future_milli_timestamp = 0;
+    error = get_milli_timestamp(&future_milli_timestamp);
+    future_milli_timestamp += 10000;
+    
     Comment comments[100] = {};
     for(int i = 0; i < 100; i++) {
         init_comment_buf(&comments[i]);
