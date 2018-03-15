@@ -907,7 +907,7 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
     }
 
     // get comments
-    error = read_comments_by_main(main_id, comments[0].create_milli_timestamp, comments[0].poster, READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments + 10, &n_comments, &len);
+    error = read_comments_by_main(main_id, comments[0].create_milli_timestamp, comments[0].poster, READ_COMMENTS_OP_TYPE_LT, 10, MONGO_COMMENT, comments + 10, &n_comments, &len);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(10, n_comments);
     EXPECT_EQ(100, len);
