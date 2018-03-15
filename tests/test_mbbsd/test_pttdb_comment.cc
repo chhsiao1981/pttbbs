@@ -379,7 +379,7 @@ TEST(pttdb_comment, sort_db_results_order2) {
     char poster[IDLEN + 1] = {};
     for(int i = 0; i < n_results; i++) {
         rand_int = random();
-        sprintf(poster, "poster%03l", rand_int);
+        sprintf(poster, "poster%03ld", rand_int);
         db_results[i] = BCON_NEW(
                 "poster", BCON_BINARY((unsigned char *)poster, IDLEN),
                 "create_milli_timestamp", BCON_INT64(100)
