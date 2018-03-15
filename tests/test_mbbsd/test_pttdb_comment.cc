@@ -606,8 +606,8 @@ TEST(pttdb_comment, read_comments_by_main4)
 
     time64_t create_milli_timestamp = 1514764800000; //2018-01-01 08:00:00 CST
 
-    comment.comment_type = comment_type;
-    comment.karma = KARMA_BY_COMMENT_TYPE[comment_type];
+    comment.comment_type = COMMENT_TYPE_GOOD;
+    comment.karma = KARMA_BY_COMMENT_TYPE[COMMENT_TYPE_GOOD];
 
     strcpy(comment.poster, "poster000");
     strcpy(comment.ip, "10.1.1.4");
@@ -619,14 +619,22 @@ TEST(pttdb_comment, read_comments_by_main4)
     strcpy(comment.buf, "test1test1");
     comment.len = 10;
 
+    bson_t *comment_id_bson = NULL;
+    bson_t *comment_bson = NULL;
+
     int n_comments = 100;
     for(int i = 0; i < 15; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
-        error = _serialize_comment_bson(&comment, comment_bson);
+        error = _serialize_comment_bson(&comment, &comment_bson);
+        error_code = _serialize_uuid_bson(comment_id, &comment_id_bson);
+
         error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
+
+        bson_safe_destroy(&comment_bson);
+        bson_safe_destroy(&comment_id_bson);
 
         EXPECT_EQ(S_OK, error);
     }
