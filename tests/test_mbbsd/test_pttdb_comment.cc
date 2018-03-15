@@ -505,7 +505,8 @@ TEST(pttdb_comment, read_comments_by_main3)
     EXPECT_EQ(100, len);
     time64_t first_create_milli_timestamp = comments[0].create_milli_timestamp;
     for(int i = 0; i < 10; i++) {
-        EXPECT_EQ(first_create_milli_timestamp + i, comments[i].create_milli_timestamp);
+        EXPECT_LE(first_create_milli_timestamp + i, comments[i].create_milli_timestamp);
+        EXPECT_GT(first_create_milli_timestamp + i + 1000, comments[i].create_milli_timestamp);
     }
 
     for(int i = 0; i < 100; i++) {
