@@ -231,14 +231,6 @@ db_find(int collection, bson_t *key, bson_t *fields, bson_t *sort, int max_n_res
         if(!status) error_code = S_ERR;        
     }
 
-    char *str = bson_as_canonical_extended_json(key, NULL);
-    fprintf(stderr, "util_db.db_find: key: %s\n", str);
-    bson_free(str);
-
-    str = bson_as_canonical_extended_json(opts, NULL);
-    fprintf(stderr, "util_db.db_find: opts: %s\n", str);
-    bson_free(str);
-
     if(!error_code) {
         mongoc_cursor_t *cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, opts, NULL);
         bson_error_t error;
@@ -253,7 +245,6 @@ db_find(int collection, bson_t *key, bson_t *fields, bson_t *sort, int max_n_res
         *n_results = len;
 
         if (mongoc_cursor_error(cursor, &error)) {
-            fprintf(stderr, "util_db.db_find: something went wrong with find: e: %s\n", error.message);
             error_code = S_ERR;
         }
 
