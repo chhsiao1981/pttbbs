@@ -43,7 +43,7 @@ create_main_from_fd(aidu_t aid, char *board, char *title, char *poster, char *ip
     memcpy(main_header.update_content_id, content_id, sizeof(UUID));
     main_header.aid = aid;
     main_header.status = LIVE_STATUS_ALIVE;
-    strcpy(main_header.board, baord);
+    strcpy(main_header.board, board);
     strcpy(main_header.status_updater, poster);
     strcpy(main_header.status_update_ip, ip);
     strcpy(main_header.title, title);
