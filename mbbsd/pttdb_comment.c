@@ -134,7 +134,7 @@ get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len)
             "{",
                 "$match",
                 "{",
-                    "main_id", BCON_BINARY(comment->main_id, UUIDLEN),
+                    "main_id", BCON_BINARY(main_id, UUIDLEN),
                 "}",
             "}",
             "{",
