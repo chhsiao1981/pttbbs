@@ -57,8 +57,8 @@ Err _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t cr
 Err _read_comments_get_db_results_same_create_milli_timestamp(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments);
 Err _read_comments_get_db_results_diff_create_milli_timestamp(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments);
 Err _read_comments_get_db_results_core(bson_t **db_results, bson_t *key, bson_t *sort, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments);
-Err _ensure_db_results_order(bson_t **db_results, int n_results, bool is_ascending);
-Err _sort_db_results_order(bson_t **db_results, int n_results, bool is_ascending);
+Err _ensure_db_results_order(bson_t **db_results, int n_results, enum ReadCommentsOpType op_type);
+Err _sort_db_results_order(bson_t **db_results, int n_results, enum ReadCommentsOpType op_type);
 int _cmp_ascending(const void *a, const void *b);
 int _cmp_descending(const void *a, const void *b);
 Err _reverse_db_results(bson_t **db_results, int n_results);
