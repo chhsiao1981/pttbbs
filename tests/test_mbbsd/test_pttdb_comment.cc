@@ -221,13 +221,13 @@ TEST(pttdb_comment, get_comment_count_by_main) {
 
 TEST(pttdb_comment, ensure_db_results_order) {
     int n_results = 100;
-    bson_t **db_results = malloc(sizeof(bson_t *) * n_results);
+    bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
     long int rand_int = 0;
 
     rand_int = random();
     for(int i = 0; i < n_results; i++) {
         db_results[i] = BCON_NEW(
-                "poster", BCON_BINARY("test_poster", 11),
+                "poster", BCON_BINARY((unsigned char *)"test_poster", 11),
                 "create_milli_timestamp", BCON_INT64(rand_int)
             );    
     }
@@ -235,7 +235,7 @@ TEST(pttdb_comment, ensure_db_results_order) {
     Err error = _ensure_db_results_order(db_results, n_results, true);
     EXPECT_EQ(S_ERR, error);
 
-    Err error = _ensure_db_results_order(db_results, n_results, false);
+    error = _ensure_db_results_order(db_results, n_results, false);
     EXPECT_EQ(S_ERR, error);
 
     for(int i = 0; i < n_results; i++) {
@@ -246,11 +246,11 @@ TEST(pttdb_comment, ensure_db_results_order) {
 
 TEST(pttdb_comment, ensure_db_results_order2) {
     int n_results = 100;
-    bson_t **db_results = malloc(sizeof(bson_t *) * n_results);
+    bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
 
     for(int i = 0; i < n_results; i++) {
         db_results[i] = BCON_NEW(
-                "poster", BCON_BINARY("test_poster", 11),
+                "poster", BCON_BINARY((unsigned char *)"test_poster", 11),
                 "create_milli_timestamp", BCON_INT64(i)
             );    
     }
@@ -258,7 +258,7 @@ TEST(pttdb_comment, ensure_db_results_order2) {
     Err error = _ensure_db_results_order(db_results, n_results, true);
     EXPECT_EQ(S_OK, error);
 
-    Err error = _ensure_db_results_order(db_results, n_results, false);
+    error = _ensure_db_results_order(db_results, n_results, false);
     EXPECT_EQ(S_ERR, error);
 
     for(int i = 0; i < n_results; i++) {
@@ -269,11 +269,11 @@ TEST(pttdb_comment, ensure_db_results_order2) {
 
 TEST(pttdb_comment, ensure_db_results_order3) {
     int n_results = 100;
-    bson_t **db_results = malloc(sizeof(bson_t *) * n_results);
+    bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
 
     for(int i = 0; i < n_results; i++) {
         db_results[i] = BCON_NEW(
-                "poster", BCON_BINARY("test_poster", 11),
+                "poster", BCON_BINARY((unsigned char *)"test_poster", 11),
                 "create_milli_timestamp", BCON_INT64(100 - i)
             );    
     }
@@ -281,7 +281,7 @@ TEST(pttdb_comment, ensure_db_results_order3) {
     Err error = _ensure_db_results_order(db_results, n_results, false);
     EXPECT_EQ(S_OK, error);
 
-    Err error = _ensure_db_results_order(db_results, n_results, true);
+    error = _ensure_db_results_order(db_results, n_results, true);
     EXPECT_EQ(S_ERR, error);
 
     for(int i = 0; i < n_results; i++) {
