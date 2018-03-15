@@ -192,7 +192,7 @@ TEST(util_db, db_aggregate) {
             "{",
                 "$group",
                 "{",
-                    "_id", NULL,
+                    "_id", BCON_NULL(),
                     "count", "{",
                         "$sum", BCON_INT32(1),
                     "}",
