@@ -289,8 +289,6 @@ TEST(util_db, db_count) {
 
     bson_safe_destroy(&key2);
     bson_safe_destroy(&val2);
-
-    bson_safe_destroy(&result);
 }
 
 TEST(util_db, bson_safe_destroy) {
