@@ -433,6 +433,51 @@ TEST(pttdb_comment, read_comments_by_main)
     }
 }
 
+TEST(pttdb_comment, read_comments_by_main2)
+{
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+
+    Err error = S_OK;
+    UUID main_id = {};
+    UUID comment_id = {};
+    gen_uuid(main_id);
+
+    char poster[IDLEN + 1] = {};
+    int n_comments = 100;
+    for(int i = 0; i < n_comments; i++) {
+        sprintf(poster, "poster%03d", i);
+        error = create_comment(main_id, poster, (char *)"10.1.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
+        EXPECT_EQ(S_OK, error);
+    }
+
+    int len;
+    Comment comments[100] = {};
+    for(int i = 0; i < 100; i++) {
+        init_comment_buf(&comments[i]);
+    }
+    error = read_comments_by_main(main_id, 0, (char *)"", true, 10, MONGO_COMMENT, comments, &n_comments, &len);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(100, len);
+    for(int i = 0; i < 10; i++) {
+        sprintf(poster, "poster%03d", i);
+        EXPECT_STREQ(poster, comments[i].poster);
+    }
+
+    error = read_comments_by_main(main_id, comments[9].create_milli_timestamp, comments[9].poster, true, 10, MONGO_COMMENT, comments + 10, &n_comments, &len);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(100, len);
+    for(int i = 10; i < 20; i++) {
+        sprintf(poster, "poster%03d", i);
+        EXPECT_STREQ(poster, comments[i].poster);
+    }
+
+    for(int i = 0; i < 100; i++) {
+        destroy_comment(&comments[i]);
+    }
+}
+
 /**********
  * MAIN
  */
