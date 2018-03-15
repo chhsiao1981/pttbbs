@@ -912,12 +912,14 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
     EXPECT_EQ(10, n_comments);
     EXPECT_EQ(100, len);
     for(int i = 10; i < 15; i++) {
+        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LT: after 2st read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 15, comments[i].create_milli_timestamp, comments[i].poster);
         EXPECT_EQ(create_milli_timestamp + 70 + i, comments[i].create_milli_timestamp);
         sprintf(poster, "poster%03d", 70 + i);
         EXPECT_STREQ(poster, comments[i].poster);
     }
 
     for(int i = 15; i < 20; i++) {
+        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LT: after 2st read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 20, comments[i].create_milli_timestamp, comments[i].poster);
         EXPECT_EQ(create_milli_timestamp + 85, comments[i].create_milli_timestamp);
         sprintf(poster, "poster%03d", 70 + i);
         EXPECT_STREQ(poster, comments[i].poster);
