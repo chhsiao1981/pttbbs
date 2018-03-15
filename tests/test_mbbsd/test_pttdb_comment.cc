@@ -487,7 +487,6 @@ TEST(pttdb_comment, read_comments_by_main3)
     UUID comment_id = {};
     gen_uuid(main_id);
 
-    char poster[IDLEN + 1] = {};
     int n_comments = 100;
     for(int i = 0; i < n_comments; i++) {
         error = create_comment(main_id, (char *)"poster", (char *)"10.1.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
