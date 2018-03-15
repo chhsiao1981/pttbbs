@@ -283,7 +283,7 @@ _deserialize_comment_bson(bson_t *comment_bson, Comment *comment)
 }
 
 Err
-_get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_total_comments, int *total_len);
+_get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_total_comments, int *total_len)
 {
     if(!n_result) {
         *n_total_comments = 0;
