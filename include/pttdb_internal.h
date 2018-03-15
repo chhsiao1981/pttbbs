@@ -36,7 +36,7 @@ Err _split_contents_deal_with_last_line_block(int bytes_in_line, char *line, UUI
 
 Err _read_content_blocks_core(bson_t *key, int max_n_block, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_blocks, int *n_block, int *len);
 Err _dynamic_read_content_blocks_core(bson_t *key, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len);
-Err _read_content_blocks_get_db_results(bson_t **db_results, UUID content_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, int *n_block);
+Err _read_content_blocks_get_db_results(bson_t **db_results, bson_t *key, int max_n_block, int block_id, enum MongoDBId mongo_db_id, int *n_block);
 
 Err _form_b_array_block_ids(int block_id, int max_n_block, bson_t *b);
 Err _sort_by_block_id(bson_t **db_results, int n_block);
