@@ -386,6 +386,13 @@ _read_comments_get_db_results_diff_create_milli_timestamp(bson_t **db_results, U
 {
     Err error_code = S_OK;
     int order = (op_type == READ_COMMENTS_OP_TYPE_GT || op_type == READ_COMMENTS_OP_TYPE_GTE) ? 1 : -1;
+    if(op_type == READ_COMMENTS_OP_TYPE_GTE) {
+        op_type = READ_COMMENTS_OP_TYPE_GT;
+    }
+
+    if(op_type == READ_COMMENTS_OP_TYPE_LTE) {
+        op_type = READ_COMMENTS_OP_TYPE_LT;
+    }
 
     // get same create_milli_timestamp but not same poster
     bson_t *key = BCON_NEW(
