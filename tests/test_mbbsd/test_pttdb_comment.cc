@@ -889,7 +889,7 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
     time64_t future_milli_timestamp = 0;
     error = get_milli_timestamp(&future_milli_timestamp);
     future_milli_timestamp += 10000;
-    
+
     Comment comments[100] = {};
     for(int i = 0; i < 100; i++) {
         init_comment_buf(&comments[i]);
@@ -900,6 +900,7 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
     EXPECT_EQ(100, len);
     char poster[20] = {};
     for(int i = 0; i < 10; i++) {
+        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LT: after 1st read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 10, comments[i].create_milli_timestamp, comments[i].poster);
         EXPECT_EQ(create_milli_timestamp + 85, comments[i].create_milli_timestamp);
         sprintf(poster, "poster%03d", 90 + i);
         EXPECT_STREQ(poster, comments[i].poster);
