@@ -249,8 +249,8 @@ Err destroy_comment(Comment *comment);
 
 Err associate_comment(Comment *comment, char *buf, int max_buf_len);
 Err dissociate_comment(Comment *comment);
-Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, Comment *comments, int *n_read_comments, int *len);
-Err dynamic_read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, Comment *comments, int *n_read_comments, int *len);
+Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, Comment *comments, int *n_read_comments, int *len);
+Err dynamic_read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, Comment *comments, int *n_read_comments, int *len);
 
 /**********
  * CommentReply
