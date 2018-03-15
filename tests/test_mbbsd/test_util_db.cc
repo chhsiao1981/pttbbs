@@ -277,7 +277,7 @@ TEST(util_db, db_count) {
         "main_id", BCON_INT32(4)
         );
 
-    error = db_count(MONGO_TEST, query_key, &count)
+    error = db_count(MONGO_TEST, query_key, &count);
     EXPECT_EQ(S_OK, error);
 
     EXPECT_EQ(2, count);
