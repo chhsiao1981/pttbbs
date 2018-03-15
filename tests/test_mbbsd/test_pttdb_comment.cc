@@ -479,7 +479,7 @@ TEST(pttdb_comment, read_comments_by_main)
     EXPECT_EQ(100, len);
     for(int i = 0; i < 10; i++) {
         sprintf(poster, "poster%03d", i);
-        fprintf(stderr, "test_pttdb_comment.read_comments_by_main: (%d/%d) (%ld/%d)\n", i, 10, comments[i].create_milli_timestamp, comments[i].poster)
+        fprintf(stderr, "test_pttdb_comment.read_comments_by_main: (%d/%d) (%lld/%s)\n", i, 10, comments[i].create_milli_timestamp, comments[i].poster);
         EXPECT_STREQ(poster, comments[i].poster);
     }
 
