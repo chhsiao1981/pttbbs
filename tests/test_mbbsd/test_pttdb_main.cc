@@ -195,7 +195,7 @@ TEST(pttdb, create_main_from_fd_test2_read_main_content) {
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
     // create main from fd
-    Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    Err error_code = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
     EXPECT_EQ(S_OK, error_code);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
@@ -288,7 +288,7 @@ TEST(pttdb, create_main_from_fd_test2) {
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
     // create main from fd
-    Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    Err error_code = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
     EXPECT_EQ(S_OK, error_code);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
@@ -355,7 +355,7 @@ TEST(pttdb, create_main_from_fd_test1_full_read_main_content) {
     strcpy(origin, "ptt.cc");
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
-    Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    Err error_code = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
     EXPECT_EQ(S_OK, error_code);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
@@ -444,7 +444,7 @@ TEST(pttdb, create_main_from_fd_test1_full) {
 
     char tmp_main_id[UUIDLEN + 1] = {};
 
-    strcpy(borad, "test_board");
+    strcpy(board, "test_board");
     strcpy(title, "test_title");
     strcpy(poster, "test_poster");
     strcpy(ip, "test_ip");
@@ -452,7 +452,7 @@ TEST(pttdb, create_main_from_fd_test1_full) {
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
     // create main from fd
-    Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    Err error_code = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
     EXPECT_EQ(S_OK, error_code);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
