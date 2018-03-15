@@ -290,6 +290,56 @@ TEST(pttdb_comment, ensure_db_results_order3) {
     free(db_results);
 }
 
+TEST(pttdb_comment, ensure_db_results_order4) {
+    int n_results = 100;
+    bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
+
+    char poster[IDLEN + 1] = {}
+    for(int i = 0; i < n_results; i++) {
+        sprintf(poster, "poster%03d", i);
+        db_results[i] = BCON_NEW(
+                "poster", BCON_BINARY((unsigned char *)poster, IDLEN),
+                "create_milli_timestamp", BCON_INT64(100)
+            );    
+    }
+
+    Err error = _ensure_db_results_order(db_results, n_results, true);
+    EXPECT_EQ(S_OK, error);
+
+    error = _ensure_db_results_order(db_results, n_results, false);
+    EXPECT_EQ(S_ERR, error);
+
+    for(int i = 0; i < n_results; i++) {
+        bson_safe_destroy(&db_results[i]);
+    }
+    free(db_results);
+}
+
+TEST(pttdb_comment, ensure_db_results_order4) {
+    int n_results = 100;
+    bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
+
+    char poster[IDLEN + 1] = {}
+    for(int i = 0; i < n_results; i++) {
+        sprintf(poster, "poster%03d", 100 - i);
+        db_results[i] = BCON_NEW(
+                "poster", BCON_BINARY((unsigned char *)poster, IDLEN),
+                "create_milli_timestamp", BCON_INT64(100)
+            );    
+    }
+
+    Err error = _ensure_db_results_order(db_results, n_results, false);
+    EXPECT_EQ(S_OK, error);
+
+    error = _ensure_db_results_order(db_results, n_results, true);
+    EXPECT_EQ(S_ERR, error);
+
+    for(int i = 0; i < n_results; i++) {
+        bson_safe_destroy(&db_results[i]);
+    }
+    free(db_results);
+}
+
 /**********
  * MAIN
  */
