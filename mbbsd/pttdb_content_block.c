@@ -455,7 +455,7 @@ _read_content_blocks_get_db_results(bson_t **db_results, bson_t *key, int max_n_
 
     bool status = true;
     if (!error_code) {
-        status = bson_append_document(key, "block_id", b_array_block_ids);
+        status = bson_append_document(key, "block_id", -1, b_array_block_ids);
         if (!status) error_code = S_ERR;
     }
 
