@@ -178,7 +178,7 @@ get_comment_count_by_main(UUID main_id, int *count)
     Err error_code = S_OK;
     bson_t *key = BCON_NEW(
         "main_id", BCON_BINARY(main_id, UUIDLEN),
-        "status", BCON_INT32((int)LIVE_STATUS_ALIVE),
+        "status", BCON_INT32((int)LIVE_STATUS_ALIVE)
     );
 
     error_code = db_count(MONGO_COMMENT, key, count);
@@ -306,7 +306,6 @@ dynamic_read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, boo
     int tmp_len_comment = 0;
     int tmp_len = 0;
 
-    int tmp_len = 0;
     if (!error_code) {
         for (int i = 0; i < tmp_n_read_comments; i++) {
             if (max_buf_size < 0) {
@@ -435,7 +434,6 @@ _ensure_db_results_order(bson_t **db_results, int n_results, bool is_ascending)
 Err
 _sort_db_results_order(bson_t **db_results, int n_results, bool is_ascending)
 {
-    Err error_code = S_OK;
     int (*_cmp)(const void *a, const void *b) = is_ascending ? _cmp_ascending : _cmp_descending;
 
     qsort(db_results, n_results, sizeof(bson_t *), _cmp);
@@ -458,10 +456,10 @@ _cmp_ascending(const void *a, const void *b)
     char poster_b[IDLEN + 1] = {};
 
     Err error_code;
-    error_code = bson_get_value_int64(tmp_a, "create_milli_timestamp", &create_milli_timestamp_a);
+    error_code = bson_get_value_int64(tmp_a, "create_milli_timestamp", (long *)&create_milli_timestamp_a);
     if (error_code) create_milli_timestamp_a = -1;
 
-    error_code = bson_get_value_int64(tmp_b, "create_milli_timestamp", &create_milli_timestamp_b);
+    error_code = bson_get_value_int64(tmp_b, "create_milli_timestamp", (long *)&create_milli_timestamp_b);
     if (error_code) create_milli_timestamp_b = -1;
 
     if (create_milli_timestamp_a != create_milli_timestamp_b) {
@@ -493,10 +491,10 @@ _cmp_descending(const void *a, const void *b)
     char poster_b[IDLEN + 1] = {};
 
     Err error_code;
-    error_code = bson_get_value_int64(tmp_a, "create_milli_timestamp", &create_milli_timestamp_a);
+    error_code = bson_get_value_int64(tmp_a, "create_milli_timestamp", (long *)&create_milli_timestamp_a);
     if (error_code) create_milli_timestamp_a = -1;
 
-    error_code = bson_get_value_int64(tmp_b, "create_milli_timestamp", &create_milli_timestamp_b);
+    error_code = bson_get_value_int64(tmp_b, "create_milli_timestamp", (long *)&create_milli_timestamp_b);
     if (error_code) create_milli_timestamp_b = -1;
 
     if (create_milli_timestamp_a != create_milli_timestamp_b) {
@@ -625,11 +623,11 @@ _deserialize_comment_bson(bson_t *comment_bson, Comment *comment)
 Err
 _deserialize_comment_bson_with_buf(bson_t *comment_bson, Comment *comment)
 {
-    Err error_code;
+    Err error_code = S_OK;
     if (comment->buf) return S_ERR;
 
-    int len;
-    error_code = bson_get_value_int32(comment_bson, "len", len);
+    int len = 0;
+    error_code = bson_get_value_int32(comment_bson, "len", &len);
     if (error_code) return error_code;
 
     comment->buf = malloc(len);
