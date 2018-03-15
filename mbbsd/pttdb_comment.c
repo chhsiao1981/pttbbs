@@ -372,7 +372,7 @@ _read_comments_get_db_results_same_create_milli_timestamp(bson_t **db_results, U
     if(sort == NULL) error_code = S_ERR;
 
     if(!error_code) {
-        error_code = _read_comments_get_db_results_core(db_results, key, sort, is_ascending, max_n_comments, mongo_db_id, n_comments);
+        error_code = _read_comments_get_db_results_core(db_results, key, sort, op_type, max_n_comments, mongo_db_id, n_comments);
     }
 
     bson_safe_destroy(&key);
@@ -406,7 +406,7 @@ _read_comments_get_db_results_diff_create_milli_timestamp(bson_t **db_results, U
     if(sort == NULL) error_code = S_ERR;
 
     if(!error_code) {
-        error_code = _read_comments_get_db_results_core(db_results, key, sort, is_ascending, max_n_comments, mongo_db_id, n_comments);
+        error_code = _read_comments_get_db_results_core(db_results, key, sort, op_type, max_n_comments, mongo_db_id, n_comments);
     }
 
     bson_safe_destroy(&key);
