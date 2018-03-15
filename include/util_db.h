@@ -52,7 +52,7 @@ Err db_find(int collection, bson_t *key, bson_t *fields, int max_n_results, int 
 Err db_find_with_fields(int collection, bson_t *key, char **fields, int n_fields, int max_n_results, int *n_results, bson_t **results);
 Err db_remove(int collection, bson_t *key);
 Err db_aggregate(int collection, bson_t *pipeline, int max_n_results, bson_t **results, int *n_results);
-Err db_count(int collection, bson_t *key);
+Err db_count(int collection, bson_t *key, int *count);
 
 // bson-ops
 #define BCON_BINARY(bin, length) BCON_BIN(BSON_SUBTYPE_BINARY, bin, length)
