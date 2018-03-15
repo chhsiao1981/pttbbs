@@ -425,7 +425,7 @@ TEST(pttdb_comment, read_comments_by_main)
     EXPECT_EQ(100, len);
     for(int i = 0; i < 10; i++) {
         sprintf(poster, "poster%03d", i);
-        EXPECT_EQ(poster, comments[i].poster);
+        EXPECT_STREQ(poster, comments[i].poster);
     }
 
     for(int i = 0; i < 100; i++) {
