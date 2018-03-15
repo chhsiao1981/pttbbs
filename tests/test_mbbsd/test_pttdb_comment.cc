@@ -382,17 +382,26 @@ TEST(pttdb_comment, sort_db_results_order) {
     error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
+    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
+    EXPECT_EQ(S_ERR, error);
+
     error = _sort_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
     error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
+    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
+    EXPECT_EQ(S_ERR, error);
+
     error = _sort_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
 
     error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
+
+    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
+    EXPECT_EQ(S_ERR, error);
 
     error = _sort_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);
@@ -427,17 +436,26 @@ TEST(pttdb_comment, sort_db_results_order2) {
     error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
+    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
+    EXPECT_EQ(S_ERR, error);
+
     error = _sort_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
     error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
+    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
+    EXPECT_EQ(S_ERR, error);
+
     error = _sort_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
 
     error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
+
+    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
+    EXPECT_EQ(S_ERR, error);
 
     error = _sort_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);

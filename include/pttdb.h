@@ -174,7 +174,7 @@ typedef struct CommentReply {
     time64_t update_milli_timestamp;                 // last update-time
 
     int n_line;                                      // n-line
-    int len;                                         // total-size
+    int len;                                         // size
     int max_buf_len;                                 // max_buf_len
     char *buf;
 } CommentReply;
