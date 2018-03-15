@@ -419,7 +419,7 @@ TEST(pttdb_comment, read_comments_by_main)
     for(int i = 0; i < 100; i++) {
         init_comment_buf(&comments[i]);
     }
-    error = read_comments_by_main(main_id, 0, true, 10, MONGO_COMMENT, comments, &n_comments, &len);
+    error = read_comments_by_main(main_id, 0, (char *)"", true, 10, MONGO_COMMENT, comments, &n_comments, &len);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(10, n_comments);
     EXPECT_EQ(100, len);

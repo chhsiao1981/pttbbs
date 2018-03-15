@@ -241,7 +241,7 @@ dissociate_comment(Comment *comment)
 }
 
 Err
-read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, Comment *comments, int *n_read_comments, int *len)
+read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, Comment *comments, int *n_read_comments, int *len)
 {
 
     Err error_code = S_OK;
@@ -251,7 +251,7 @@ read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_asc
     if (db_results == NULL) return S_ERR_INIT;
     bzero(db_results, sizeof(bson_t *) * max_n_comments);
 
-    error_code = _read_comments_get_db_results(db_results, main_id, create_milli_timestamp, is_ascending, max_n_comments, mongo_db_id, n_read_comments);
+    error_code = _read_comments_get_db_results(db_results, main_id, create_milli_timestamp, poster, is_ascending, max_n_comments, mongo_db_id, n_read_comments);
 
     fprintf(stderr, "pttdb_comment.read_comments_by_main: after _read_comments_get_db_results: e: %d n_read_comments: %d\n", error_code, *n_read_comments);
 
@@ -289,7 +289,7 @@ read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_asc
 }
 
 Err
-dynamic_read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, Comment *comments, int *n_read_comments, int *len)
+dynamic_read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, Comment *comments, int *n_read_comments, int *len)
 {
 
     Err error_code = S_OK;
@@ -299,7 +299,7 @@ dynamic_read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, boo
     if (db_results == NULL) return S_ERR_INIT;
     bzero(db_results, sizeof(bson_t *) * max_n_comments);
 
-    error_code = _read_comments_get_db_results(db_results, main_id, create_milli_timestamp, is_ascending, max_n_comments, mongo_db_id, n_read_comments);
+    error_code = _read_comments_get_db_results(db_results, main_id, create_milli_timestamp, poster, is_ascending, max_n_comments, mongo_db_id, n_read_comments);
 
     int tmp_n_read_comments = *n_read_comments;
     bson_t **p_db_results = db_results;
@@ -371,19 +371,85 @@ _get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_
 }
 
 Err
-_read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, int *n_read_comments)
+_read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, char *poster, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments)
 {
     Err error_code = S_OK;
 
     char op[4] = {};
-    is_ascending ? strcpy(op, "$gte") : strcpy(op, "$lte");
+    is_ascending ? strcpy(op, "$gt") : strcpy(op, "$lt");
     int order = is_ascending ? 1 : -1;
 
+    int n_comments_same_create_milli_timestamp = 0;
+
+    bson_t **p_db_results = db_results;
+    error_code = _read_comments_get_db_results_same_create_milli_timestamp(p_db_results, main_id, create_milli_timestamp, poster, is_ascending, max_n_comments, mongo_db_id, &n_comments_same_create_milli_timestamp);
+
+    if(!error_code && !is_ascending) {
+        _reverse_db_results(p_db_results, n_comments_same_create_milli_timestamp);
+    }
+
+    if(!error_code) {
+        p_db_results += n_comments_same_create_milli_timestamp;
+        max_n_comments -= n_comments_same_create_milli_timestamp;
+    }
+
+    int n_comments_diff_create_milli_timestamp = 0;
+    if(!error_code && max_n_comments > 0) {
+        error_code = _read_comments_get_db_results_diff_create_milli_timestamp(p_db_results, main_id, create_milli_timestamp, poster, is_ascending, max_n_comments, mongo_db_id, &n_comments_diff_create_milli_timestamp);
+    }
+
+    *n_comments = n_comments_same_create_milli_timestamp + n_comments_diff_create_milli_timestamp;
+    if(!error_code && !is_ascending) {
+        error_code = _reverse_db_results(p_db_results, n_comments_diff_create_milli_timestamp);
+    }
+    if(!error_code && !is_ascending) {
+        error_code = _reverse_db_results(db_results, *n_comments);
+    }
+
+    return error_code;
+}
+
+
+Err
+_read_comments_get_db_results_same_create_milli_timestamp(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, char *poster, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments)
+{
+    // get same create_milli_timestamp but not same poster
+    bson_t *key = BCON_NEW(
+        "main_id", BCON_BINARY(main_id, UUIDLEN),
+        "status", BCON_INT32(LIVE_STATUS_ALIVE),
+        "create_milli_timestamp", BCON_INT64(create_milli_timestamp),
+        "poster", "{",
+            op, BCON_BINARY(poster, IDLEN),
+        "}"
+    );
+
+    if (key == NULL) error_code = S_ERR;
+
+    bson_t *sort = BCON_NEW(
+        "poster", BCON_INT32(order)
+    );
+    
+    if(sort == NULL) error_code = S_ERR;
+
+    if(!error_code) {
+        error_code = _read_comments_get_db_results_core(db_results, key, sort, is_ascending, max_n_comments, mongo_db_id, n_comments);
+    }
+
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&sort);
+
+    return error_code;
+}
+
+Err
+_read_comments_get_db_results_diff_create_milli_timestamp(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, char *poster, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments)
+{
+    // get same create_milli_timestamp but not same poster
     bson_t *key = BCON_NEW(
         "main_id", BCON_BINARY(main_id, UUIDLEN),
         "status", BCON_INT32(LIVE_STATUS_ALIVE),
         "create_milli_timestamp", "{",
-            op, BCON_INT64(create_milli_timestamp),
+            op, BCON_INT64(create_milli_timestamp)
         "}"
     );
 
@@ -396,25 +462,35 @@ _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create
     
     if(sort == NULL) error_code = S_ERR;
 
-    if (!error_code) {
-        error_code = db_find(mongo_db_id, key, NULL, sort, max_n_comments, n_read_comments, db_results);
-    }
-    int tmp_n_read_comments = *n_read_comments;
-    fprintf(stderr, "pttdb_comment._read_comments_get_db_results: after db_find: e: %d n_comments: %d\n", error_code, *n_read_comments);
-
-    Err error_code_ensure_order = S_OK;
-    if (!error_code) {
-        error_code_ensure_order = _ensure_db_results_order(db_results, tmp_n_read_comments, is_ascending);
-    }
-
-    if (!error_code && error_code_ensure_order) {
-        error_code = _sort_db_results_order(db_results, tmp_n_read_comments, is_ascending);
+    if(!error_code) {
+        error_code = _read_comments_get_db_results_core(db_results, key, sort, is_ascending, max_n_comments, mongo_db_id, n_comments);
     }
 
     bson_safe_destroy(&key);
+    bson_safe_destroy(&sort);
 
     return error_code;
 }
+
+Err
+_read_comments_get_db_results_core(bson_t **db_results, bson_t *key, bson_t *sort, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments)
+{
+    Err error_code = db_find(mongo_db_id, key, NULL, sort, max_n_comments, n_comments, db_results);
+
+    int tmp_n_comments = *n_comments;
+
+    Err error_code_ensure_order = S_OK;
+    if (!error_code) {
+        error_code_ensure_order = _ensure_db_results_order(db_results, tmp_n_comments, is_ascending);
+    }
+
+    if (!error_code && error_code_ensure_order) {
+        error_code = _sort_db_results_order(db_results, tmp_n_comments, is_ascending);
+    }
+
+    return error_code;
+}
+
 
 Err
 _ensure_db_results_order(bson_t **db_results, int n_results, bool is_ascending)
