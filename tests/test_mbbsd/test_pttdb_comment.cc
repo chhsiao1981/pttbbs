@@ -88,7 +88,7 @@ TEST(pttdb, delete_comment) {
                     );
     bson_t *result = NULL;
 
-    error = db_find_one_with_fields(MONGO_COMMENT, query, fields, &result);
+    error = db_find_one(MONGO_COMMENT, query, fields, &result);
     EXPECT_EQ(S_OK, error);
     int result_status;
     char result_status_updater[MAX_BUF_SIZE];
