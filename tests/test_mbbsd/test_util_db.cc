@@ -219,7 +219,7 @@ TEST(util_db, db_aggregate) {
     int count = 0;
     int len = 0;
 
-    status = bson_get_value_int32(result, "count", &count);
+    bool status = bson_get_value_int32(result, "count", &count);
     EXPECT_EQ(true, status);
     EXPECT_EQ(2, count);
 
