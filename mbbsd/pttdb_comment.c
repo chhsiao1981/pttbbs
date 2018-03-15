@@ -125,6 +125,61 @@ delete_comment(UUID comment_id, char *updater, char *ip) {
     return error_code;
 }
 
+Err
+get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len)
+{
+    Err error_code = S_OK;
+    bson_t *pipeline = BCON_NEW(
+        "pipeline", "[",
+            "{",
+                "$match",
+                "{",
+                    "main_id", BCON_BINARY(comment->main_id, UUIDLEN),
+                "}",
+            "}",
+            "{",
+                "$group",
+                "{",
+                    "_id", NULL,
+                    "count", "{",
+                        "$sum", BCON_INT32(1),
+                    "}",
+                    "len", "{",
+                        "$sum", "$len",
+                    "}",
+                "}",
+            "}",
+            "{",
+                "$limit",
+                BCON_INT32(1),
+            "}",
+        "]"
+        );
+    if(pipeline == NULL) error_code = S_ERR;
+
+    bson_t *result = NULL;
+
+    int n_result = 0;
+    if(!error_code) {
+        error_code = db_aggregate(MONGO_COMMENT, pipeline, 1, &result, &n_result);
+    }
+
+    if(!error_code) {
+        error_code = _get_comment_info_by_main_deal_with_result(result, n_result, n_total_comments, total_len);
+    }
+
+    bson_safe_destroy(&result);
+    bson_safe_destroy(&pipeline);
+
+    return error_code;
+}
+
+Err
+read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, int *n_read_comments, Comment *comments)
+{
+
+}
+
 /**
  * @brief [brief description]
  * @details [long description]
@@ -223,4 +278,27 @@ _deserialize_comment_bson(bson_t *comment_bson, Comment *comment)
     if (error_code) return error_code;
 
     return S_OK;
+}
+
+Err
+_get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_total_comments, int *total_len);
+{
+    if(!n_result) {
+        *n_total_comments = 0;
+        *total_len = 0;
+        return S_OK;
+    }
+
+    Err error_code = S_OK;
+    bool status = true;
+
+    status = bson_get_value_int32(result, "count", n_total_comments);
+    if(!status) error_code = S_ERR;
+
+    if(!error_code) {
+        status = bson_get_value_int32(result, "len", total_len);
+        if(!status) error_code = S_ERR;
+    }
+
+    return error_code;
 }

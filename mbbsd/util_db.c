@@ -315,6 +315,36 @@ db_remove(int collection, bson_t *key)
 }
 
 Err
+db_aggregate(int collection, bson_t *pipeline, int max_n_results, bson_t **results, int *n_results)
+{
+    Err error_code = S_OK;
+    const bson_t *doc = NULL;
+
+    mongoc_cursor_t *cursor = mongoc_collection_aggregate(collection, MONGOC_QUERY_NONE, pipeline, NULL, NULL);
+
+    int tmp_n_results = 0;
+    bson_t **p_results = results;
+    while(tmp_n_results < max_n_results) {
+        if(!mongoc_cursor_next(cursor, &doc)) break;
+
+        *p_results = bson_copy(doc);
+        p_results++;
+        tmp_n_results++;
+    }
+
+    *n_results = tmp_n_results;
+
+    bson_error_t error;
+    if (mongoc_cursor_error (cursor, &error)) {
+        error_code = S_ERR;
+    }
+
+    mongoc_cursor_destroy(cursor);
+
+    return error_code;
+}
+
+Err
 _DB_FORCE_DROP_COLLECTION(int collection)
 {
     bool status;

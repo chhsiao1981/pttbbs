@@ -49,7 +49,15 @@ Err _deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *co
 
 Err _serialize_comment_bson(Comment *comment, bson_t **comment_bson);
 Err _deserialize_comment_bson(bson_t *comment_bson, Comment *comment);
+Err _get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_total_comments, int *total_len);
 
+/**********
+ * CommentReply
+ **********/
+
+Err _serialize_comment_reply_bson(CommentReplyHeader *comment_reply_header, bson_t **comment_reply_bson);
+Err _deserialize_comment_reply_bson(bson_t *comment_reply_bson, CommentReplyHeader *comment_reply_header);
+Err _serialize_update_comment_reply_bson(UUID content_id, char *updater, char *update_ip, time64_t update_milli_timestamp, int n_total_line, int n_total_block, int len_total, bson_t **comment_reply_bson);
 
 /**********
  * Misc

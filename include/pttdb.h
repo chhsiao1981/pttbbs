@@ -115,12 +115,12 @@ typedef struct Comment {
     UUID the_id;                                     // comment-id
     UUID main_id;                                    // corresponding main-id
 
-    enum LiveStatus status;                               // status
+    enum LiveStatus status;                          // status
     char status_updater[IDLEN + 1];                  // last user updaing the status
     char status_update_ip[IPV4LEN + 1];              // last ip updating the status
 
-    enum CommentType comment_type;                        // comment-type.
-    enum Karma karma;                                     // karma
+    enum CommentType comment_type;                   // comment-type.
+    enum Karma karma;                                // karma
 
     char poster[IDLEN + 1];                          // creater
     char ip[IPV4LEN + 1];                            // create-ip
@@ -137,7 +137,7 @@ typedef struct Comment {
  * CommentReply
  * XXX always update comment-reply-content first, and then update comment-reply-header.
  **********/
-typedef struct CommentReplyHeader {
+typedef struct CommentReply {
     unsigned int version;                           // version
 
     UUID the_id;                                     // comment-reply-id
@@ -158,22 +158,11 @@ typedef struct CommentReplyHeader {
     char update_ip[IPV4LEN + 1];                     // last update-ip
     time64_t update_milli_timestamp;                 // last update-time
 
-    int n_total_line;                                // total-line
-    int n_total_block;                               // total-blocks
-    int len_total;                                   // total-size
-} CommentReplyHeader;
-
-typedef struct CommentReplyContent {
-    UUID the_id;                                     // comment-reply-content-id
-    UUID comment_reply_id;                           // corresponding comment-reply-id
-
-    int block_id;                                    // block-id
-
-    int len_block;                                   // size of the block
-    int n_line;                                      // lines of the block
-    char buf_block[MAX_BUF_BLOCK + 1];               // buf
-} CommentReplyContent;
-
+    int n_line;                                      // n-line
+    int len;                                         // total-size
+    int max_buf_len;                                 // max_buf_len
+    char *buf;
+} CommentReply;
 
 /**********
  * Milli-timestamp
@@ -221,22 +210,22 @@ Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, i
 Err split_contents(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);
 Err split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);
 
-Err save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id);
-Err read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_block);
-Err read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_blocks, int *n_block, int *len);
-Err dynamic_read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len);
-
 Err delete_content(UUID content_id, enum MongoDBId mongo_db_id);
+
+Err reset_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id);
+Err reset_content_block_buf_block(ContentBlock *content_block);
 
 Err init_content_block_with_buf_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id);
 Err init_content_block_buf_block(ContentBlock *content_block);
 Err destroy_content_block(ContentBlock *content_block);
 
-Err reset_content_block(ContentBlock *content_block, UUID ref_id, UUID content_id, int block_id);
-Err reset_content_block_buf_block(ContentBlock *content_block);
-
 Err associate_content_block(ContentBlock *content_block, char *buf_block, int max_buf_len);
 Err dissociate_content_block(ContentBlock *content_block);
+
+Err save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id);
+Err read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_block);
+Err read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_blocks, int *n_block, int *len);
+Err dynamic_read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len);
 
 /**********
  * Comments
@@ -248,41 +237,30 @@ Err read_comment(UUID comment_id, Comment *comment);
 
 Err delete_comment(UUID comment_id, char *updater, char *ip);
 
+Err get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len);
 
-/*
-Err count_karma_by_main(UUID main_id);
-Err len_comments_by_main(UUID main_id);
-Err n_line_comments_by_main(UUID main_id);
-Err read_comments_by_main(UUID main_id, time4_t create_timestamp, char *poster, int max_n_comments, int *n_read_comments, Comment *comments);
-Err read_comments_by_main_aid(aidu_t aid, time4_t create_timestamp, char *poster, int max_n_comments, int *n_read_comments, Comment *comments);
-
-Err update_comment(UUID comment_id, char *updater, unsigned char *ip, int len, char *content);
-
-Err delete_comment(UUID the_id, char *updater, unsigned char *ip);
-*/
+Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, int *n_read_comments, Comment *comments);
+Err read_comments_by_main_aid(aidu_t aid, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, int *n_read_comments, Comment *comments);
 
 /**********
  * CommentReply
  **********/
-/*
-Err create_comment_reply(UUID main_id, UUID comment_id, char *poster, unsigned char *ip, int len, char *content, UUID *comment_reply_id);
 
-Err len_comment_reply_by_main(UUID main_id);
+Err create_comment_reply(UUID main_id, UUID comment_id, char *poster, unsigned char *ip, int len, char *content, UUID comment_reply_id);
 
-Err n_line_comment_reply_by_main(UUID main_id);
-Err n_line_comment_reply_by_comment(UUID comment_id);
-Err n_line_comment_reply_by_comment_reply(UUID comment_reply_id);
+Err read_comment_reply_by_comment_id(UUID comment_id, CommentReplyHeader *comment_reply_header);
+Err read_comment_reply_by_comment_reply_id(UUID comment_reply_id, CommentReplyHeader *comment_reply_header);
 
-Err read_comment_reply_header_by_comment(UUID comment_id, CommentReplyHeader *comment_reply_header);
-Err read_comment_reply_header_by_comment_reply_id(UUID comment_reply_id, CommentReplyHeader *comment_reply_header);
-Err read_comment_reply_contents(UUID comment_reply_content_id, int block_id, int max_n_comment_reply_content, int *n_read_comment_reply_content, CommentReplyContent * comment_reply_content);
+Err read_comment_replys_by_comment_ids(UUID *comment_id, int n_comments, CommentReplyHeader *comment_reply_headers, int *n_comment_replys);
 
-Err check_comment_reply(UUID comment_reply_id);
+Err get_comment_reply_info_by_main(UUID main_id, int *n_total_line, int *total_len);
+Err get_comment_reply_info_by_comment(UUID comment_id, int *n_total_line, int *total_len);
+Err get_comment_reply_info_by_comment_reply(UUID comment_reply_id, int *n_total_line, int *total_len);
 
 Err update_comment_reply(UUID comment_reply_id, char *updater, unsigned char *ip, int len, char *content);
 
-Err delete_comment(UUID comment_reply_id, char *updater, unsigned char *ip);
-*/
+Err delete_comment_reply(UUID comment_reply_id, char *updater, unsigned char *ip);
+
 
 #ifdef __cplusplus
 }
