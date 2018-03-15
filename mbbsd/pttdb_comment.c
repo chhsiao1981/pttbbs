@@ -30,7 +30,7 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enu
 
     Comment comment = {};
     associate_comment(&comment, content, len);
-    comment->len = len;
+    comment.len = len;
 
     error_code = get_milli_timestamp(&create_milli_timestamp);
     if (error_code) return error_code;
@@ -340,7 +340,7 @@ _deserialize_comment_bson(bson_t *comment_bson, Comment *comment)
     error_code = bson_get_value_int32(comment_bson, "len", &comment->len);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_bin(comment_bson, "buf", MAX_BUF_COMMENT, comment->buf, &len);
+    error_code = bson_get_value_bin(comment_bson, "buf", comment->max_buf_len, comment->buf, &len);
     if (error_code) return error_code;
 
     return S_OK;

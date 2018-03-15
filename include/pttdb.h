@@ -129,8 +129,9 @@ typedef struct Comment {
     char update_ip[IPV4LEN + 1];                     // last update-ip
     time64_t update_milli_timestamp;                 // last update-time
 
+    int max_buf_len;                                 // max buf len
     int len;                                         // size
-    char *buf;                                       // buf
+    char *buf;                                       // buf    
 } Comment;
 
 /**********

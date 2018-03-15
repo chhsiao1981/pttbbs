@@ -698,7 +698,7 @@ _deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *conten
     error_code = bson_get_value_int32(content_block_bson, "n_line", &content_block->n_line);
     if (error_code) return error_code;
 
-    error_code = bson_get_value_bin(content_block_bson, "buf_block", content_block->len_block, content_block->buf_block, &len);
+    error_code = bson_get_value_bin(content_block_bson, "buf_block", content_block->max_buf_len, content_block->buf_block, &len);
     if (error_code) return error_code;
 
 
