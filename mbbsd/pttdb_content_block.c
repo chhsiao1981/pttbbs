@@ -473,7 +473,6 @@ _read_content_blocks_get_db_results(bson_t **db_results, bson_t *key, int max_n_
         error_code = _ensure_block_ids(db_results, block_id, tmp_n_block);
     }
 
-    bson_safe_destroy(&key);
     bson_safe_destroy(&b_array_block_ids);
 
     return error_code;
