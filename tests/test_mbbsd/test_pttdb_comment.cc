@@ -413,15 +413,14 @@ TEST(pttdb_comment, read_comments_by_main)
     UUID comment_id = {};
     gen_uuid(main_id);
 
-    char poster[IDLEN + 1] = {}
+    char poster[IDLEN + 1] = {};
     int n_comments = 100;
     for(int i = 0; i < n_comments; i++) {
-        sprintf(poster, "poster%03ld", i);
-        error = create_comment(main_id, poster, "10.1.1.4", 10, "test1test1", COMMENT_TYPE_GOOD, comment_id);
+        sprintf(poster, "poster%03d", i);
+        error = create_comment(main_id, poster, (char *)"10.1.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
         EXPECT_EQ(S_OK, error);
     }
 
-    int n_comments;
     int len;
     Comment comments[100] = {};
     for(int i = 0; i < 100; i++) {
@@ -429,6 +428,8 @@ TEST(pttdb_comment, read_comments_by_main)
     }
     error = read_comments_by_main(main_id, 0, true, 10, MONGO_COMMENT, comments, &n_comments, &len);
     EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(100, len);
     for(int i = 0; i < 10; i++) {
         sprintf(poster, "poster%03ld", i);
         EXPECT_EQ(poster, comments[i].poster);
