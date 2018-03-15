@@ -379,6 +379,7 @@ _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create
 
     bson_t **p_db_results = db_results;
     error_code = _read_comments_get_db_results_same_create_milli_timestamp(p_db_results, main_id, create_milli_timestamp, poster, is_ascending, max_n_comments, mongo_db_id, &n_comments_same_create_milli_timestamp);
+    if(error_code == S_ERR_NOT_EXISTS) error_code = S_OK;
 
     if(!error_code && !is_ascending) {
         _reverse_db_results(p_db_results, n_comments_same_create_milli_timestamp);
@@ -392,6 +393,7 @@ _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create
     int n_comments_diff_create_milli_timestamp = 0;
     if(!error_code && max_n_comments > 0) {
         error_code = _read_comments_get_db_results_diff_create_milli_timestamp(p_db_results, main_id, create_milli_timestamp, poster, is_ascending, max_n_comments, mongo_db_id, &n_comments_diff_create_milli_timestamp);
+        if(error_code == S_ERR_NOT_EXISTS) error_code = S_OK;
     }
 
     *n_comments = n_comments_same_create_milli_timestamp + n_comments_diff_create_milli_timestamp;
