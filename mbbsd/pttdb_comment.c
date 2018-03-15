@@ -392,7 +392,7 @@ _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create
 
     int n_comments_diff_create_milli_timestamp = 0;
     if(!error_code && max_n_comments > 0) {
-        error_code = _read_comments_get_db_results_diff_create_milli_timestamp(p_db_results, main_id, create_milli_timestamp, poster, is_ascending, max_n_comments, mongo_db_id, &n_comments_diff_create_milli_timestamp);
+        error_code = _read_comments_get_db_results_diff_create_milli_timestamp(p_db_results, main_id, create_milli_timestamp, is_ascending, max_n_comments, mongo_db_id, &n_comments_diff_create_milli_timestamp);
         if(error_code == S_ERR_NOT_EXISTS) error_code = S_OK;
     }
 
@@ -445,7 +445,7 @@ _read_comments_get_db_results_same_create_milli_timestamp(bson_t **db_results, U
 }
 
 Err
-_read_comments_get_db_results_diff_create_milli_timestamp(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, char *poster, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments)
+_read_comments_get_db_results_diff_create_milli_timestamp(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments)
 {
     Err error_code = S_OK;
     char op[4] = {};
