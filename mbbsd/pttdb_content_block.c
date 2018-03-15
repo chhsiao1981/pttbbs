@@ -287,6 +287,7 @@ read_content_blocks_by_main(UUID main_id, int max_n_block, int block_id, enum Mo
 Err
 _read_content_blocks_core(bson_t *key, int max_n_block, int block_id, enum MongoDBId mongo_db_id, ContentBlock *content_blocks, int *n_block, int *len)
 {
+    Err error_code = S_OK;
     // init db_results
     bson_t **db_results = malloc(sizeof(bson_t *) * max_n_block);
     if (db_results == NULL) return S_ERR_INIT;
@@ -383,6 +384,7 @@ dynamic_read_content_blocks_by_main(UUID main_id, int max_n_block, int block_id,
 Err
 _dynamic_read_content_blocks_core(bson_t *key, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len)
 {
+    Err error_code = S_OK;
     // init db_results
     bson_t **db_results = malloc(sizeof(bson_t *) * max_n_block);
     if (db_results == NULL) return S_ERR_INIT;
