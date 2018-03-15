@@ -376,7 +376,7 @@ _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create
     Err error_code = S_OK;
 
     char op[4] = {};
-    is_ascending ? strcpy(op, "$ge") : strcpy(op, "$le");
+    is_ascending ? strcpy(op, "$gte") : strcpy(op, "$lte");
     int order = is_ascending ? 1 : -1;
 
     bson_t *key = BCON_NEW(
