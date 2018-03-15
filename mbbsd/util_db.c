@@ -320,7 +320,7 @@ db_aggregate(int collection, bson_t *pipeline, int max_n_results, bson_t **resul
     Err error_code = S_OK;
     const bson_t *doc = NULL;
 
-    mongoc_cursor_t *cursor = mongoc_collection_aggregate(collection, MONGOC_QUERY_NONE, pipeline, NULL, NULL);
+    mongoc_cursor_t *cursor = mongoc_collection_aggregate(MONGO_COLLECTIONS[collection], MONGOC_QUERY_NONE, pipeline, NULL, NULL);
 
     int tmp_n_results = 0;
     bson_t **p_results = results;
