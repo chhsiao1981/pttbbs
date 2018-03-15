@@ -2,7 +2,7 @@
 #include "pttdb_internal.h"
 
 Err
-create_comment_reply(UUID main_id, UUID comment_id, char *poster, unsigned char *ip, int len, char *content, UUID comment_reply_id)
+create_comment_reply(UUID main_id, UUID comment_id, char *poster, char *ip, int len, char *content, UUID comment_reply_id)
 {
     Err error_code = S_OK;
 

@@ -285,11 +285,11 @@ Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *p
  * CommentReply
  **********/
 
-Err create_comment_reply(UUID main_id, UUID comment_id, char *poster, unsigned char *ip, int len, char *content, UUID comment_reply_id);
+Err create_comment_reply(UUID main_id, UUID comment_id, char *poster, char *ip, int len, char *content, UUID comment_reply_id);
 
 Err read_comment_reply(UUID comment_reply_id, CommentReply *comment_reply);
 
-Err delete_comment_reply(UUID comment_reply_id, char *updater, unsigned char *ip);
+Err delete_comment_reply(UUID comment_reply_id, char *updater, char *ip);
 
 Err init_comment_reply_buf(CommentReply *comment_reply);
 Err destroy_comment_reply(CommentReply *comment_reply);
