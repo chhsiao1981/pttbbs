@@ -5,7 +5,7 @@
 #include "pttdb_internal.h"
 #include "util_db_internal.h"
 
-TEST(pttdb, create_comment) {
+TEST(pttdb_comment, create_comment) {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
 
     UUID main_id;
@@ -55,7 +55,7 @@ TEST(pttdb, create_comment) {
     destroy_comment(&comment);
 }
 
-TEST(pttdb, delete_comment) {
+TEST(pttdb_comment, delete_comment) {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
 
     UUID main_id;
