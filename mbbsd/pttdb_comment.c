@@ -140,7 +140,7 @@ get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len)
             "{",
                 "$group",
                 "{",
-                    "_id", NULL,
+                    "_id", BCON_NULL,
                     "count", "{",
                         "$sum", BCON_INT32(1),
                     "}",

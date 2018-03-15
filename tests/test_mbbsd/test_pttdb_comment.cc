@@ -168,6 +168,28 @@ TEST(pttdb_comment, serialize_comment_bson) {
     EXPECT_STREQ(comment.buf, comment2.buf);
 }
 
+TEST(pttdb_comment, get_comment_info_by_main) {
+
+    UUID main_id;
+    UUID comment_id;
+    UUID comment_id2;
+
+    gen_uuid(main_id);
+
+    Err error = S_OK
+    error = create_comment(main_id, "poster1", "10.3.1.4", 10, "test1test1", COMMENT_TYPE_GOOD, comment_id);
+    EXPECT_EQ(S_OK, error);
+    error = create_comment(main_id, "poster1", "10.3.1.4", 10, "test2test2", COMMENT_TYPE_GOOD, comment_id2);
+    EXPECT_EQ(S_OK, error);
+
+    int n_total_comments = 0;
+    int total_len = 0;
+    error = get_comment_info_by_main(main_id, &n_total_comments, &total_len);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(2, n_total_comments);
+    EXPECT_EQ(20, total_len);
+}
+
 /**********
  * MAIN
  */
