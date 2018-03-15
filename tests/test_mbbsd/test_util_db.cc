@@ -201,10 +201,6 @@ TEST(util_db, db_aggregate) {
                     "}",
                 "}",
             "}",
-            "{",
-                "$limit",
-                BCON_INT32(1),
-            "}",
         "]"
         );    
 
