@@ -292,14 +292,11 @@ _get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_
     }
 
     Err error_code = S_OK;
-    bool status = true;
 
-    status = bson_get_value_int32(result, "count", n_total_comments);
-    if(!status) error_code = S_ERR;
+    error_code = bson_get_value_int32(result, "count", n_total_comments);
 
     if(!error_code) {
-        status = bson_get_value_int32(result, "len", total_len);
-        if(!status) error_code = S_ERR;
+        error_code = bson_get_value_int32(result, "len", total_len);
     }
 
     return error_code;
