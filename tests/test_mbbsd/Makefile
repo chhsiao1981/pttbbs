@@ -66,7 +66,7 @@ MONGO_LIBS:=	-lmongoc-1.0 -lbson-1.0 -lresolv
 CXXFLAGS+=	${MONGO_CXXFLAGS}
 LDFLAGS+=	${MONGO_LDFLAGS}
 LDLIBS+=	${MONGO_LIBS}
-MBBSD_OBJS+=	${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/pttdb_main.o ${MBBSD_DIR}/pttdb_comment.o ${MBBSD_DIR}/pttdb_content_block.o ${MBBSD_DIR}/pttdb_misc.o ${MBBSD_DIR}/util_db.o
+MBBSD_OBJS+=	${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/pttdb_main.o ${MBBSD_DIR}/pttdb_comment.o ${MBBSD_DIR}/pttdb_comment_reply.o ${MBBSD_DIR}/pttdb_content_block.o ${MBBSD_DIR}/pttdb_misc.o ${MBBSD_DIR}/util_db.o
 .endif # MONGO_CLIENT_URL
 
 ##########
@@ -76,7 +76,7 @@ MBBSD_OBJS+=	${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/pttdb_main.o ${MBBSD_DIR}/pttdb_c
 TEST_PROGS=	test_dummy
 
 .if $(MONGO_CLIENT_URL)
-TEST_PROGS+=	test_pttdb test_pttdb_main test_pttdb_comment test_pttdb_content_block test_pttdb_misc test_util_db
+TEST_PROGS+=	test_pttdb test_pttdb_main test_pttdb_comment test_pttdb_comment_reply test_pttdb_content_block test_pttdb_misc test_util_db
 .endif
 
 ##########

@@ -269,3 +269,18 @@ get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offs
 
     return S_ERR;
 }
+
+Err
+pttdb_count_lines(char *content, int len, int *n_line)
+{
+    int tmp_n_line = 0;
+    char *p_content = content;
+    for(int i = 0; i < len - 1; i++, p_content++) {
+        if(*p_content == '\r' && *(p_content + 1) == '\n') {
+            tmp_n_line++;
+        }
+    }
+    *n_line = tmp_n_line;
+
+    return S_OK;
+}

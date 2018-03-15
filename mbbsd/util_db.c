@@ -83,6 +83,7 @@ init_mongo_collections(const char *db_name[])
     MONGO_COLLECTIONS[MONGO_MAIN] = mongoc_client_get_collection(MONGO_CLIENT, db_name[MONGO_POST_DBNAME], MONGO_MAIN_NAME);
     MONGO_COLLECTIONS[MONGO_MAIN_CONTENT] = mongoc_client_get_collection(MONGO_CLIENT, db_name[MONGO_POST_DBNAME], MONGO_MAIN_CONTENT_NAME);
     MONGO_COLLECTIONS[MONGO_COMMENT] = mongoc_client_get_collection(MONGO_CLIENT, db_name[MONGO_POST_DBNAME], MONGO_COMMENT_NAME);
+    MONGO_COLLECTIONS[MONGO_COMMENT_REPLY] = mongoc_client_get_collection(MONGO_CLIENT, db_name[MONGO_POST_DBNAME], MONGO_COMMENT_REPLY_NAME);
 
     MONGO_COLLECTIONS[MONGO_TEST] = mongoc_client_get_collection(MONGO_CLIENT, db_name[MONGO_TEST_DBNAME], MONGO_TEST_NAME);
 

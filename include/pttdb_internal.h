@@ -67,18 +67,16 @@ Err _reverse_db_results(bson_t **db_results, int n_results);
  * CommentReply
  **********/
 
-/*
-Err _serialize_comment_reply_bson(CommentReplyHeader *comment_reply_header, bson_t **comment_reply_bson);
-Err _deserialize_comment_reply_bson(bson_t *comment_reply_bson, CommentReplyHeader *comment_reply_header);
-Err _serialize_update_comment_reply_bson(UUID content_id, char *updater, char *update_ip, time64_t update_milli_timestamp, int n_total_line, int n_total_block, int len_total, bson_t **comment_reply_bson);
-*/
+Err _serialize_comment_reply_bson(CommentReply *comment_reply, bson_t **comment_reply_bson);
+Err _deserialize_comment_reply_bson(bson_t *comment_reply_bson, CommentReply *comment_reply);
+Err _deserialize_comment_reply_bson_with_buf(bson_t *comment_reply_bson, CommentReply *comment_reply);
 
 /**********
  * Misc
  **********/
 
 Err get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offset_line, int *bytes_in_new_line);
-
+Err pttdb_count_lines(char *content, int len, int *n_line);
 
 #ifdef __cplusplus
 }

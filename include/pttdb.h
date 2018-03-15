@@ -156,13 +156,11 @@ typedef struct CommentReply {
     unsigned int version;                           // version
 
     UUID the_id;                                     // comment-reply-id
-    UUID content_id;                                 // corresponding content-id
-    UUID update_content_id;                          // updating content-id
 
     UUID comment_id;                                 // corresponding comment-id
     UUID main_id;                                    // corresponding main-id
 
-    unsigned int status;                            // status
+    enum LiveStatus status;                          // status
     char status_updater[IDLEN + 1];                  // last user updating status
     char status_update_ip[IPV4LEN + 1];              // last ip updating the status
 
@@ -173,9 +171,9 @@ typedef struct CommentReply {
     char update_ip[IPV4LEN + 1];                     // last update-ip
     time64_t update_milli_timestamp;                 // last update-time
 
-    int n_line;                                      // n-line
-    int len;                                         // size
     int max_buf_len;                                 // max_buf_len
+    int len;                                         // size
+    int n_line;                                      // n-line
     char *buf;
 } CommentReply;
 
@@ -215,6 +213,8 @@ Err n_line_post(UUID main_id, int *n_line);
 Err get_content_by_main(UUID main_id, int offset_line, char *buf, int max_n_buf, int max_n_line, int *n_buf, int *n_line, LineInfo *start_line_info, LineInfo *end_line_info);
 Err scroll_up_by_line_info(LineInfo *orig_start_line_info, char *buf, int max_n_buf, int max_n_line, int *n_buf, int *n_line, LineInfo *new_start_line_info, LineInfo *new_end_line_info);
 Err scroll_down_by_line_info(LineInfo *orig_end_line_info, char *buf, int max_n_buf, int max_n_line, int *n_buf, int *n_line, LineInfo *new_start_line_info, LineInfo *new_end_line_info);
+
+Err dynamic_read_comment_and_comment_reply_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, char *buf, int max_n_buf, int max_n_line, Comment *comments, int max_n_comments, CommentReply *comment_replys, int *n_comments, int *n_comment_replys);
 */
 
 /**********
@@ -285,23 +285,17 @@ Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *p
  * CommentReply
  **********/
 
-/*
 Err create_comment_reply(UUID main_id, UUID comment_id, char *poster, unsigned char *ip, int len, char *content, UUID comment_reply_id);
 
-Err read_comment_reply_by_comment_id(UUID comment_id, CommentReplyHeader *comment_reply_header);
-Err read_comment_reply_by_comment_reply_id(UUID comment_reply_id, CommentReplyHeader *comment_reply_header);
-
-Err read_comment_replys_by_comment_ids(UUID *comment_id, int n_comments, CommentReplyHeader *comment_reply_headers, int *n_comment_replys);
-
-Err get_comment_reply_info_by_main(UUID main_id, int *n_total_line, int *total_len);
-Err get_comment_reply_info_by_comment(UUID comment_id, int *n_total_line, int *total_len);
-Err get_comment_reply_info_by_comment_reply(UUID comment_reply_id, int *n_total_line, int *total_len);
-
-Err update_comment_reply(UUID comment_reply_id, char *updater, unsigned char *ip, int len, char *content);
+Err read_comment_reply(UUID comment_reply_id, CommentReply *comment_reply);
 
 Err delete_comment_reply(UUID comment_reply_id, char *updater, unsigned char *ip);
-*/
 
+Err init_comment_reply_buf(CommentReply *comment_reply);
+Err destroy_comment_reply(CommentReply *comment_reply);
+
+Err associate_comment_reply(CommentReply *comment_reply, char *buf, int max_buf_len);
+Err dissociate_comment_reply(CommentReply *comment_reply);
 
 #ifdef __cplusplus
 }
