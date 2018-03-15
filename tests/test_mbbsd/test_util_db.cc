@@ -209,7 +209,7 @@ TEST(util_db, db_aggregate) {
         );    
 
     char *str = bson_as_canonical_extended_json(pipeline, NULL);
-    fprintf(stderr, "test_util_db.db_aggregate: pipeline: %s\n", str)
+    fprintf(stderr, "test_util_db.db_aggregate: pipeline: %s\n", str);
     bson_free(str);
 
     bson_t *result = NULL;
