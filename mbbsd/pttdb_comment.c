@@ -455,7 +455,7 @@ _read_comments_get_db_results_diff_create_milli_timestamp(bson_t **db_results, U
         "main_id", BCON_BINARY(main_id, UUIDLEN),
         "status", BCON_INT32(LIVE_STATUS_ALIVE),
         "create_milli_timestamp", "{",
-            op, BCON_INT64(create_milli_timestamp)
+            op, BCON_INT64(create_milli_timestamp),
         "}"
     );
 
