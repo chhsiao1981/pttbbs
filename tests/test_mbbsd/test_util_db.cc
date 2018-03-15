@@ -169,13 +169,16 @@ TEST(util_db, db_aggregate) {
 
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
-    bson_t *key = BCON_NEW("main_id", BCON_INT32(4));
+    UUID main_id;
+    gen_uuid(main_id);
+
+    bson_t *key = BCON_NEW("main_id", BCON_BINARY(main_id, UUIDLEN));
     bson_t *val = BCON_NEW("len", BCON_INT32(5));
 
     error = db_update_one(MONGO_TEST, key, val, true);
     EXPECT_EQ(S_OK, error);
 
-    bson_t *key2 = BCON_NEW("main_id", BCON_INT32(4));
+    bson_t *key2 = BCON_NEW("main_id", BCON_BINARY(main_id, UUIDLEN));
     bson_t *val2 = BCON_NEW("len", BCON_INT32(10));
 
     error = db_update_one(MONGO_TEST, key, val, true);
@@ -186,7 +189,7 @@ TEST(util_db, db_aggregate) {
             "{",
                 "$match",
                 "{",
-                    "main_id", BCON_BINARY(comment->main_id, UUIDLEN),
+                    "main_id", BCON_BINARY(main_id, UUIDLEN),
                 "}",
             "}",
             "{",
