@@ -224,8 +224,8 @@ TEST(pttdb_comment, ensure_db_results_order) {
     bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
     long int rand_int = 0;
 
-    rand_int = random();
     for(int i = 0; i < n_results; i++) {
+        rand_int = random();
         db_results[i] = BCON_NEW(
                 "poster", BCON_BINARY((unsigned char *)"test_poster", 11),
                 "create_milli_timestamp", BCON_INT64(rand_int)
