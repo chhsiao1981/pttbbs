@@ -370,7 +370,7 @@ _get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_
 }
 
 Err
-_read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, MongoDBId mongo_db_id, int *n_read_comments)
+_read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, int *n_read_comments)
 {
     Err error_code = S_OK;
 

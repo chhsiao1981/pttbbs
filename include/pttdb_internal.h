@@ -53,7 +53,7 @@ Err _deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *co
 Err _serialize_comment_bson(Comment *comment, bson_t **comment_bson);
 Err _deserialize_comment_bson(bson_t *comment_bson, Comment *comment);
 Err _get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_total_comments, int *total_len);
-Err _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, MongoDBId mongo_db_id, int *n_read_comments);
+Err _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, int *n_read_comments);
 Err _ensure_db_results_order(bson_t **db_results, int n_results, bool is_ascending);
 Err _sort_db_results_order(bson_t **db_results, int n_results, bool is_ascending);
 int _cmp_ascending(const void *a, const void *b);
