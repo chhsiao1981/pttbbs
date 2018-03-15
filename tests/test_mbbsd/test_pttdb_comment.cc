@@ -294,7 +294,7 @@ TEST(pttdb_comment, ensure_db_results_order4) {
     int n_results = 100;
     bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
 
-    char poster[IDLEN + 1] = {}
+    char poster[IDLEN + 1] = {};
     for(int i = 0; i < n_results; i++) {
         sprintf(poster, "poster%03d", i);
         db_results[i] = BCON_NEW(
@@ -319,7 +319,7 @@ TEST(pttdb_comment, ensure_db_results_order5) {
     int n_results = 100;
     bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
 
-    char poster[IDLEN + 1] = {}
+    char poster[IDLEN + 1] = {};
     for(int i = 0; i < n_results; i++) {
         sprintf(poster, "poster%03d", 100 - i);
         db_results[i] = BCON_NEW(
