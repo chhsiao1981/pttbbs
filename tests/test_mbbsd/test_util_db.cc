@@ -275,7 +275,7 @@ TEST(util_db, db_count) {
 
     bson_t *query_key = BCON_NEW(
         "main_id", BCON_INT32(4)
-        )
+        );
 
     error = db_count(MONGO_TEST, query_key, &count)
     EXPECT_EQ(S_OK, error);
