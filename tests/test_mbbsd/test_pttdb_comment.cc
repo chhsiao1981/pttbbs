@@ -682,7 +682,7 @@ TEST(pttdb_comment, read_comments_by_main4)
     }
 }
 
-TEST(pttdb_comment, read_comments_by_main4)
+TEST(pttdb_comment, read_comments_by_main5)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
 
