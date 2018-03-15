@@ -222,8 +222,8 @@ read_content_block(UUID content_id, int block_id, enum MongoDBId mongo_db_id, Co
     if (content_block->buf_block == NULL) return S_ERR;
 
     bson_t *key = BCON_NEW(
-                      (char *)"the_id", BCON_BINARY(content_id, UUIDLEN),
-                      (char *)"block_id", BCON_INT32(block_id)
+                      "the_id", BCON_BINARY(content_id, UUIDLEN),
+                      "block_id", BCON_INT32(block_id)
                   );
     if (key == NULL) error_code = S_ERR;
 

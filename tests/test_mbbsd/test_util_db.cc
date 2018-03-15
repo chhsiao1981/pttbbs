@@ -219,11 +219,11 @@ TEST(util_db, db_aggregate) {
     int count = 0;
     int len = 0;
 
-    bool status = bson_get_value_int32(result, "count", &count);
+    bool status = bson_get_value_int32(result, (char *)"count", &count);
     EXPECT_EQ(true, status);
     EXPECT_EQ(2, count);
 
-    status = bson_get_value_int32(result, "len", &len);
+    status = bson_get_value_int32(result, (char *)"len", &len);
     EXPECT_EQ(true, status);
     EXPECT_EQ(15, len);
 
