@@ -176,10 +176,10 @@ TEST(pttdb_comment, get_comment_info_by_main) {
 
     gen_uuid(main_id);
 
-    Err error = S_OK
-    error = create_comment(main_id, "poster1", "10.3.1.4", 10, "test1test1", COMMENT_TYPE_GOOD, comment_id);
+    Err error = S_OK;
+    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
     EXPECT_EQ(S_OK, error);
-    error = create_comment(main_id, "poster1", "10.3.1.4", 10, "test2test2", COMMENT_TYPE_GOOD, comment_id2);
+    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test2test2", COMMENT_TYPE_GOOD, comment_id2);
     EXPECT_EQ(S_OK, error);
 
     int n_total_comments = 0;
