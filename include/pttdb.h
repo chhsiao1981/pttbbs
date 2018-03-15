@@ -191,7 +191,7 @@ typedef struct LineInfo {
     char comment_poster[IDLEN + 1];
     int offset_line;
     int offset;
-};
+} LineInfo;
 
 /**********
  * Milli-timestamp
