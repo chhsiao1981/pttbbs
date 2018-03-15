@@ -775,7 +775,6 @@ TEST(pttdb_comment, read_comments_by_main5)
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(10, n_comments);
     EXPECT_EQ(100, len);
-    char poster[20] = {};
     for(int i = 10; i < 15; i++) {
         EXPECT_EQ(create_milli_timestamp, comments[i].create_milli_timestamp);
         sprintf(poster, "poster%03d", i);
