@@ -629,7 +629,7 @@ TEST(pttdb_comment, read_comments_by_main4)
         sprintf(comment.poster, "poster%03d", i);
 
         error = _serialize_comment_bson(&comment, &comment_bson);
-        error_code = _serialize_uuid_bson(comment_id, &comment_id_bson);
+        error = _serialize_uuid_bson(comment_id, &comment_id_bson);
 
         error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
 
@@ -647,8 +647,11 @@ TEST(pttdb_comment, read_comments_by_main4)
         comment.create_milli_timestamp = create_milli_timestamp + i;
         comment.update_milli_timestamp = create_milli_timestamp + i;
 
-        error = _serialize_comment_bson(&comment, comment_bson);
+        error = _serialize_comment_bson(&comment, &comment_bson);
         error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
+
+        bson_safe_destroy(&comment_bson);
+        bson_safe_destroy(&comment_id_bson);
 
         EXPECT_EQ(S_OK, error);
     }
