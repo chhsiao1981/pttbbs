@@ -174,11 +174,13 @@ get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len)
     return error_code;
 }
 
+/*
 Err
 read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, int *n_read_comments, Comment *comments)
 {
 
 }
+*/
 
 /**
  * @brief [brief description]
