@@ -174,6 +174,21 @@ get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len)
     return error_code;
 }
 
+Err
+get_comment_count_by_main(UUID main_id, int *conut)
+{
+    Err error_code = S_OK;
+    bson_t *key = BCON_NEW(
+        "main_id", BCON_BINARY(main_id, UUIDLEN)
+        );
+
+    error_code = db_count(MONGO_COMMENT, key, count);
+
+    bson_safe_destroy(&key);
+
+    return error_code;
+}
+
 /*
 Err
 read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, int *n_read_comments, Comment *comments)

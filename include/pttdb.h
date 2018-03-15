@@ -238,6 +238,7 @@ Err read_comment(UUID comment_id, Comment *comment);
 Err delete_comment(UUID comment_id, char *updater, char *ip);
 
 Err get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len);
+Err get_comment_count_by_main(UUID main_id);
 
 /*
 Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, int *n_read_comments, Comment *comments);

@@ -345,6 +345,23 @@ db_aggregate(int collection, bson_t *pipeline, int max_n_results, bson_t **resul
 }
 
 Err
+db_count(int collection, bson_t *key, int *count)
+{
+    Err error_code = S_OK;
+    bson_error_t error;
+    int64_t tmp_count = mongoc_collection_count_with_opts(MONGO_COLLECTIONS[collection], MONGOC_QUERY_NONE, key, 0, 0, NULL, NULL, &error);
+
+    if(tmp_count == -1) {
+        error_code = S_ERR;
+        tmp_count = 0;
+    }
+
+    *count = (int)tmp_count;
+
+    return error_code;
+}
+
+Err
 _DB_FORCE_DROP_COLLECTION(int collection)
 {
     bool status;
