@@ -222,6 +222,10 @@ TEST(util_db, db_aggregate) {
 
     EXPECT_EQ(1, n_result);
 
+    str = bson_as_canonical_extended_json(result, NULL);
+    fprintf(stderr, "test_util_db.db_aggregate: result: %s\n", str);
+    bson_free(str);
+
     int count = 0;
     int len = 0;
 
