@@ -235,7 +235,7 @@ db_find(int collection, bson_t *key, bson_t *fields, bson_t *sort, int max_n_res
     fprintf(stderr, "util_db.db_find: key: %s\n", key);
     bson_free(str);
 
-    char *str = bson_as_canonical_extended_json(opts, NULL);
+    str = bson_as_canonical_extended_json(opts, NULL);
     fprintf(stderr, "util_db.db_find: opts: %s\n", opts);
     bson_free(str);
 
