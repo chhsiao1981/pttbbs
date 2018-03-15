@@ -251,7 +251,7 @@ read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_asc
     if (db_results == NULL) return S_ERR_INIT;
     bzero(db_results, sizeof(bson_t *) * max_n_comments);
 
-    error_code = _read_comments_get_db_results(db_results, main_id, create_milli_timestamp, is_ascending, max_n_comments, is_ascending, mongo_db_id, n_read_comments);
+    error_code = _read_comments_get_db_results(db_results, main_id, create_milli_timestamp, is_ascending, max_n_comments, mongo_db_id, n_read_comments);
 
     int tmp_n_read_comments = *n_read_comments;
     bson_t **p_db_results = db_results;
@@ -370,7 +370,7 @@ _get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_
 }
 
 Err
-_read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, bool is_ascending, MongoDBId mongo_db_id, int *n_read_comments)
+_read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, MongoDBId mongo_db_id, int *n_read_comments)
 {
     Err error_code = S_OK;
 
@@ -390,7 +390,7 @@ _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create
             "create_milli_timestamp", BCON_INT32(order),
             "poster", BCON_INT32(order),
         "}"
-    );
+                  );
     if (key == NULL) error_code = S_ERR;
 
     if (!error_code) {
@@ -443,7 +443,8 @@ _sort_db_results_order(bson_t **db_results, int n_results, bool is_ascending)
     return S_OK;
 }
 
-int _cmp_ascending(const void *a, const void *b)
+int
+_cmp_ascending(const void *a, const void *b)
 {
     bson_t **tmp_tmp_a = (bson_t **)a;
     bson_t *tmp_a = *tmp_tmp_a;
@@ -477,7 +478,8 @@ int _cmp_ascending(const void *a, const void *b)
     return strncmp(poster_a, poster_b, IDLEN);
 }
 
-int _cmp_descending(const void *a, const void *b)
+int
+_cmp_descending(const void *a, const void *b)
 {
     bson_t **tmp_tmp_a = (bson_t **)a;
     bson_t *tmp_a = *tmp_tmp_a;
