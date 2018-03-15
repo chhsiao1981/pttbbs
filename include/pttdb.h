@@ -53,6 +53,19 @@ enum LiveStatus {
     LIVE_STATUS_DELETED,
 };
 
+enum LineType {
+    LINE_TYPE_MAIN,
+    LINE_TYPE_COMMENT,
+    LINE_TYPE_COMMENT_REPLY,
+};
+
+enum ReadCommentsOpType {
+    READ_COMMENTS_OP_TYPE_LT,
+    READ_COMMENTS_OP_TYPE_LTE,
+    READ_COMMENTS_OP_TYPE_GT,
+    READ_COMMENTS_OP_TYPE_GTE,
+};
+
 extern enum Karma KARMA_BY_COMMENT_TYPE[COMMENT_TYPE_N_TYPE];
 
 /**********
@@ -167,6 +180,20 @@ typedef struct CommentReply {
 } CommentReply;
 
 /**********
+ * LineInfo
+ **********/
+
+typedef struct LineInfo {
+    UUID main_id;
+    enum LineType line_type;
+    int main_content_block_id;
+    int comment_create_milli_timestamp;
+    char comment_poster[IDLEN + 1];
+    int offset_line;
+    int offset;
+};
+
+/**********
  * Milli-timestamp
  **********/
 Err get_milli_timestamp(time64_t *milli_timestamp);
@@ -185,6 +212,9 @@ Err uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp);
  **********/
 /*
 Err n_line_post(UUID main_id, int *n_line);
+Err get_content_by_main(UUID main_id, int offset_line, char *buf, int max_n_buf, int max_n_line, int *n_buf, int *n_line, LineInfo *start_line_info, LineInfo *end_line_info);
+Err scroll_up_by_line_info(LineInfo *orig_start_line_info, char *buf, int max_n_buf, int max_n_line, int *n_buf, int *n_line, LineInfo *new_start_line_info, LineInfo *new_end_line_info);
+Err scroll_down_by_line_info(LineInfo *orig_end_line_info, char *buf, int max_n_buf, int max_n_line, int *n_buf, int *n_line, LineInfo *new_start_line_info, LineInfo *new_end_line_info);
 */
 
 /**********
@@ -249,8 +279,7 @@ Err destroy_comment(Comment *comment);
 
 Err associate_comment(Comment *comment, char *buf, int max_buf_len);
 Err dissociate_comment(Comment *comment);
-Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, Comment *comments, int *n_read_comments, int *len);
-Err dynamic_read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, Comment *comments, int *n_read_comments, int *len);
+Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, Comment *comments, int *n_read_comments, int *len);
 
 /**********
  * CommentReply
