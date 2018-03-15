@@ -371,13 +371,17 @@ TEST(pttdb, read_content_blocks_get_db_results)
 
     bson_t *b2[10] = {};
     int n_block;
-    Err error = _read_content_blocks_get_db_results(b2, content_id, 10, 0, MONGO_MAIN_CONTENT, &n_block);
+    bson_t *key = BCON_NEW(
+            "the_id", BCON_BINARY(content_id, UUIDLEN)
+        );
+    Err error = _read_content_blocks_get_db_results(b2, key, 10, 0, MONGO_MAIN_CONTENT, &n_block);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(10, n_block);
 
     error = _ensure_block_ids(b2, 0, 10);
     EXPECT_EQ(S_OK, error);
 
+    bson_safe_destroy(&key);
     for (int i = 0; i < 10; i++) {
         bson_safe_destroy(&b[i]);
         bson_safe_destroy(&b2[i]);
