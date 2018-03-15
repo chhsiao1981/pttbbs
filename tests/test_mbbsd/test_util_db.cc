@@ -184,7 +184,7 @@ TEST(util_db, db_aggregate) {
         "main_id", BCON_INT32(4)
         );
 
-    error = db_update_one(MONGO_TEST, key, val, true);
+    error = db_update_one(MONGO_TEST, key2, val2, true);
     EXPECT_EQ(S_OK, error);
 
     bson_t *pipeline = BCON_NEW(
