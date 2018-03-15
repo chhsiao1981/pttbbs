@@ -229,12 +229,12 @@ TEST(util_db, db_aggregate) {
     int count = 0;
     int len = 0;
 
-    bool status = bson_get_value_int32(result, (char *)"count", &count);
-    EXPECT_EQ(true, status);
+    error = bson_get_value_int32(result, (char *)"count", &count);
+    EXPECT_EQ(S_OK, error);
     EXPECT_EQ(2, count);
 
-    status = bson_get_value_int32(result, (char *)"len", &len);
-    EXPECT_EQ(true, status);
+    error = bson_get_value_int32(result, (char *)"len", &len);
+    EXPECT_EQ(S_OK, error);
     EXPECT_EQ(15, len);
 
     bson_safe_destroy(&pipeline);
