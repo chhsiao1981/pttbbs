@@ -252,7 +252,10 @@ db_find(int collection, bson_t *key, bson_t *fields, bson_t *sort, int max_n_res
         }
         *n_results = len;
 
-        if (mongoc_cursor_error(cursor, &error)) error_code = S_ERR;
+        if (mongoc_cursor_error(cursor, &error)) {
+            fprintf(stderr, "util_db.db_find: something went wrong with find: e: %s\n", error.message);
+            error_code = S_ERR;
+        }
 
         mongoc_cursor_destroy(cursor);        
     }    
