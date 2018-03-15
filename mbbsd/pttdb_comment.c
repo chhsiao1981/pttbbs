@@ -402,6 +402,7 @@ _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create
         error_code = db_find(mongo_db_id, key, NULL, max_n_comments, n_read_comments, db_results);
     }
     int tmp_n_read_comments = *n_read_comments;
+    fprintf(stderr, "pttdb_comment._read_comments_get_db_results: after db_find: e: %d n_comments: %d\n", error_code, *n_read_comments);
 
     Err error_code_ensure_order = S_OK;
     if (!error_code) {

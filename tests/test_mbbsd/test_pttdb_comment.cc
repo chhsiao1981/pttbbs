@@ -148,7 +148,7 @@ TEST(pttdb_comment, serialize_comment_bson) {
     EXPECT_EQ(S_OK, error);
 
     char *str = bson_as_canonical_extended_json(comment_bson, NULL);
-    fprintf(stderr, "comment_bson: %s\n", str);
+    fprintf(stderr, "test_pttdb_comment.serialize_comment_bson: comment_bson: %s\n", str);
     bson_free(str);
 
     error = _deserialize_comment_bson(comment_bson, &comment2);
