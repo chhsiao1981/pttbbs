@@ -348,7 +348,7 @@ _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create
 
 
 Err
-_read_comments_get_db_results_same_create_milli_timestamp(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_tpe, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments)
+_read_comments_get_db_results_same_create_milli_timestamp(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments)
 {
     Err error_code = S_OK;
     int order = (op_type == READ_COMMENTS_OP_TYPE_LT || op_type == READ_COMMENTS_OP_TYPE_LTE) ? 1 : -1;
