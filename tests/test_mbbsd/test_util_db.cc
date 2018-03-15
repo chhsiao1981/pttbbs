@@ -248,6 +248,51 @@ TEST(util_db, db_aggregate) {
     bson_safe_destroy(&result);
 }
 
+TEST(util_db, db_count) {
+    Err error = S_OK;
+
+    _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
+
+    bson_t *key = BCON_NEW("tmp", BCON_INT32(4));
+    bson_t *val = BCON_NEW(
+        "len", BCON_INT32(5),
+        "main_id", BCON_INT32(4)
+        );
+
+    error = db_update_one(MONGO_TEST, key, val, true);
+    EXPECT_EQ(S_OK, error);
+
+    bson_t *key2 = BCON_NEW("tmp", BCON_INT32(5));
+    bson_t *val2 = BCON_NEW(
+        "len", BCON_INT32(10),
+        "main_id", BCON_INT32(4)
+        );
+
+    error = db_update_one(MONGO_TEST, key2, val2, true);
+    EXPECT_EQ(S_OK, error);
+
+    int count;
+
+    bson_t *query_key = BCON_NEW(
+        "main_id", BCON_INT32(4)
+        )
+
+    error = db_count(MONGO_TEST, query_key, &count)
+    EXPECT_EQ(S_OK, error);
+
+    EXPECT_EQ(2, count);
+
+    bson_safe_destroy(&query_key);
+
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&val);
+
+    bson_safe_destroy(&key2);
+    bson_safe_destroy(&val2);
+
+    bson_safe_destroy(&result);
+}
+
 TEST(util_db, bson_safe_destroy) {
     bson_t *b = NULL;
     Err error = bson_safe_destroy(&b);
