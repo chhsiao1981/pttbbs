@@ -28,6 +28,7 @@ create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enu
 
     time64_t create_milli_timestamp;
 
+    // use associate to associate content directly
     Comment comment = {};
     associate_comment(&comment, content, len);
     comment.len = len;
@@ -109,14 +110,14 @@ delete_comment(UUID comment_id, char *updater, char *ip) {
     Err error_code = S_OK;
 
     bson_t *key = BCON_NEW(
-                      "the_id", BCON_BINARY(comment_id, UUIDLEN)
-                  );
+        "the_id", BCON_BINARY(comment_id, UUIDLEN)
+    );
 
     bson_t *val = BCON_NEW(
-                      "status_updater", BCON_BINARY((unsigned char *)updater, IDLEN),
-                      "status", BCON_INT32(LIVE_STATUS_DELETED),
-                      "status_update_ip", BCON_BINARY((unsigned char *)ip, IPV4LEN)
-                  );
+        "status_updater", BCON_BINARY((unsigned char *)updater, IDLEN),
+        "status", BCON_INT32((int)LIVE_STATUS_DELETED),
+        "status_update_ip", BCON_BINARY((unsigned char *)ip, IPV4LEN)
+    );
 
     error_code = db_update_one(MONGO_COMMENT, key, val, true);
 
@@ -131,27 +132,27 @@ get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len)
 {
     Err error_code = S_OK;
     bson_t *pipeline = BCON_NEW(
-                           "pipeline", "[",
-                               "{",
-                                   "$match",
-                                   "{",
-                                       "main_id", BCON_BINARY(main_id, UUIDLEN),
-                                   "}",
-                               "}",
-                               "{",
-                                   "$group",
-                                   "{",
-                                       "_id", BCON_NULL,
-                                       "count", "{",
-                                           "$sum", BCON_INT32(1),
-                                       "}",
-                                       "len", "{",
-                                           "$sum", "$len",
-                                       "}",
-                                   "}",
-                               "}",
-                           "]"
-                       );
+        "pipeline", "[",
+            "{",
+                "$match", "{",
+                    "main_id", BCON_BINARY(main_id, UUIDLEN),
+                    "status", BCON_INT32((int)LIVE_STATUS_ALIVE),
+                "}",
+            "}",
+            "{",
+                "$group", "{",
+                    "_id", BCON_NULL,
+                    "count", "{",
+                        "$sum", BCON_INT32(1),
+                    "}",
+                    "len", "{",
+                        "$sum", "$len",
+                    "}",
+                "}",
+            "}",
+        "]"
+    );
+
     if (pipeline == NULL) error_code = S_ERR;
 
     bson_t *result = NULL;
@@ -176,8 +177,9 @@ get_comment_count_by_main(UUID main_id, int *count)
 {
     Err error_code = S_OK;
     bson_t *key = BCON_NEW(
-                      "main_id", BCON_BINARY(main_id, UUIDLEN)
-                  );
+        "main_id", BCON_BINARY(main_id, UUIDLEN),
+        "status", BCON_INT32((int)LIVE_STATUS_ALIVE),
+    );
 
     error_code = db_count(MONGO_COMMENT, key, count);
 
@@ -249,24 +251,14 @@ read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_asc
     if (db_results == NULL) return S_ERR_INIT;
     bzero(db_results, sizeof(bson_t *) * max_n_comments);
 
-    char op[4];
-    is_ascending ? strcpy(op, "$ge") : strcpy(op, "$le");
-
-    bson_t *key = BCON_NEW(
-        "main_id", BCON_BINARY(main_id, UUIDLEN),
-        "create_milli_timestamp", "{"
-            op, BCON_INT64(create_milli_timestamp),
-        "}"
-        );
-
-    error_code = _read_comments_get_db_results(db_results, key, max_n_comments, is_ascending, mongo_db_id, n_read_comments);
+    error_code = _read_comments_get_db_results(db_results, main_id, create_milli_timestamp, is_ascending, max_n_comments, is_ascending, mongo_db_id, n_read_comments);
 
     int tmp_n_read_comments = *n_read_comments;
     bson_t **p_db_results = db_results;
     Comment *p_comments = comments;
 
     int tmp_len = 0;
-    if(!error_code) {
+    if (!error_code) {
         for (int i = 0; i < tmp_n_read_comments; i++) {
             error_code = _deserialize_comment_bson(*p_db_results, p_comments);
 
@@ -291,8 +283,6 @@ read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, bool is_asc
     }
     free(db_results);
 
-    bson_safe_destroy(&key);
-
     return error_code;
 }
 
@@ -307,17 +297,7 @@ dynamic_read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, boo
     if (db_results == NULL) return S_ERR_INIT;
     bzero(db_results, sizeof(bson_t *) * max_n_comments);
 
-    char op[4];
-    is_ascending ? strcpy(op, "$ge") : strcpy(op, "$le");
-
-    bson_t *key = BCON_NEW(
-        "main_id", BCON_BINARY(main_id, UUIDLEN)
-        "create_milli_timestamp", "{"
-            op, BCON_INT64(create_milli_timestamp),
-        "}"
-        );
-
-    error_code = _read_comments_get_db_results(db_results, key, max_n_comments, is_ascending, mongo_db_id, n_read_comments);
+    error_code = _read_comments_get_db_results(db_results, main_id, create_milli_timestamp, is_ascending, max_n_comments, mongo_db_id, n_read_comments);
 
     int tmp_n_read_comments = *n_read_comments;
     bson_t **p_db_results = db_results;
@@ -327,7 +307,7 @@ dynamic_read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, boo
     int tmp_len = 0;
 
     int tmp_len = 0;
-    if(!error_code) {
+    if (!error_code) {
         for (int i = 0; i < tmp_n_read_comments; i++) {
             if (max_buf_size < 0) {
                 error_code = S_ERR_BUFFER_LEN;
@@ -365,11 +345,171 @@ dynamic_read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, boo
     }
     free(db_results);
 
+    return error_code;
+}
+
+
+Err
+_get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_total_comments, int *total_len)
+{
+    if (!n_result) {
+        *n_total_comments = 0;
+        *total_len = 0;
+        return S_OK;
+    }
+
+    Err error_code = S_OK;
+
+    error_code = bson_get_value_int32(result, "count", n_total_comments);
+
+    if (!error_code) {
+        error_code = bson_get_value_int32(result, "len", total_len);
+    }
+
+    return error_code;
+}
+
+Err
+_read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, bool is_ascending, int max_n_comments, bool is_ascending, MongoDBId mongo_db_id, int *n_read_comments)
+{
+    Err error_code = S_OK;
+
+    char op[4] = {};
+    is_ascending ? strcpy(op, "$ge") : strcpy(op, "$le");
+    int order = is_ascending ? 1 : -1;
+
+    bson_t *key = BCON_NEW(
+        "$query", "{",
+            "main_id", BCON_BINARY(main_id, UUIDLEN),
+            "status", BCON_INT32(LIVE_STATUS_ALIVE),
+            "create_milli_timestamp", "{",
+                op, BCON_INT64(create_milli_timestamp),
+            "}",
+        "}",
+        "$orderby", "{",
+            "create_milli_timestamp", BCON_INT32(order),
+            "poster", BCON_INT32(order),
+        "}"
+    );
+    if (key == NULL) error_code = S_ERR;
+
+    if (!error_code) {
+        error_code = db_find(mongo_db_id, key, NULL, max_n_comments, n_read_comments, db_results);
+    }
+    int tmp_n_read_comments = *n_read_comments;
+
+    Err error_code_ensure_order = S_OK;
+    if (!error_code) {
+        error_code_ensure_order = _ensure_db_results_order(db_results, tmp_n_read_comments, is_ascending);
+    }
+
+    if (!error_code && error_code_ensure_order) {
+        error_code = _sort_db_results_order(db_results, tmp_n_read_comments, is_ascending);
+    }
+
     bson_safe_destroy(&key);
 
     return error_code;
 }
 
+Err
+_ensure_db_results_order(bson_t **db_results, int n_results, bool is_ascending)
+{
+    Err error_code = S_OK;
+    bson_t **p_db_results = db_results;
+    bson_t **p_next_db_results = db_results + 1;
+    int cmp = 0;
+    int (*_cmp)(const void *a, const void *b) = is_ascending ? _cmp_ascending : _cmp_descending;
+
+    for (int i = 0; i < n_results - 1; i++, p_db_results++, p_next_db_results++) {
+        cmp = _cmp(p_db_results, p_next_db_results);
+        if (cmp > 0) {
+            error_code = S_ERR;
+            break;
+        }
+    }
+
+    return error_code;
+}
+
+Err
+_sort_db_results_order(bson_t **db_results, int n_results, bool is_ascending)
+{
+    Err error_code = S_OK;
+    int (*_cmp)(const void *a, const void *b) = is_ascending ? _cmp_ascending : _cmp_descending;
+
+    qsort(db_results, n_results, sizeof(bson_t *), _cmp);
+
+    return S_OK;
+}
+
+int _cmp_ascending(const void *a, const void *b)
+{
+    bson_t **tmp_tmp_a = (bson_t **)a;
+    bson_t *tmp_a = *tmp_tmp_a;
+    bson_t **tmp_tmp_b = (bson_t **)b;
+    bson_t *tmp_b = *tmp_tmp_b;
+
+    time64_t create_milli_timestamp_a = 0;
+    time64_t create_milli_timestamp_b = 0;
+
+    char poster_a[IDLEN + 1] = {};
+    char poster_b[IDLEN + 1] = {};
+
+    Err error_code;
+    error_code = bson_get_value_int64(tmp_a, "create_milli_timestamp", &create_milli_timestamp_a);
+    if (error_code) create_milli_timestamp_a = -1;
+
+    error_code = bson_get_value_int64(tmp_b, "create_milli_timestamp", &create_milli_timestamp_b);
+    if (error_code) create_milli_timestamp_b = -1;
+
+    if (create_milli_timestamp_a != create_milli_timestamp_b) {
+        return create_milli_timestamp_a - create_milli_timestamp_b;
+    }
+
+    int len;
+    error_code = bson_get_value_bin(tmp_a, "poster", IDLEN, poster_a, &len);
+    if (error_code) bzero(poster_a, IDLEN + 1);
+
+    error_code = bson_get_value_bin(tmp_b, "poster", IDLEN, poster_b, &len);
+    if (error_code) bzero(poster_b, IDLEN + 1);
+
+    return strncmp(poster_a, poster_b, IDLEN);
+}
+
+int _cmp_descending(const void *a, const void *b)
+{
+    bson_t **tmp_tmp_a = (bson_t **)a;
+    bson_t *tmp_a = *tmp_tmp_a;
+    bson_t **tmp_tmp_b = (bson_t **)b;
+    bson_t *tmp_b = *tmp_tmp_b;
+
+    time64_t create_milli_timestamp_a = 0;
+    time64_t create_milli_timestamp_b = 0;
+
+    char poster_a[IDLEN + 1] = {};
+    char poster_b[IDLEN + 1] = {};
+
+    Err error_code;
+    error_code = bson_get_value_int64(tmp_a, "create_milli_timestamp", &create_milli_timestamp_a);
+    if (error_code) create_milli_timestamp_a = -1;
+
+    error_code = bson_get_value_int64(tmp_b, "create_milli_timestamp", &create_milli_timestamp_b);
+    if (error_code) create_milli_timestamp_b = -1;
+
+    if (create_milli_timestamp_a != create_milli_timestamp_b) {
+        return create_milli_timestamp_b - create_milli_timestamp_a;
+    }
+
+    int len;
+    error_code = bson_get_value_bin(tmp_a, "poster", IDLEN, poster_a, &len);
+    if (error_code) bzero(poster_a, IDLEN + 1);
+
+    error_code = bson_get_value_bin(tmp_b, "poster", IDLEN, poster_b, &len);
+    if (error_code) bzero(poster_b, IDLEN + 1);
+
+    return strncmp(poster_b, poster_a, IDLEN);
+}
 
 /**
  * @brief [brief description]
@@ -471,22 +611,28 @@ _deserialize_comment_bson(bson_t *comment_bson, Comment *comment)
     return S_OK;
 }
 
+/**
+ * @brief [brief description]
+ * @details [long description]
+ *
+ * @param comment_bson [description]
+ * @param comment [description]
+ *
+ * @return [description]
+ */
 Err
-_get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_total_comments, int *total_len)
+_deserialize_comment_bson_with_buf(bson_t *comment_bson, Comment *comment)
 {
-    if (!n_result) {
-        *n_total_comments = 0;
-        *total_len = 0;
-        return S_OK;
-    }
+    Err error_code;
+    if (comment->buf) return S_ERR;
 
-    Err error_code = S_OK;
+    int len;
+    error_code = bson_get_value_int32(comment_bson, "len", len);
+    if (error_code) return error_code;
 
-    error_code = bson_get_value_int32(result, "count", n_total_comments);
+    comment->buf = malloc(len);
+    comment->max_buf_len = len;
+    comment->len = 0;
 
-    if (!error_code) {
-        error_code = bson_get_value_int32(result, "len", total_len);
-    }
-
-    return error_code;
+    return _deserialize_comment_bson(comment_bson, comment);
 }

@@ -17,7 +17,7 @@
  * @return Err
  */
 Err
-create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id, UUID content_id)
+create_main_from_fd(aidu_t aid, char *board, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id, UUID content_id)
 {
 
     Err error_code = S_OK;
@@ -43,6 +43,7 @@ create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origi
     memcpy(main_header.update_content_id, content_id, sizeof(UUID));
     main_header.aid = aid;
     main_header.status = LIVE_STATUS_ALIVE;
+    strcpy(main_header.board, baord);
     strcpy(main_header.status_updater, poster);
     strcpy(main_header.status_update_ip, ip);
     strcpy(main_header.title, title);
@@ -184,7 +185,6 @@ n_line_main(UUID main_id, int *n_line)
 
     bson_t *fields = BCON_NEW(
         "_id", BCON_BOOL(false),
-        "the_id", BCON_BOOL(true),
         "n_total_line", BCON_BOOL(true)
         );
 
@@ -221,7 +221,6 @@ n_line_main_by_aid(aidu_t aid, int *n_line)
 
     bson_t *fields = BCON_NEW(
         "_id", BCON_BOOL(false),
-        "aid", BCON_BOOL(true),
         "n_total_line", BCON_BOOL(true)
         );
 
@@ -433,6 +432,7 @@ _serialize_main_bson(MainHeader *main_header, bson_t **main_bson)
         "status", BCON_INT32(main_header->status),
         "status_updater", BCON_BINARY((unsigned char *)main_header->status_updater, IDLEN),
         "status_update_ip", BCON_BINARY((unsigned char *)main_header->status_update_ip, IPV4LEN),
+        "board", BCON_BINARY((unsigned char *)main_header->board, IDLEN),
         "title", BCON_BINARY((unsigned char *)main_header->title, TTLEN),
         "poster", BCON_BINARY((unsigned char *)main_header->poster, IDLEN),
         "ip", BCON_BINARY((unsigned char *)main_header->ip, IPV4LEN),
@@ -472,53 +472,36 @@ _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
     error_code = bson_get_value_int32(main_bson, "version", (int *)&main_header->version);
     if (error_code) return error_code;
 
-    fprintf(stderr, "pttdb_main._deserialze_main_bson: after version\n");
-
     int len;
     error_code = bson_get_value_bin(main_bson, "the_id", UUIDLEN, (char *)main_header->the_id, &len);
     if (error_code) return error_code;
 
-    fprintf(stderr, "pttdb_main._deserialze_main_bson: after the_id\n");
-
     error_code = bson_get_value_bin(main_bson, "content_id", UUIDLEN, (char *)main_header->content_id, &len);
     if (error_code) return error_code;
-
-    fprintf(stderr, "pttdb_main._deserialze_main_bson: after content_id\n");
 
     error_code = bson_get_value_bin(main_bson, "update_content_id", UUIDLEN, (char *)main_header->update_content_id, &len);
     if (error_code) return error_code;
 
-    fprintf(stderr, "pttdb_main._deserialze_main_bson: after update_content_id\n");
-
     error_code = bson_get_value_int64(main_bson, "aid", (long *)&main_header->aid);
     if (error_code) return error_code;
-
-    fprintf(stderr, "pttdb_main._deserialze_main_bson: after aid\n");
 
     error_code = bson_get_value_int32(main_bson, "status", (int *)&main_header->status);
     if (error_code) return error_code;
 
-    fprintf(stderr, "pttdb_main._deserialze_main_bson: after status\n");
-
     error_code = bson_get_value_bin(main_bson, "status_updater", IDLEN, main_header->status_updater, &len);
     if (error_code) return error_code;
-
-    fprintf(stderr, "pttdb_main._deserialze_main_bson: after status_updater\n");
 
     error_code = bson_get_value_bin(main_bson, "status_update_ip", IPV4LEN, main_header->status_update_ip, &len);
     if (error_code) return error_code;
 
-    fprintf(stderr, "pttdb_main._deserialze_main_bson: after status_update_ip\n");
+    error_code = bson_get_value_bin(main_bson, "board", IDLEN, main_header->board, &len);
+    if (error_code) return error_code;
 
     error_code = bson_get_value_bin(main_bson, "title", TTLEN, main_header->title, &len);
     if (error_code) return error_code;
 
-    fprintf(stderr, "pttdb_main._deserialze_main_bson: after title\n");
-
     error_code = bson_get_value_bin(main_bson, "poster", IDLEN, main_header->poster, &len);
     if (error_code) return error_code;
-
-    fprintf(stderr, "pttdb_main._deserialze_main_bson: after poster\n");
 
     error_code = bson_get_value_bin(main_bson, "ip", IPV4LEN, main_header->ip, &len);
     if (error_code) return error_code;

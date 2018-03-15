@@ -12,6 +12,7 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
     int fd = open("data_test/test1.txt", O_RDONLY);
 
     aidu_t aid = 12345;
+    char board[IDLEN + 1] = {};
     char title[TTLEN + 1] = {};
     char poster[IDLEN + 1] = {};
     char ip[IPV4LEN + 1] = {};
@@ -23,6 +24,7 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
 
     char tmp_main_id[UUIDLEN + 1] = {};
 
+    strcpy(board, "test_board");
     strcpy(title, "test_title");
     strcpy(poster, "test_poster");
     strcpy(ip, "test_ip");
@@ -30,7 +32,7 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
     // create-main-from-fd
-    Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    Err error_code = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
     EXPECT_EQ(S_OK, error_code);
 
     close(fd);
@@ -51,6 +53,7 @@ TEST(pttdb, create_main_from_fd_test1_read_main_content) {
     EXPECT_STREQ(poster, main_header.status_updater);
     EXPECT_STREQ(ip, main_header.status_update_ip);
 
+    EXPECT_STREQ(board, main_header.board);
     EXPECT_STREQ(title, main_header.title);
     EXPECT_STREQ(poster, main_header.poster);
     EXPECT_STREQ(ip, main_header.ip);
@@ -106,6 +109,7 @@ TEST(pttdb, create_main_from_fd_test1) {
     int fd = open("data_test/test1.txt", O_RDONLY);
 
     aidu_t aid = 12345;
+    char board[IDLEN + 1] = {};
     char title[TTLEN + 1] = {};
     char poster[IDLEN + 1] = {};
     char ip[IPV4LEN + 1] = {};
@@ -117,6 +121,7 @@ TEST(pttdb, create_main_from_fd_test1) {
 
     char tmp_main_id[UUIDLEN + 1] = {};
 
+    strcpy(board, "test_board");
     strcpy(title, "test_title");
     strcpy(poster, "test_poster");
     strcpy(ip, "test_ip");
@@ -124,7 +129,7 @@ TEST(pttdb, create_main_from_fd_test1) {
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
     // create main from fd
-    Err error_code = create_main_from_fd(aid, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    Err error_code = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
     EXPECT_EQ(S_OK, error_code);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
@@ -144,6 +149,7 @@ TEST(pttdb, create_main_from_fd_test1) {
     EXPECT_STREQ(poster, main_header.status_updater);
     EXPECT_STREQ(ip, main_header.status_update_ip);
 
+    EXPECT_STREQ(board, main_header.board);
     EXPECT_STREQ(title, main_header.title);
     EXPECT_STREQ(poster, main_header.poster);
     EXPECT_STREQ(ip, main_header.ip);
@@ -169,6 +175,7 @@ TEST(pttdb, create_main_from_fd_test2_read_main_content) {
     int fd = open("data_test/test2.txt", O_RDONLY);
 
     aidu_t aid = 12345;
+    char board[IDLEN + 1] = {};
     char title[TTLEN + 1] = {};
     char poster[IDLEN + 1] = {};
     char ip[IPV4LEN + 1] = {};
@@ -180,6 +187,7 @@ TEST(pttdb, create_main_from_fd_test2_read_main_content) {
 
     char tmp_main_id[UUIDLEN + 1] = {};
 
+    strcpy(board, "test_board");
     strcpy(title, "test_title");
     strcpy(poster, "test_poster");
     strcpy(ip, "test_ip");
@@ -206,6 +214,7 @@ TEST(pttdb, create_main_from_fd_test2_read_main_content) {
     EXPECT_STREQ(poster, main_header.status_updater);
     EXPECT_STREQ(ip, main_header.status_update_ip);
 
+    EXPECT_STREQ(board, main_header.board);
     EXPECT_STREQ(title, main_header.title);
     EXPECT_STREQ(poster, main_header.poster);
     EXPECT_STREQ(ip, main_header.ip);
@@ -259,6 +268,7 @@ TEST(pttdb, create_main_from_fd_test2) {
     int fd = open("data_test/test2.txt", O_RDONLY);
 
     aidu_t aid = 12345;
+    char board[IDLEN + 1] = {};
     char title[TTLEN + 1] = {};
     char poster[IDLEN + 1] = {};
     char ip[IPV4LEN + 1] = {};
@@ -270,6 +280,7 @@ TEST(pttdb, create_main_from_fd_test2) {
 
     char tmp_main_id[UUIDLEN + 1] = {};
 
+    strcpy(board, "test_board");
     strcpy(title, "test_title");
     strcpy(poster, "test_poster");
     strcpy(ip, "test_ip");
@@ -296,6 +307,7 @@ TEST(pttdb, create_main_from_fd_test2) {
     EXPECT_STREQ(poster, main_header.status_updater);
     EXPECT_STREQ(ip, main_header.status_update_ip);
 
+    EXPECT_STREQ(board, main_header.board);
     EXPECT_STREQ(title, main_header.title);
     EXPECT_STREQ(poster, main_header.poster);
     EXPECT_STREQ(ip, main_header.ip);
@@ -324,6 +336,7 @@ TEST(pttdb, create_main_from_fd_test1_full_read_main_content) {
     time64_t end_timestamp;
 
     aidu_t aid = 12345;
+    char board[IDLEN + 1] = {};
     char title[TTLEN + 1] = {};
     char poster[IDLEN + 1] = {};
     char ip[IPV4LEN + 1] = {};
@@ -335,6 +348,7 @@ TEST(pttdb, create_main_from_fd_test1_full_read_main_content) {
 
     char tmp_main_id[UUIDLEN + 1] = {};
 
+    strcpy(board, "test_board");
     strcpy(title, "test_title");
     strcpy(poster, "test_poster");
     strcpy(ip, "test_ip");
@@ -361,6 +375,7 @@ TEST(pttdb, create_main_from_fd_test1_full_read_main_content) {
     EXPECT_STREQ(poster, main_header.status_updater);
     EXPECT_STREQ(ip, main_header.status_update_ip);
 
+    EXPECT_STREQ(board, main_header.board);
     EXPECT_STREQ(title, main_header.title);
     EXPECT_STREQ(poster, main_header.poster);
     EXPECT_STREQ(ip, main_header.ip);
@@ -417,6 +432,7 @@ TEST(pttdb, create_main_from_fd_test1_full) {
     int fd = open("data_test/test1.txt", O_RDONLY);
 
     aidu_t aid = 12345;
+    char board[IDLEN + 1] = {};
     char title[TTLEN + 1] = {};
     char poster[IDLEN + 1] = {};
     char ip[IPV4LEN + 1] = {};
@@ -428,6 +444,7 @@ TEST(pttdb, create_main_from_fd_test1_full) {
 
     char tmp_main_id[UUIDLEN + 1] = {};
 
+    strcpy(borad, "test_board");
     strcpy(title, "test_title");
     strcpy(poster, "test_poster");
     strcpy(ip, "test_ip");
@@ -454,6 +471,7 @@ TEST(pttdb, create_main_from_fd_test1_full) {
     EXPECT_STREQ(poster, main_header.status_updater);
     EXPECT_STREQ(ip, main_header.status_update_ip);
 
+    EXPECT_STREQ(board, main_header.board);
     EXPECT_STREQ(title, main_header.title);
     EXPECT_STREQ(poster, main_header.poster);
     EXPECT_STREQ(ip, main_header.ip);
@@ -484,6 +502,7 @@ TEST(pttdb, len_main) {
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
     strcpy(main_header.status_update_ip, "10.1.1.1");
+    strcpy(main_header.board, "test_board");
     strcpy(main_header.title, "test_title");
     strcpy(main_header.poster, "poster1");
     strcpy(main_header.ip, "10.1.1.2");
@@ -526,6 +545,7 @@ TEST(pttdb, len_main_by_aid) {
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
     strcpy(main_header.status_update_ip, "10.1.1.1");
+    strcpy(main_header.board, "test_board");
     strcpy(main_header.title, "test_title");
     strcpy(main_header.poster, "poster1");
     strcpy(main_header.ip, "10.1.1.2");
@@ -568,6 +588,7 @@ TEST(pttdb, n_line_main) {
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
     strcpy(main_header.status_update_ip, "10.1.1.1");
+    strcpy(main_header.board, "test_board");
     strcpy(main_header.title, "test_title");
     strcpy(main_header.poster, "poster1");
     strcpy(main_header.ip, "10.1.1.2");
@@ -610,6 +631,7 @@ TEST(pttdb, n_line_main_by_aid) {
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
     strcpy(main_header.status_update_ip, "10.1.1.1");
+    strcpy(main_header.board, "test_board");
     strcpy(main_header.title, "test_title");
     strcpy(main_header.poster, "poster1");
     strcpy(main_header.ip, "10.1.1.2");
@@ -653,6 +675,7 @@ TEST(pttdb, read_main_header) {
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
     strcpy(main_header.status_update_ip, "10.1.1.1");
+    strcpy(main_header.board, "test_board");
     strcpy(main_header.title, "test_title");
     strcpy(main_header.poster, "poster1");
     strcpy(main_header.ip, "10.1.1.2");
@@ -719,6 +742,7 @@ TEST(pttdb, read_main_header_by_aid) {
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
     strcpy(main_header.status_update_ip, "10.1.1.1");
+    strcpy(main_header.board, "test_board");
     strcpy(main_header.title, "test_title");
     strcpy(main_header.poster, "poster1");
     strcpy(main_header.ip, "10.1.1.2");
@@ -783,6 +807,7 @@ TEST(pttdb, delete_main) {
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
     strcpy(main_header.status_update_ip, "10.1.1.1");
+    strcpy(main_header.board, "test_board");
     strcpy(main_header.title, "test_title");
     strcpy(main_header.poster, "poster1");
     strcpy(main_header.ip, "10.1.1.2");
@@ -863,6 +888,7 @@ TEST(pttdb, delete_main_by_aid) {
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
     strcpy(main_header.status_update_ip, "10.1.1.1");
+    strcpy(main_header.board, "test_board");
     strcpy(main_header.title, "test_title");
     strcpy(main_header.poster, "poster1");
     strcpy(main_header.ip, "10.1.1.2");
@@ -944,6 +970,7 @@ TEST(pttdb, serialize_main_bson) {
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
     strcpy(main_header.status_update_ip, "10.1.1.1");
+    strcpy(main_header.board, "test_board");
     strcpy(main_header.title, "test_title");
     strcpy(main_header.poster, "poster1");
     strcpy(main_header.ip, "10.1.1.2");

@@ -60,17 +60,18 @@ extern enum Karma KARMA_BY_COMMENT_TYPE[COMMENT_TYPE_N_TYPE];
  * XXX always update main-content first, and then update main-header.
  **********/
 typedef struct MainHeader {
-    unsigned int version;                           // version
+    unsigned int version;                            // version
 
     UUID the_id;                                     // main id
     UUID content_id;                                 // corresponding content-id
     UUID update_content_id;                          // updating content-id, not effective if content_id == update_content_id
     aidu_t aid;                                      // aid
 
-    enum LiveStatus status;                               // status of the main.
+    enum LiveStatus status;                          // status of the main.
     char status_updater[IDLEN + 1];                  // last user updating the status
     char status_update_ip[IPV4LEN + 1];              // last ip updating the status
 
+    char board[IDLEN + 1];                           // board-id
     char title[TTLEN + 1];                           // title
 
     char poster[IDLEN + 1];                          // creater
@@ -189,7 +190,7 @@ Err n_line_post(UUID main_id, int *n_line);
 /**********
  * Main
  **********/
-Err create_main_from_fd(aidu_t aid, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id, UUID content_id);
+Err create_main_from_fd(aidu_t aid, char *board, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id, UUID content_id);
 
 Err len_main(UUID main_id, int *len);
 Err len_main_by_aid(aidu_t aid, int *len);
