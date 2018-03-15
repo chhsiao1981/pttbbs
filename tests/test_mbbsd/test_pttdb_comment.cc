@@ -84,8 +84,8 @@ TEST(pttdb, delete_comment) {
         );
 
     bson_t *query = BCON_NEW(
-                        "the_id", BCON_BINARY(comment_id, UUIDLEN)
-                    );
+        "the_id", BCON_BINARY(comment_id, UUIDLEN)
+    );
     bson_t *result = NULL;
 
     error = db_find_one(MONGO_COMMENT, query, fields, &result);
