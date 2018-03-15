@@ -897,7 +897,7 @@ TEST(pttdb_comment, read_comments_by_main5_GTE)
 
     for(int i = 16; i < 20; i++) {
         fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_GTE: after 2nd read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 20, comments[i].create_milli_timestamp, comments[i].poster);
-        EXPECT_EQ(create_milli_timestamp + i, comments[i].create_milli_timestamp);
+        EXPECT_EQ(create_milli_timestamp + i - 1, comments[i].create_milli_timestamp);
         sprintf(poster, "poster%03d", i - 1);
         EXPECT_STREQ(poster, comments[i].poster);
     }
