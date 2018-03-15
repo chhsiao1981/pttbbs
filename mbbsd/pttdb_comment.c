@@ -375,10 +375,6 @@ _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create
 {
     Err error_code = S_OK;
 
-    char op[4] = {};
-    is_ascending ? strcpy(op, "$gt") : strcpy(op, "$lt");
-    int order = is_ascending ? 1 : -1;
-
     int n_comments_same_create_milli_timestamp = 0;
 
     bson_t **p_db_results = db_results;
@@ -413,6 +409,10 @@ _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create
 Err
 _read_comments_get_db_results_same_create_milli_timestamp(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, char *poster, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments)
 {
+    char op[4] = {};
+    is_ascending ? strcpy(op, "$gt") : strcpy(op, "$lt");
+    int order = is_ascending ? 1 : -1;
+
     // get same create_milli_timestamp but not same poster
     bson_t *key = BCON_NEW(
         "main_id", BCON_BINARY(main_id, UUIDLEN),
@@ -444,6 +444,10 @@ _read_comments_get_db_results_same_create_milli_timestamp(bson_t **db_results, U
 Err
 _read_comments_get_db_results_diff_create_milli_timestamp(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, char *poster, bool is_ascending, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments)
 {
+    char op[4] = {};
+    is_ascending ? strcpy(op, "$gt") : strcpy(op, "$lt");
+    int order = is_ascending ? 1 : -1;
+    
     // get same create_milli_timestamp but not same poster
     bson_t *key = BCON_NEW(
         "main_id", BCON_BINARY(main_id, UUIDLEN),
