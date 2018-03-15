@@ -219,6 +219,77 @@ TEST(pttdb_comment, get_comment_count_by_main) {
     EXPECT_EQ(2, n_total_comments);
 }
 
+TEST(pttdb_comment, ensure_db_results_order) {
+    int n_results = 100;
+    bson_t **db_results = malloc(sizeof(bson_t *) * n_results);
+    long int rand_int = 0;
+
+    rand_int = random();
+    for(int i = 0; i < n_results; i++) {
+        db_results[i] = BCON_NEW(
+                "poster", BCON_BINARY("test_poster", 11),
+                "create_milli_timestamp", BCON_INT64(rand_int)
+            );    
+    }
+
+    Err error = _ensure_db_results_order(db_results, n_results, true);
+    EXPECT_EQ(S_ERR, error);
+
+    Err error = _ensure_db_results_order(db_results, n_results, false);
+    EXPECT_EQ(S_ERR, error);
+
+    for(int i = 0; i < n_results; i++) {
+        bson_safe_destroy(&db_results[i]);
+    }
+    free(db_results);
+}
+
+TEST(pttdb_comment, ensure_db_results_order2) {
+    int n_results = 100;
+    bson_t **db_results = malloc(sizeof(bson_t *) * n_results);
+
+    for(int i = 0; i < n_results; i++) {
+        db_results[i] = BCON_NEW(
+                "poster", BCON_BINARY("test_poster", 11),
+                "create_milli_timestamp", BCON_INT64(i)
+            );    
+    }
+
+    Err error = _ensure_db_results_order(db_results, n_results, true);
+    EXPECT_EQ(S_OK, error);
+
+    Err error = _ensure_db_results_order(db_results, n_results, false);
+    EXPECT_EQ(S_ERR, error);
+
+    for(int i = 0; i < n_results; i++) {
+        bson_safe_destroy(&db_results[i]);
+    }
+    free(db_results);
+}
+
+TEST(pttdb_comment, ensure_db_results_order3) {
+    int n_results = 100;
+    bson_t **db_results = malloc(sizeof(bson_t *) * n_results);
+
+    for(int i = 0; i < n_results; i++) {
+        db_results[i] = BCON_NEW(
+                "poster", BCON_BINARY("test_poster", 11),
+                "create_milli_timestamp", BCON_INT64(100 - i)
+            );    
+    }
+
+    Err error = _ensure_db_results_order(db_results, n_results, false);
+    EXPECT_EQ(S_OK, error);
+
+    Err error = _ensure_db_results_order(db_results, n_results, true);
+    EXPECT_EQ(S_ERR, error);
+
+    for(int i = 0; i < n_results; i++) {
+        bson_safe_destroy(&db_results[i]);
+    }
+    free(db_results);
+}
+
 /**********
  * MAIN
  */
