@@ -169,14 +169,20 @@ TEST(util_db, db_aggregate) {
 
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
-    bson_t *key = BCON_NEW("main_id", BCON_INT32(4));
-    bson_t *val = BCON_NEW("len", BCON_INT32(5));
+    bson_t *key = BCON_NEW("tmp", BCON_INT32(4));
+    bson_t *val = BCON_NEW(
+        "len", BCON_INT32(5),
+        "main_id", BCON_INT32(4)
+        );
 
     error = db_update_one(MONGO_TEST, key, val, true);
     EXPECT_EQ(S_OK, error);
 
-    bson_t *key2 = BCON_NEW("main_id", BCON_INT32(4));
-    bson_t *val2 = BCON_NEW("len", BCON_INT32(10));
+    bson_t *key2 = BCON_NEW("tmp", BCON_INT32(5));
+    bson_t *val2 = BCON_NEW(
+        "len", BCON_INT32(10),
+        "main_id", BCON_INT32(4)
+        );
 
     error = db_update_one(MONGO_TEST, key, val, true);
     EXPECT_EQ(S_OK, error);
