@@ -844,17 +844,14 @@ TEST(pttdb, delete_main) {
         );
     bson_t *result = NULL;
 
-    char **fields;
-    int n_fields = 3;
-    fields = (char **)malloc(sizeof(char *) * n_fields);
-    for (int i = 0; i < 3; i++) {
-        fields[i] = (char *)malloc(30);
-    }
-    strcpy(fields[0], "status");
-    strcpy(fields[1], "status_updater");
-    strcpy(fields[2], "status_update_ip");
+    bson_t *fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "status", BCON_BOOL(true),
+        "status_updater", BCON_BOOL(true),
+        "status_update_ip", BCON_BOOL(true)
+        );
 
-    error = db_find_one_with_fields(MONGO_MAIN, query, fields, n_fields, &result);
+    error = db_find_one(MONGO_MAIN, query, fields, &result);
 
     int result_status;
     char result_status_updater[MAX_BUF_SIZE];
@@ -863,16 +860,12 @@ TEST(pttdb, delete_main) {
     bson_get_value_bin(result, (char *)"status_updater", MAX_BUF_SIZE, result_status_updater, &len);
     bson_get_value_bin(result, (char *)"status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
 
-    for (int i = 0; i < 3; i++) {
-        free(fields[i]);
-    }
-    free(fields);
-
     EXPECT_EQ(LIVE_STATUS_DELETED, result_status);
     EXPECT_STREQ(del_updater, result_status_updater);
     EXPECT_STREQ(status_update_ip, result_status_update_ip);
 
     bson_safe_destroy(&query);
+    bson_safe_destroy(&fields);
     bson_safe_destroy(&result);
 }
 
@@ -921,34 +914,22 @@ TEST(pttdb, delete_main_by_aid) {
         );
     bson_t *result = NULL;
 
-    char **fields;
-    int n_fields = 3;
-    fields = (char **)malloc(sizeof(char *) * n_fields);
-    for (int i = 0; i < 3; i++) {
-        fields[i] = (char *)malloc(30);
-    }
-    strcpy(fields[0], "status");
-    strcpy(fields[1], "status_updater");
-    strcpy(fields[2], "status_update_ip");
+    bson_t *fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "status", BCON_BOOL(true),
+        "status_updater", BCON_BOOL(true),
+        "status_update_ip", BCON_BOOL(true)
+        );
 
-    error = db_find_one_with_fields(MONGO_MAIN, query, fields, n_fields, &result);
+    error = db_find_one(MONGO_MAIN, query, fields, &result);
 
     int result_status;
     char result_status_updater[MAX_BUF_SIZE];
     char result_status_update_ip[MAX_BUF_SIZE];
 
-    char *str = bson_as_canonical_extended_json(result, NULL);
-    fprintf(stderr, "test_pttdb.delete_main_by_aid: after db_find_one_with_fields: result: %s\n", str);
-    bson_free(str);
-
     bson_get_value_int32(result, (char *)"status", &result_status);
     bson_get_value_bin(result, (char *)"status_updater", MAX_BUF_SIZE, result_status_updater, &len);
     bson_get_value_bin(result, (char *)"status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
-
-    for (int i = 0; i < 3; i++) {
-        free(fields[i]);
-    }
-    free(fields);
 
     EXPECT_EQ(LIVE_STATUS_DELETED, result_status);
     EXPECT_STREQ(del_updater, result_status_updater);
@@ -956,6 +937,7 @@ TEST(pttdb, delete_main_by_aid) {
 
     bson_safe_destroy(&query);
     bson_safe_destroy(&result);
+    bson_safe_destroy(&fields);
 }
 
 TEST(pttdb, serialize_main_bson) {

@@ -76,22 +76,19 @@ TEST(pttdb, delete_comment) {
     error = delete_comment(comment_id, del_updater, status_update_ip);
     EXPECT_EQ(S_OK, error);
 
-    char **fields;
-    int n_fields = 3;
-    fields = (char **)malloc(sizeof(char *) * n_fields);
-    for (int i = 0; i < 3; i++) {
-        fields[i] = (char *)malloc(30);
-    }
-    strcpy(fields[0], "status");
-    strcpy(fields[1], "status_updater");
-    strcpy(fields[2], "status_update_ip");
+    bson_t *fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "status", BCON_BOOL(true),
+        "status_updater", BCON_BOOL(true),
+        "status_update_ip", BCON_BOOL(true)
+        );
 
     bson_t *query = BCON_NEW(
                         "the_id", BCON_BINARY(comment_id, UUIDLEN)
                     );
     bson_t *result = NULL;
 
-    error = db_find_one_with_fields(MONGO_COMMENT, query, fields, n_fields, &result);
+    error = db_find_one_with_fields(MONGO_COMMENT, query, fields, &result);
     EXPECT_EQ(S_OK, error);
     int result_status;
     char result_status_updater[MAX_BUF_SIZE];
@@ -100,16 +97,12 @@ TEST(pttdb, delete_comment) {
     bson_get_value_bin(result, (char *)"status_updater", MAX_BUF_SIZE, result_status_updater, &len);
     bson_get_value_bin(result, (char *)"status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
 
-    for (int i = 0; i < 3; i++) {
-        free(fields[i]);
-    }
-    free(fields);
-
     EXPECT_EQ(LIVE_STATUS_DELETED, result_status);
     EXPECT_STREQ(del_updater, result_status_updater);
     EXPECT_STREQ(status_update_ip, result_status_update_ip);
 
     bson_safe_destroy(&query);
+    bson_safe_destroy(&fields);
     bson_safe_destroy(&result);
 }
 

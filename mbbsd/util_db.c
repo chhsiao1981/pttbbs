@@ -210,12 +210,12 @@ Err
 db_find_one(int collection, bson_t *key, bson_t *fields, bson_t **result)
 {
     int n_results;
-    return db_find(collection, key, fields, 1, &n_results, result);
+    return db_find(collection, key, fields, NULL, 1, &n_results, result);
 }
 
 
 Err
-db_find(int collection, bson_t *key, bson_t *fields, int max_n_results, int *n_results, bson_t **results)
+db_find(int collection, bson_t *key, bson_t *fields, bson_t *sort, int max_n_results, int *n_results, bson_t **results)
 {
     Err error_code = S_OK;
 
@@ -225,6 +225,10 @@ db_find(int collection, bson_t *key, bson_t *fields, int max_n_results, int *n_r
     if(fields) {
         status = bson_append_document(opts, "projection", -1, fields);
         if(!status) error_code = S_ERR;
+    }
+    if(sort) {
+        status = bson_append_document(opts, "sort", -1, sort);
+        if(!status) error_code = S_ERR;        
     }
 
     if(!error_code) {
@@ -250,53 +254,6 @@ db_find(int collection, bson_t *key, bson_t *fields, int max_n_results, int *n_r
     }
 
     bson_destroy(opts);
-
-    return error_code;
-}
-
-/**
- * @brief [brief description]
- * @details [long description]
- *
- * @param collection [description]
- * @param key [description]
- * @param fields [description]
- * @param n_fields [description]
- * @param result [description]
- */
-Err
-db_find_one_with_fields(int collection, bson_t *key, char **fields, int n_fields, bson_t **result)
-{
-    int n_results;
-    return db_find_with_fields(collection, key, fields, n_fields, 1, &n_results, result);
-}
-
-Err
-db_find_with_fields(int collection, bson_t *key, char **fields, int n_fields, int max_n_results, int *n_results, bson_t **results)
-{
-    Err error_code = S_OK;
-
-    bool bson_status;
-
-    bson_t *b_fields = bson_new();
-
-    for (int i = 0; i < n_fields; i++) {
-        bson_status = bson_append_bool(b_fields, fields[i], -1, true);
-        if (!bson_status) error_code = S_ERR;
-
-        if(error_code) break;
-    }
-
-    if(!error_code) {
-        bson_status = bson_append_bool(b_fields, "_id", -1, false);
-        if (!bson_status) error_code = S_ERR;
-    }
-
-    if(!error_code) {
-        error_code = db_find(collection, key, b_fields, max_n_results, n_results, results);
-    }
-
-    bson_destroy(b_fields);
 
     return error_code;
 }

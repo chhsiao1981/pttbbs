@@ -380,26 +380,24 @@ _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create
     int order = is_ascending ? 1 : -1;
 
     bson_t *key = BCON_NEW(
-        "filter", "{",
-            "main_id", BCON_BINARY(main_id, UUIDLEN),
-            "status", BCON_INT32(LIVE_STATUS_ALIVE),
-            "create_milli_timestamp", "{",
-                op, BCON_INT64(create_milli_timestamp),
-            "}",
-        "}",
-        "sort", "{",
-            "create_milli_timestamp", BCON_INT32(order),
-            "poster", BCON_INT32(order),
+        "main_id", BCON_BINARY(main_id, UUIDLEN),
+        "status", BCON_INT32(LIVE_STATUS_ALIVE),
+        "create_milli_timestamp", "{",
+            op, BCON_INT64(create_milli_timestamp),
         "}"
-                  );
+    );
+
     if (key == NULL) error_code = S_ERR;
 
-    char *str = bson_as_canonical_extended_json(key, NULL);
-    fprintf(stderr, "pttdb_comment._read_comments_get_db_results: key: %s\n", str);
-    bson_free(str);
+    bson_t *sort = BCON_NEW(
+        "create_milli_timestamp", BCON_INT32(order),
+        "poster", BCON_INT32(order)
+    );
+    
+    if(sort == NULL) error_code = S_ERR;
 
     if (!error_code) {
-        error_code = db_find(mongo_db_id, key, NULL, max_n_comments, n_read_comments, db_results);
+        error_code = db_find(mongo_db_id, key, NULL, sort, max_n_comments, n_read_comments, db_results);
     }
     int tmp_n_read_comments = *n_read_comments;
     fprintf(stderr, "pttdb_comment._read_comments_get_db_results: after db_find: e: %d n_comments: %d\n", error_code, *n_read_comments);

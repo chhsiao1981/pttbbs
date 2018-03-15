@@ -460,7 +460,7 @@ _read_content_blocks_get_db_results(bson_t **db_results, bson_t *key, int max_n_
     }
 
     if (!error_code) {
-        error_code = db_find(mongo_db_id, key, NULL, max_n_block, n_block, db_results);
+        error_code = db_find(mongo_db_id, key, NULL, NULL, max_n_block, n_block, db_results);
     }
 
     int tmp_n_block = *n_block;
