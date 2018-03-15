@@ -394,6 +394,10 @@ _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create
                   );
     if (key == NULL) error_code = S_ERR;
 
+    char *str = bson_as_canonical_extended_json(key, NULL);
+    fprintf(stderr, "pttdb_comment._read_comments_get_db_results: key: %s\n", str);
+    bson_free(str);
+
     if (!error_code) {
         error_code = db_find(mongo_db_id, key, NULL, max_n_comments, n_read_comments, db_results);
     }
