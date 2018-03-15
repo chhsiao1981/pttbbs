@@ -491,7 +491,6 @@ _read_comments_get_db_results_core(bson_t **db_results, bson_t *key, bson_t *sor
     return error_code;
 }
 
-
 Err
 _ensure_db_results_order(bson_t **db_results, int n_results, bool is_ascending)
 {
@@ -590,6 +589,22 @@ _cmp_descending(const void *a, const void *b)
     if (error_code) bzero(poster_b, IDLEN + 1);
 
     return strncmp(poster_b, poster_a, IDLEN);
+}
+
+Err
+_reverse_db_results(bson_t **db_results, int n_results)
+{
+    int half_results = n_results / 2;
+    bson_t **p_db_results = db_results;
+    bson_t **p_end_db_results = db_results + n_results - 1;
+    bson_t *temp;
+    for(int i = 0; i < half_results; i++, p_db_results++, p_end_db_results--) {
+        temp = *p_db_results;
+        *p_db_results = *p_end_db_results;
+        *p_end_db_results = temp;        
+    }
+
+    return S_OK;
 }
 
 /**

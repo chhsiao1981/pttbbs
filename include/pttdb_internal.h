@@ -61,6 +61,7 @@ Err _ensure_db_results_order(bson_t **db_results, int n_results, bool is_ascendi
 Err _sort_db_results_order(bson_t **db_results, int n_results, bool is_ascending);
 int _cmp_ascending(const void *a, const void *b);
 int _cmp_descending(const void *a, const void *b);
+Err _reverse_db_results(bson_t **db_results, int n_results);
 
 /**********
  * CommentReply
