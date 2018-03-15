@@ -175,7 +175,7 @@ get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len)
 }
 
 Err
-get_comment_count_by_main(UUID main_id, int *conut)
+get_comment_count_by_main(UUID main_id, int *count)
 {
     Err error_code = S_OK;
     bson_t *key = BCON_NEW(
