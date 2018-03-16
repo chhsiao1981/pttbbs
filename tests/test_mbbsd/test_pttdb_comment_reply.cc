@@ -123,7 +123,7 @@ TEST(pttdb_comment_reply, get_comment_reply_info_by_main) {
     gen_uuid(comment_id2);
 
     Err error = S_OK;
-    error = create_comment_reply(main_id, comment_id, (char *)"poster1", (char *)"10.3.1.4", 24, (char *)"test1test1\r\ntest3test3\rn", comment_reply_id);
+    error = create_comment_reply(main_id, comment_id, (char *)"poster1", (char *)"10.3.1.4", 24, (char *)"test1test1\r\ntest3test3\r\n", comment_reply_id);
     EXPECT_EQ(S_OK, error);
     error = create_comment_reply(main_id, comment_id2, (char *)"poster1", (char *)"10.3.1.4", 12, (char *)"test2test2\r\n", comment_reply_id2);
     EXPECT_EQ(S_OK, error);
