@@ -38,6 +38,14 @@ $ make GTEST_DIR=/usr/src/gtest
 $ ./tests/test_mbbsd/test_pttdb
 ```
 
+Programming Style
+-----
+1. 盡量使用 pointer with BCON_NEW 來 initialize.
+2. pointer either 是 NULL or 是 BCON_NEW 的 initialized pointer. 使用 bson_safe_destroy 來安全的 free.
+3. `db_find_one`, `db_find`, `db_aggregate` 也會 intialize pointer. 使用 bson_safe_destroy 來安全的 free.
+4. `_serialize` 也會 initialize pointer. 使用 bson_safe_destroy 來安全的 free.
+5. mongo collections 會有相對應的 secondary-readable collections.
+
 Reference
 -----
 1. [libmongc](http://mongoc.org/libmongoc/current/index.html)
