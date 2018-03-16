@@ -5,11 +5,13 @@
 #include "pttdb_internal.h"
 #include "util_db_internal.h"
 
-TEST(pttdb n_line_post)
+TEST(pttdb, n_line_post)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
-    
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
 }
 
 /**********
