@@ -34,7 +34,7 @@ TEST(pttdb_comment_reply, serialize_comment_reply_bson) {
 
     bson_t *comment_reply_bson = NULL;
 
-    Err error = _serialize_comment_reply_bson(&comment, &comment_reply_bson);
+    Err error = _serialize_comment_reply_bson(&comment_reply, &comment_reply_bson);
     EXPECT_EQ(S_OK, error);
 
     char *str = bson_as_canonical_extended_json(comment_reply_bson, NULL);
