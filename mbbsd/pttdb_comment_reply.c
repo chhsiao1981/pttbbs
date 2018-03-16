@@ -61,6 +61,54 @@ create_comment_reply(UUID main_id, UUID comment_id, char *poster, char *ip, int 
 }
 
 Err
+get_comment_reply_info_by_main(UUID main_id, int *n_comment_reply, int *n_line, int *total_len)
+{
+    Err error_code = S_OK;
+    bson_t *pipeline = BCON_NEW(
+        "pipeline", "[",
+            "{",
+                "$match", "{",
+                    "main_id", BCON_BINARY(main_id, UUIDLEN),
+                    "status", BCON_INT32((int)LIVE_STATUS_ALIVE),
+                "}",
+            "}",
+            "{",
+                "$group", "{",
+                    "_id", BCON_NULL,
+                    "count", "{",
+                        "$sum", BCON_INT32(1),
+                    "}",
+                    "n_line", "{",
+                        "$sum", "$n_line",
+                    "}",
+                    "len", "{",
+                        "$sum", "$len",
+                    "}",
+                "}",
+            "}",
+        "]"
+    );
+
+    if (pipeline == NULL) error_code = S_ERR;
+
+    bson_t *result = NULL;
+
+    int n_result = 0;
+    if (!error_code) {
+        error_code = db_aggregate(MONGO_COMMENT_REPLY, pipeline, 1, &result, &n_result);
+    }
+
+    if (!error_code) {
+        error_code = _get_comment_reply_info_by_main_deal_with_result(result, n_result, n_comment_reply, n_line, total_len);
+    }
+
+    bson_safe_destroy(&result);
+    bson_safe_destroy(&pipeline);
+
+    return error_code;
+}
+
+Err
 read_comment_reply(UUID comment_reply_id, CommentReply *comment_reply)
 {
     Err error_code = S_OK;
@@ -167,6 +215,31 @@ dissociate_comment_reply(CommentReply *comment_reply)
     comment_reply->n_line = 0;
 
     return S_OK;
+}
+
+Err
+_get_comment_reply_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_comment_reply, int *n_line, int *total_len)
+{
+    if(!n_result) {
+        *n_comment_reply = 0;
+        *n_line = 0;
+        *total_len = 0;
+        return S_OK;
+    }
+
+    Err error_code = S_OK;
+
+    error_code = bson_get_value_int32(result, "count", n_total_comments);
+
+    if (!error_code) {
+        error_code = bson_get_value_int32(result, "n_line", n_line);
+    }
+
+    if (!error_code) {
+        error_code = bson_get_value_int32(result, "len", total_len);
+    }
+
+    return error_code;    
 }
 
 /**

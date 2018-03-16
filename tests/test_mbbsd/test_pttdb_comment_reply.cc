@@ -110,6 +110,33 @@ TEST(pttdb_comment_reply, delete_comment_reply) {
     bson_safe_destroy(&result);
 }
 
+TEST(pttdb_comment_reply, get_comment_reply_info_by_main) {
+    UUID main_id = {};
+    UUID comment_reply_id = {};
+    UUID comment_reply_id2 = {};
+    UUID comment_id = {};
+    UUID comment_id2 = {};
+
+    gen_uuid(main_id)
+    gen_uuid(comment_id);
+    gen_uuid(comment_id2);
+
+    Err error = S_OK;
+    error = create_comment_reply(main_id, comment_id, (char *)"poster1", (char *)"10.3.1.4", 24, (char *)"test1test1\r\ntest3test3\rn", comment_reply_id);
+    EXPECT_EQ(S_OK, error);
+    error = create_comment_reply(main_id, comment_id2, (char *)"poster1", (char *)"10.3.1.4", 12, (char *)"test2test2\r\n", comment_reply_id2);
+    EXPECT_EQ(S_OK, error);
+
+    int n_total_comments = 0;
+    int total_len = 0;
+    int n_line = 0;
+    error = get_comment_reply_info_by_main(main_id, &n_total_comments, &n_line, &total_len);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(2, n_total_comments);
+    EXPECT_EQ(3, n_line);
+    EXPECT_EQ(36, total_len);
+}
+
 TEST(pttdb_comment_reply, serialize_comment_reply_bson) {
     CommentReply comment_reply = {};
     CommentReply comment_reply2 = {};

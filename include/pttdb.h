@@ -178,20 +178,6 @@ typedef struct CommentReply {
 } CommentReply;
 
 /**********
- * LineInfo
- **********/
-
-typedef struct LineInfo {
-    UUID main_id;
-    enum LineType line_type;
-    int main_content_block_id;
-    int comment_create_milli_timestamp;
-    char comment_poster[IDLEN + 1];
-    int offset_line;
-    int offset;
-} LineInfo;
-
-/**********
  * Milli-timestamp
  **********/
 Err get_milli_timestamp(time64_t *milli_timestamp);
@@ -293,6 +279,8 @@ Err delete_comment_reply(UUID comment_reply_id, char *updater, char *ip);
 
 Err init_comment_reply_buf(CommentReply *comment_reply);
 Err destroy_comment_reply(CommentReply *comment_reply);
+
+Err get_comment_reply_info_by_main(UUID main_id, int *n_comment_reply, int *n_line, int *total_len);
 
 Err associate_comment_reply(CommentReply *comment_reply, char *buf, int max_buf_len);
 Err dissociate_comment_reply(CommentReply *comment_reply);

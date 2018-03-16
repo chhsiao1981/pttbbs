@@ -11,25 +11,27 @@
  * @param n_line n_line (to-compute)
  * @return Err
  */
-/*
+
 Err
 n_line_post(UUID main_id, int *n_line) {
     Err error_code = S_OK;
     int the_line_main = 0;
     int the_line_comments = 0;
     int the_line_comment_reply = 0;
+    int n_comment_reply = 0;
+    int len_comment_reply = 0;
 
     error_code = n_line_main(main_id, &the_line_main);
     if (error_code) return error_code;
 
-    error_code = n_line_comments(main_id, &the_line_comments);
+    error_code = get_comment_count_by_main(main_id, &the_line_comments);
     if (error_code) return error_code;
 
-    error_code = n_line_comment_reply_by_main(main_id, &the_line_comment_reply);
+    error_code = get_comment_reply_info_by_main(main_id, &n_comment_reply, &the_line_comment_reply, &len_comment_reply);
     if (error_code) return error_code;
 
     *n_line = the_line_main + the_line_comments + the_line_comment_reply;
 
     return S_OK;
 }
-*/
+
