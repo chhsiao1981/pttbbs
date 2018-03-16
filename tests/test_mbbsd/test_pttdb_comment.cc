@@ -171,6 +171,7 @@ TEST(pttdb_comment, serialize_comment_bson) {
 }
 
 TEST(pttdb_comment, get_comment_info_by_main) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
 
     UUID main_id;
     UUID comment_id;
@@ -193,6 +194,7 @@ TEST(pttdb_comment, get_comment_info_by_main) {
 }
 
 TEST(pttdb_comment, get_comment_count_by_main) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
 
     UUID main_id;
     UUID comment_id;

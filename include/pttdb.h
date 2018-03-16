@@ -194,8 +194,9 @@ Err uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp);
 /**********
  * Post
  **********/
-/*
 Err n_line_post(UUID main_id, int *n_line);
+
+/*
 Err get_content_by_main(UUID main_id, int offset_line, char *buf, int max_n_buf, int max_n_line, int *n_buf, int *n_line, LineInfo *start_line_info, LineInfo *end_line_info);
 Err scroll_up_by_line_info(LineInfo *orig_start_line_info, char *buf, int max_n_buf, int max_n_line, int *n_buf, int *n_line, LineInfo *new_start_line_info, LineInfo *new_end_line_info);
 Err scroll_down_by_line_info(LineInfo *orig_end_line_info, char *buf, int max_n_buf, int max_n_line, int *n_buf, int *n_line, LineInfo *new_start_line_info, LineInfo *new_end_line_info);

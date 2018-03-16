@@ -111,6 +111,7 @@ TEST(pttdb_comment_reply, delete_comment_reply) {
 }
 
 TEST(pttdb_comment_reply, get_comment_reply_info_by_main) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
     UUID main_id = {};
     UUID comment_reply_id = {};
     UUID comment_reply_id2 = {};
