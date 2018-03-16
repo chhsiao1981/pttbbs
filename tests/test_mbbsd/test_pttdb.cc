@@ -25,8 +25,6 @@ TEST(pttdb, n_line_post)
     UUID main_id = {};
     UUID content_id = {};
 
-    char tmp_main_id[UUIDLEN + 1] = {};
-
     strcpy(board, "test_board");
     strcpy(title, "test_title");
     strcpy(poster, "test_poster");
