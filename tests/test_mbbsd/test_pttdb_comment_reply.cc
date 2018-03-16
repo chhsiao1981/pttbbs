@@ -118,7 +118,7 @@ TEST(pttdb_comment_reply, get_comment_reply_info_by_main) {
     UUID comment_id = {};
     UUID comment_id2 = {};
 
-    gen_uuid(main_id)
+    gen_uuid(main_id);
     gen_uuid(comment_id);
     gen_uuid(comment_id2);
 
