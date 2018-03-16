@@ -229,7 +229,7 @@ _get_comment_reply_info_by_main_deal_with_result(bson_t *result, int n_result, i
 
     Err error_code = S_OK;
 
-    error_code = bson_get_value_int32(result, "count", n_total_comments);
+    error_code = bson_get_value_int32(result, "count", n_comment_reply);
 
     if (!error_code) {
         error_code = bson_get_value_int32(result, "n_line", n_line);
