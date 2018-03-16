@@ -5,7 +5,7 @@
 #include "pttdb_internal.h"
 #include "util_db_internal.h"
 
-TEST(pttdb_comment, create_comment_reply) {
+TEST(pttdb_comment_reply, create_comment_reply) {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
 
     UUID main_id;
@@ -57,6 +57,59 @@ TEST(pttdb_comment, create_comment_reply) {
     destroy_comment_reply(&comment_reply);
 }
 
+TEST(pttdb_comment_reply, delete_comment_reply) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+
+    UUID main_id;
+    char poster[IDLEN + 1] = {};
+    char ip[IPV4LEN + 1] = {};
+    char content[] = "temp_content";
+    int len = strlen(content);
+    enum CommentType comment_type = COMMENT_TYPE_GOOD;
+
+    UUID comment_reply_id;
+    UUID comment_id;    
+
+    gen_uuid(main_id);
+    gen_uuid(comment_id);
+
+    Err error = create_comment_reply(main_id, comment_id, poster, ip, len, content, comment_reply_id);
+    EXPECT_EQ(S_OK, error);
+
+    char del_updater[IDLEN + 1] = "del_updater";
+    char status_update_ip[IPV4LEN + 1] = "10.1.1.4";
+    error = delete_comment_reply(comment_reply_id, del_updater, status_update_ip);
+    EXPECT_EQ(S_OK, error);
+
+    bson_t *fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "status", BCON_BOOL(true),
+        "status_updater", BCON_BOOL(true),
+        "status_update_ip", BCON_BOOL(true)
+        );
+
+    bson_t *query = BCON_NEW(
+        "the_id", BCON_BINARY(comment_reply_id, UUIDLEN)
+    );
+    bson_t *result = NULL;
+
+    error = db_find_one(MONGO_COMMENT_REPLY, query, fields, &result);
+    EXPECT_EQ(S_OK, error);
+    int result_status;
+    char result_status_updater[MAX_BUF_SIZE];
+    char result_status_update_ip[MAX_BUF_SIZE];
+    bson_get_value_int32(result, (char *)"status", &result_status);
+    bson_get_value_bin(result, (char *)"status_updater", MAX_BUF_SIZE, result_status_updater, &len);
+    bson_get_value_bin(result, (char *)"status_update_ip", MAX_BUF_SIZE, result_status_update_ip, &len);
+
+    EXPECT_EQ(LIVE_STATUS_DELETED, result_status);
+    EXPECT_STREQ(del_updater, result_status_updater);
+    EXPECT_STREQ(status_update_ip, result_status_update_ip);
+
+    bson_safe_destroy(&query);
+    bson_safe_destroy(&fields);
+    bson_safe_destroy(&result);
+}
 
 TEST(pttdb_comment_reply, serialize_comment_reply_bson) {
     CommentReply comment_reply = {};
