@@ -65,7 +65,6 @@ TEST(pttdb_comment_reply, delete_comment_reply) {
     char ip[IPV4LEN + 1] = {};
     char content[] = "temp_content";
     int len = strlen(content);
-    enum CommentType comment_type = COMMENT_TYPE_GOOD;
 
     UUID comment_reply_id;
     UUID comment_id;    
