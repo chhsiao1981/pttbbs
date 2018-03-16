@@ -50,6 +50,9 @@ TEST(pttdb, n_line_post)
     error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test2test2", COMMENT_TYPE_GOOD, comment_id2);
 
     // comment-reply
+    UUID comment_reply_id = {};
+    UUID comment_reply_id2 = {};
+
     error = create_comment_reply(main_id, comment_id, (char *)"poster1", (char *)"10.3.1.4", 24, (char *)"test1test1\r\ntest3test3\r\n", comment_reply_id);
     EXPECT_EQ(S_OK, error);
     error = create_comment_reply(main_id, comment_id2, (char *)"poster1", (char *)"10.3.1.4", 12, (char *)"test2test2\r\n", comment_reply_id2);
