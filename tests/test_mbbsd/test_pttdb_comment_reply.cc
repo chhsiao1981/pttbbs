@@ -17,7 +17,7 @@ TEST(pttdb_comment, create_comment_reply) {
 
     UUID comment_id;
     UUID comment_reply_id;
-    UUID tmp_comment_id;
+    UUID tmp_comment_reply_id;
 
     gen_uuid(main_id);
     gen_uuid(comment_reply_id);
