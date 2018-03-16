@@ -5,6 +5,59 @@
 #include "pttdb_internal.h"
 #include "util_db_internal.h"
 
+TEST(pttdb_comment, create_comment_reply) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+
+    UUID main_id;
+    char poster[IDLEN + 1] = {};
+    char ip[IPV4LEN + 1] = {};
+    char content[] = "temp_content\r\n";
+    int len = strlen(content);
+    int n_line = 1;
+
+    UUID comment_id;
+    UUID comment_reply_id;
+    UUID tmp_comment_id;
+
+    gen_uuid(main_id);
+    gen_uuid(comment_reply_id);
+
+    Err error_code = create_comment_reply(main_id, comment_id, poster, ip, len, content, comment_type, comment_id);
+    EXPECT_EQ(S_OK, error_code);
+
+    CommentReply comment_reply = {};
+    init_comment_reply_buf(&comment_reply);
+
+    memcpy(tmp_comment_reply_id, comment_reply_id, UUIDLEN);
+
+    error_code = read_comment_reply(comment_reply_id, &comment_reply);
+    EXPECT_EQ(S_OK, error_code);
+
+    EXPECT_EQ(0, strncmp((char *)tmp_comment_reply_id, (char *)comment_reply.the_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply.comment_id, UUIDLEN));
+
+    EXPECT_EQ(0, strncmp((char *)main_id, (char *)comment_reply.main_id, UUIDLEN));
+    EXPECT_EQ(LIVE_STATUS_ALIVE, comment_reply.status);
+
+    EXPECT_STREQ(poster, comment_reply.status_updater);
+    EXPECT_STREQ(ip, comment_reply.status_update_ip);
+
+    EXPECT_STREQ(poster, comment_reply.poster);
+    EXPECT_STREQ(ip, comment_reply.ip);
+
+    EXPECT_STREQ(poster, comment_reply.updater);
+    EXPECT_STREQ(ip, comment_reply.update_ip);
+
+    EXPECT_EQ(comment_reply.create_milli_timestamp, comment_reply.update_milli_timestamp);
+
+    EXPECT_EQ(len, comment_reply.len);
+    EXPECT_STREQ(content, comment_reply.buf);
+    EXPECT_EQ(n_line, comment_reply.n_line);
+
+    destroy_comment_reply(&comment_reply);
+}
+
+
 TEST(pttdb_comment_reply, serialize_comment_reply_bson) {
     CommentReply comment_reply = {};
     CommentReply comment_reply2 = {};
