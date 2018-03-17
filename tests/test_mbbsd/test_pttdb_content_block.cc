@@ -439,13 +439,13 @@ TEST(pttdb_content_block, ensure_b_content_blocks_block_ids2)
     }
 }
 
-TEST(pttdb_content_block, sort_by_block_id)
+TEST(pttdb_content_block, sort_b_content_blocks_by_block_id)
 {
     bson_t *b[10];
     for (int i = 0; i < 10; i++) {
         b[i] = BCON_NEW("block_id", BCON_INT32(9 - i));
     }
-    Err error = _sort_by_block_id(b, 10);
+    Err error = _sort_b_content_blocks_by_block_id(b, 10);
     EXPECT_EQ(S_OK, error);
 
     error = _ensure_b_content_blocks_block_ids(b, 0, 10);
