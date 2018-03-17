@@ -1080,7 +1080,7 @@ TEST(pttdb_main, read_main_header_to_bson) {
     char ip[IPV4LEN + 1] = {};
     char origin[MAX_ORIGIN_LEN + 1] = {};
     char web_link[MAX_WEB_LINK_LEN + 1] = {};
-    int len = 10000;
+    int len = 10020;
     UUID main_id;
     UUID content_id;
 
@@ -1094,7 +1094,6 @@ TEST(pttdb_main, read_main_header_to_bson) {
     bson_t *fields = BCON_NEW(
         "_id", BCON_BOOL(false),
         "updater", BCON_BOOL(true),
-        "update_milli_timestamp", BCON_BOOL(true),
         "content_id", BCON_BOOL(true),
         "n_total_line", BCON_BOOL(true),
         "n_total_block", BCON_BOOL(true)
@@ -1110,7 +1109,7 @@ TEST(pttdb_main, read_main_header_to_bson) {
 
     char *str = bson_as_canonical_extended_json(result, NULL);
     fprintf(stderr, "test_pttdb_main.read_main_header_to_bson: result: %s\n", str);
-    EXPECT_STREQ(str, "");
+    EXPECT_STREQ(str, "{ \"content_id\" : { \"$binary\" : { \"base64\": \"ZWNxU1VBQUFZQUJOWEZRZEFBQUFBRDNxclZrQUFBQUFOQnFQS0FBQUFBQzhYUlVxQUFBQUFPRG9BSlc3TkdJQg==\", \"subType\" : \"00\" } }, \"n_total_block\" : { \"$numberInt\" : \"2\" }, \"n_total_line\" : { \"$numberInt\" : \"10\" }, \"updater\" : { \"$binary\" : { \"base64\": \"dGVzdF9wb3N0ZXIA\", \"subType\" : \"00\" } } }");
     bson_free(str);
 
     bson_safe_destroy(&fields);
