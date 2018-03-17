@@ -856,9 +856,9 @@ TEST(pttdb_content_block, read_content_blocks_to_bsons)
     EXPECT_EQ(S_OK, error);
 
     int n_total_block = 0;
-    error = bson_get_value_int32(main_result, "n_total_block", &n_total_block);
+    error = bson_get_value_int32(main_result, (char *)"n_total_block", &n_total_block);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(n_total_block);
+    EXPECT_EQ(10, n_total_block);
     // read content-blocks
 
     bson_safe_destroy(&main_fields);
