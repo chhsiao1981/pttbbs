@@ -329,7 +329,7 @@ get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timesta
         error_code = bson_get_value_bin(result, "the_id", UUIDLEN, (char *)comment_id, &len);
     }
     if(!error_code) {
-        error_code = bson_get_value_int64(result, "create_milli_timestamp", create_milli_timestamp);
+        error_code = bson_get_value_int64(result, "create_milli_timestamp", (long *)&create_milli_timestamp);
     }
     if(!error_code) {
         error_code = bson_get_value_bin(result, "poster", IDLEN, poster, &len);
@@ -405,7 +405,7 @@ read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestam
         );
     int n_comments_eq_create_milli_timestamp = 0;
     if(!error_code) {
-        error_code = db_find(MONGO_COMMENT, query_eq, fields, sort, max_n_comments, n_comments_eq_create_milli_timestamp, b_comments);
+        error_code = db_find(MONGO_COMMENT, query_eq, fields, sort, max_n_comments, &n_comments_eq_create_milli_timestamp, b_comments);
     }
 
     *n_comments = n_comments_lt_create_milli_timestamp + n_comments_eq_create_milli_timestamp;

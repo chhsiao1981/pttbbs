@@ -478,7 +478,7 @@ _read_content_blocks_get_db_results(bson_t **db_results, bson_t *key, int max_n_
 }
 
 Err
-read_content_blocks_to_bsons(UUID content_id, bson_t *fields, int max_n_content_blocks, enum MongoDBId mongo_db_id, bson_t **b_content_blocks; int *n_content_blocks)
+read_content_blocks_to_bsons(UUID content_id, bson_t *fields, int max_n_content_blocks, enum MongoDBId mongo_db_id, bson_t **b_content_blocks, int *n_content_blocks)
 {
     Err error_code = S_OK;
 
