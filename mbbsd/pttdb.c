@@ -249,7 +249,7 @@ _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_c
 
     CommentCommentReplyInfo *p_comment_comment_reply_info = comment_comment_reply_info;
     // construct query
-    bson_t *q_array = bcon_new();
+    bson_t *q_array = bson_new();
     bson_t child;
     char buf[16];
     const char *key;
@@ -258,7 +258,7 @@ _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_c
     BSON_APPEND_ARRAY_BEGIN(q_array, "$in", &child);
     for(i = start_i; i < next_i; i++, p_comment_comment_reply_info++) {
         keylen = bson_uint32_to_string(i, &key, buf, sizeof(buf));
-        status = bson_append_int32(&child, key, (int)keylen, p_comment_comment_reply_info->comment_id);
+        status = bson_append_bin(&child, key, (int)keylen, p_comment_comment_reply_info->comment_id, UUIDLEN);
         if (!status) {
             error_code = S_ERR_INIT;
             break;
