@@ -193,7 +193,7 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
     // get comments
     if(!error_code) {
         b_comments = malloc(sizeof(bson_t *) * n_expected_comments);
-        error_code = read_comments_until_newest_to_bsons(main_id, create_milli_timestamp, poster, comment_fields, n_expected_comments, b_comments, n_comments);
+        error_code = read_comments_until_newest_to_bsons(main_id, create_milli_timestamp, poster, comment_fields, n_expected_comments, b_comments, &n_comments);
     }
 
     // init file_info.comment_comment_reply_info
