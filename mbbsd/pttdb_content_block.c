@@ -390,7 +390,6 @@ _dynamic_read_content_blocks_core(bson_t *key, int max_n_block, int block_id, en
     bzero(db_results, sizeof(bson_t *) * max_n_block);
 
     error_code = _read_content_blocks_get_db_results(db_results, key, max_n_block, block_id, mongo_db_id, n_block);
-    fprintf(stderr, "_dynamic_read_content_blocks_core: after _read_content_blocks_get_db_results: error_code: %d\n", error_code);
 
     // db_results to content-blocks
     int tmp_n_block = *n_block;
