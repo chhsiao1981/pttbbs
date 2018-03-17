@@ -207,7 +207,7 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
     CommentCommentReplyInfo *p_comment_comment_reply_info = file_info->comment_comment_reply_info;
     if(!error_code) {
         for(int i = 0; i < n_comments; i++, p_b_comments++, p_comment_comment_reply_info++) {
-            error_code = bson_get_value_bin(*p_b_comments, "the_id", UUIDLEN, p_comment_comment_reply_info->comment_id, &len);
+            error_code = bson_get_value_bin(*p_b_comments, "the_id", UUIDLEN, (char *)p_comment_comment_reply_info->comment_id, &len);
             if(error_code) break;
             error_code = bson_get_value_int64(*p_b_comments, "create_milli_timestamp", &p_comment_comment_reply_info->comment_create_milli_timestamp);
             if(error_code) break;
