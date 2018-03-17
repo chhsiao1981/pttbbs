@@ -310,7 +310,7 @@ _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_c
 }
 
 Err
-_get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo *comment_comment_reply_info, bson_t **b_comment_replys, int n_comment_comment_reply_info, int n_comment_replys)
+_get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo *comment_comment_reply_info, bson_t **b_comment_replys, int n_comment_comment_reply_info, int n_comment_reply)
 {
     Err error_code = S_OK;
 
@@ -322,21 +322,20 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
     int tmp_cmp = 0;
 
     int len = 0;
-    UUID comment_id = {}; 
+    UUID *comment_id = &p_comment_comment_reply_info->comment_id;
     UUID comment_reply_comment_id = {};
-    comment_id = p_comment_comment_reply_info->comment_id;
     error_code = bson_get_value_bin(*p_b_comment_replys, "comment_id", UUIDLEN, comment_reply_comment_id, &len);
     if(error_code) return error_code;
 
     // while-loop
-    while(i < n_comment_comment_reply_info && j < n_comment_replys) {
-        the_cmp = strncmp(comment_id, comment_reply_comment_id, UUIDLEN);
+    while(i < n_comment_comment_reply_info && j < n_comment_reply) {
+        the_cmp = strncmp(*comment_id, comment_reply_comment_id, UUIDLEN);
         if(the_cmp < 0) {
             // increase comment_comment_reply_info
             i++;
             p_comment_comment_reply_info++;
-            if(i < next_i) {
-                comment_id = p_comment_comment_reply_info->comment_id;
+            if(i < n_comment_comment_reply_info) {
+                comment_id = &p_comment_comment_reply_info->comment_id;
             }
         }
         else if(tmp_cmp > 0) {
@@ -359,8 +358,8 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
             i++;
             p_comment_comment_reply_info++;
 
-            if(i < next_i) {
-                comment_id = p_comment_comment_reply_info->comment_id;
+            if(i < n_comment_comment_reply_info) {
+                comment_id = &p_comment_comment_reply_info->comment_id;
             }
 
             // increase comment_replys
