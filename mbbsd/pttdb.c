@@ -246,6 +246,7 @@ _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_c
     int n_comment_comment_reply_info = next_i - start_i;
 
     CommentCommentReplyInfo *p_comment_comment_reply_info = comment_comment_reply_info;
+
     // construct query
     bson_t *q_array = bson_new();
     bson_t child;
@@ -312,10 +313,21 @@ Err
 _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo *comment_comment_reply_info, bson_t **b_comment_replys, int n_comment_comment_reply_info, int n_comment_replys)
 {
     Err error_code = S_OK;
+
+    // init
     int i = 0;
     int j = 0;
     CommentCommentReplyInfo *p_comment_comment_reply_info = comment_comment_reply_info;
     bson_t **p_b_comment_replys = b_comment_replys;
+    int tmp_cmp = 0;
+
+    int len = 0;
+    UUID comment_id = p_comment_comment_reply_info->comment_id;
+    UUID comment_reply_comment_id = {};
+    error_code = bson_get_value_bin(*p_b_comment_replys, "comment_id", UUIDLEN, comment_reply_comment_id, &len);
+    if(error_code) return error_code;
+
+    // while-loop
     while(i < n_comment_comment_reply_info && j < n_comment_replys) {
         the_cmp = strncmp(comment_id, comment_reply_comment_id, UUIDLEN);
         if(the_cmp < 0) {
