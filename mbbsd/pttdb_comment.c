@@ -319,14 +319,14 @@ get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timesta
         "poster", BCON_INT32(-1)
         );
 
-    bsont_t *result = NULL;
+    bson_t *result = NULL;
     int len = 0;
     error_code = db_find(MONGO_COMMENT, key, fields, sort, 1, &len, &result);
     if(!error_code && !len) {
         error_code = S_ERR_NOT_EXISTS;
     }
     if(!error_code) {
-        error_code = bson_get_value_bin(result, "the_id", UUIDLEN, comment_id, &len);
+        error_code = bson_get_value_bin(result, "the_id", UUIDLEN, (char *)comment_id, &len);
     }
     if(!error_code) {
         error_code = bson_get_value_int64(result, "create_milli_timestamp", create_milli_timestamp);
@@ -341,7 +341,7 @@ get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timesta
         "status", BCON_INT32((int)LIVE_STATUS_ALIVE),
         "create_milli_timestamp", BCON_INT64(*create_milli_timestamp),
         "poster", "{"
-            "$lte", BCON_BINARY(poster, IDLEN),
+            "$lte", BCON_BINARY((unsigned char *)poster, IDLEN),
         "}"
         );
 
@@ -398,9 +398,9 @@ read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestam
     bson_t *query_eq = BCON_NEW(
         "main_id", BCON_BINARY(main_id, UUIDLEN),
         "status", BCON_INT32((int)LIVE_STATUS_ALIVE),
-        "create_milli_timestamp", BCON_INT64(*create_milli_timestamp),
+        "create_milli_timestamp", BCON_INT64(create_milli_timestamp),
         "poster", "{"
-            "$lte", BCON_BINARY(poster, IDLEN),
+            "$lte", BCON_BINARY((unsigned char *)poster, IDLEN),
         "}"
         );
     int n_comments_eq_create_milli_timestamp = 0;
