@@ -179,18 +179,6 @@ typedef struct CommentReply {
 /**********
  * FileInfo
  **********/
-typedef struct FileInfo {
-    UUID main_id;
-    char main_updater[IDLEN + 1];
-    time64_t main_update_milli_timestamp;
-    UUID main_content_id;
-    int n_main_line;
-    int n_main_block;
-    int n_comments;
-    ContentBlockInfo *content_block_info;
-    CommentCommentReplyInfo *comment_comment_reply_info;
-} FileInfo;
-
 typedef struct ContentBlockInfo {
     int block_id;
     int n_line;
@@ -206,6 +194,17 @@ typedef struct CommentCommentReplyInfo {
     int n_comment_reply_line;
 } CommentCommentReplyInfo;
 
+typedef struct FileInfo {
+    UUID main_id;
+    char main_updater[IDLEN + 1];
+    time64_t main_update_milli_timestamp;
+    UUID main_content_id;
+    int n_main_line;
+    int n_main_block;
+    int n_comments;
+    ContentBlockInfo *content_block_info;
+    CommentCommentReplyInfo *comment_comment_reply_info;
+} FileInfo;
 
 /**********
  * Milli-timestamp

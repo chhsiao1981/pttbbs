@@ -1106,7 +1106,7 @@ TEST(pttdb_main, read_main_header_to_bson) {
     // create-main-from-fd
     Err error_code = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
 
-    Err error = read_main_header_to_bson(main_id, fields, &result);
+    Err error = read_main_header_to_bson(main_id, fields, &result); 
     EXPECT_EQ(S_OK, error_code);
 
     char *str = bson_as_canonical_extended_json(result, NULL);
