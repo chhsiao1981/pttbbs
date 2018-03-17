@@ -164,6 +164,8 @@ _get_file_info_by_main_get_content_block_info(UUID main_id, FileInfo *file_info)
         bson_safe_destroy(p_b_content_blocks);
     }
     safe_free(&b_content_blocks);
+
+    return error_code;
 }
 
 Err
