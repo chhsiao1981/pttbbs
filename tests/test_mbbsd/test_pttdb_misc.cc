@@ -136,7 +136,7 @@ TEST(pttdb_misc, uuid_to_milli_timestamp) {
     gen_uuid(uuid);
     uuid_to_milli_timestamp(uuid, &milli_timestamp);
 
-    fprintf(stderr, "milli_timestamp: %lld\n", milli_timestamp);
+    fprintf(stderr, "test_pttdb_misc.uuid_to_milli_timestamp: milli_timestamp: %lld\n", milli_timestamp);
 
     EXPECT_GE(milli_timestamp, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);

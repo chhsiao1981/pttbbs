@@ -973,7 +973,7 @@ TEST(pttdb_main, serialize_main_bson) {
     EXPECT_EQ(S_OK, error);
 
     char *str = bson_as_canonical_extended_json(main_bson, NULL);
-    fprintf(stderr, "main_bson: %s\n", str);
+    fprintf(stderr, "test_pttdb_main.serialize_main_bson: main_bson: %s\n", str);
     bson_free(str);
 
     error = _deserialize_main_bson(main_bson, &main_header2);
