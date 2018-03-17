@@ -99,10 +99,10 @@ _get_file_info_by_main_get_main_info(UUID main_id, FileInfo *file_info)
         error_code = bson_get_value_bin(b_main, "updater", IDLEN, file_info->main_updater, &len);
     }
     if(!error_code) {
-        error_code = bson_get_value_int64(b_main, "update_milli_timestamp", &file_info->main_update_milli_timestamp);
+        error_code = bson_get_value_int64(b_main, "update_milli_timestamp", (long *)&file_info->main_update_milli_timestamp);
     }
     if(!error_code) {
-        error_code = bson_get_value_bin(b_main, "content_id", UUIDLEN, file_info->main_content_id, &len);
+        error_code = bson_get_value_bin(b_main, "content_id", UUIDLEN, (char *)file_info->main_content_id, &len);
     }
     if(!error_code) {
         error_code = bson_get_value_int32(b_main, "n_total_line", &file_info->n_main_line);    
@@ -123,8 +123,8 @@ _get_file_info_by_main_get_content_block_info(UUID main_id, FileInfo *file_info)
 {
     Err error_code = S_OK;
     // malloc file_info.content_block_info
-    file_info.content_block_info = malloc(sizeof(ContentBlockInfo) * file_info.n_main_block);
-    if(!file_info.content_block_info) error_code = S_ERR;
+    file_info->content_block_info = malloc(sizeof(ContentBlockInfo) * file_info->n_main_block);
+    if(!file_info->content_block_info) error_code = S_ERR;
 
     // get bson data
     int n_content_blocks = 0;
@@ -136,18 +136,18 @@ _get_file_info_by_main_get_content_block_info(UUID main_id, FileInfo *file_info)
         );
 
     if(!error_code) {
-        b_content_blocks = malloc(sizeof(bson_t *) * file_info.n_main_block);
+        b_content_blocks = malloc(sizeof(bson_t *) * file_info->n_main_block);
         if(!b_content_blocks) error_code = S_ERR;
     }
 
     if(!error_code) {
-        error_code = read_content_blocks_to_bsons(file_info.main_content_id, content_block_fields, file_info.n_main_block, MONGO_MAIN_CONTENT, b_content_blocks, &n_content_blocks);
-        if(n_content_blocks != file_info.n_total_block) error_code = S_ERR; // not matched.
+        error_code = read_content_blocks_to_bsons(file_info->main_content_id, content_block_fields, file_info->n_main_block, MONGO_MAIN_CONTENT, b_content_blocks, &n_content_blocks);
+        if(n_content_blocks != file_info->n_total_block) error_code = S_ERR; // not matched.
     }
 
     // bson data to content block info
     bson_t **p_b_content_blocks = b_content_blocks;
-    ContentBlockInfo *p_content_block_info = file_info.content_block_info;
+    ContentBlockInfo *p_content_block_info = file_info->content_block_info;
     if(!error_code) {
         for(int i = 0; i < n_content_blocks; i++, p_b_content_blocks++, p_content_block_info++) {
             error_code = bson_get_value_int32(*p_b_content_blocks, "block_id", &p_content_block_info->block_id);
