@@ -405,7 +405,7 @@ update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int f
 }
 
 Err
-read_main_header_to_bson(UUID main_id, bson_t *fields, bson_t **b_main);
+read_main_header_to_bson(UUID main_id, bson_t *fields, bson_t **b_main)
 {
     Err error_code = S_OK;
     bson_t *key = BCON_NEW(

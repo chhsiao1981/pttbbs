@@ -71,7 +71,7 @@ Err _ensure_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommen
 Err _sort_b_comments_order(bson_t **b_comments, int n_results, enum ReadCommentsOpType op_type);
 int _cmp_b_comments_ascending(const void *a, const void *b);
 int _cmp_b_comments_descending(const void *a, const void *b);
-Err _reverse_b_comments(bson_t **b_comments int n_comment);
+Err _reverse_b_comments(bson_t **b_comments, int n_comment);
 
 /**********
  * CommentReply
