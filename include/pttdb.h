@@ -321,8 +321,8 @@ Err associate_comment_reply(CommentReply *comment_reply, char *buf, int max_buf_
 Err dissociate_comment_reply(CommentReply *comment_reply);
 
 // for file_info
-Err read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_comment_replys, bson_t **b_comment_replys, int *n_comment_replys);
-Err sort_comment_reply_bsons_by_inferred_comment_create_milli_timestamp(bson_t **b_comment_replys int n_comment_replys);
+Err read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_comment_replys, bson_t **b_comment_replys, int *n_comment_reply);
+Err sort_comment_reply_bsons_by_inferred_comment_create_milli_timestamp(bson_t **b_comment_replys, int n_comment_reply);
 
 #ifdef __cplusplus
 }
