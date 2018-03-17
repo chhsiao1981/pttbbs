@@ -324,7 +324,7 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
     int len = 0;
     UUID *comment_id = &p_comment_comment_reply_info->comment_id;
     UUID comment_reply_comment_id = {};
-    error_code = bson_get_value_bin(*p_b_comment_replys, "comment_id", UUIDLEN, comment_reply_comment_id, &len);
+    error_code = bson_get_value_bin(*p_b_comment_replys, "comment_id", UUIDLEN, (char *)comment_reply_comment_id, &len);
     if(error_code) return error_code;
 
     // while-loop
@@ -343,13 +343,13 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
             j++;
             p_b_comment_replys++;
             if(j < n_comment_replys) {
-                error_code = bson_get_value_bin(*p_b_comment_replys, "comment_id", UUIDLEN, comment_reply_comment_id, &len);
+                error_code = bson_get_value_bin(*p_b_comment_replys, "comment_id", UUIDLEN, (char *)comment_reply_comment_id, &len);
                 if(error_code) break;
             }
         }
         else {
             // setup
-            error_code = bson_get_value_bin(*p_b_comment_replys, "comment_reply_id", UUIDLEN, p_comment_comment_reply_info->comment_reply_id, &len);
+            error_code = bson_get_value_bin(*p_b_comment_replys, "comment_reply_id", UUIDLEN, (char *)p_comment_comment_reply_info->comment_reply_id, &len);
             if(error_code) break;
             error_code = bson_get_value_int32(*p_b_comment_replys, "n_line", &p_comment_comment_reply_info->n_comment_reply_line);
             if(error_code) break;
