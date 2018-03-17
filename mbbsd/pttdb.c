@@ -322,8 +322,9 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
     int tmp_cmp = 0;
 
     int len = 0;
-    UUID comment_id = p_comment_comment_reply_info->comment_id;
+    UUID comment_id = {}; 
     UUID comment_reply_comment_id = {};
+    comment_id = p_comment_comment_reply_info->comment_id;
     error_code = bson_get_value_bin(*p_b_comment_replys, "comment_id", UUIDLEN, comment_reply_comment_id, &len);
     if(error_code) return error_code;
 
