@@ -150,7 +150,6 @@ typedef struct Comment {
 
 /**********
  * CommentReply
- * XXX always update comment-reply-content first, and then update comment-reply-header.
  **********/
 typedef struct CommentReply {
     unsigned int version;                           // version
@@ -178,6 +177,37 @@ typedef struct CommentReply {
 } CommentReply;
 
 /**********
+ * FileInfo
+ **********/
+typedef struct FileInfo {
+    UUID main_id;
+    char main_updater[IDLEN + 1];
+    time64_t main_update_milli_timestamp;
+    UUID main_content_id;
+    int n_main_line;
+    int n_main_block;
+    int n_comments;
+    ContentBlockInfo *content_block_info;
+    CommentCommentReplyInfo *comment_comment_reply_info;
+} FileInfo;
+
+typedef struct ContentBlockInfo {
+    int block_id;
+    int n_line;
+} ContentBlockInfo;
+
+typedef struct CommentCommentReplyInfo {
+    UUID comment_id;
+    UUID comment_reply_id;
+
+    time64_t comment_create_milli_timestamp;
+    char comment_poster[IDLEN + 1];
+
+    int n_comment_reply_line;
+} CommentCommentReplyInfo;
+
+
+/**********
  * Milli-timestamp
  **********/
 Err get_milli_timestamp(time64_t *milli_timestamp);
@@ -195,14 +225,9 @@ Err uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp);
  * Post
  **********/
 Err n_line_post(UUID main_id, int *n_line);
+Err get_file_info_by_main(UUID main_id, FileInfo *file_info);
 
-/*
-Err get_content_by_main(UUID main_id, int offset_line, char *buf, int max_n_buf, int max_n_line, int *n_buf, int *n_line, LineInfo *start_line_info, LineInfo *end_line_info);
-Err scroll_up_by_line_info(LineInfo *orig_start_line_info, char *buf, int max_n_buf, int max_n_line, int *n_buf, int *n_line, LineInfo *new_start_line_info, LineInfo *new_end_line_info);
-Err scroll_down_by_line_info(LineInfo *orig_end_line_info, char *buf, int max_n_buf, int max_n_line, int *n_buf, int *n_line, LineInfo *new_start_line_info, LineInfo *new_end_line_info);
-
-Err dynamic_read_comment_and_comment_reply_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, char *buf, int max_n_buf, int max_n_line, Comment *comments, int max_n_comments, CommentReply *comment_replys, int *n_comments, int *n_comment_replys);
-*/
+Err destroy_file_info(FileInfo **file_info);
 
 /**********
  * Main
@@ -222,6 +247,9 @@ Err delete_main(UUID main_id, char *updater, char *ip);
 Err delete_main_by_aid(aidu_t aid, char *updater, char *ip);
 
 Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content, UUID content_id);
+
+// for file_info
+Err read_main_header_to_bson(UUID main_id, bson_t *fields, bson_t **result);
 
 /**********
  * ContentBlock
@@ -248,6 +276,9 @@ Err read_content_blocks_by_ref(UUID ref_id, int max_n_block, int block_id, enum 
 Err dynamic_read_content_blocks(UUID content_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len);
 Err dynamic_read_content_blocks_by_ref(UUID ref_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len);
 
+// for file_info
+Err read_content_blocks_to_bsons(UUID content_id, bson_t *fields, int max_n_content_blocks, enum MongoDBId mongo_db_id, bson_t **b_content_blocks, int *n_content_blocks);
+
 /**********
  * Comments
  **********/
@@ -268,6 +299,10 @@ Err associate_comment(Comment *comment, char *buf, int max_buf_len);
 Err dissociate_comment(Comment *comment);
 Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, Comment *comments, int *n_read_comments, int *len);
 
+// for file_info
+Err get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timestamp, char *poster, int *n_comments);
+Err read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestamp, char *poster, bson_t *fields, int max_n_comments, bson_t **b_comments, int *n_comments);
+
 /**********
  * CommentReply
  **********/
@@ -285,6 +320,9 @@ Err get_comment_reply_info_by_main(UUID main_id, int *n_comment_reply, int *n_li
 
 Err associate_comment_reply(CommentReply *comment_reply, char *buf, int max_buf_len);
 Err dissociate_comment_reply(CommentReply *comment_reply);
+
+// for file_info
+Err read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_comment_replys, bson_t **b_comment_replys, int *n_comment_replys);
 
 #ifdef __cplusplus
 }

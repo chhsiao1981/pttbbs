@@ -284,3 +284,13 @@ pttdb_count_lines(char *content, int len, int *n_line)
 
     return S_OK;
 }
+
+Err
+safe_free(void **a)
+{
+    if(!(*a)) return S_OK;
+    
+    free(*a);
+    *a = NULL;
+    return S_OK;
+}

@@ -478,6 +478,22 @@ _read_content_blocks_get_db_results(bson_t **db_results, bson_t *key, int max_n_
 }
 
 Err
+read_content_blocks_to_bsons(UUID content_id, bson_t *fields, int max_n_content_blocks, enum MongoDBId mongo_db_id, bson_t **b_content_blocks; int *n_content_blocks)
+{
+    Err error_code = S_OK;
+
+    bson_t *key = BCON_NEW(
+        "the_id", BCON_BINARY(content_id, UUIDLEN)
+        );
+
+    error_code = db_find(mongo_db_id, key, fields, NULL, max_n_content_blocks, n_content_blocks, b_content_blocks);
+
+    bson_safe_destroy(&key);
+
+    return error_code;
+}
+
+Err
 _form_b_array_block_ids(int block_id, int max_n_block, bson_t *b)
 {
     Err error_code = S_OK;

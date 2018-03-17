@@ -296,6 +296,130 @@ read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poste
 }
 
 Err
+get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timestamp, char *poster, int *n_comments)
+{
+    Err error_code = S_OK;
+    bson_t *key = BCON_NEW(
+        "main_id", BCON_BINARY(main_id, UUIDLEN),
+        "status", BCON_INT32((int)LIVE_STATUS_ALIVE),
+        "create_milli_timestamp", "{",
+            "$lt", BCON_INT64(MAX_CREATE_MILLI_TIMESTAMP),
+        "}"
+        );
+
+    bson_t *fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "the_id", BCON_BOOL(true),
+        "create_milli_timestamp", BCON_BOOL(true),
+        "poster", BCON_BOOL(true)
+        );
+
+    bson_t *sort = BCON_NEW(
+        "create_milli_timestamp", BCON_INT32(-1),
+        "poster", BCON_INT32(-1)
+        );
+
+    bsont_t *result = NULL;
+    int len = 0;
+    error_code = db_find(MONGO_COMMENT, key, fields, sort, 1, &len, &result);
+    if(!error_code && !len) {
+        error_code = S_ERR_NOT_EXISTS;
+    }
+    if(!error_code) {
+        error_code = bson_get_value_bin(result, "the_id", UUIDLEN, comment_id, &len);
+    }
+    if(!error_code) {
+        error_code = bson_get_value_int64(result, "create_milli_timestamp", create_milli_timestamp);
+    }
+    if(!error_code) {
+        error_code = bson_get_value_bin(result, "poster", IDLEN, poster, &len);
+    }
+
+    int count_eq_create_milli_timestamp = 0;
+    bson_t *count_query_eq = BCON_NEW(
+        "main_id", BCON_BINARY(main_id, UUIDLEN),
+        "status", BCON_INT32((int)LIVE_STATUS_ALIVE),
+        "create_milli_timestamp", BCON_INT64(*create_milli_timestamp),
+        "poster", "{"
+            "$lte", BCON_BINARY(poster, IDLEN),
+        "}"
+        );
+
+    if(!error_code) {
+        error_code = db_count(MONGO_COMMENT, count_query_eq, &count_eq_create_milli_timestamp);
+    }
+
+    int count_lt_create_milli_timestamp = 0;
+    bson_t *count_query_lt = BCON_NEW(
+        "main_id", BCON_BINARY(main_id, UUIDLEN),
+        "status", BCON_INT32((int)LIVE_STATUS_ALIVE),
+        "create_milli_timestamp", "{",
+            "$lt", BCON_INT64(*create_milli_timestamp),
+        "}"
+        );
+
+    if(!error_code) {
+        error_code = db_count(MONGO_COMMENT, count_query_lt, &count_lt_create_milli_timestamp);
+    }
+
+    *n_comments = count_eq_create_milli_timestamp + count_lt_create_milli_timestamp;
+
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&fields);
+    bson_safe_destroy(&sort);
+    bson_safe_destroy(&result);
+    bson_safe_destroy(&count_query_lt);
+    bson_safe_destroy(&count_query_eq);
+
+    return error_code;
+}
+
+Err
+read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestamp, char *poster, bson_t *fields, int max_n_comments, bson_t **b_comments, int *n_comments)
+{
+    Err error_code = S_OK;
+
+    bson_t *query_lt = BCON_NEW(
+        "main_id", BCON_BINARY(main_id, UUIDLEN),
+        "status", BCON_INT32((int)LIVE_STATUS_ALIVE),
+        "create_milli_timestamp", BCON_INT64(create_milli_timestamp)
+        );
+
+    bson_t *sort = BCON_NEW(
+        "create_milli_timestamp", BCON_INT32(1),
+        "poster", BCON_INT32(1)
+    );
+    
+    int n_comments_lt_create_milli_timestamp = 0;
+    error_code = db_find(MONGO_COMMENT, query_lt, fields, sort, max_n_comments, &n_comments_lt_create_milli_timestamp, b_comments);
+    b_comments += n_comments_lt_create_milli_timestamp;
+    max_n_comments -= n_comments_lt_create_milli_timestamp;
+
+    bson_t *query_eq = BCON_NEW(
+        "main_id", BCON_BINARY(main_id, UUIDLEN),
+        "status", BCON_INT32((int)LIVE_STATUS_ALIVE),
+        "create_milli_timestamp", BCON_INT64(*create_milli_timestamp),
+        "poster", "{"
+            "$lte", BCON_BINARY(poster, IDLEN),
+        "}"
+        );
+    int n_comments_eq_create_milli_timestamp = 0;
+    if(!error_code) {
+        error_code = db_find(MONGO_COMMENT, query_eq, fields, sort, max_n_comments, n_comments_eq_create_milli_timestamp, b_comments);
+    }
+
+    *n_comments = n_comments_lt_create_milli_timestamp + n_comments_eq_create_milli_timestamp;
+
+    // free
+    bson_safe_destroy(&query_lt);
+    bson_safe_destroy(&sort);
+    bson_safe_destroy(&query_eq);
+
+    return error_code;
+}
+
+
+Err
 _get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_total_comments, int *total_len)
 {
     if (!n_result) {

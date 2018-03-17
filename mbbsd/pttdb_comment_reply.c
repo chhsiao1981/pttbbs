@@ -218,6 +218,17 @@ dissociate_comment_reply(CommentReply *comment_reply)
 }
 
 Err
+read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_comment_replys, bson_t **b_comment_replys, int *n_comment_replys)
+{
+    Err error_code = S_OK;
+
+    error_code = db_find(MONGO_COMMENT_REPLY, query, fields, NULL, max_n_comment_replys, n_comment_reply, b_comment_replys);
+
+    return error_code;
+}
+
+
+Err
 _get_comment_reply_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_comment_reply, int *n_line, int *total_len)
 {
     if(!n_result) {
