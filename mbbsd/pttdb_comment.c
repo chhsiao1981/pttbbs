@@ -274,7 +274,7 @@ read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poste
             p_comments++;
 
             if (error_code) {
-                *n_comments = i;
+                *n_comment = i;
                 break;
             }
         }
