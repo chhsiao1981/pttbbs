@@ -72,17 +72,9 @@ create_main_from_fd(aidu_t aid, char *board, char *title, char *poster, char *ip
         error_code = _serialize_main_bson(&main_header, &main_bson);
     }
 
-    char *str = bson_as_canonical_extended_json(main_bson, NULL);
-    fprintf(stderr, "pttdb_main.create_main_from_fd: main_bson: %s\n", str);
-    bson_free(str);
-
     if (!error_code) {
         error_code = _serialize_uuid_bson(main_id, &main_id_bson);
     }
-
-    str = bson_as_canonical_extended_json(main_id_bson, NULL);
-    fprintf(stderr, "pttdb_main.create_main_from_fd: main_id_bson: %s\n", str);
-    bson_free(str);
 
     if(!error_code) {
         error_code = db_update_one(MONGO_MAIN, main_id_bson, main_bson, true);
@@ -478,10 +470,6 @@ _serialize_main_bson(MainHeader *main_header, bson_t **main_bson)
 Err
 _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
 {    
-    char *str = bson_as_canonical_extended_json(main_bson, NULL);
-    fprintf(stderr, "pttdb_main._deserialze_main_bson: start: main_bson: %s\n", str);
-    bson_free(str);
-
     Err error_code;
     error_code = bson_get_value_int32(main_bson, "version", (int *)&main_header->version);
     if (error_code) return error_code;
