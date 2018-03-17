@@ -1099,7 +1099,7 @@ TEST(pttdb_main, read_main_header_to_bson) {
         "update_milli_timestamp", BCON_BOOL(true),
         "content_id", BCON_BOOL(true),
         "n_total_line", BCON_BOOL(true),
-        "n_total_block", BCON_BOOL(true),
+        "n_total_block", BCON_BOOL(true)
         );
     bson_t *result = NULL;
 
