@@ -390,9 +390,9 @@ TEST(pttdb_content_block, read_content_blocks_get_b_content_blocks)
 
 TEST(pttdb_content_block, form_content_block_b_array_block_ids)
 {
-    bson_t *b = bson_new();
+    bson_t *b = NULL;
 
-    Err error = _form_content_block_b_array_block_ids(5, 10, b);
+    Err error = _form_content_block_b_array_block_ids(5, 10, &b);
     EXPECT_EQ(S_OK, error);
 
     char *str = bson_as_canonical_extended_json(b, NULL);
