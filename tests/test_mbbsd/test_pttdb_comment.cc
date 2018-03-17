@@ -214,261 +214,261 @@ TEST(pttdb_comment, get_comment_count_by_main) {
     EXPECT_EQ(2, n_total_comments);
 }
 
-TEST(pttdb_comment, ensure_db_results_order) {
-    int n_results = 100;
-    bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
+TEST(pttdb_comment, ensure_b_comments_order) {
+    int n_comment = 100;
+    bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
     long int rand_int = 0;
 
-    for(int i = 0; i < n_results; i++) {
+    for(int i = 0; i < n_comment; i++) {
         rand_int = random();
-        db_results[i] = BCON_NEW(
+        b_comments[i] = BCON_NEW(
                 "poster", BCON_BINARY((unsigned char *)"test_poster", 11),
                 "create_milli_timestamp", BCON_INT64(rand_int)
             );    
     }
 
-    Err error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GT);
+    Err error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_ERR, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_ERR, error);
 
-    for(int i = 0; i < n_results; i++) {
-        bson_safe_destroy(&db_results[i]);
+    for(int i = 0; i < n_comment; i++) {
+        bson_safe_destroy(&b_comments[i]);
     }
-    free(db_results);
+    safe_free((void **)&b_comments);
 }
 
-TEST(pttdb_comment, ensure_db_results_order2) {
-    int n_results = 100;
-    bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
+TEST(pttdb_comment, ensure_b_comments_order2) {
+    int n_comment = 100;
+    bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
 
-    for(int i = 0; i < n_results; i++) {
-        db_results[i] = BCON_NEW(
-                "poster", BCON_BINARY((unsigned char *)"test_poster", 11),
-                "create_milli_timestamp", BCON_INT64(i)
+    for(int i = 0; i < n_comment; i++) {
+        b_comments[i] = BCON_NEW(
+            "poster", BCON_BINARY((unsigned char *)"test_poster", 11),
+            "create_milli_timestamp", BCON_INT64(i)
             );    
     }
 
-    Err error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GT);
+    Err error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_ERR, error);
 
-    for(int i = 0; i < n_results; i++) {
-        bson_safe_destroy(&db_results[i]);
+    for(int i = 0; i < n_comment; i++) {
+        bson_safe_destroy(&b_comments[i]);
     }
-    free(db_results);
+    safe_free((void **)&b_comments);
 }
 
-TEST(pttdb_comment, ensure_db_results_order3) {
-    int n_results = 100;
-    bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
+TEST(pttdb_comment, ensure_b_comments_order3) {
+    int n_comment = 100;
+    bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
 
-    for(int i = 0; i < n_results; i++) {
-        db_results[i] = BCON_NEW(
+    for(int i = 0; i < n_comment; i++) {
+        b_comments[i] = BCON_NEW(
                 "poster", BCON_BINARY((unsigned char *)"test_poster", 11),
                 "create_milli_timestamp", BCON_INT64(100 - i)
             );    
     }
 
-    Err error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
+    Err error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GT);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_ERR, error);
 
-    for(int i = 0; i < n_results; i++) {
-        bson_safe_destroy(&db_results[i]);
+    for(int i = 0; i < n_comment; i++) {
+        bson_safe_destroy(&b_comments[i]);
     }
-    free(db_results);
+    safe_free((void **)&b_comments);
 }
 
-TEST(pttdb_comment, ensure_db_results_order4) {
-    int n_results = 100;
-    bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
+TEST(pttdb_comment, ensure_b_comments_order4) {
+    int n_comment = 100;
+    bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
 
     char poster[IDLEN + 1] = {};
-    for(int i = 0; i < n_results; i++) {
+    for(int i = 0; i < n_comment; i++) {
         sprintf(poster, "poster%03d", i);
-        db_results[i] = BCON_NEW(
+        b_comments[i] = BCON_NEW(
                 "poster", BCON_BINARY((unsigned char *)poster, IDLEN),
                 "create_milli_timestamp", BCON_INT64(100)
             );    
     }
 
-    Err error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GT);
+    Err error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_ERR, error);
 
-    for(int i = 0; i < n_results; i++) {
-        bson_safe_destroy(&db_results[i]);
+    for(int i = 0; i < n_comment; i++) {
+        bson_safe_destroy(&b_comments[i]);
     }
-    free(db_results);
+    safe_free((void **)&b_comments);
 }
 
-TEST(pttdb_comment, ensure_db_results_order5) {
-    int n_results = 100;
-    bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
+TEST(pttdb_comment, ensure_b_comments_order5) {
+    int n_comment = 100;
+    bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
 
     char poster[IDLEN + 1] = {};
-    for(int i = 0; i < n_results; i++) {
+    for(int i = 0; i < n_comment; i++) {
         sprintf(poster, "poster%03d", 100 - i);
-        db_results[i] = BCON_NEW(
+        b_comments[i] = BCON_NEW(
                 "poster", BCON_BINARY((unsigned char *)poster, IDLEN),
                 "create_milli_timestamp", BCON_INT64(100)
             );    
     }
 
-    Err error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
+    Err error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GT);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_ERR, error);
 
-    for(int i = 0; i < n_results; i++) {
-        bson_safe_destroy(&db_results[i]);
+    for(int i = 0; i < n_comment; i++) {
+        bson_safe_destroy(&b_comments[i]);
     }
-    free(db_results);
+    safe_free((void **)&b_comments);
 }
 
-TEST(pttdb_comment, sort_db_results_order) {
-    int n_results = 100;
-    bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
+TEST(pttdb_comment, sort_b_comments_order) {
+    int n_comment = 100;
+    bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
     long int rand_int = 0;
 
-    for(int i = 0; i < n_results; i++) {
+    for(int i = 0; i < n_comment; i++) {
         rand_int = random();
-        db_results[i] = BCON_NEW(
+        b_comments[i] = BCON_NEW(
                 "poster", BCON_BINARY((unsigned char *)"test_poster", 11),
                 "create_milli_timestamp", BCON_INT64(rand_int)
             );    
     }
 
-    Err error = _sort_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GT);
+    Err error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GT);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _sort_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
+    error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_ERR, error);
 
-    error = _sort_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
+    error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_ERR, error);
 
-    error = _sort_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
+    error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);
 
-    for(int i = 0; i < n_results; i++) {
-        bson_safe_destroy(&db_results[i]);
+    for(int i = 0; i < n_comment; i++) {
+        bson_safe_destroy(&b_comments[i]);
     }
-    free(db_results);
+    safe_free((void **)&b_comments);
 }
 
-TEST(pttdb_comment, sort_db_results_order2) {
-    int n_results = 100;
-    bson_t **db_results = (bson_t **)malloc(sizeof(bson_t *) * n_results);
+TEST(pttdb_comment, sort_b_comments_order2) {
+    int n_comment = 100;
+    bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
     long int rand_int = 0;
 
     char poster[IDLEN + 1] = {};
-    for(int i = 0; i < n_results; i++) {
+    for(int i = 0; i < n_comment; i++) {
         rand_int = random();
         sprintf(poster, "poster%03ld", rand_int);
-        db_results[i] = BCON_NEW(
+        b_comments[i] = BCON_NEW(
                 "poster", BCON_BINARY((unsigned char *)poster, IDLEN),
                 "create_milli_timestamp", BCON_INT64(100)
             );    
     }
 
-    Err error = _sort_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GT);
+    Err error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GT);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _sort_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
+    error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LT);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_ERR, error);
 
-    error = _sort_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
+    error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_GTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_ERR, error);
 
-    error = _sort_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
+    error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_db_results_order(db_results, n_results, READ_COMMENTS_OP_TYPE_LTE);
+    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);
 
-    for(int i = 0; i < n_results; i++) {
-        bson_safe_destroy(&db_results[i]);
+    for(int i = 0; i < n_comment; i++) {
+        bson_safe_destroy(&b_comments[i]);
     }
-    free(db_results);
+    free(b_comments);
 }
 
 TEST(pttdb_comment, read_comments_by_main)
@@ -481,8 +481,8 @@ TEST(pttdb_comment, read_comments_by_main)
     gen_uuid(main_id);
 
     char poster[IDLEN + 1] = {};
-    int n_comments = 100;
-    for(int i = 0; i < n_comments; i++) {
+    int n_comment = 100;
+    for(int i = 0; i < n_comment; i++) {
         sprintf(poster, "poster%03d", i);
         error = create_comment(main_id, poster, (char *)"10.1.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
         EXPECT_EQ(S_OK, error);
@@ -493,9 +493,9 @@ TEST(pttdb_comment, read_comments_by_main)
     for(int i = 0; i < 100; i++) {
         init_comment_buf(&comments[i]);
     }
-    error = read_comments_by_main(main_id, 0, (char *)"", READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments, &n_comments, &len);
+    error = read_comments_by_main(main_id, 0, (char *)"", READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments, &n_comment, &len);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     for(int i = 0; i < 10; i++) {
         sprintf(poster, "poster%03d", i);
@@ -518,8 +518,8 @@ TEST(pttdb_comment, read_comments_by_main2)
     gen_uuid(main_id);
 
     char poster[IDLEN + 1] = {};
-    int n_comments = 100;
-    for(int i = 0; i < n_comments; i++) {
+    int n_comment = 100;
+    for(int i = 0; i < n_comment; i++) {
         sprintf(poster, "poster%03d", i);
         error = create_comment(main_id, poster, (char *)"10.1.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
         EXPECT_EQ(S_OK, error);
@@ -530,18 +530,18 @@ TEST(pttdb_comment, read_comments_by_main2)
     for(int i = 0; i < 100; i++) {
         init_comment_buf(&comments[i]);
     }
-    error = read_comments_by_main(main_id, 0, (char *)"", READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments, &n_comments, &len);
+    error = read_comments_by_main(main_id, 0, (char *)"", READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments, &n_comment, &len);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     for(int i = 0; i < 10; i++) {
         sprintf(poster, "poster%03d", i);
         EXPECT_STREQ(poster, comments[i].poster);
     }
 
-    error = read_comments_by_main(main_id, comments[9].create_milli_timestamp, comments[9].poster, READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments + 10, &n_comments, &len);
+    error = read_comments_by_main(main_id, comments[9].create_milli_timestamp, comments[9].poster, READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments + 10, &n_comment, &len);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     for(int i = 10; i < 20; i++) {
         sprintf(poster, "poster%03d", i);
@@ -562,8 +562,8 @@ TEST(pttdb_comment, read_comments_by_main3)
     UUID comment_id = {};
     gen_uuid(main_id);
 
-    int n_comments = 100;
-    for(int i = 0; i < n_comments; i++) {
+    int n_comment = 100;
+    for(int i = 0; i < n_comment; i++) {
         error = create_comment(main_id, (char *)"poster", (char *)"10.1.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
         usleep(1000);
         EXPECT_EQ(S_OK, error);
@@ -574,9 +574,9 @@ TEST(pttdb_comment, read_comments_by_main3)
     for(int i = 0; i < 100; i++) {
         init_comment_buf(&comments[i]);
     }
-    error = read_comments_by_main(main_id, 0, (char *)"", READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments, &n_comments, &len);
+    error = read_comments_by_main(main_id, 0, (char *)"", READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments, &n_comment, &len);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     time64_t first_create_milli_timestamp = comments[0].create_milli_timestamp;
     for(int i = 0; i < 10; i++) {
@@ -624,7 +624,7 @@ TEST(pttdb_comment, read_comments_by_main4)
     bson_t *comment_id_bson = NULL;
     bson_t *comment_bson = NULL;
 
-    int n_comments = 100;
+    int n_comment = 100;
     for(int i = 0; i < 15; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
@@ -641,7 +641,7 @@ TEST(pttdb_comment, read_comments_by_main4)
         EXPECT_EQ(S_OK, error);
     }
 
-    for(int i = 15; i < n_comments; i++) {
+    for(int i = 15; i < n_comment; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
@@ -666,9 +666,9 @@ TEST(pttdb_comment, read_comments_by_main4)
     for(int i = 0; i < 100; i++) {
         init_comment_buf(&comments[i]);
     }
-    error = read_comments_by_main(main_id, 0, (char *)"", READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments, &n_comments, &len);
+    error = read_comments_by_main(main_id, 0, (char *)"", READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments, &n_comment, &len);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     char poster[20] = {};
     for(int i = 0; i < 10; i++) {
@@ -719,7 +719,7 @@ TEST(pttdb_comment, read_comments_by_main5_GT)
     bson_t *comment_id_bson = NULL;
     bson_t *comment_bson = NULL;
 
-    int n_comments = 100;
+    int n_comment = 100;
     for(int i = 0; i < 15; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
@@ -736,7 +736,7 @@ TEST(pttdb_comment, read_comments_by_main5_GT)
         EXPECT_EQ(S_OK, error);
     }
 
-    for(int i = 15; i < n_comments; i++) {
+    for(int i = 15; i < n_comment; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
@@ -761,9 +761,9 @@ TEST(pttdb_comment, read_comments_by_main5_GT)
     for(int i = 0; i < 100; i++) {
         init_comment_buf(&comments[i]);
     }
-    error = read_comments_by_main(main_id, 0, (char *)"", READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments, &n_comments, &len);
+    error = read_comments_by_main(main_id, 0, (char *)"", READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments, &n_comment, &len);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     char poster[20] = {};
     for(int i = 0; i < 10; i++) {
@@ -773,9 +773,9 @@ TEST(pttdb_comment, read_comments_by_main5_GT)
     }
 
     // get comments
-    error = read_comments_by_main(main_id, comments[9].create_milli_timestamp, comments[9].poster, READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments + 10, &n_comments, &len);
+    error = read_comments_by_main(main_id, comments[9].create_milli_timestamp, comments[9].poster, READ_COMMENTS_OP_TYPE_GT, 10, MONGO_COMMENT, comments + 10, &n_comment, &len);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     for(int i = 10; i < 15; i++) {
         EXPECT_EQ(create_milli_timestamp, comments[i].create_milli_timestamp);
@@ -831,7 +831,7 @@ TEST(pttdb_comment, read_comments_by_main5_GTE)
     bson_t *comment_id_bson = NULL;
     bson_t *comment_bson = NULL;
 
-    int n_comments = 100;
+    int n_comment = 100;
     for(int i = 0; i < 15; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
@@ -848,7 +848,7 @@ TEST(pttdb_comment, read_comments_by_main5_GTE)
         EXPECT_EQ(S_OK, error);
     }
 
-    for(int i = 15; i < n_comments; i++) {
+    for(int i = 15; i < n_comment; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
@@ -873,9 +873,9 @@ TEST(pttdb_comment, read_comments_by_main5_GTE)
     for(int i = 0; i < 100; i++) {
         init_comment_buf(&comments[i]);
     }
-    error = read_comments_by_main(main_id, 0, (char *)"", READ_COMMENTS_OP_TYPE_GTE, 10, MONGO_COMMENT, comments, &n_comments, &len);
+    error = read_comments_by_main(main_id, 0, (char *)"", READ_COMMENTS_OP_TYPE_GTE, 10, MONGO_COMMENT, comments, &n_comment, &len);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     char poster[20] = {};
     for(int i = 0; i < 10; i++) {
@@ -886,9 +886,9 @@ TEST(pttdb_comment, read_comments_by_main5_GTE)
     }
 
     // get comments
-    error = read_comments_by_main(main_id, comments[9].create_milli_timestamp, comments[9].poster, READ_COMMENTS_OP_TYPE_GTE, 10, MONGO_COMMENT, comments + 10, &n_comments, &len);
+    error = read_comments_by_main(main_id, comments[9].create_milli_timestamp, comments[9].poster, READ_COMMENTS_OP_TYPE_GTE, 10, MONGO_COMMENT, comments + 10, &n_comment, &len);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     for(int i = 10; i < 16; i++) {
         fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_GTE: after 2nd read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 16, comments[i].create_milli_timestamp, comments[i].poster);
@@ -946,7 +946,7 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
     bson_t *comment_id_bson = NULL;
     bson_t *comment_bson = NULL;
 
-    int n_comments = 100;
+    int n_comment = 100;
     for(int i = 0; i < 15; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
@@ -1011,9 +1011,9 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
     for(int i = 0; i < 100; i++) {
         init_comment_buf(&comments[i]);
     }
-    error = read_comments_by_main(main_id, future_milli_timestamp, (char *)"", READ_COMMENTS_OP_TYPE_LT, 10, MONGO_COMMENT, comments, &n_comments, &len);
+    error = read_comments_by_main(main_id, future_milli_timestamp, (char *)"", READ_COMMENTS_OP_TYPE_LT, 10, MONGO_COMMENT, comments, &n_comment, &len);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     char poster[20] = {};
     for(int i = 0; i < 10; i++) {
@@ -1024,9 +1024,9 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
     }
 
     // get comments
-    error = read_comments_by_main(main_id, comments[0].create_milli_timestamp, comments[0].poster, READ_COMMENTS_OP_TYPE_LT, 10, MONGO_COMMENT, comments + 10, &n_comments, &len);
+    error = read_comments_by_main(main_id, comments[0].create_milli_timestamp, comments[0].poster, READ_COMMENTS_OP_TYPE_LT, 10, MONGO_COMMENT, comments + 10, &n_comment, &len);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     for(int i = 10; i < 15; i++) {
         fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LT: after 2st read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 15, comments[i].create_milli_timestamp, comments[i].poster);
@@ -1084,7 +1084,7 @@ TEST(pttdb_comment, read_comments_by_main5_LTE)
     bson_t *comment_id_bson = NULL;
     bson_t *comment_bson = NULL;
 
-    int n_comments = 100;
+    int n_comment = 100;
     for(int i = 0; i < 15; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
@@ -1149,9 +1149,9 @@ TEST(pttdb_comment, read_comments_by_main5_LTE)
     for(int i = 0; i < 100; i++) {
         init_comment_buf(&comments[i]);
     }
-    error = read_comments_by_main(main_id, future_milli_timestamp, (char *)"", READ_COMMENTS_OP_TYPE_LTE, 10, MONGO_COMMENT, comments, &n_comments, &len);
+    error = read_comments_by_main(main_id, future_milli_timestamp, (char *)"", READ_COMMENTS_OP_TYPE_LTE, 10, MONGO_COMMENT, comments, &n_comment, &len);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     char poster[20] = {};
     for(int i = 0; i < 10; i++) {
@@ -1162,9 +1162,9 @@ TEST(pttdb_comment, read_comments_by_main5_LTE)
     }
 
     // get comments
-    error = read_comments_by_main(main_id, comments[0].create_milli_timestamp, comments[0].poster, READ_COMMENTS_OP_TYPE_LTE, 10, MONGO_COMMENT, comments + 10, &n_comments, &len);
+    error = read_comments_by_main(main_id, comments[0].create_milli_timestamp, comments[0].poster, READ_COMMENTS_OP_TYPE_LTE, 10, MONGO_COMMENT, comments + 10, &n_comment, &len);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, n_comments);
+    EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     for(int i = 10; i < 14; i++) {
         fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LTE: after 2st read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 14, comments[i].create_milli_timestamp, comments[i].poster);
