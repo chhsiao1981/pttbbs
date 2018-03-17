@@ -329,7 +329,7 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
 
     // while-loop
     while(i < n_comment_comment_reply_info && j < n_comment_reply) {
-        tmp_cmp = strncmp(*comment_id, comment_reply_comment_id, UUIDLEN);
+        tmp_cmp = strncmp((char *)*comment_id, (char *)comment_reply_comment_id, UUIDLEN);
         if(tmp_cmp < 0) {
             // increase comment_comment_reply_info
             i++;
@@ -342,7 +342,7 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
             // increase comment_replys
             j++;
             p_b_comment_replys++;
-            if(j < n_comment_replys) {
+            if(j < n_comment_reply) {
                 error_code = bson_get_value_bin(*p_b_comment_replys, "comment_id", UUIDLEN, (char *)comment_reply_comment_id, &len);
                 if(error_code) break;
             }
@@ -365,8 +365,8 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
             // increase comment_replys
             j++;
             p_b_comment_replys++;
-            if(j < n_comment_replys) {
-                error_code = bson_get_value_bin(*p_b_comment_replys, "comment_id", comment_reply_comment_id, &len);
+            if(j < n_comment_reply) {
+                error_code = bson_get_value_bin(*p_b_comment_replys, "comment_id", UUIDLEN, (char *)comment_reply_comment_id, &len);
                 if(error_code) break;
             }
         }
