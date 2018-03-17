@@ -1084,8 +1084,6 @@ TEST(pttdb_main, read_main_header_to_bson) {
     UUID main_id;
     UUID content_id;
 
-    char tmp_main_id[UUIDLEN + 1] = {};
-
     strcpy(board, "test_board");
     strcpy(title, "test_title");
     strcpy(poster, "test_poster");
@@ -1104,10 +1102,11 @@ TEST(pttdb_main, read_main_header_to_bson) {
     bson_t *result = NULL;
 
     // create-main-from-fd
-    Err error_code = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    EXPECT_EQ(S_OK, error);
 
-    Err error = read_main_header_to_bson(main_id, fields, &result); 
-    EXPECT_EQ(S_OK, error_code);
+    error = read_main_header_to_bson(main_id, fields, &result); 
+    EXPECT_EQ(S_OK, error);
 
     char *str = bson_as_canonical_extended_json(result, NULL);
     fprintf(stderr, "test_pttdb_main.read_main_header_to_bson: result: %s\n", str);
