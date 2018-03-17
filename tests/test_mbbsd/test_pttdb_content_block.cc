@@ -861,7 +861,7 @@ TEST(pttdb_content_block, read_content_blocks_to_bsons)
     EXPECT_EQ(2, n_total_block);
 
     // read content-blocks
-    bson_t **b_content_blocks = malloc(sizeof(bson_t *) * n_total_block);
+    bson_t **b_content_blocks = (bson_t **)malloc(sizeof(bson_t *) * n_total_block);
     int n_content_blocks;
     bson_t *fields = BCON_NEW(
         "_id", BCON_BOOL(false),
