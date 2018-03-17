@@ -43,7 +43,7 @@ get_file_info_by_main(UUID main_id, FileInfo *file_info)
 
     error_code = _get_file_info_by_main_get_main_info(main_id, file_info);
     if(!error_code) {
-        error_code = _get_file_info_by_main_get_content_block_info(main_id, file_info);
+        error_code = _get_file_info_by_main_get_content_block_info(file_info);
     }
     if(!error_code) {
         error_code = _get_file_info_by_main_get_comment_comment_reply_info(main_id, file_info);
@@ -119,7 +119,7 @@ _get_file_info_by_main_get_main_info(UUID main_id, FileInfo *file_info)
 
 
 Err
-_get_file_info_by_main_get_content_block_info(UUID main_id, FileInfo *file_info)
+_get_file_info_by_main_get_content_block_info(FileInfo *file_info)
 {
     Err error_code = S_OK;
     // malloc file_info.content_block_info
