@@ -53,19 +53,22 @@ get_file_info_by_main(UUID main_id, FileInfo *file_info)
 }
 
 Err
-destory_file_info(FileInfo **file_info)
+destory_file_info(FileInfo *file_info)
 {
-    FileInfo *tmp_file_info = *file_info;
-    if(!tmp_file_info) return S_OK;
+    if(!file_info) return S_OK;
 
-    if(tmp_file_info->content_block_info) {
-        free(tmp_file_info->content_block_info);        
+    if(file_info->content_block_info) {
+        free(file_info->content_block_info);
     }
-    if(tmp_file_info->comment_comment_reply_info) {
-        free(tmp_file_info->comment_comment_reply_info);
+    if(file_info->comment_comment_reply_info) {
+        free(file_info->comment_comment_reply_info);
     }
+    file_info->comment_comment_reply_info = NULL;
+    file_info->content_block_info = NULL;
+    file_info->n_main_line = 0;
+    file_info->n_main_block = 0;
+    file_info->n_comments = 0;
 
-    *file_info = NULL;
     return S_OK;
 }
 
