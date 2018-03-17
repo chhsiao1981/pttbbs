@@ -142,7 +142,7 @@ _get_file_info_by_main_get_content_block_info(UUID main_id, FileInfo *file_info)
 
     if(!error_code) {
         error_code = read_content_blocks_to_bsons(file_info->main_content_id, content_block_fields, file_info->n_main_block, MONGO_MAIN_CONTENT, b_content_blocks, &n_content_blocks);
-        if(n_content_blocks != file_info->n_total_block) error_code = S_ERR; // not matched.
+        if(n_content_blocks != file_info->n_main_block) error_code = S_ERR; // not matched.
     }
 
     // bson data to content block info
@@ -163,7 +163,7 @@ _get_file_info_by_main_get_content_block_info(UUID main_id, FileInfo *file_info)
     for(int i = 0; i < n_content_blocks; i++, p_b_content_blocks++) {
         bson_safe_destroy(p_b_content_blocks);
     }
-    safe_free(&b_content_blocks);
+    safe_free((void **)&b_content_blocks);
 
     return error_code;
 }
