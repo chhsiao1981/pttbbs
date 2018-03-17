@@ -244,8 +244,6 @@ _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_c
 {
     Err error_code = S_OK;
     int n_comment_comment_reply_info = next_i - start_i;
-    int i = 0;
-    int j = 0;
 
     CommentCommentReplyInfo *p_comment_comment_reply_info = comment_comment_reply_info;
     // construct query
@@ -256,7 +254,7 @@ _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_c
     size_t keylen;
     bool status;
     BSON_APPEND_ARRAY_BEGIN(q_array, "$in", &child);
-    for(i = start_i; i < next_i; i++, p_comment_comment_reply_info++) {
+    for(int i = start_i; i < next_i; i++, p_comment_comment_reply_info++) {
         keylen = bson_uint32_to_string(i, &key, buf, sizeof(buf));
         status = bson_append_bin(&child, key, (int)keylen, p_comment_comment_reply_info->comment_id, UUIDLEN);
         if (!status) {
@@ -302,7 +300,7 @@ _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_c
     for(int i = 0; i < n_comment_reply; i++, p_b_comment_replys++) {
         bson_safe_destroy(p_b_comment_replys);
     }
-    safe_free(&p_b_comment_replys);
+    safe_free((void **)&p_b_comment_replys);
     bson_safe_destroy(&fields);
     bson_safe_destroy(&query);
     bson_safe_destroy(&q_array);
