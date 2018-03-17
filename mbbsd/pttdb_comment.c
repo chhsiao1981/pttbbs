@@ -260,8 +260,6 @@ read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poste
 
     error_code = _read_comments_get_db_results(db_results, main_id, create_milli_timestamp, poster, op_type, max_n_comments, mongo_db_id, n_read_comments);
 
-    fprintf(stderr, "pttdb_comment.read_comments_by_main: after _read_comments_get_db_results: e: %d n_read_comments: %d\n", error_code, *n_read_comments);
-
     int tmp_n_read_comments = *n_read_comments;
     bson_t **p_db_results = db_results;
     Comment *p_comments = comments;
