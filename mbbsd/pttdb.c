@@ -329,8 +329,8 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
 
     // while-loop
     while(i < n_comment_comment_reply_info && j < n_comment_reply) {
-        the_cmp = strncmp(*comment_id, comment_reply_comment_id, UUIDLEN);
-        if(the_cmp < 0) {
+        tmp_cmp = strncmp(*comment_id, comment_reply_comment_id, UUIDLEN);
+        if(tmp_cmp < 0) {
             // increase comment_comment_reply_info
             i++;
             p_comment_comment_reply_info++;
