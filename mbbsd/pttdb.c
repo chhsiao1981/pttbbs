@@ -228,12 +228,15 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
         }
     }
 
+    // free
     bson_safe_destroy(&comment_fields);
     p_b_comments = b_comments;
     for(int i = 0; i < n_comments; i++, p_b_comments++) {
         bson_safe_destroy(p_b_comments);
     }
-    safe_free(&p_b_comments);
+    safe_free((void **)&p_b_comments);
+
+    return error_code;
 }
 
 Err
