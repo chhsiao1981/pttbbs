@@ -96,19 +96,19 @@ _get_file_info_by_main_get_main_info(UUID main_id, FileInfo *file_info)
     int len = 0;
     error_code = read_main_header_to_bson(main_id, fields, &b_main);
     if(!error_code) {
-        error_code = bson_get_value_bin(b_main, "updater", IDLEN, file_info.main_updater, &len);
+        error_code = bson_get_value_bin(b_main, "updater", IDLEN, file_info->main_updater, &len);
     }
     if(!error_code) {
-        error_code = bson_get_value_int64(b_main, "update_milli_timestamp", &file_info.main_update_milli_timestamp);
+        error_code = bson_get_value_int64(b_main, "update_milli_timestamp", &file_info->main_update_milli_timestamp);
     }
     if(!error_code) {
-        error_code = bson_get_value_bin(b_main, "content_id", UUIDLEN, file_info.main_content_id, &len);
+        error_code = bson_get_value_bin(b_main, "content_id", UUIDLEN, file_info->main_content_id, &len);
     }
     if(!error_code) {
-        error_code = bson_get_value_int32(b_main, "n_total_line", &file_info.n_main_line);    
+        error_code = bson_get_value_int32(b_main, "n_total_line", &file_info->n_main_line);    
     }
     if(!error_code) {
-        error_code = bson_get_value_int32(b_main, "n_total_block", &file_info.n_main_block);
+        error_code = bson_get_value_int32(b_main, "n_total_block", &file_info->n_main_block);
     }
 
     bson_safe_destroy(&b_main);
