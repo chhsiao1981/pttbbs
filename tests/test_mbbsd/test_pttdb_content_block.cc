@@ -876,7 +876,7 @@ TEST(pttdb_content_block, read_content_blocks_to_bsons)
     for(int i = 0; i < n_content_blocks; i++) {
         bson_safe_destroy(&b_content_blocks[i]);
     }
-    safe_free(&b_content_blocks);
+    safe_free((void **)&b_content_blocks);
     bson_safe_destroy(&fields);
 
     bson_safe_destroy(&main_fields);
