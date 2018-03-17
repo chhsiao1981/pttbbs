@@ -133,7 +133,7 @@ TEST(pttdb_main, create_main_from_fd_test1) {
     EXPECT_EQ(S_OK, error_code);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
-    fprintf(stderr, "test_pttdb.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
+    fprintf(stderr, "test_pttdb_main.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
 
     // read main-header
     MainHeader main_header = {};
@@ -199,7 +199,7 @@ TEST(pttdb_main, create_main_from_fd_test2_read_main_content) {
     EXPECT_EQ(S_OK, error_code);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
-    fprintf(stderr, "test_pttdb.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
+    fprintf(stderr, "test_pttdb_main.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
 
     MainHeader main_header = {};
 
@@ -292,7 +292,7 @@ TEST(pttdb_main, create_main_from_fd_test2) {
     EXPECT_EQ(S_OK, error_code);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
-    fprintf(stderr, "test_pttdb.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
+    fprintf(stderr, "test_pttdb_main.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
 
     MainHeader main_header = {};
 
@@ -326,7 +326,7 @@ TEST(pttdb_main, create_main_from_fd_test2) {
     close(fd);
 }
 
-TEST(pttdb, create_main_from_fd_test1_full_read_main_content) {
+TEST(pttdb_main, create_main_from_fd_test1_full_read_main_content) {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
@@ -417,7 +417,7 @@ TEST(pttdb, create_main_from_fd_test1_full_read_main_content) {
 
     get_milli_timestamp(&end_timestamp);
 
-    fprintf(stderr, "pttdb.create_main_from_fd_test1_full_read_main_content: read: elapsed time: %lld\n", end_timestamp - start_timestamp);
+    fprintf(stderr, "test_pttdb_main.create_main_from_fd_test1_full_read_main_content: read: elapsed time: %lld\n", end_timestamp - start_timestamp);
 
     destroy_content_block(&content_block0);
     destroy_content_block(&content_block1);
@@ -456,7 +456,7 @@ TEST(pttdb_main, create_main_from_fd_test1_full) {
     EXPECT_EQ(S_OK, error_code);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
-    fprintf(stderr, "test_pttdb.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
+    fprintf(stderr, "test_pttdb_main.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
 
     // read main header
     MainHeader main_header = {};
@@ -490,7 +490,7 @@ TEST(pttdb_main, create_main_from_fd_test1_full) {
     close(fd);
 }
 
-TEST(pttdb, len_main) {
+TEST(pttdb_main, len_main) {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
 
     MainHeader main_header = {};
@@ -695,7 +695,7 @@ TEST(pttdb_main, read_main_header) {
     EXPECT_EQ(S_OK, error);
 
     char *str = bson_as_canonical_extended_json(main_bson, NULL);
-    fprintf(stderr, "test_pttdb.read_main_header: to db_update_one: main_bson: %s\n", str);
+    fprintf(stderr, "test_pttdb_main.read_main_header: to db_update_one: main_bson: %s\n", str);
     bson_free(str);
 
     error = db_update_one(MONGO_MAIN, main_bson, main_bson, true);
