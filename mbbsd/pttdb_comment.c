@@ -135,7 +135,7 @@ delete_comment(UUID comment_id, char *updater, char *ip) {
 }
 
 Err
-get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len)
+get_comment_info_by_main(UUID main_id, int *n_total_comment, int *total_len)
 {
     Err error_code = S_OK;
     bson_t *pipeline = BCON_NEW(
@@ -170,7 +170,7 @@ get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len)
     }
 
     if (!error_code) {
-        error_code = _get_comment_info_by_main_deal_with_result(result, n_result, n_total_comments, total_len);
+        error_code = _get_comment_info_by_main_deal_with_result(result, n_result, n_total_comment, total_len);
     }
 
     bson_safe_destroy(&result);
@@ -248,33 +248,33 @@ dissociate_comment(Comment *comment)
 }
 
 Err
-read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, Comment *comments, int *n_read_comments, int *len)
+read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comment, enum MongoDBId mongo_db_id, Comment *comments, int *n_comment, int *len)
 {
 
     Err error_code = S_OK;
 
     // init db-results
-    bson_t **db_results = malloc(sizeof(bson_t *) * max_n_comments);
-    if (db_results == NULL) return S_ERR_INIT;
-    bzero(db_results, sizeof(bson_t *) * max_n_comments);
+    bson_t **b_comments = malloc(sizeof(bson_t *) * max_n_comment);
+    if (b_comments == NULL) return S_ERR_INIT;
+    bzero(b_comments, sizeof(bson_t *) * max_n_comment);
 
-    error_code = _read_comments_get_db_results(db_results, main_id, create_milli_timestamp, poster, op_type, max_n_comments, mongo_db_id, n_read_comments);
+    error_code = _read_comments_get_b_comments(b_comments, main_id, create_milli_timestamp, poster, op_type, max_n_comment, mongo_db_id, n_comment);
 
-    int tmp_n_read_comments = *n_read_comments;
-    bson_t **p_db_results = db_results;
+    int tmp_n_comment = *n_comment;
+    bson_t **p_b_comments = b_comments;
     Comment *p_comments = comments;
 
     int tmp_len = 0;
     if (!error_code) {
-        for (int i = 0; i < tmp_n_read_comments; i++) {
-            error_code = _deserialize_comment_bson(*p_db_results, p_comments);
+        for (int i = 0; i < tmp_n_comment; i++) {
+            error_code = _deserialize_comment_bson(*p_b_comments, p_comments);
 
             tmp_len += p_comments->len;
-            p_db_results++;
+            p_b_comments++;
             p_comments++;
 
             if (error_code) {
-                *n_read_comments = i;
+                *n_comments = i;
                 break;
             }
         }
@@ -283,18 +283,17 @@ read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poste
     *len = tmp_len;
 
     // free
-    p_db_results = db_results;
-    for (int i = 0; i < tmp_n_read_comments; i++) {
-        bson_safe_destroy(p_db_results);
-        p_db_results++;
+    p_b_comments = b_comments;
+    for (int i = 0; i < tmp_n_comment; i++, p_b_comments++) {
+        bson_safe_destroy(p_b_comments);
     }
-    free(db_results);
+    safe_free((void **)&b_comments);
 
     return error_code;
 }
 
 Err
-get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timestamp, char *poster, int *n_comments)
+get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timestamp, char *poster, int *n_comment)
 {
     Err error_code = S_OK;
     bson_t *key = BCON_NEW(
@@ -360,7 +359,7 @@ get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timesta
         error_code = db_count(MONGO_COMMENT, count_query_lt, &count_lt_create_milli_timestamp);
     }
 
-    *n_comments = count_eq_create_milli_timestamp + count_lt_create_milli_timestamp;
+    *n_comment = count_eq_create_milli_timestamp + count_lt_create_milli_timestamp;
 
     bson_safe_destroy(&key);
     bson_safe_destroy(&fields);
@@ -373,7 +372,7 @@ get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timesta
 }
 
 Err
-read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestamp, char *poster, bson_t *fields, int max_n_comments, bson_t **b_comments, int *n_comments)
+read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestamp, char *poster, bson_t *fields, int max_n_comment, bson_t **b_comments, int *n_comment)
 {
     Err error_code = S_OK;
 
@@ -388,10 +387,10 @@ read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestam
         "poster", BCON_INT32(1)
     );
     
-    int n_comments_lt_create_milli_timestamp = 0;
-    error_code = db_find(MONGO_COMMENT, query_lt, fields, sort, max_n_comments, &n_comments_lt_create_milli_timestamp, b_comments);
-    b_comments += n_comments_lt_create_milli_timestamp;
-    max_n_comments -= n_comments_lt_create_milli_timestamp;
+    int n_comment_lt_create_milli_timestamp = 0;
+    error_code = db_find(MONGO_COMMENT, query_lt, fields, sort, max_n_comment, &n_comment_lt_create_milli_timestamp, b_comments);
+    b_comments += n_comment_lt_create_milli_timestamp;
+    max_n_comment -= n_comment_lt_create_milli_timestamp;
 
     bson_t *query_eq = BCON_NEW(
         "main_id", BCON_BINARY(main_id, UUIDLEN),
@@ -401,12 +400,12 @@ read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestam
             "$lte", BCON_BINARY((unsigned char *)poster, IDLEN),
         "}"
         );
-    int n_comments_eq_create_milli_timestamp = 0;
+    int n_comment_eq_create_milli_timestamp = 0;
     if(!error_code) {
-        error_code = db_find(MONGO_COMMENT, query_eq, fields, sort, max_n_comments, &n_comments_eq_create_milli_timestamp, b_comments);
+        error_code = db_find(MONGO_COMMENT, query_eq, fields, sort, max_n_comment, &n_comment_eq_create_milli_timestamp, b_comments);
     }
 
-    *n_comments = n_comments_lt_create_milli_timestamp + n_comments_eq_create_milli_timestamp;
+    *n_comment = n_comment_lt_create_milli_timestamp + n_comment_eq_create_milli_timestamp;
 
     // free
     bson_safe_destroy(&query_lt);
@@ -418,17 +417,17 @@ read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestam
 
 
 Err
-_get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_total_comments, int *total_len)
+_get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_total_comment, int *total_len)
 {
     if (!n_result) {
-        *n_total_comments = 0;
+        *n_total_comment = 0;
         *total_len = 0;
         return S_OK;
     }
 
     Err error_code = S_OK;
 
-    error_code = bson_get_value_int32(result, "count", n_total_comments);
+    error_code = bson_get_value_int32(result, "count", n_total_comment);
 
     if (!error_code) {
         error_code = bson_get_value_int32(result, "len", total_len);
@@ -438,31 +437,31 @@ _get_comment_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_
 }
 
 Err
-_read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments)
+_read_comments_get_b_comments(bson_t **b_comments, UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comment, enum MongoDBId mongo_db_id, int *n_comment)
 {
     Err error_code = S_OK;
 
-    int n_comments_same_create_milli_timestamp = 0;
+    int n_comment_same_create_milli_timestamp = 0;
 
-    bson_t **p_db_results = db_results;
-    error_code = _read_comments_get_db_results_same_create_milli_timestamp(p_db_results, main_id, create_milli_timestamp, poster, op_type, max_n_comments, mongo_db_id, &n_comments_same_create_milli_timestamp);
+    bson_t **p_b_comments = b_comments;
+    error_code = _read_comments_get_b_comments_same_create_milli_timestamp(p_b_comments, main_id, create_milli_timestamp, poster, op_type, max_n_comment, mongo_db_id, &n_comment_same_create_milli_timestamp);
     if(error_code == S_ERR_NOT_EXISTS) error_code = S_OK;
 
     if(!error_code) {
-        p_db_results += n_comments_same_create_milli_timestamp;
-        max_n_comments -= n_comments_same_create_milli_timestamp;
+        p_b_comments += n_comment_same_create_milli_timestamp;
+        max_n_comment -= n_comment_same_create_milli_timestamp;
     }
 
-    int n_comments_diff_create_milli_timestamp = 0;
-    if(!error_code && max_n_comments > 0) {
-        error_code = _read_comments_get_db_results_diff_create_milli_timestamp(p_db_results, main_id, create_milli_timestamp, op_type, max_n_comments, mongo_db_id, &n_comments_diff_create_milli_timestamp);
+    int n_comment_diff_create_milli_timestamp = 0;
+    if(!error_code && max_n_comment > 0) {
+        error_code = _read_comments_get_b_comments_diff_create_milli_timestamp(p_b_comments, main_id, create_milli_timestamp, op_type, max_n_comment, mongo_db_id, &n_comment_diff_create_milli_timestamp);
         if(error_code == S_ERR_NOT_EXISTS) error_code = S_OK;
     }
 
-    *n_comments = n_comments_same_create_milli_timestamp + n_comments_diff_create_milli_timestamp;
+    *n_comment = n_comment_same_create_milli_timestamp + n_comment_diff_create_milli_timestamp;
 
     if(!error_code && (op_type == READ_COMMENTS_OP_TYPE_LT || op_type == READ_COMMENTS_OP_TYPE_LTE)) {
-        error_code = _reverse_db_results(db_results, *n_comments);
+        error_code = _reverse_b_comments(b_comments, *n_comment);
     }
 
     return error_code;
@@ -470,7 +469,7 @@ _read_comments_get_db_results(bson_t **db_results, UUID main_id, time64_t create
 
 
 Err
-_read_comments_get_db_results_same_create_milli_timestamp(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments)
+_read_comments_get_b_comments_same_create_milli_timestamp(bson_t **b_comments, UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comment, enum MongoDBId mongo_db_id, int *n_comment)
 {
     Err error_code = S_OK;
     int order = (op_type == READ_COMMENTS_OP_TYPE_GT || op_type == READ_COMMENTS_OP_TYPE_GTE) ? 1 : -1;
@@ -485,16 +484,16 @@ _read_comments_get_db_results_same_create_milli_timestamp(bson_t **db_results, U
         "}"
     );
 
-    if (key == NULL) error_code = S_ERR;
+    if (key == NULL) error_code = S_ERR_INIT;
 
     bson_t *sort = BCON_NEW(
         "poster", BCON_INT32(order)
     );
     
-    if(sort == NULL) error_code = S_ERR;
+    if(sort == NULL) error_code = S_ERR_INIT;
 
     if(!error_code) {
-        error_code = _read_comments_get_db_results_core(db_results, key, sort, op_type, max_n_comments, mongo_db_id, n_comments);
+        error_code = _read_comments_get_b_comments_core(b_comments, key, sort, op_type, max_n_comment, mongo_db_id, n_comment);
     }
 
     bson_safe_destroy(&key);
@@ -504,7 +503,7 @@ _read_comments_get_db_results_same_create_milli_timestamp(bson_t **db_results, U
 }
 
 Err
-_read_comments_get_db_results_diff_create_milli_timestamp(bson_t **db_results, UUID main_id, time64_t create_milli_timestamp, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments)
+_read_comments_get_b_comments_diff_create_milli_timestamp(bson_t **b_comments, UUID main_id, time64_t create_milli_timestamp, enum ReadCommentsOpType op_type, int max_n_comment, enum MongoDBId mongo_db_id, int *n_comment)
 {
     Err error_code = S_OK;
     int order = (op_type == READ_COMMENTS_OP_TYPE_GT || op_type == READ_COMMENTS_OP_TYPE_GTE) ? 1 : -1;
@@ -535,7 +534,7 @@ _read_comments_get_db_results_diff_create_milli_timestamp(bson_t **db_results, U
     if(sort == NULL) error_code = S_ERR;
 
     if(!error_code) {
-        error_code = _read_comments_get_db_results_core(db_results, key, sort, op_type, max_n_comments, mongo_db_id, n_comments);
+        error_code = _read_comments_get_b_comments_core(b_comments, key, sort, op_type, max_n_comment, mongo_db_id, n_comment);
     }
 
     bson_safe_destroy(&key);
@@ -545,35 +544,35 @@ _read_comments_get_db_results_diff_create_milli_timestamp(bson_t **db_results, U
 }
 
 Err
-_read_comments_get_db_results_core(bson_t **db_results, bson_t *key, bson_t *sort, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, int *n_comments)
+_read_comments_get_b_comments_core(bson_t **b_comments, bson_t *key, bson_t *sort, enum ReadCommentsOpType op_type, int max_n_comment, enum MongoDBId mongo_db_id, int *n_comment)
 {
-    Err error_code = db_find(mongo_db_id, key, NULL, sort, max_n_comments, n_comments, db_results);
+    Err error_code = db_find(mongo_db_id, key, NULL, sort, max_n_comment, n_comment, b_comments);
 
-    int tmp_n_comments = *n_comments;
+    int tmp_n_comment = *n_comment;
 
     Err error_code_ensure_order = S_OK;
     if (!error_code) {
-        error_code_ensure_order = _ensure_db_results_order(db_results, tmp_n_comments, op_type);
+        error_code_ensure_order = _ensure_b_comments_order(b_comments, tmp_n_comment, op_type);
     }
 
     if (!error_code && error_code_ensure_order) {
-        error_code = _sort_db_results_order(db_results, tmp_n_comments, op_type);
+        error_code = _sort_b_comments_order(b_comments, tmp_n_comment, op_type);
     }
 
     return error_code;
 }
 
 Err
-_ensure_db_results_order(bson_t **db_results, int n_results, enum ReadCommentsOpType op_type)
+_ensure_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type)
 {
     Err error_code = S_OK;
-    bson_t **p_db_results = db_results;
-    bson_t **p_next_db_results = db_results + 1;
+    bson_t **p_b_comments = b_comments;
+    bson_t **p_next_b_comments = b_comments + 1;
     int cmp = 0;
-    int (*_cmp)(const void *a, const void *b) = (op_type == READ_COMMENTS_OP_TYPE_LT || op_type == READ_COMMENTS_OP_TYPE_LTE) ? _cmp_descending : _cmp_ascending;
+    int (*_cmp)(const void *a, const void *b) = (op_type == READ_COMMENTS_OP_TYPE_LT || op_type == READ_COMMENTS_OP_TYPE_LTE) ? _cmp_b_comments_descending : _cmp_b_comments_ascending;
 
-    for (int i = 0; i < n_results - 1; i++, p_db_results++, p_next_db_results++) {
-        cmp = _cmp(p_db_results, p_next_db_results);
+    for (int i = 0; i < n_comment - 1; i++, p_b_comments++, p_next_b_comments++) {
+        cmp = _cmp(p_b_comments, p_next_b_comments);
         if (cmp > 0) {
             error_code = S_ERR;
             break;
@@ -584,22 +583,22 @@ _ensure_db_results_order(bson_t **db_results, int n_results, enum ReadCommentsOp
 }
 
 Err
-_sort_db_results_order(bson_t **db_results, int n_results, enum ReadCommentsOpType op_type)
+_sort_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type)
 {
-    int (*_cmp)(const void *a, const void *b) = (op_type == READ_COMMENTS_OP_TYPE_LT || op_type == READ_COMMENTS_OP_TYPE_LTE) ? _cmp_descending : _cmp_ascending;
+    int (*_cmp)(const void *a, const void *b) = (op_type == READ_COMMENTS_OP_TYPE_LT || op_type == READ_COMMENTS_OP_TYPE_LTE) ? _cmp_b_comments_descending : _cmp_b_comments_ascending;
 
-    qsort(db_results, n_results, sizeof(bson_t *), _cmp);
+    qsort(b_comments, n_comment, sizeof(bson_t *), _cmp);
 
     return S_OK;
 }
 
 int
-_cmp_ascending(const void *a, const void *b)
+_cmp_b_comments_ascending(const void *a, const void *b)
 {
-    bson_t **tmp_tmp_a = (bson_t **)a;
-    bson_t *tmp_a = *tmp_tmp_a;
-    bson_t **tmp_tmp_b = (bson_t **)b;
-    bson_t *tmp_b = *tmp_tmp_b;
+    bson_t **p_b_comment_a = (bson_t **)a;
+    bson_t *b_comment_a = *p_b_comment_a;
+    bson_t **p_b_comment_b = (bson_t **)b;
+    bson_t *b_comment_b = *p_b_comment_b;
 
     time64_t create_milli_timestamp_a = 0;
     time64_t create_milli_timestamp_b = 0;
@@ -608,10 +607,10 @@ _cmp_ascending(const void *a, const void *b)
     char poster_b[IDLEN + 1] = {};
 
     Err error_code;
-    error_code = bson_get_value_int64(tmp_a, "create_milli_timestamp", (long *)&create_milli_timestamp_a);
+    error_code = bson_get_value_int64(b_comment_a, "create_milli_timestamp", (long *)&create_milli_timestamp_a);
     if (error_code) create_milli_timestamp_a = -1;
 
-    error_code = bson_get_value_int64(tmp_b, "create_milli_timestamp", (long *)&create_milli_timestamp_b);
+    error_code = bson_get_value_int64(b_comment_b, "create_milli_timestamp", (long *)&create_milli_timestamp_b);
     if (error_code) create_milli_timestamp_b = -1;
 
     if (create_milli_timestamp_a != create_milli_timestamp_b) {
@@ -619,22 +618,22 @@ _cmp_ascending(const void *a, const void *b)
     }
 
     int len;
-    error_code = bson_get_value_bin(tmp_a, "poster", IDLEN, poster_a, &len);
-    if (error_code) bzero(poster_a, IDLEN + 1);
+    error_code = bson_get_value_bin(b_comment_a, "poster", IDLEN, poster_a, &len);
+    if (error_code) poster_a[0] = 0;
 
-    error_code = bson_get_value_bin(tmp_b, "poster", IDLEN, poster_b, &len);
-    if (error_code) bzero(poster_b, IDLEN + 1);
+    error_code = bson_get_value_bin(b_comment_b, "poster", IDLEN, poster_b, &len);
+    if (error_code) poster_b[0] = 0;
 
     return strncmp(poster_a, poster_b, IDLEN);
 }
 
 int
-_cmp_descending(const void *a, const void *b)
+_cmp_b_comments_descending(const void *a, const void *b)
 {
-    bson_t **tmp_tmp_a = (bson_t **)a;
-    bson_t *tmp_a = *tmp_tmp_a;
-    bson_t **tmp_tmp_b = (bson_t **)b;
-    bson_t *tmp_b = *tmp_tmp_b;
+    bson_t **p_b_comment_a = (bson_t **)a;
+    bson_t *b_comment_a = *p_b_comment_a;
+    bson_t **p_b_comment_b = (bson_t **)b;
+    bson_t *b_comment_b = *p_b_comment_b;
 
     time64_t create_milli_timestamp_a = 0;
     time64_t create_milli_timestamp_b = 0;
@@ -643,10 +642,10 @@ _cmp_descending(const void *a, const void *b)
     char poster_b[IDLEN + 1] = {};
 
     Err error_code;
-    error_code = bson_get_value_int64(tmp_a, "create_milli_timestamp", (long *)&create_milli_timestamp_a);
+    error_code = bson_get_value_int64(b_comment_a, "create_milli_timestamp", (long *)&create_milli_timestamp_a);
     if (error_code) create_milli_timestamp_a = -1;
 
-    error_code = bson_get_value_int64(tmp_b, "create_milli_timestamp", (long *)&create_milli_timestamp_b);
+    error_code = bson_get_value_int64(b_comment_b, "create_milli_timestamp", (long *)&create_milli_timestamp_b);
     if (error_code) create_milli_timestamp_b = -1;
 
     if (create_milli_timestamp_a != create_milli_timestamp_b) {
@@ -654,26 +653,26 @@ _cmp_descending(const void *a, const void *b)
     }
 
     int len;
-    error_code = bson_get_value_bin(tmp_a, "poster", IDLEN, poster_a, &len);
+    error_code = bson_get_value_bin(b_comment_a, "poster", IDLEN, poster_a, &len);
     if (error_code) bzero(poster_a, IDLEN + 1);
 
-    error_code = bson_get_value_bin(tmp_b, "poster", IDLEN, poster_b, &len);
+    error_code = bson_get_value_bin(b_comment_b, "poster", IDLEN, poster_b, &len);
     if (error_code) bzero(poster_b, IDLEN + 1);
 
     return strncmp(poster_b, poster_a, IDLEN);
 }
 
 Err
-_reverse_db_results(bson_t **db_results, int n_results)
+_reverse_b_comments(bson_t **b_comments, int n_comment)
 {
-    int half_results = n_results / 2;
-    bson_t **p_db_results = db_results;
-    bson_t **p_end_db_results = db_results + n_results - 1;
-    bson_t *temp;
-    for(int i = 0; i < half_results; i++, p_db_results++, p_end_db_results--) {
-        temp = *p_db_results;
-        *p_db_results = *p_end_db_results;
-        *p_end_db_results = temp;        
+    int half_n_comment = (n_comment + 1) / 2; // 8 as 4, 7 as 4
+    bson_t **p_b_comments = b_comments;
+    bson_t **p_end_b_comments = b_comments + n_comment - 1;
+    bson_t *tmp;
+    for(int i = 0; i < half_n_comment; i++, p_b_comments++, p_end_b_comments--) {
+        tmp = *p_b_comments;
+        *p_b_comments = *p_end_b_comments;
+        *p_end_b_comments = tmp;        
     }
 
     return S_OK;

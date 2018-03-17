@@ -404,14 +404,15 @@ update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int f
     return error_code;
 }
 
-Err read_main_header_to_bson(UUID main_id, bson_t *fields, bson_t **result)
+Err
+read_main_header_to_bson(UUID main_id, bson_t *fields, bson_t **b_main);
 {
     Err error_code = S_OK;
     bson_t *key = BCON_NEW(
         "the_id", BCON_BINARY(main_id, UUIDLEN)
         );
 
-    error_code = db_find_one(MONGO_MAIN, key, fields, result);
+    error_code = db_find_one(MONGO_MAIN, key, fields, b_main);
 
     bson_safe_destroy(&key);
 

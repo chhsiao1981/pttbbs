@@ -210,19 +210,19 @@ db_update_one(int collection, bson_t *key, bson_t *val, bool is_upsert)
 Err
 db_find_one(int collection, bson_t *key, bson_t *fields, bson_t **result)
 {
-    int n_results;
-    return db_find(collection, key, fields, NULL, 1, &n_results, result);
+    int n_result;
+    return db_find(collection, key, fields, NULL, 1, &n_result, result);
 }
 
 
 Err
-db_find(int collection, bson_t *key, bson_t *fields, bson_t *sort, int max_n_results, int *n_results, bson_t **results)
+db_find(int collection, bson_t *key, bson_t *fields, bson_t *sort, int max_n_result, int *n_result, bson_t **results)
 {
     Err error_code = S_OK;
 
     bool status;
 
-    bson_t *opts = BCON_NEW("limit", BCON_INT64(max_n_results));
+    bson_t *opts = BCON_NEW("limit", BCON_INT64(max_n_result));
     if(fields) {
         status = bson_append_document(opts, "projection", -1, fields);
         if(!status) error_code = S_ERR;
@@ -232,18 +232,17 @@ db_find(int collection, bson_t *key, bson_t *fields, bson_t *sort, int max_n_res
         if(!status) error_code = S_ERR;        
     }
 
+    int len = 0;
     if(!error_code) {
         mongoc_cursor_t *cursor = mongoc_collection_find_with_opts(MONGO_COLLECTIONS[collection], key, opts, NULL);
         bson_error_t error;
 
         const bson_t *p_result;
-        int len = 0;
         while (mongoc_cursor_next(cursor, &p_result)) {
             *results = bson_copy(p_result);
             results++;
             len++;
         }
-        *n_results = len;
 
         if (mongoc_cursor_error(cursor, &error)) {
             error_code = S_ERR;
@@ -251,9 +250,10 @@ db_find(int collection, bson_t *key, bson_t *fields, bson_t *sort, int max_n_res
 
         mongoc_cursor_destroy(cursor);        
     }    
+    *n_result = len;
 
     if(!error_code) {
-        if (*n_results == 0) error_code = S_ERR_NOT_EXISTS;
+        if (*n_result == 0) error_code = S_ERR_NOT_EXISTS;
     }
 
     bson_destroy(opts);

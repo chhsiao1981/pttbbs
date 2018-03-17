@@ -53,8 +53,8 @@ Err db_count(int collection, bson_t *key, int *count);
 
 // XXX require bson_safe_destroy on results
 Err db_find_one(int collection, bson_t *key, bson_t *fields, bson_t **result);
-Err db_find(int collection, bson_t *key, bson_t *fields, bson_t *sort, int max_n_results, int *n_results, bson_t **results);
-Err db_aggregate(int collection, bson_t *pipeline, int max_n_results, bson_t **results, int *n_results);
+Err db_find(int collection, bson_t *key, bson_t *fields, bson_t *sort, int max_n_result, int *n_result, bson_t **results);
+Err db_aggregate(int collection, bson_t *pipeline, int max_n_result, bson_t **results, int *n_result);
 
 // bson-ops
 #define BCON_BINARY(bin, length) BCON_BIN(BSON_SUBTYPE_BINARY, bin, length)

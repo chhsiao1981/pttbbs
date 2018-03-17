@@ -250,7 +250,7 @@ Err delete_main_by_aid(aidu_t aid, char *updater, char *ip);
 Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content, UUID content_id);
 
 // for file_info
-Err read_main_header_to_bson(UUID main_id, bson_t *fields, bson_t **result);
+Err read_main_header_to_bson(UUID main_id, bson_t *fields, bson_t **b_main);
 
 /**********
  * ContentBlock
@@ -278,7 +278,7 @@ Err dynamic_read_content_blocks(UUID content_id, int max_n_block, int block_id, 
 Err dynamic_read_content_blocks_by_ref(UUID ref_id, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len);
 
 // for file_info
-Err read_content_blocks_to_bsons(UUID content_id, bson_t *fields, int max_n_content_blocks, enum MongoDBId mongo_db_id, bson_t **b_content_blocks, int *n_content_blocks);
+Err read_content_blocks_to_bsons(UUID content_id, bson_t *fields, int max_n_content_block, enum MongoDBId mongo_db_id, bson_t **b_content_blocks, int *n_content_block);
 
 /**********
  * Comments
@@ -290,7 +290,7 @@ Err read_comment(UUID comment_id, Comment *comment);
 
 Err delete_comment(UUID comment_id, char *updater, char *ip);
 
-Err get_comment_info_by_main(UUID main_id, int *n_total_comments, int *total_len);
+Err get_comment_info_by_main(UUID main_id, int *n_total_comment, int *total_len);
 Err get_comment_count_by_main(UUID main_id, int *count);
 
 Err init_comment_buf(Comment *comment);
@@ -298,11 +298,11 @@ Err destroy_comment(Comment *comment);
 
 Err associate_comment(Comment *comment, char *buf, int max_buf_len);
 Err dissociate_comment(Comment *comment);
-Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, Comment *comments, int *n_read_comments, int *len);
+Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, Comment *comments, int *n_read_comment, int *len);
 
 // for file_info
-Err get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timestamp, char *poster, int *n_comments);
-Err read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestamp, char *poster, bson_t *fields, int max_n_comments, bson_t **b_comments, int *n_comments);
+Err get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timestamp, char *poster, int *n_comment);
+Err read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestamp, char *poster, bson_t *fields, int max_n_comment, bson_t **b_comments, int *n_comment);
 
 /**********
  * CommentReply
@@ -323,7 +323,7 @@ Err associate_comment_reply(CommentReply *comment_reply, char *buf, int max_buf_
 Err dissociate_comment_reply(CommentReply *comment_reply);
 
 // for file_info
-Err read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_comment_replys, bson_t **b_comment_replys, int *n_comment_reply);
+Err read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_comment_reply, bson_t **b_comment_replys, int *n_comment_reply);
 Err sort_comment_reply_bsons_by_inferred_comment_create_milli_timestamp(bson_t **b_comment_replys, int n_comment_reply);
 
 #ifdef __cplusplus
