@@ -858,8 +858,26 @@ TEST(pttdb_content_block, read_content_blocks_to_bsons)
     int n_total_block = 0;
     error = bson_get_value_int32(main_result, (char *)"n_total_block", &n_total_block);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(10, n_total_block);
+    EXPECT_EQ(2, n_total_block);
+
     // read content-blocks
+    bson_t **b_content_blocks = malloc(sizeof(bson_t *) * n_total_block);
+    int n_content_blocks;
+    bson_t *fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "block_id", BCON_BOOL(true),
+        "n_line", BCON_BOOL(true)
+        );
+
+    error = read_content_blocks_to_bsons(content_id, fields, n_total_block, MONGO_MAIN_CONTENT, b_content_blocks, &n_content_blocks);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(n_total_block, n_content_blocks);
+
+    for(int i = 0; i < n_content_blocks; i++) {
+        bson_safe_destroy(&b_content_blocks[i]);
+    }
+    safe_free(&b_content_blocks);
+    bson_safe_destroy(&fields);
 
     bson_safe_destroy(&main_fields);
     bson_safe_destroy(&main_result);
