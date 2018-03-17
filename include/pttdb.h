@@ -21,6 +21,8 @@ extern "C" {
 #define MAX_BUF_COMMENT 256
 #define MAX_BUF_LINES 256
 
+#define MAX_CREATE_MILLI_TIMESTAMP 9999999999999 // 2286-11-20
+
 #define N_GEN_UUID_WITH_DB 10
 
 // XXX hack for time64_t and UUID
