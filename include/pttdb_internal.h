@@ -48,9 +48,9 @@ Err _read_content_blocks_core(bson_t *key, int max_n_block, int block_id, enum M
 Err _dynamic_read_content_blocks_core(bson_t *key, int max_n_block, int block_id, enum MongoDBId mongo_db_id, char *buf, int max_buf_size, ContentBlock *content_blocks, int *n_block, int *len);
 Err _read_content_blocks_get_b_content_blocks(bson_t **b_content_blocks, bson_t *key, int max_n_block, int block_id, enum MongoDBId mongo_db_id, int *n_block);
 
-Err _form_content_block_b_array_block_ids(int block_id, int max_n_block, bson_t *b);
+Err _form_content_block_b_array_block_ids(int block_id, int max_n_block, bson_t **b);
 Err _sort_b_content_blocks_by_block_id(bson_t **b_content_blocks, int n_block);
-int _cmp_sort_b_content_blocks_by_block_id(const void *a, const void *b);
+int _cmp_b_content_blocks_by_block_id(const void *a, const void *b);
 Err _ensure_b_content_blocks_block_ids(bson_t **b_content_blocks, int start_block_id, int n_block);
 
 Err _serialize_content_block_bson(ContentBlock *content_block, bson_t **content_block_bson);
