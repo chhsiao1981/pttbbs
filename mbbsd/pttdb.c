@@ -82,6 +82,7 @@ destory_file_info(FileInfo *file_info)
 Err
 _get_file_info_by_main_get_main_info(UUID main_id, FileInfo *file_info)
 {
+    Err error_code = S_OK;
     bson_t *b_main = NULL;
     bson_t *fields = BCON_NEW(
         "_id", BCON_BOOL(false),
@@ -89,7 +90,7 @@ _get_file_info_by_main_get_main_info(UUID main_id, FileInfo *file_info)
         "update_milli_timestamp", BCON_BOOL(true),
         "content_id", BCON_BOOL(true),
         "n_total_line", BCON_BOOL(true),
-        "n_total_block", BCON_BOOL(true),
+        "n_total_block", BCON_BOOL(true)
         );
 
     int len = 0;
