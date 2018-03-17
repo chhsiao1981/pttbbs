@@ -1094,7 +1094,6 @@ TEST(pttdb_main, read_main_header_to_bson) {
     bson_t *fields = BCON_NEW(
         "_id", BCON_BOOL(false),
         "updater", BCON_BOOL(true),
-        "content_id", BCON_BOOL(true),
         "n_total_line", BCON_BOOL(true),
         "n_total_block", BCON_BOOL(true)
         );
@@ -1109,7 +1108,7 @@ TEST(pttdb_main, read_main_header_to_bson) {
 
     char *str = bson_as_canonical_extended_json(result, NULL);
     fprintf(stderr, "test_pttdb_main.read_main_header_to_bson: result: %s\n", str);
-    EXPECT_STREQ(str, "{ \"content_id\" : { \"$binary\" : { \"base64\": \"ZWNxU1VBQUFZQUJOWEZRZEFBQUFBRDNxclZrQUFBQUFOQnFQS0FBQUFBQzhYUlVxQUFBQUFPRG9BSlc3TkdJQg==\", \"subType\" : \"00\" } }, \"n_total_block\" : { \"$numberInt\" : \"2\" }, \"n_total_line\" : { \"$numberInt\" : \"10\" }, \"updater\" : { \"$binary\" : { \"base64\": \"dGVzdF9wb3N0ZXIA\", \"subType\" : \"00\" } } }");
+    EXPECT_STREQ(str, "{ \"n_total_block\" : { \"$numberInt\" : \"2\" }, \"n_total_line\" : { \"$numberInt\" : \"10\" }, \"updater\" : { \"$binary\" : { \"base64\": \"dGVzdF9wb3N0ZXIA\", \"subType\" : \"00\" } } }");
     bson_free(str);
 
     bson_safe_destroy(&fields);
