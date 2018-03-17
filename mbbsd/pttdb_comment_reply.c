@@ -227,6 +227,13 @@ read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_c
     return error_code;
 }
 
+Err
+sort_comment_reply_bsons_by_inferred_comment_create_milli_timestamp(bson_t **b_comment_replys, int n_comment_replys)
+{
+    Err error_code = S_OK;
+    return error_code;
+}
+
 
 Err
 _get_comment_reply_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_comment_reply, int *n_line, int *total_len)

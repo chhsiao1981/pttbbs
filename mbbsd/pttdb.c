@@ -267,7 +267,7 @@ _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_c
     bson_append_array_end(q_array, &child);
 
     bson_t *query = BCON_NEW(
-        "comment_id", BCON_DOCUMENT(q_array);
+        "comment_id", BCON_DOCUMENT(q_array)
         );
 
     char *str = bson_as_canonical_extended_json(query, NULL);
@@ -278,28 +278,28 @@ _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_c
     bson_t **b_comment_replys = malloc(sizeof(bson_t *) * n_comment_comment_reply_info);
     if(!b_comment_replys) error_code = S_ERR;
 
-    int n_comment_replys = 0;
+    int n_comment_reply = 0;
     bson_t *fields = BCON_NEW(
         "_id", BCON_BOOL(false),
-        "comment_id": BCON_BOOL(true)
+        "comment_id", BCON_BOOL(true)
         );
     if(!error_code) {
-        error_code = read_comment_replys_by_query_to_bsons(query, fields, n_comment_comment_reply_info, b_comment_replys, &n_comment_replys);
+        error_code = read_comment_replys_by_query_to_bsons(query, fields, n_comment_comment_reply_info, b_comment_replys, &n_comment_reply);
     }
 
     if(!error_code) {
-        error_code = sort_comment_reply_bsons_by_inferred_comment_create_milli_timestamp(b_comment_replys);
+        error_code = sort_comment_reply_bsons_by_inferred_comment_create_milli_timestamp(b_comment_replys, n_comment_reply);
     }
 
     // align comment_replys to comment_comment_reply_info
     if(!error_code) {
-        error_code = _get_file_info_by_main_align_comment_comment_reply_info(comment_comment_reply_info, b_comment_replys, n_comment_comment_reply_info, n_comment_replys);
+        error_code = _get_file_info_by_main_align_comment_comment_reply_info(comment_comment_reply_info, b_comment_replys, n_comment_comment_reply_info, n_comment_reply);
 
     }
 
     //free
     bson_t **p_b_comment_replys = b_comment_replys;
-    for(int i = 0; i < n_comment_replys; i++, p_b_comment_replys++) {
+    for(int i = 0; i < n_comment_reply; i++, p_b_comment_replys++) {
         bson_safe_destroy(p_b_comment_replys);
     }
     safe_free(&p_b_comment_replys);
