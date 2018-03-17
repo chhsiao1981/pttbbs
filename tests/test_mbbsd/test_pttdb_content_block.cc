@@ -814,6 +814,7 @@ TEST(pttdb_content_block, split_contents_deal_with_last_line_block)
 
 TEST(pttdb_content_block, read_content_blocks_to_bsons)
 {
+    Err error = S_OK;
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
