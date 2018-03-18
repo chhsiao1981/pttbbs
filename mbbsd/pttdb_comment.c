@@ -745,7 +745,7 @@ _serialize_comment_bson(Comment *comment, bson_t **comment_bson)
                         "the_id", BCON_BINARY(comment->the_id, UUIDLEN),
                         "main_id", BCON_BINARY(comment->main_id, UUIDLEN),
                         "comment_reply_id", BCON_BINARY(comment->comment_reply_id, UUIDLEN),
-                        "n_comment_reply_line", BCON_INT32(comment->n_comment_reply_line);
+                        "n_comment_reply_line", BCON_INT32(comment->n_comment_reply_line),
                         "status", BCON_INT32(comment->status),
                         "status_updater", BCON_BINARY((unsigned char *)comment->status_updater, IDLEN),
                         "status_update_ip", BCON_BINARY((unsigned char *)comment->status_update_ip, IPV4LEN),
