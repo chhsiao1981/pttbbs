@@ -1342,7 +1342,7 @@ TEST(pttdb_comment, get_newest_comment2)
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
     EXPECT_EQ(create_milli_timestamp + 85, newest_create_milli_timestamp);
-    EXPECT_STREQ((char *)"poster100", newest_poster);
+    EXPECT_STREQ((char *)"poster099", newest_poster);
 
     // free
     destroy_comment(&comment);
