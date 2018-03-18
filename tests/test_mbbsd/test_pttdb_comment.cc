@@ -1424,6 +1424,9 @@ TEST(pttdb_comment, read_comments_until_newest_to_bsons)
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
+        comment.create_milli_timestamp = create_milli_timestamp;
+        comment.update_milli_timestamp = create_milli_timestamp;
+
         error = _serialize_comment_bson(&comment, &comment_bson);
         error = _serialize_uuid_bson(comment_id, &comment_id_bson);
 
