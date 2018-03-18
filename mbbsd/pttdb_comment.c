@@ -332,9 +332,10 @@ get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timesta
         error_code = bson_get_value_bin(result, "poster", IDLEN, poster, &len);
     }
 
-    fprintf(stderr, "pttdb_comment.get_newest_comment: after db_find\n");
+    fprintf(stderr, "pttdb_comment.get_newest_comment: after db_find: create_milli_timestamp: %ld poster: %s\n", create_milli_timestamp, poster);
 
     int count_eq_create_milli_timestamp = 0;
+
     bson_t *count_query_eq = BCON_NEW(
         "main_id", BCON_BINARY(main_id, UUIDLEN),
         "status", BCON_INT32((int)LIVE_STATUS_ALIVE),
