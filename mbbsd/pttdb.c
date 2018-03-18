@@ -236,6 +236,7 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
         for(int i = 0; i < n_comment; i += block, p_comment_comment_reply_info += block) {
             next_i = (n_comment < i + block) ? n_comment : (i + block);
             error_code = _get_file_info_by_main_get_comment_reply_info(p_comment_comment_reply_info, i, next_i);
+            if(error_code == S_ERR_NOT_EXISTS) error_code = S_OK;
             if(error_code) break;
         }
     }
