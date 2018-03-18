@@ -326,11 +326,6 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
 {
     Err error_code = S_OK;
 
-    for(int i = 0; i < n_comment_comment_reply_info; i++) {
-        display_uuid = _display_uuid(comment_comment_reply_info[i].comment_id);
-        safe_free((void **)&display_uuid);
-    }
-
     UUID tmp_comment_id = {};
     int len = 0;
     for(int i = 0; i < n_comment_reply; i++) {
