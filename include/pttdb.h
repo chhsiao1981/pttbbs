@@ -13,6 +13,7 @@ extern "C" {
 
 #define UUIDLEN 24
 #define _UUIDLEN 24
+#define DISPLAY_UUID 32
 
 #define MAX_ORIGIN_LEN 20
 #define MAX_WEB_LINK_LEN 100                  // MAX_ORIGN_LEN + 8 + 12 + BOARDLEN + 1 + 23

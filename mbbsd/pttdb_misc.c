@@ -304,3 +304,13 @@ safe_free(void **a)
     *a = NULL;
     return S_OK;
 }
+
+char *;
+_display_uuid(UUID uuid)
+{
+    char *result = malloc(DISPLAY_UUID);
+
+    b64_ntop(uuid, UUIDLEN, (char *)result, DISPLAY_UUIDLEN);
+
+    return result;
+}

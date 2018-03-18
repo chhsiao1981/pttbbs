@@ -326,6 +326,22 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
 {
     Err error_code = S_OK;
 
+    char *display_uuid = NULL;
+    for(int i = 0; i < n_comment_comment_reply_info; i++) {
+        display_uuid = _display_uuid(comment_comment_reply_info[i].comment_id);
+        fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: (%d/%d) comment_comment_reply_info: %s", i, n_comment_comment_reply_info, display_uuid);
+        safe_free(&display_uuid);
+    }
+
+    UUID tmp_comment_id = {};
+    int len = 0;
+    for(int i = 0; i < n_comment_reply i++) {
+        bson_get_value_bin(b_comment_replys[i], "comment_id", UUIDLEN, tmp_comment_id, &len);
+        display_uuid = _display_uuid(tmp_comment_id);
+        fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: (%d/%d) comment_reply: %s", i, n_comment_reply, display_uuid);
+        safe_free(&display_uuid);
+    }
+
     // init
     int i = 0;
     int j = 0;
@@ -333,7 +349,6 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
     bson_t **p_b_comment_replys = b_comment_replys;
     int tmp_cmp = 0;
 
-    int len = 0;
     UUID *comment_id = &p_comment_comment_reply_info->comment_id;
     UUID comment_reply_comment_id = {};
     error_code = bson_get_value_bin(*p_b_comment_replys, "comment_id", UUIDLEN, (char *)comment_reply_comment_id, &len);
