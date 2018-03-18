@@ -34,7 +34,6 @@ TEST(pttdb_comment_reply, create_comment_reply) {
     EXPECT_EQ(S_OK, error_code);
 
     EXPECT_EQ(0, strncmp((char *)tmp_comment_reply_id, (char *)comment_reply.the_id, UUIDLEN));
-    EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply.comment_id, UUIDLEN));
 
     EXPECT_EQ(0, strncmp((char *)main_id, (char *)comment_reply.main_id, UUIDLEN));
     EXPECT_EQ(LIVE_STATUS_ALIVE, comment_reply.status);
@@ -54,7 +53,14 @@ TEST(pttdb_comment_reply, create_comment_reply) {
     EXPECT_STREQ(content, comment_reply.buf);
     EXPECT_EQ(n_line, comment_reply.n_line);
 
+    Comment comment = {};
+    error_code = read_comment(comment_id, &comment);
+    EXPECT_EQ(S_OK, error_code);
+    EXPECT_EQ(0, strncmp((char *)comment.comment_reply_id, (char *)comment_reply.the_id, UUIDLEN));
+    EXPECT_EQ(comment.n_comment_reply_line, comment_reply.n_line);
+
     destroy_comment_reply(&comment_reply);
+    destroy_comment(&comment);
 }
 
 TEST(pttdb_comment_reply, delete_comment_reply) {

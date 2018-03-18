@@ -16,8 +16,7 @@ create_comment_reply(UUID main_id, UUID comment_id, char *poster, char *ip, int 
     error_code = get_milli_timestamp(&create_milli_timestamp);
     if (error_code) return error_code;
 
-    // for now we have comment_reply_id same as comment_id to reduce complication.
-    memcpy(comment_reply_id, comment_id, sizeof(UUID));
+    gen_uuid(comment_reply_id);
 
     // comment_reply
     memcpy(comment_reply.the_id, comment_reply_id, sizeof(UUID));
@@ -50,6 +49,10 @@ create_comment_reply(UUID main_id, UUID comment_id, char *poster, char *ip, int 
 
     if (!error_code) {
         error_code = db_update_one(MONGO_COMMENT_REPLY, comment_reply_id_bson, comment_reply_bson, true);
+    }
+
+    if(!error_code) {
+        error_code = update_comment_reply_to_comment(comment_id, comment_reply_id, comment_reply.n_line);
     }
 
     bson_safe_destroy(&comment_reply_bson);
