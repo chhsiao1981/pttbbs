@@ -103,7 +103,7 @@ TEST(pttdb_misc, serialize_uuid_bson) {
     fprintf(stderr, "test_pttdb_misc.serialize_uuid_bson: buf: %s\n", buf);
 
     EXPECT_EQ(S_OK, error);
-    EXPECT_STREQ("{ \"the_id\" : { \"$binary\" : { \"base64\": \"AAAAAAAAAAAAAAAAAAAAAA==\", \"subType\" : \"00\" } } }", buf);
+    EXPECT_STREQ("{ \"the_id\" : { \"$binary\" : { \"base64\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"subType\" : \"00\" } } }", buf);
 }
 
 TEST(pttdb_misc, serialize_content_uuid_bson) {
@@ -126,7 +126,7 @@ TEST(pttdb_misc, serialize_content_uuid_bson) {
     bson_safe_destroy(&uuid_bson);
 
     EXPECT_EQ(S_OK, error);
-    EXPECT_STREQ("{ \"the_id\" : { \"$binary\" : { \"base64\": \"AAAAAAAAAAAAAAAAAAAAAA==\", \"subType\" : \"00\" } }, \"block_id\" : { \"$numberInt\" : \"0\" } }", buf);
+    EXPECT_STREQ("{ \"the_id\" : { \"$binary\" : { \"base64\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"subType\" : \"00\" } }, \"block_id\" : { \"$numberInt\" : \"0\" } }", buf);
 }
 
 TEST(pttdb_misc, uuid_to_milli_timestamp) {
