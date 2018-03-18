@@ -326,10 +326,8 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
 {
     Err error_code = S_OK;
 
-    char *display_uuid = NULL;
     for(int i = 0; i < n_comment_comment_reply_info; i++) {
         display_uuid = _display_uuid(comment_comment_reply_info[i].comment_id);
-        fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: (%d/%d) comment_comment_reply_info: %s\n", i, n_comment_comment_reply_info, display_uuid);
         safe_free((void **)&display_uuid);
     }
 
@@ -337,9 +335,6 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
     int len = 0;
     for(int i = 0; i < n_comment_reply; i++) {
         bson_get_value_bin(b_comment_replys[i], "comment_id", UUIDLEN, (char *)tmp_comment_id, &len);
-        display_uuid = _display_uuid(tmp_comment_id);
-        fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: (%d/%d) comment_reply: %s\n", i, n_comment_reply, display_uuid);
-        safe_free((void **)&display_uuid);
     }
 
     // init
@@ -355,15 +350,8 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
     if(error_code) return error_code;
 
     // while-loop
-    char *display_uuid2 = NULL;    
     while(i < n_comment_comment_reply_info && j < n_comment_reply) {
         tmp_cmp = strncmp((char *)*comment_id, (char *)comment_reply_comment_id, UUIDLEN);
-        display_uuid = _display_uuid(*comment_id);
-        display_uuid2 = _display_uuid(comment_reply_comment_id);
-
-        fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: i: (%d/%d) j: (%d/%d) comment_id: %s comment_reply_comment_id: %s\n", i, n_comment_comment_reply_info, j, n_comment_reply, display_uuid, display_uuid2);
-        safe_free((void **)&display_uuid);
-        safe_free((void **)&display_uuid2);
 
         if(tmp_cmp < 0) {
             // increase comment_comment_reply_info
@@ -384,7 +372,6 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
         }
         else {
             // setup
-            fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: to setup: i: (%d/%d) j: (%d/%d)\n", i, n_comment_comment_reply_info, j, n_comment_reply);
             error_code = bson_get_value_bin(*p_b_comment_replys, "the_id", UUIDLEN, (char *)p_comment_comment_reply_info->comment_reply_id, &len);
             if(error_code) break;
             error_code = bson_get_value_int32(*p_b_comment_replys, "n_line", &p_comment_comment_reply_info->n_comment_reply_line);
@@ -406,14 +393,6 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
                 if(error_code) break;
             }
         }
-    }
-
-    for(int i = 0; i < n_comment_comment_reply_info; i++) {
-        display_uuid = _display_uuid(comment_comment_reply_info[i].comment_id);
-        display_uuid2 = _display_uuid(comment_comment_reply_info[i].comment_reply_id);
-        fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: final: (%d/%d): (%s/%s/%d)\n", i, n_comment_comment_reply_info, display_uuid, display_uuid2, comment_comment_reply_info[i].n_comment_reply_line);
-        safe_free((void **)&display_uuid);
-        safe_free((void **)&display_uuid2);
     }
 
     return error_code;

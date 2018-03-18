@@ -283,7 +283,6 @@ pttdb_count_lines(char *content, int len, int *n_line)
         }
     }
     *n_line = tmp_n_line;
-    fprintf(stderr, "pttdb_misc.pttdb_count_lines: content: %s n_line: %d\n", content, tmp_n_line);
 
     return S_OK;
 }
