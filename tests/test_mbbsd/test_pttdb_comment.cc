@@ -1332,7 +1332,6 @@ TEST(pttdb_comment, get_newest_comment2)
         EXPECT_EQ(S_OK, error);
     }
 
-    fprintf(stderr, "test_pttdb_comment.gen_new")
     // get newest_comments
 
     UUID newest_comment_id = {};
