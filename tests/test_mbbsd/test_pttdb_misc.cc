@@ -21,9 +21,9 @@ TEST(pttdb_misc, get_milli_timestamp) {
 
 TEST(pttdb_misc, gen_uuid) {
     UUID uuid;
-    _UUID _uuid;
+    //_UUID _uuid;
     UUID uuid2;
-    _UUID _uuid2;
+    //_UUID _uuid2;
     time64_t milli_timestamp;
     time64_t milli_timestamp2;
 
@@ -50,9 +50,9 @@ TEST(pttdb_misc, gen_uuid) {
 
 TEST(pttdb_misc, gen_uuid_with_db) {
     UUID uuid;
-    _UUID _uuid;
+    //_UUID _uuid;
     UUID uuid2;
-    _UUID _uuid2;
+    //_UUID _uuid2;
     time64_t milli_timestamp;
     time64_t milli_timestamp2;
 
@@ -83,7 +83,7 @@ TEST(pttdb_misc, gen_uuid_with_db) {
 }
 
 TEST(pttdb_misc, serialize_uuid_bson) {
-    _UUID _uuid;
+    //_UUID _uuid;
     UUID uuid;
     char *str;
     char buf[MAX_BUF_SIZE];
@@ -107,7 +107,7 @@ TEST(pttdb_misc, serialize_uuid_bson) {
 }
 
 TEST(pttdb_misc, serialize_content_uuid_bson) {
-    _UUID _uuid;
+    //_UUID _uuid;
     UUID uuid;
     char *str;
     char buf[MAX_BUF_SIZE];
