@@ -131,13 +131,13 @@ _get_file_info_by_main_get_content_block_info(FileInfo *file_info)
             "n_line", BCON_BOOL(true)
         );
 
-    int n_content_blocks = 0;
+    int n_content_block = 0;
     bson_t **b_content_blocks = malloc(sizeof(bson_t *) * file_info->n_main_block);
     if(!b_content_blocks) error_code = S_ERR;
 
     if(!error_code) {
-        error_code = read_content_blocks_to_bsons(file_info->main_content_id, content_block_fields, file_info->n_main_block, MONGO_MAIN_CONTENT, b_content_blocks, &n_content_blocks);
-        if(n_content_blocks != file_info->n_main_block) error_code = S_ERR; // not matched.
+        error_code = read_content_blocks_to_bsons(file_info->main_content_id, content_block_fields, file_info->n_main_block, MONGO_MAIN_CONTENT, b_content_blocks, &n_content_block);
+        if(n_content_block != file_info->n_main_block) error_code = S_ERR; // not matched.
     }
 
     if(!error_code) {
@@ -149,7 +149,7 @@ _get_file_info_by_main_get_content_block_info(FileInfo *file_info)
     bson_t **p_b_content_blocks = b_content_blocks;
     ContentBlockInfo *p_content_block_info = file_info->content_block_info;
     if(!error_code) {
-        for(int i = 0; i < n_content_blocks; i++, p_b_content_blocks++, p_content_block_info++) {
+        for(int i = 0; i < n_content_block; i++, p_b_content_blocks++, p_content_block_info++) {
             error_code = bson_get_value_int32(*p_b_content_blocks, "block_id", &p_content_block_info->block_id);
             if(error_code) break;
             error_code = bson_get_value_int32(*p_b_content_blocks, "n_line", &p_content_block_info->n_line);
@@ -166,7 +166,7 @@ _get_file_info_by_main_get_content_block_info(FileInfo *file_info)
     // free
     bson_safe_destroy(&content_block_fields);
     p_b_content_blocks = b_content_blocks;
-    for(int i = 0; i < n_content_blocks; i++, p_b_content_blocks++) {
+    for(int i = 0; i < n_content_block; i++, p_b_content_blocks++) {
         bson_safe_destroy(p_b_content_blocks);
     }
     safe_free((void **)&b_content_blocks);

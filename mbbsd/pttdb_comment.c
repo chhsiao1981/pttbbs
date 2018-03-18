@@ -394,7 +394,7 @@ read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestam
         "poster", BCON_INT32(1)
     );
     
-    bson_t *p_b_comments = b_comments;
+    bson_t **p_b_comments = b_comments;
     int n_comment_lt_create_milli_timestamp = 0;
     error_code = db_find(MONGO_COMMENT, query_lt, fields, sort, max_n_comment, &n_comment_lt_create_milli_timestamp, p_b_comments);
     p_b_comments += n_comment_lt_create_milli_timestamp;

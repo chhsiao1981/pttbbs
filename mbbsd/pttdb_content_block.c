@@ -480,7 +480,7 @@ read_content_blocks_to_bsons(UUID content_id, bson_t *fields, int max_n_content_
     error_code = db_find(mongo_db_id, key, fields, NULL, max_n_content_block, n_content_block, b_content_blocks);
 
     if(!error_code) {
-        error_code = _sort_b_content_blocks_by_block_id(*b_content_blocks, *n_content_blocks);        
+        error_code = _sort_b_content_blocks_by_block_id(*b_content_blocks, *n_content_block);
     }
 
     bson_safe_destroy(&key);
