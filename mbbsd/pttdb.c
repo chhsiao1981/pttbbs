@@ -330,7 +330,7 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
     for(int i = 0; i < n_comment_comment_reply_info; i++) {
         display_uuid = _display_uuid(comment_comment_reply_info[i].comment_id);
         fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: (%d/%d) comment_comment_reply_info: %s", i, n_comment_comment_reply_info, display_uuid);
-        safe_free(&display_uuid);
+        safe_free((void **)&display_uuid);
     }
 
     UUID tmp_comment_id = {};
