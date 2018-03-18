@@ -289,6 +289,27 @@ read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poste
 }
 
 Err
+update_comment_reply_to_comment(UUID comment_id, UUID comment_reply_id, int n_comment_reply_line)
+{
+    Err error_code = S_OK;
+    bson_t *key = BCON_NEW(
+        "the_id", BCON_BINARY(comment_id, UUIDLEN)
+        );
+
+    bson_t *val = BCON_NEW(
+        "comment_reply_id", BCON_BINARY(comment_reply_id, UUIDLEN),
+        "n_comment_reply_line", BCON_INT32(n_comment_reply_line)
+        );
+
+    error_code = db_update_one(MONGO_COMMENT, key, val, false);
+
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&val);
+
+    return error_code;
+}
+
+Err
 get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timestamp, char *poster, int *n_comment)
 {
     Err error_code = S_OK;
@@ -723,6 +744,8 @@ _serialize_comment_bson(Comment *comment, bson_t **comment_bson)
                         "version", BCON_INT32(comment->version),
                         "the_id", BCON_BINARY(comment->the_id, UUIDLEN),
                         "main_id", BCON_BINARY(comment->main_id, UUIDLEN),
+                        "comment_reply_id", BCON_BINARY(comment->comment_reply_id, UUIDLEN),
+                        "n_comment_reply_line", BCON_INT32(comment->n_comment_reply_line);
                         "status", BCON_INT32(comment->status),
                         "status_updater", BCON_BINARY((unsigned char *)comment->status_updater, IDLEN),
                         "status_update_ip", BCON_BINARY((unsigned char *)comment->status_update_ip, IPV4LEN),
@@ -763,6 +786,12 @@ _deserialize_comment_bson(bson_t *comment_bson, Comment *comment)
     if (error_code) return error_code;
 
     error_code = bson_get_value_bin(comment_bson, "main_id", UUIDLEN, (char *)comment->main_id, &len);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_bin(comment_bson, "comment_reply_id", UUIDLEN, (char *)comment->comment_reply_id, &len);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_int32(comment_bson, "n_comment_reply_line", &comment->n_comment_reply_line);
     if (error_code) return error_code;
 
     error_code = bson_get_value_int32(comment_bson, "status", (int *)&comment->status);

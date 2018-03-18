@@ -131,6 +131,8 @@ typedef struct Comment {
 
     UUID the_id;                                     // comment-id
     UUID main_id;                                    // corresponding main-id
+    UUID comment_reply_id;                           // comment-reply-id
+    int n_comment_reply_line;                        // n-comment-reply-line
 
     enum LiveStatus status;                          // status
     char status_updater[IDLEN + 1];                  // last user updaing the status
