@@ -287,8 +287,19 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
         bson_safe_destroy(&comment_id_bson);
 
         EXPECT_EQ(S_OK, error);
+
+        p_buf = buf;
+        for(int j = 0; j < i; j++) {
+            sprintf(p_buf, "testtest\r\n");
+            p_buf += 10;
+        }
+
+        error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, p_buf, comment_reply_id);
+        EXPECT_EQ(S_OK, error);
+        EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply_id, UUIDLEN));
     }
 
+    int the_i = 0;
     for(int i = 0; i < 15; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
@@ -307,10 +318,10 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
 
         EXPECT_EQ(S_OK, error);
 
-        if(!i) continue;
+        the_i = i ? i : 1;
 
         p_buf = buf;
-        for(int j = 0; j < i; j++) {
+        for(int j = 0; j < the_i; j++) {
             sprintf(p_buf, "testtest\r\n");
             p_buf += 10;
         }
@@ -319,8 +330,6 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
         EXPECT_EQ(S_OK, error);
         EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply_id, UUIDLEN));
     }
-
-    // comment-replys
 
     // get newest_comments
 
@@ -376,7 +385,6 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
         bson_free(str);
     }
 
-
     time64_t result_create_milli_timestamp = 0;
     char expected_poster[IDLEN + 1] = {};
     char poster[IDLEN + 1] = {};
@@ -391,11 +399,62 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
         EXPECT_STREQ(expected_poster, poster);
     }
 
-    // free
-    for(int i = 0; i < n_comment; i++) {
-        bson_safe_destroy(&b_comments[i]);
+    error = sort_b_comments_by_comment_id(b_comments, n_comment);
+
+    // read comment-replys
+    // construct query
+    bson_t *q_array = bson_new();
+    bson_t child;
+    char buf[16];
+    const char *key;
+    size_t keylen;
+    bool status;
+    BSON_APPEND_ARRAY_BEGIN(q_array, "$in", &child);
+    bson_t **p_b_comments = b_comments;
+    for(int i = start_i; i < 15; i++, p_b_comments++) {
+        keylen = bson_uint32_to_string(i, &key, buf, sizeof(buf));
+        error = bson_get_value_bin(*p_b_comments, (char *)"the_id", UUIDLEN, comment_id, &len);
+        status = bson_append_bin(&child, key, (int)keylen, comment_id, UUIDLEN);
+        if (!status) {
+            error_code = S_ERR_INIT;
+            break;
+        }
     }
-    safe_free((void **)&b_comments);
+    bson_append_array_end(q_array, &child);
+
+    bson_t *query = BCON_NEW(
+        "comment_id", BCON_DOCUMENT(q_array)
+        );
+
+    bson_safe_destroy(&fields);
+    fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "comment_id", BCON_BOOL(true),
+        "the_id", BCON_BOOL(true),
+        "n_line", BCON_BOOL(true),
+        );
+
+    bson_t **b_comment_replys = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
+
+    error = read_comment_replys_by_query_to_bsons(query, fields, n_comment, b_comment_replys, &n_comment_reply);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(15, n_comment_reply);
+
+    // sort
+    error = sort_b_comment_replys_by_comment_id(b_comment_replys, n_comment_reply);
+    EXPECT_EQ(S_OK, error);
+
+    // check
+    for(int i = 0; i < n_comment_reply; i++)
+
+    // free
+    safe_free_b_list(&b_comment_replys);
+
+    bson_safe_destroy(&query);
+    bson_safe_destroy(&q_array);
+    
+    safe_free_b_list(&b_comments);
+
     bson_safe_destroy(&fields);
 
     destroy_comment(&comment);

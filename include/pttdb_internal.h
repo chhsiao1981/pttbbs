@@ -95,6 +95,7 @@ int _cmp_b_comment_replys_by_comment_id(const void *a, const void *b);
 Err get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offset_line, int *bytes_in_new_line);
 Err pttdb_count_lines(char *content, int len, int *n_line);
 Err safe_free(void **a);
+Err safe_free_b_list(bson_t ***b, int n);
 
 #ifdef __cplusplus
 }

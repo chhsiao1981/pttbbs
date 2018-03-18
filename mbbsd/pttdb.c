@@ -289,7 +289,7 @@ _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_c
     bson_t *fields = BCON_NEW(
         "_id", BCON_BOOL(false),
         "comment_id", BCON_BOOL(true),
-        "comment_reply_id", BCON_BOOL(true),
+        "the_id", BCON_BOOL(true),
         "n_line", BCON_BOOL(true)
         );
     if(!error_code) {
