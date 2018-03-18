@@ -308,7 +308,8 @@ safe_free(void **a)
 char *
 _display_uuid(UUID uuid)
 {
-    char *result = malloc(DISPLAY_UUIDLEN);
+    char *result = malloc(DISPLAY_UUIDLEN + 1);
+    result[DISPLAY_UUIDLEN] = 0;
 
     b64_ntop(uuid, UUIDLEN, (char *)result, DISPLAY_UUIDLEN);
 
