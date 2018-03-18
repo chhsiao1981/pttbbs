@@ -173,7 +173,7 @@ _get_file_info_by_main_get_content_block_info(FileInfo *file_info)
 }
 
 Err
-_get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *file_info)
+_get_file_info_by_main_get_comment_info(UUID main_id, FileInfo *file_info)
 {
     Err error_code = S_OK;
 
@@ -186,15 +186,17 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
     int n_comment = 0;
 
     // get newest-comment and n_expected_comments
+    error_code = get_newest_comment(main_id, comment_id, &create_milli_timestamp, poster, &n_expected_comment);
+
+    // get comments
     bson_t *comment_fields = BCON_NEW(
         "_id", BCON_BOOL(false),
         "the_id", BCON_BOOL(true),
         "create_milli_timestamp", BCON_BOOL(true),
-        "poster", BCON_BOOL(true)
+        "poster", BCON_BOOL(true),
+        "comment_reply_id", BCON_BOOL(true),
+        "n_comment_reply_line", BCON_BOOL(true)
         );
-    error_code = get_newest_comment(main_id, comment_id, &create_milli_timestamp, poster, &n_expected_comment);
-
-    // get comments
     if(!error_code) {
         b_comments = malloc(sizeof(bson_t *) * n_expected_comment);
         error_code = read_comments_until_newest_to_bsons(main_id, create_milli_timestamp, poster, comment_fields, n_expected_comment, b_comments, &n_comment);

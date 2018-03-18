@@ -199,6 +199,12 @@ typedef struct CommentCommentReplyInfo {
     int n_comment_reply_line;
 } CommentCommentReplyInfo;
 
+typedef struct CommentComentReplySimplifiedInfo{
+    UUID comment_id;
+    UUID comment_reply_id;
+    int n_comment_reply_line;
+} CommentCommentReplySimplifiedInfo;
+
 typedef struct FileInfo {
     UUID main_id;
     char main_updater[IDLEN + 1];
