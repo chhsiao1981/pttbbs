@@ -53,7 +53,7 @@ get_file_info_by_main(UUID main_id, FileInfo *file_info)
 }
 
 Err
-destory_file_info(FileInfo *file_info)
+destroy_file_info(FileInfo *file_info)
 {
     if(!file_info) return S_OK;
 
