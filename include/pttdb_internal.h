@@ -68,7 +68,7 @@ Err _read_comments_get_b_comments_same_create_milli_timestamp(bson_t **b_comment
 Err _read_comments_get_b_comments_diff_create_milli_timestamp(bson_t **b_comments, UUID main_id, time64_t create_milli_timestamp, enum ReadCommentsOpType op_type, int max_n_comment, enum MongoDBId mongo_db_id, int *n_comment);
 Err _read_comments_get_b_comments_core(bson_t **b_comments, bson_t *key, bson_t *sort, enum ReadCommentsOpType op_type, int max_n_comment, enum MongoDBId mongo_db_id, int *n_comment);
 Err _ensure_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type);
-Err _sort_b_comments_order(bson_t **b_comments, int n_results, enum ReadCommentsOpType op_type);
+Err _sort_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type);
 int _cmp_b_comments_ascending(const void *a, const void *b);
 int _cmp_b_comments_descending(const void *a, const void *b);
 Err _reverse_b_comments(bson_t **b_comments, int n_comment);

@@ -394,9 +394,10 @@ read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestam
         "poster", BCON_INT32(1)
     );
     
+    bson_t *p_b_comments = b_comments;
     int n_comment_lt_create_milli_timestamp = 0;
-    error_code = db_find(MONGO_COMMENT, query_lt, fields, sort, max_n_comment, &n_comment_lt_create_milli_timestamp, b_comments);
-    b_comments += n_comment_lt_create_milli_timestamp;
+    error_code = db_find(MONGO_COMMENT, query_lt, fields, sort, max_n_comment, &n_comment_lt_create_milli_timestamp, p_b_comments);
+    p_b_comments += n_comment_lt_create_milli_timestamp;
     max_n_comment -= n_comment_lt_create_milli_timestamp;
 
     bson_t *query_eq = BCON_NEW(
@@ -409,10 +410,14 @@ read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestam
         );
     int n_comment_eq_create_milli_timestamp = 0;
     if(!error_code) {
-        error_code = db_find(MONGO_COMMENT, query_eq, fields, sort, max_n_comment, &n_comment_eq_create_milli_timestamp, b_comments);
+        error_code = db_find(MONGO_COMMENT, query_eq, fields, sort, max_n_comment, &n_comment_eq_create_milli_timestamp, p_b_comments);
     }
 
     *n_comment = n_comment_lt_create_milli_timestamp + n_comment_eq_create_milli_timestamp;
+
+    if(!error_code) {
+        error_code = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    }
 
     // free
     bson_safe_destroy(&query_lt);

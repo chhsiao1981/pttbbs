@@ -140,11 +140,6 @@ _get_file_info_by_main_get_content_block_info(FileInfo *file_info)
         if(n_content_blocks != file_info->n_main_block) error_code = S_ERR; // not matched.
     }
 
-    // sort bson-data
-    if(!error_code) {
-        error_code = _sort_b_content_blocks_by_block_id(b_content_blocks, n_content_blocks);
-    }
-
     if(!error_code) {
         file_info->content_block_info = malloc(sizeof(ContentBlockInfo) * file_info->n_main_block);
         if(!file_info->content_block_info) error_code = S_ERR_INIT;
@@ -189,8 +184,8 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
     char poster[IDLEN + 1] = {};
 
     bson_t **b_comments = NULL;    
-    int n_expected_comments = 0;
-    int n_comments = 0;
+    int n_expected_comment = 0;
+    int n_comment = 0;
 
     // get newest-comment and n_expected_comments
     bson_t *comment_fields = BCON_NEW(
@@ -199,17 +194,17 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
         "create_milli_timestamp", BCON_BOOL(true),
         "poster", BCON_BOOL(true)
         );
-    error_code = get_newest_comment(main_id, comment_id, &create_milli_timestamp, poster, &n_expected_comments);
+    error_code = get_newest_comment(main_id, comment_id, &create_milli_timestamp, poster, &n_expected_comment);
 
     // get comments
     if(!error_code) {
-        b_comments = malloc(sizeof(bson_t *) * n_expected_comments);
-        error_code = read_comments_until_newest_to_bsons(main_id, create_milli_timestamp, poster, comment_fields, n_expected_comments, b_comments, &n_comments);
+        b_comments = malloc(sizeof(bson_t *) * n_expected_comment);
+        error_code = read_comments_until_newest_to_bsons(main_id, create_milli_timestamp, poster, comment_fields, n_expected_comment, b_comments, &n_comment);
     }
 
     // init file_info.comment_comment_reply_info
     if(!error_code) {
-        file_info->comment_comment_reply_info = malloc(sizeof(CommentCommentReplyInfo) * n_comments);
+        file_info->comment_comment_reply_info = malloc(sizeof(CommentCommentReplyInfo) * n_comment);
         if(!file_info->comment_comment_reply_info) error_code = S_ERR;
     }
 
@@ -217,7 +212,7 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
     bson_t **p_b_comments = b_comments;
     CommentCommentReplyInfo *p_comment_comment_reply_info = file_info->comment_comment_reply_info;
     if(!error_code) {
-        for(int i = 0; i < n_comments; i++, p_b_comments++, p_comment_comment_reply_info++) {
+        for(int i = 0; i < n_comment; i++, p_b_comments++, p_comment_comment_reply_info++) {
             error_code = bson_get_value_bin(*p_b_comments, "the_id", UUIDLEN, (char *)p_comment_comment_reply_info->comment_id, &len);
             if(error_code) break;
             error_code = bson_get_value_int64(*p_b_comments, "create_milli_timestamp", (long *)&p_comment_comment_reply_info->comment_create_milli_timestamp);
@@ -232,8 +227,8 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
     const int block = 1000;
     p_comment_comment_reply_info = file_info->comment_comment_reply_info;
     if(!error_code) {
-        for(int i = 0; i < n_comments; i += block, p_comment_comment_reply_info += block) {
-            next_i = (n_comments < i + block) ? n_comments : (i + block);
+        for(int i = 0; i < n_comment; i += block, p_comment_comment_reply_info += block) {
+            next_i = (n_comment < i + block) ? n_comment : (i + block);
             error_code = _get_file_info_by_main_get_comment_reply_info(p_comment_comment_reply_info, i, next_i);
             if(error_code) break;
         }
@@ -242,7 +237,7 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
     // free
     bson_safe_destroy(&comment_fields);
     p_b_comments = b_comments;
-    for(int i = 0; i < n_comments; i++, p_b_comments++) {
+    for(int i = 0; i < n_comment; i++, p_b_comments++) {
         bson_safe_destroy(p_b_comments);
     }
     safe_free((void **)&p_b_comments);
