@@ -326,7 +326,7 @@ get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timesta
         error_code = bson_get_value_bin(result, "the_id", UUIDLEN, (char *)comment_id, &len);
     }
     if(!error_code) {
-        error_code = bson_get_value_int64(result, "create_milli_timestamp", (long *)&create_milli_timestamp);
+        error_code = bson_get_value_int64(result, "create_milli_timestamp", (long *)create_milli_timestamp);
     }
     if(!error_code) {
         error_code = bson_get_value_bin(result, "poster", IDLEN, poster, &len);
