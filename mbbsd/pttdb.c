@@ -409,7 +409,11 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
     }
 
     for(int i = 0; i < n_comment_comment_reply_info; i++) {
-        fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: final: (%d/%d): (%d/%d/%d)\n", i, n_comment_comment_reply_info, comment_comment_reply_info[i].comment_id, comment_comment_reply_info[i].comment_reply_id, comment_comment_reply_info[i].n_comment_reply_line);
+        display_uuid = _display_uuid(comment_comment_reply_info[i].comment_id);
+        display_uuid2 = _display_uuid(comment_comment_reply_info[i].comment_reply_id);
+        fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: final: (%d/%d): (%s/%s/%d)\n", i, n_comment_comment_reply_info, display_uuid, display_uuid2, comment_comment_reply_info[i].n_comment_reply_line);
+        safe_free((void **)display_uuid);
+        safe_free((void **)display_uuid2);
     }
 
     return error_code;
