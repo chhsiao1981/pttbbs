@@ -250,6 +250,8 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
 
     safe_free_b_list(&b_comments, n_comment);
 
+    if(error_code == S_ERR_NOT_EXISTS) error_code = S_OK;
+
     return error_code;
 }
 
