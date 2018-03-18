@@ -76,7 +76,7 @@ gen_uuid(UUID uuid)
     p_rand = (long int *)uuid;
     int steps = (int) sizeof(long int);
     int n_random = (UUIDLEN - 8) / steps;
-    fprintf(stderr, "pttdb_misc.gen_uuid: n_random: %d\n", n_random);
+    fprintf(stderr, "pttdb_misc.gen_uuid: long: %d long_int: %d RAND_MAX: %d n_random: %d\n", sizeof(long), sizeof(long int), RAND_MAX, n_random);
     for (int i = 0; i < n_random; i++) {
         rand_num = random();
         *p_rand = rand_num;
