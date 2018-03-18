@@ -319,7 +319,7 @@ _read_content_blocks_core(bson_t *key, int max_n_block, int block_id, enum Mongo
     *len = tmp_len;
 
     // free
-    saf_free_b_list(&b_content_blocks, tmp_n_block);
+    safe_free_b_list(&b_content_blocks, tmp_n_block);
 
     return error_code;
 }

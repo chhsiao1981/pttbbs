@@ -283,7 +283,7 @@ read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poste
     *len = tmp_len;
 
     // free
-    safe_free_b_list(&b_comments, n_comment);
+    safe_free_b_list(&b_comments, tmp_n_comment);
 
     return error_code;
 }
