@@ -1643,13 +1643,6 @@ TEST(pttdb_comment, sort_b_comments_by_comment_id)
     error = sort_b_comments_by_comment_id(b_comments, n_comment);
     EXPECT_EQ(S_OK, error);
 
-    char *str = NULL;
-    for(int i = 0; i < 100; i++) {
-        str = bson_as_canonical_extended_json(b_comments[i], NULL);
-        fprintf(stderr, "test_pttdb_comment.sort_b_comments_by_comment_id: (%d/%d) %s\n", i, 100, str);
-        bson_free(str);
-    }
-
     bson_t **p_b_comments = b_comments;
     bson_t **p_next_b_comments = b_comments + 1;
     UUID next_comment_id = {};
@@ -1659,7 +1652,7 @@ TEST(pttdb_comment, sort_b_comments_by_comment_id)
         EXPECT_EQ(S_OK, error);
         error = bson_get_value_bin(*p_next_b_comments, (char *)"the_id", UUIDLEN, (char *)next_comment_id, &len);
         EXPECT_EQ(S_OK, error);
-        EXPECT_LT(0, strncmp((char *)comment_id, (char *)next_comment_id, UUIDLEN));
+        EXPECT_LT(strncmp((char *)comment_id, (char *)next_comment_id, UUIDLEN), 0);
     }
 
     //free
