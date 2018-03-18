@@ -207,11 +207,12 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
     Err error = S_OK;
     UUID main_id = {};
     UUID comment_id = {};
+    UUID comment_reply_id = {};
     gen_uuid(main_id);
 
     Comment comment = {};
     init_comment_buf(&comment);
-    // comment
+    // comment and comment-reply
     memcpy(comment.main_id, main_id, sizeof(UUID));
     comment.status = LIVE_STATUS_ALIVE;
     strcpy(comment.status_updater, "poster000");
@@ -229,13 +230,16 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
     strcpy(comment.update_ip, "10.1.1.4");
     comment.update_milli_timestamp = create_milli_timestamp;
 
-    strcpy(comment.buf, "test1test1");
+    strcpy(comment.buf, "test1test1\r\n");
     comment.len = 10;
 
     bson_t *comment_id_bson = NULL;
     bson_t *comment_bson = NULL;
 
     int n_comment = 100;
+
+    char buf[MAX_BUF_SIZE] = {};
+    char *p_buf = NULL;
 
     for(int i = 85; i < 100; i++) {
         gen_uuid(comment_id);
@@ -254,6 +258,16 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
         bson_safe_destroy(&comment_id_bson);
 
         EXPECT_EQ(S_OK, error);
+
+        p_buf = buf;
+        for(int j = 0; j < i; j++) {
+            sprintf(p_buf, "testtest\r\n");
+            p_buf += 10;
+        }
+
+        error = create_comment_reply(main_id, comment_id, "reply001", "10.1.1.5", i * 10, p_buf, comment_reply_id);
+        EXPECT_EQ(S_OK, error);
+        EXPECT_EQ(0, strncmp((char *)commment_id, (char *)comment_reply_id, UUIDLEN));
     }
 
     for(int i = 15; i < 85; i++) {
@@ -292,6 +306,18 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
         bson_safe_destroy(&comment_id_bson);
 
         EXPECT_EQ(S_OK, error);
+
+        if(!i) continue;
+
+        p_buf = buf;
+        for(int j = 0; j < i; j++) {
+            sprintf(p_buf, "testtest\r\n");
+            p_buf += 10;
+        }
+
+        create_comment_reply(main_id, comment_id, "reply001", "10.1.1.5", i * 10, p_buf, comment_reply_id);
+        EXPECT_EQ(S_OK, error);
+        EXPECT_EQ(0, strncmp((char *)commment_id, (char *)comment_reply_id, UUIDLEN));
     }
 
     // comment-replys
