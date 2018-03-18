@@ -404,7 +404,7 @@ read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestam
         "main_id", BCON_BINARY(main_id, UUIDLEN),
         "status", BCON_INT32((int)LIVE_STATUS_ALIVE),
         "create_milli_timestamp", BCON_INT64(create_milli_timestamp),
-        "poster", "{"
+        "poster", "{",
             "$lte", BCON_BINARY((unsigned char *)poster, IDLEN),
         "}"
         );

@@ -310,13 +310,7 @@ db_count(int collection, bson_t *key, int *count)
     Err error_code = S_OK;
     bson_error_t error;
 
-    char *str = bson_as_canonical_extended_json(key, NULL);
-    fprintf(stderr, "util_db.db_count: to count: key: %s\n", str);
-    bson_free(str);
-
     int64_t tmp_count = mongoc_collection_count_with_opts(MONGO_COLLECTIONS[collection], MONGOC_QUERY_NONE, key, 0, 0, NULL, NULL, &error);
-
-    fprintf(stderr, "util_db.db_count: after count: tmp_count: %ld\n", tmp_count);
 
     if(tmp_count == -1) {
         error_code = S_ERR;
