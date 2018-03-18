@@ -151,9 +151,9 @@ TEST(pttdb, get_file_info_by_main_get_content_block_info) {
     EXPECT_NE(NULL, file_info.content_block_info);
     EXPECT_EQ(NULL, file_info.comment_comment_reply_info);
 
-    EXPECT_EQ(0, file_info.content_block_info[0].bock_id);
+    EXPECT_EQ(0, file_info.content_block_info[0].block_id);
     EXPECT_EQ(8, file_info.content_block_info[0].n_line);
-    EXPECT_EQ(1, file_info.content_block_info[1].bock_id);
+    EXPECT_EQ(1, file_info.content_block_info[1].block_id);
     EXPECT_EQ(2, file_info.content_block_info[1].n_line);
 
     destroy_file_info(&file_info);
