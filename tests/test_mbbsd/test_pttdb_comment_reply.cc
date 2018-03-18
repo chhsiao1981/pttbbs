@@ -265,7 +265,7 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
             p_buf += 10;
         }
 
-        error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, p_buf, comment_reply_id);
+        error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, buf, comment_reply_id);
         EXPECT_EQ(S_OK, error);
         EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply_id, UUIDLEN));
     }
@@ -294,7 +294,7 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
             p_buf += 10;
         }
 
-        error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, p_buf, comment_reply_id);
+        error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, buf, comment_reply_id);
         EXPECT_EQ(S_OK, error);
         EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply_id, UUIDLEN));
     }
@@ -326,7 +326,7 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
             p_buf += 10;
         }
 
-        create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, p_buf, comment_reply_id);
+        create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, buf, comment_reply_id);
         EXPECT_EQ(S_OK, error);
         EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply_id, UUIDLEN));
     }

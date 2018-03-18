@@ -503,7 +503,7 @@ TEST(pttdb, get_file_info_by_main_get_comment_comment_reply_info_comments_with_r
             p_buf += 10;
         }
 
-        error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, p_buf, comment_reply_id);
+        error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, buf, comment_reply_id);
         EXPECT_EQ(S_OK, error);
         EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply_id, UUIDLEN));
     }
@@ -533,7 +533,7 @@ TEST(pttdb, get_file_info_by_main_get_comment_comment_reply_info_comments_with_r
             p_buf += 10;
         }
 
-        error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, p_buf, comment_reply_id);
+        error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, buf, comment_reply_id);
         EXPECT_EQ(S_OK, error);
         EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply_id, UUIDLEN));
     }
@@ -565,7 +565,7 @@ TEST(pttdb, get_file_info_by_main_get_comment_comment_reply_info_comments_with_r
             p_buf += 10;
         }
 
-        create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, p_buf, comment_reply_id);
+        create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, buf, comment_reply_id);
         EXPECT_EQ(S_OK, error);
         EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply_id, UUIDLEN));
     }
