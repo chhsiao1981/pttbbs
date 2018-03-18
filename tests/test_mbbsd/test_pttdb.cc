@@ -405,6 +405,7 @@ TEST(pttdb, get_file_info_by_main_get_comment_comment_reply_info_comments_no_rep
     for(int i = 0; i < 100; i++) {
         sprintf(cmp_poster, "poster%03d", i);
         EXPECT_STREQ(cmp_poster, file_info.comment_comment_reply_info[i].comment_poster);
+        EXPECT_EQ(0, file_info.comment_comment_reply_info[i].n_comment_reply_line);
     }
 
     // free
