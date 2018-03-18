@@ -413,10 +413,10 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
     bson_t **p_b_comments = b_comments;
     for(int i = 0; i < 15; i++, p_b_comments++) {
         keylen = bson_uint32_to_string(i, &key, buf, sizeof(buf));
-        error = bson_get_value_bin(*p_b_comments, (char *)"the_id", UUIDLEN, comment_id, &len);
+        error = bson_get_value_bin(*p_b_comments, (char *)"the_id", UUIDLEN, (char *)comment_id, &len);
         status = bson_append_bin(&child, key, (int)keylen, comment_id, UUIDLEN);
         if (!status) {
-            error_code = S_ERR_INIT;
+            error = S_ERR_INIT;
             break;
         }
     }
@@ -431,11 +431,12 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
         "_id", BCON_BOOL(false),
         "comment_id", BCON_BOOL(true),
         "the_id", BCON_BOOL(true),
-        "n_line", BCON_BOOL(true),
+        "n_line", BCON_BOOL(true)
         );
 
     bson_t **b_comment_replys = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
 
+    int n_comment_reply = 0;
     error = read_comment_replys_by_query_to_bsons(query, fields, n_comment, b_comment_replys, &n_comment_reply);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(15, n_comment_reply);
@@ -455,12 +456,12 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
     }
 
     // free
-    safe_free_b_list(&b_comment_replys);
+    safe_free_b_list(&b_comment_replys, n_comment_reply);
 
     bson_safe_destroy(&query);
     bson_safe_destroy(&q_array);
 
-    safe_free_b_list(&b_comments);
+    safe_free_b_list(&b_comments, n_comment);
 
     bson_safe_destroy(&fields);
 
