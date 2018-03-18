@@ -282,8 +282,6 @@ TEST(pttdb, get_file_info_by_main_get_comment_comment_reply_info_comments_no_rep
     bson_t *comment_id_bson = NULL;
     bson_t *comment_bson = NULL;
 
-    int n_comment = 100;
-
     char buf[MAX_BUF_SIZE] = {};
     char *p_buf = NULL;
 
