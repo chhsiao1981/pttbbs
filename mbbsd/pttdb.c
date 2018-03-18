@@ -355,9 +355,16 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
     if(error_code) return error_code;
 
     // while-loop
+    char *display_uuid2 = NULL;    
     while(i < n_comment_comment_reply_info && j < n_comment_reply) {
         tmp_cmp = strncmp((char *)*comment_id, (char *)comment_reply_comment_id, UUIDLEN);
-        fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: i: (%d/%d) j: (%d/%d) comment_id: %s comment_reply_comment_id: %s\n", i, n_comment_comment_reply_info, j, n_comment_reply, *comment_id, comment_reply_comment_id);
+        display_uuid = _display_uuid(*comment_id);
+        display_uuid2 = _display_uuid(comment_reply_comment_id);
+
+        fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: i: (%d/%d) j: (%d/%d) comment_id: %s comment_reply_comment_id: %s\n", i, n_comment_comment_reply_info, j, n_comment_reply, display_uuid, display_uuid2);
+        safe_free(&display_uuid);
+        safe_free(&display_uuid2);
+        
         if(tmp_cmp < 0) {
             // increase comment_comment_reply_info
             i++;
