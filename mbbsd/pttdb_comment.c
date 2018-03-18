@@ -345,6 +345,10 @@ get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timesta
         "}"
         );
 
+    char *str = bson_as_canonical_extended_json(count_query_eq, NULL);
+    fprintf(stderr, "pttdb_comment.get_newest_comment: to count: count_query_eq: %s\n", str);
+    bson_free(str);
+
     if(!error_code) {
         error_code = db_count(MONGO_COMMENT, count_query_eq, &count_eq_create_milli_timestamp);
     }
