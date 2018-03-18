@@ -228,7 +228,7 @@ read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_c
 }
 
 Err
-sort_comment_reply_bsons_by_comment_id(bson_t **b_comment_replys, int n_comment_reply)
+sort_b_comment_replys_by_comment_id(bson_t **b_comment_replys, int n_comment_reply)
 {
     qsort(b_comment_replys, n_comment_reply, sizeof(bson_t *), _cmp_b_comment_replys_by_comment_id);
     return S_OK;
