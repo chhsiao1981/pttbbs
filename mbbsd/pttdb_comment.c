@@ -283,11 +283,7 @@ read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poste
     *len = tmp_len;
 
     // free
-    p_b_comments = b_comments;
-    for (int i = 0; i < tmp_n_comment; i++, p_b_comments++) {
-        bson_safe_destroy(p_b_comments);
-    }
-    safe_free((void **)&b_comments);
+    safe_free_b_list(&b_comments, n_comment);
 
     return error_code;
 }

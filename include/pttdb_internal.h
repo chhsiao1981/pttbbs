@@ -25,7 +25,8 @@ Err _get_file_info_by_main_get_content_block_info(FileInfo *file_info);
 Err _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *file_info);
 Err _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_comment_reply_info, int start_i, int next_i);
 Err _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo *comment_comment_reply_info, bson_t **b_comment_replys, int n_comment_comment_reply_info, int n_comment_reply);
-
+Err _sort_comment_comment_reply_info_by_comment_create_milli_timestamp(CommentCommentReplyInfo *comment_comment_reply_info, int n_comment_comment_reply_info);
+int _cmp_comment_comment_reply_info_by_comment_create_milli_timestamp(const void *a, const void *b);
 
 /**********
  * Main

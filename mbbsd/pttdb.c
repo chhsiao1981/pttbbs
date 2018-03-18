@@ -67,7 +67,7 @@ destroy_file_info(FileInfo *file_info)
     file_info->content_block_info = NULL;
     file_info->n_main_line = 0;
     file_info->n_main_block = 0;
-    file_info->n_comments = 0;
+    file_info->n_comment = 0;
 
     return S_OK;
 }
@@ -140,6 +140,7 @@ _get_file_info_by_main_get_content_block_info(FileInfo *file_info)
         if(n_content_block != file_info->n_main_block) error_code = S_ERR; // not matched.
     }
 
+    // XXX init file-info content-block!
     if(!error_code) {
         file_info->content_block_info = malloc(sizeof(ContentBlockInfo) * file_info->n_main_block);
         if(!file_info->content_block_info) error_code = S_ERR_INIT;
@@ -165,11 +166,8 @@ _get_file_info_by_main_get_content_block_info(FileInfo *file_info)
 
     // free
     bson_safe_destroy(&content_block_fields);
-    p_b_content_blocks = b_content_blocks;
-    for(int i = 0; i < n_content_block; i++, p_b_content_blocks++) {
-        bson_safe_destroy(p_b_content_blocks);
-    }
-    safe_free((void **)&b_content_blocks);
+
+    safe_free_b_list(&b_content_blocks, n_content_block);
 
     return error_code;
 }
@@ -206,10 +204,13 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
         error_code = sort_b_comments_by_comment_id(b_comments, n_comment);
     }
 
-    // init file_info.comment_comment_reply_info
+    // XXX init file_info->comment_comment_reply_info
     if(!error_code) {
         file_info->comment_comment_reply_info = malloc(sizeof(CommentCommentReplyInfo) * n_comment);
         if(!file_info->comment_comment_reply_info) error_code = S_ERR;
+    }
+    if(!error_code) {
+        file_info->n_comment = n_comment;
     }
 
     int len = 0;
@@ -223,6 +224,7 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
             if(error_code) break;
             error_code = bson_get_value_bin(*p_b_comments, "poster", IDLEN, p_comment_comment_reply_info->comment_poster, &len);
             if(error_code) break;
+            p_comment_comment_reply_info->n_comment_reply_line = 0;
         }
     }
 
@@ -239,14 +241,14 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
     }
 
     //sort comment_comment_reply_info
+    if(!error_code) {
+        error_code = _sort_comment_comment_reply_info_by_comment_create_milli_timestamp(file_info->comment_comment_reply_info, file_info->n_comment)
+    }
 
     // free
     bson_safe_destroy(&comment_fields);
-    p_b_comments = b_comments;
-    for(int i = 0; i < n_comment; i++, p_b_comments++) {
-        bson_safe_destroy(p_b_comments);
-    }
-    safe_free((void **)&p_b_comments);
+
+    safe_free_b_list(&b_comments, n_comment);
 
     return error_code;
 }
@@ -307,11 +309,8 @@ _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_c
     }
 
     //free
-    bson_t **p_b_comment_replys = b_comment_replys;
-    for(int i = 0; i < n_comment_reply; i++, p_b_comment_replys++) {
-        bson_safe_destroy(p_b_comment_replys);
-    }
-    safe_free((void **)&p_b_comment_replys);
+    safe_free_b_list(&b_comment_replys, n_comment_reply);
+
     bson_safe_destroy(&fields);
     bson_safe_destroy(&query);
     bson_safe_destroy(&q_array);
@@ -359,7 +358,7 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
         }
         else {
             // setup
-            error_code = bson_get_value_bin(*p_b_comment_replys, "comment_reply_id", UUIDLEN, (char *)p_comment_comment_reply_info->comment_reply_id, &len);
+            error_code = bson_get_value_bin(*p_b_comment_replys, "the_id", UUIDLEN, (char *)p_comment_comment_reply_info->comment_reply_id, &len);
             if(error_code) break;
             error_code = bson_get_value_int32(*p_b_comment_replys, "n_line", &p_comment_comment_reply_info->n_comment_reply_line);
             if(error_code) break;
@@ -383,4 +382,25 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
     }
 
     return error_code;
+}
+
+Err
+_sort_comment_comment_reply_info_by_comment_create_milli_timestamp(CommentCommentReplyInfo *comment_comment_reply_info, int n_comment_comment_reply_info)
+{
+    qsort(comment_comment_reply_info, n_comment_comment_reply_info, _cmp_comment_comment_reply_info_by_comment_create_milli_timestamp);
+
+    return S_OK;
+}
+
+int
+_cmp_comment_comment_reply_info_by_comment_create_milli_timestamp(const void *a, const void *b)
+{
+    CommentCommentReplyInfo *tmp_a = (CommentCommentReplyInfo *)a;
+    CommentCommentReplyInfo *tmp_b = (CommentCommentReplyInfo *)b;
+
+    if(tmp_a->comment_create_milli_timestamp != tmp_b->comment_create_milli_timestamp) {
+        return tmp_a->comment_create_milli_timestamp - tmp_b->comment_create_milli_timestamp;
+    }
+
+    return strcmp(tmp_a->comment_poster, tmp_b->comment_poster);
 }

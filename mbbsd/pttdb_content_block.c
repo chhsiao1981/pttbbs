@@ -319,11 +319,7 @@ _read_content_blocks_core(bson_t *key, int max_n_block, int block_id, enum Mongo
     *len = tmp_len;
 
     // free
-    p_b_content_blocks = b_content_blocks;
-    for (int i = 0; i < tmp_n_block; i++, p_b_content_blocks++) {
-        bson_safe_destroy(p_b_content_blocks);
-    }
-    safe_free((void **)&b_content_blocks);
+    saf_free_b_list(&b_content_blocks, tmp_n_block);
 
     return error_code;
 }
@@ -424,11 +420,7 @@ _dynamic_read_content_blocks_core(bson_t *key, int max_n_block, int block_id, en
     *len = tmp_len;
 
     // free
-    p_b_content_blocks = b_content_blocks;
-    for (int i = 0; i < tmp_n_block; i++, p_b_content_blocks++) {
-        bson_safe_destroy(p_b_content_blocks);
-    }
-    safe_free((void **)&b_content_blocks);
+    safe_free_b_list(&b_content_blocks, tmp_n_block);
 
     return error_code;
 }

@@ -188,11 +188,11 @@ typedef struct ContentBlockInfo {
 
 typedef struct CommentCommentReplyInfo {
     UUID comment_id;
-    UUID comment_reply_id;
 
     time64_t comment_create_milli_timestamp;
     char comment_poster[IDLEN + 1];
 
+    UUID comment_reply_id;
     int n_comment_reply_line;
 } CommentCommentReplyInfo;
 
@@ -203,7 +203,7 @@ typedef struct FileInfo {
     UUID main_content_id;
     int n_main_line;
     int n_main_block;
-    int n_comments;
+    int n_comment;
     ContentBlockInfo *content_block_info;
     CommentCommentReplyInfo *comment_comment_reply_info;
 } FileInfo;
