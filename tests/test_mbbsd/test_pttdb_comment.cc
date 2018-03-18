@@ -1335,18 +1335,15 @@ TEST(pttdb_comment, get_newest_comment2)
     UUID newest_comment_id = {};
     time64_t newest_create_milli_timestamp = 0;
     char newest_poster[IDLEN + 1] = {};
-    int n_comment = 0;
+    n_comment = 0;
     error = get_newest_comment(main_id, newest_comment_id, newest_create_milli_timestamp, newest_poster, &n_comment);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
     EXPECT_EQ(create_milli_timestamp + 85, newest_create_milli_timestamp);
-    EXPECT_STREQ((char *)poster100, newest_poster);
+    EXPECT_STREQ((char *)"poster100", newest_poster);
 
     // free
     destroy_comment(&comment);
-    for(int i = 0; i < 100; i++) {
-        destroy_comment(&comments[i]);
-    }
 }
 
 /**********
