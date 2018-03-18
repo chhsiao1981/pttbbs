@@ -1191,7 +1191,6 @@ TEST(pttdb_comment, get_newest_comment) {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
-    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
 
     int fd = open("data_test/test1.txt", O_RDONLY);
 
@@ -1233,6 +1232,8 @@ TEST(pttdb_comment, get_newest_comment) {
     time64_t newest_create_milli_timestamp = 0;
     char newest_poster[IDLEN + 1] = {};
     int n_comment = 0;
+
+    fprintf(stderr, "pttdb_comment.get_newest_comment: to get newest comment: start\n");
     // get newest comment
     error = get_newest_comment(main_id, newest_comment_id, &newest_create_milli_timestamp, newest_poster, &n_comment);
     EXPECT_EQ(S_OK, error);
@@ -1330,6 +1331,8 @@ TEST(pttdb_comment, get_newest_comment2)
 
         EXPECT_EQ(S_OK, error);
     }
+
+    fprintf(stderr, "test_pttdb_comment.gen_new")
     // get newest_comments
 
     UUID newest_comment_id = {};

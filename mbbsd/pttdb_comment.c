@@ -332,6 +332,8 @@ get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timesta
         error_code = bson_get_value_bin(result, "poster", IDLEN, poster, &len);
     }
 
+    fprintf(stderr, "pttdb_comment.get_newest_comment: after db_find\n");
+
     int count_eq_create_milli_timestamp = 0;
     bson_t *count_query_eq = BCON_NEW(
         "main_id", BCON_BINARY(main_id, UUIDLEN),
@@ -346,6 +348,8 @@ get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timesta
         error_code = db_count(MONGO_COMMENT, count_query_eq, &count_eq_create_milli_timestamp);
     }
 
+    fprintf(stderr, "pttdb_comment.get_newest_comment: after db_count count_eq_create_milli_timestamp\n");
+
     int count_lt_create_milli_timestamp = 0;
     bson_t *count_query_lt = BCON_NEW(
         "main_id", BCON_BINARY(main_id, UUIDLEN),
@@ -358,6 +362,8 @@ get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timesta
     if(!error_code) {
         error_code = db_count(MONGO_COMMENT, count_query_lt, &count_lt_create_milli_timestamp);
     }
+
+    fprintf(stderr, "pttdb_comment.get_newest_comment: after db_count count_lt_create_milli_timestamp\n");
 
     *n_comment = count_eq_create_milli_timestamp + count_lt_create_milli_timestamp;
 
