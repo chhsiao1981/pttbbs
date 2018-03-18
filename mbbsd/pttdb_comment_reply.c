@@ -218,6 +218,45 @@ dissociate_comment_reply(CommentReply *comment_reply)
 }
 
 Err
+read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_comment_replys, bson_t **b_comment_replys, int *n_comment_reply)
+{
+    Err error_code = S_OK;
+
+    error_code = db_find(MONGO_COMMENT_REPLY, query, fields, NULL, max_n_comment_replys, n_comment_reply, b_comment_replys);
+
+    return error_code;
+}
+
+Err
+sort_b_comment_replys_by_comment_id(bson_t **b_comment_replys, int n_comment_reply)
+{
+    qsort(b_comment_replys, n_comment_reply, sizeof(bson_t *), _cmp_b_comment_replys_by_comment_id);
+    return S_OK;
+}
+
+
+int
+_cmp_b_comment_replys_by_comment_id(const void *a, const void *b)
+{
+    Err error_code = S_OK;
+    bson_t **p_b_comment_reply_a = (bson_t **)a;
+    bson_t **p_b_comment_reply_b = (bson_t **)b;
+    bson_t *b_comment_reply_a = *p_b_comment_reply_a;
+    bson_t *b_comment_reply_b = *p_b_comment_reply_b;
+
+    UUID comment_id_a = {};
+    UUID comment_id_b = {};
+    int len = 0;
+
+    error_code = bson_get_value_bin(b_comment_reply_a, "comment_id", UUIDLEN, (char *)comment_id_a, &len);
+    if(error_code) comment_id_a[0] = 0;
+    error_code = bson_get_value_bin(b_comment_reply_b, "comment_id", UUIDLEN, (char *)comment_id_b, &len);
+    if(error_code) comment_id_b[0] = 0;
+
+    return strncmp((char *)comment_id_a, (char *)comment_id_b, UUIDLEN);
+}
+
+Err
 _get_comment_reply_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_comment_reply, int *n_line, int *total_len)
 {
     if(!n_result) {

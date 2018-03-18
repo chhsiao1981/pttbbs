@@ -11,7 +11,7 @@ time64_t START_MILLI_TIMESTAMP = 1514764800000;
 // 2019-01-01
 time64_t END_MILLI_TIMESTAMP = 1546300800000;
 
-TEST(pttdb, get_milli_timestamp) {
+TEST(pttdb_misc, get_milli_timestamp) {
     time64_t t;
     get_milli_timestamp(&t);
 
@@ -19,11 +19,11 @@ TEST(pttdb, get_milli_timestamp) {
     EXPECT_LT(t, END_MILLI_TIMESTAMP);
 }
 
-TEST(pttdb, gen_uuid) {
+TEST(pttdb_misc, gen_uuid) {
     UUID uuid;
-    _UUID _uuid;
+    //_UUID _uuid;
     UUID uuid2;
-    _UUID _uuid2;
+    //_UUID _uuid2;
     time64_t milli_timestamp;
     time64_t milli_timestamp2;
 
@@ -33,8 +33,8 @@ TEST(pttdb, gen_uuid) {
     EXPECT_GE(milli_timestamp, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
 
-    b64_pton((char *)uuid, _uuid, _UUIDLEN);
-    EXPECT_EQ(0x60, _uuid[6] & 0xf0);
+    //b64_pton((char *)uuid, _uuid, _UUIDLEN);
+    EXPECT_EQ(0x60, uuid[6] & 0xf0);
 
     gen_uuid(uuid2);
     uuid_to_milli_timestamp(uuid2, &milli_timestamp2);
@@ -44,15 +44,15 @@ TEST(pttdb, gen_uuid) {
     EXPECT_LT(milli_timestamp2, END_MILLI_TIMESTAMP);
     EXPECT_GE(milli_timestamp2, milli_timestamp);
 
-    b64_pton((char *)uuid2, _uuid2, _UUIDLEN);
-    EXPECT_EQ(0x60, _uuid2[6] & 0xf0);
+    //b64_pton((char *)uuid2, _uuid2, _UUIDLEN);
+    EXPECT_EQ(0x60, uuid2[6] & 0xf0);
 }
 
-TEST(pttdb, gen_uuid_with_db) {
+TEST(pttdb_misc, gen_uuid_with_db) {
     UUID uuid;
-    _UUID _uuid;
+    //_UUID _uuid;
     UUID uuid2;
-    _UUID _uuid2;
+    //_UUID _uuid2;
     time64_t milli_timestamp;
     time64_t milli_timestamp2;
 
@@ -64,8 +64,8 @@ TEST(pttdb, gen_uuid_with_db) {
     EXPECT_GE(milli_timestamp, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
 
-    b64_pton((char *)uuid, _uuid, _UUIDLEN);
-    EXPECT_EQ(0x60, _uuid[6] & 0xf0);
+    //b64_pton((char *)uuid, _uuid, _UUIDLEN);
+    EXPECT_EQ(0x60, uuid[6] & 0xf0);
 
     gen_uuid_with_db(MONGO_TEST, uuid2);
     uuid_to_milli_timestamp(uuid2, &milli_timestamp2);
@@ -74,22 +74,22 @@ TEST(pttdb, gen_uuid_with_db) {
     EXPECT_LT(milli_timestamp2, END_MILLI_TIMESTAMP);
     EXPECT_GE(milli_timestamp2, milli_timestamp);
 
-    b64_pton((char *)uuid2, _uuid2, _UUIDLEN);
-    EXPECT_EQ(0x60, _uuid2[6] & 0xf0);
+    //b64_pton((char *)uuid2, _uuid2, _UUIDLEN);
+    EXPECT_EQ(0x60, uuid2[6] & 0xf0);
 
     EXPECT_NE(0, strncmp((char *)uuid, (char *)uuid2, UUIDLEN));
 
     EXPECT_NE(0, strncmp((char *)uuid, (char *)uuid2, UUIDLEN));
 }
 
-TEST(pttdb, serialize_uuid_bson) {
-    _UUID _uuid;
+TEST(pttdb_misc, serialize_uuid_bson) {
+    //_UUID _uuid;
     UUID uuid;
     char *str;
     char buf[MAX_BUF_SIZE];
 
-    bzero(_uuid, sizeof(_UUID));
-    b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
+    bzero(uuid, sizeof(UUID));
+    //b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
 
     bson_t *uuid_bson = NULL;
 
@@ -100,20 +100,20 @@ TEST(pttdb, serialize_uuid_bson) {
 
     bson_safe_destroy(&uuid_bson);
 
-    fprintf(stderr, "buf: %s\n", buf);
+    fprintf(stderr, "test_pttdb_misc.serialize_uuid_bson: buf: %s\n", buf);
 
     EXPECT_EQ(S_OK, error);
-    EXPECT_STREQ("{ \"the_id\" : { \"$binary\" : { \"base64\": \"QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQQ==\", \"subType\" : \"00\" } } }", buf);
+    EXPECT_STREQ("{ \"the_id\" : { \"$binary\" : { \"base64\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"subType\" : \"00\" } } }", buf);
 }
 
-TEST(pttdb, serialize_content_uuid_bson) {
-    _UUID _uuid;
+TEST(pttdb_misc, serialize_content_uuid_bson) {
+    //_UUID _uuid;
     UUID uuid;
     char *str;
     char buf[MAX_BUF_SIZE];
 
-    bzero(_uuid, sizeof(_UUID));
-    b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
+    bzero(uuid, sizeof(UUID));
+    //b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
 
     bson_t *uuid_bson;
 
@@ -126,23 +126,23 @@ TEST(pttdb, serialize_content_uuid_bson) {
     bson_safe_destroy(&uuid_bson);
 
     EXPECT_EQ(S_OK, error);
-    EXPECT_STREQ("{ \"the_id\" : { \"$binary\" : { \"base64\": \"QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQQ==\", \"subType\" : \"00\" } }, \"block_id\" : { \"$numberInt\" : \"0\" } }", buf);
+    EXPECT_STREQ("{ \"the_id\" : { \"$binary\" : { \"base64\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"subType\" : \"00\" } }, \"block_id\" : { \"$numberInt\" : \"0\" } }", buf);
 }
 
-TEST(pttdb, uuid_to_milli_timestamp) {
+TEST(pttdb_misc, uuid_to_milli_timestamp) {
     UUID uuid;
     time64_t milli_timestamp;
 
     gen_uuid(uuid);
     uuid_to_milli_timestamp(uuid, &milli_timestamp);
 
-    fprintf(stderr, "milli_timestamp: %lld\n", milli_timestamp);
+    fprintf(stderr, "test_pttdb_misc.uuid_to_milli_timestamp: milli_timestamp: %lld\n", milli_timestamp);
 
     EXPECT_GE(milli_timestamp, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
 }
 
-TEST(pttdb, get_line_from_buf) {
+TEST(pttdb_mics, get_line_from_buf) {
     int len_buf = 24;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -159,7 +159,7 @@ TEST(pttdb, get_line_from_buf) {
     EXPECT_STREQ("0123456789\r\n", line);
 }
 
-TEST(pttdb, get_line_from_buf_with_offset_buf) {
+TEST(pttdb_misc, get_line_from_buf_with_offset_buf) {
     int len_buf = 24;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -176,7 +176,7 @@ TEST(pttdb, get_line_from_buf_with_offset_buf) {
     EXPECT_STREQ("ABCDEFGHIJ\r\n", line);
 }
 
-TEST(pttdb, get_line_from_buf_with_line_offset) {
+TEST(pttdb_misc, get_line_from_buf_with_line_offset) {
     int len_buf = 24;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -195,7 +195,7 @@ TEST(pttdb, get_line_from_buf_with_line_offset) {
     EXPECT_STREQ("!@0123456789\r\n", line);
 }
 
-TEST(pttdb, get_line_from_buf_not_end) {
+TEST(pttdb_misc, get_line_from_buf_not_end) {
     int len_buf = 10;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -212,7 +212,7 @@ TEST(pttdb, get_line_from_buf_not_end) {
     EXPECT_STREQ("0123456789", line);
 }
 
-TEST(pttdb, get_line_from_buf_offset_buf_not_end) {
+TEST(pttdb_misc, get_line_from_buf_offset_buf_not_end) {
     int len_buf = 13;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -229,7 +229,7 @@ TEST(pttdb, get_line_from_buf_offset_buf_not_end) {
     EXPECT_STREQ("0123456789", line);
 }
 
-TEST(pttdb, get_line_from_buf_r_only) {
+TEST(pttdb_misc, get_line_from_buf_r_only) {
     int len_buf = 13;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -246,7 +246,7 @@ TEST(pttdb, get_line_from_buf_r_only) {
     EXPECT_STREQ("A\r0123456789", line);
 }
 
-TEST(pttdb, get_line_from_buf_n_only) {
+TEST(pttdb_misc, get_line_from_buf_n_only) {
     int len_buf = 13;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -263,7 +263,7 @@ TEST(pttdb, get_line_from_buf_n_only) {
     EXPECT_STREQ("A\n0123456789", line);
 }
 
-TEST(pttdb, get_line_from_buf_line_with_max_buf_size) {
+TEST(pttdb_misc, get_line_from_buf_line_with_max_buf_size) {
     int len_buf = 22;
     char buf[MAX_BUF_SIZE] = {};
     char line[MAX_BUF_SIZE] = {};
@@ -281,7 +281,7 @@ TEST(pttdb, get_line_from_buf_line_with_max_buf_size) {
     EXPECT_EQ(0, strncmp("0123456789", line + MAX_BUF_SIZE - 10, 10));
 }
 
-TEST(pttdb, get_line_from_buf_partial_line_break) {
+TEST(pttdb_misc, get_line_from_buf_partial_line_break) {
     int len_buf = 13;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -299,7 +299,7 @@ TEST(pttdb, get_line_from_buf_partial_line_break) {
     EXPECT_STREQ("!\r\n", line);
 }
 
-TEST(pttdb, get_line_from_buf_end_of_buf) {
+TEST(pttdb_misc, get_line_from_buf_end_of_buf) {
     int len_buf = 12;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];

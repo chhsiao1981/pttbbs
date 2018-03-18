@@ -48,41 +48,45 @@ gen_uuid(UUID uuid)
     time64_t milli_timestamp;
     time64_t *p_milli_timestamp;
 
+    // RAND_MAX is 2147483647
+
+    int *p_rand;
+    const int n_random = (UUIDLEN - 8) / 4;
+
     long int rand_num;
-    long int *p_rand;
     unsigned short *p_short_rand_num;
 
     unsigned short *p_short;
     unsigned char *p_char;
-    _UUID _uuid;
+    // _UUID _uuid;
 
-    // last 8 chars as milli-timestamp, but only the last 6 chars will be used.
+    // last 8 chars as milli-timestamp, but only the last 6 chars will be used. little-endian
     error_code = get_milli_timestamp(&milli_timestamp);
     if (error_code) return error_code;
 
     milli_timestamp <<= 16;
     p_char = (unsigned char *)&milli_timestamp;
 
-    p_milli_timestamp = (time64_t *)(_uuid + 40);
+    p_milli_timestamp = (time64_t *)(uuid + UUIDLEN - 8);
     *p_milli_timestamp = milli_timestamp;
 
     rand_num = random();
     p_short_rand_num = (unsigned short *)&rand_num;
-    p_short = (unsigned short*)(_uuid + 40);
+    p_short = (unsigned short*)(uuid + UUIDLEN - 8);
     *p_short = *p_short_rand_num;
 
-    // first 40 chars as random, but 6th char is version (6 for now)
-    p_rand = (long int *)_uuid;
-    for (int i = 0; i < (_UUIDLEN - 8) / (int)sizeof(long int); i++) {
+    // first 16 chars as random, but 6th char is version (6 for now)
+    p_rand = (int *)uuid;
+    for (int i = 0; i < n_random; i++) {
         rand_num = random();
-        *p_rand = rand_num;
+        *p_rand = (int)rand_num;
         p_rand++;
     }
 
-    _uuid[6] &= 0x0f;
-    _uuid[6] |= 0x60;
+    uuid[6] &= 0x0f;
+    uuid[6] |= 0x60;
 
-    b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
+    // b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
 
     return S_OK;
 }
@@ -193,9 +197,9 @@ _serialize_content_uuid_bson(UUID uuid, int block_id, bson_t **uuid_bson)
 Err
 uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp)
 {
-    _UUID _uuid;
-    time64_t *p_uuid = (time64_t *)(_uuid + 40);
-    b64_pton((char *)uuid, _uuid, _UUIDLEN);
+    //_UUID _uuid;
+    time64_t *p_uuid = (time64_t *)(uuid + UUIDLEN - 8);
+    //b64_pton((char *)uuid, _uuid, _UUIDLEN);
 
     *milli_timestamp = *p_uuid;
     *milli_timestamp >>= 16;
@@ -262,8 +266,6 @@ get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offs
     *p_line++ = *p_buf++;
     *bytes_in_new_line = end_bytes - offset_buf;
 
-    fprintf(stderr, "pttdb_misc.get_line_from_buf: offset_line: %d max_new_lines: %d bytes: %d iter_bytes: %d end_bytes: %d offset_buf: %d bytes_in_new_line: %d\n", offset_line, max_new_lines, bytes, iter_bytes, end_bytes, offset_buf, *bytes_in_new_line);
-
     // XXX special case for all block as a continuous string. Although it's not end yet, it forms a block.
     if(*bytes_in_new_line == max_new_lines) return S_OK;
 
@@ -283,4 +285,37 @@ pttdb_count_lines(char *content, int len, int *n_line)
     *n_line = tmp_n_line;
 
     return S_OK;
+}
+
+Err
+safe_free_b_list(bson_t ***b, int n)
+{
+    bson_t **p_b = *b;
+    for(int i = 0; i < n; i++, p_b++) {
+        bson_safe_destroy(p_b);
+    }
+    safe_free((void **)b);
+
+    return S_OK;
+}
+
+Err
+safe_free(void **a)
+{
+    if(!(*a)) return S_OK;
+    
+    free(*a);
+    *a = NULL;
+    return S_OK;
+}
+
+char *
+_display_uuid(UUID uuid)
+{
+    char *result = malloc(DISPLAY_UUIDLEN + 1);
+    result[DISPLAY_UUIDLEN] = 0;
+
+    b64_ntop(uuid, UUIDLEN, (char *)result, DISPLAY_UUIDLEN);
+
+    return result;
 }

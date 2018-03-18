@@ -72,17 +72,9 @@ create_main_from_fd(aidu_t aid, char *board, char *title, char *poster, char *ip
         error_code = _serialize_main_bson(&main_header, &main_bson);
     }
 
-    char *str = bson_as_canonical_extended_json(main_bson, NULL);
-    fprintf(stderr, "pttdb_main.create_main_from_fd: main_bson: %s\n", str);
-    bson_free(str);
-
     if (!error_code) {
         error_code = _serialize_uuid_bson(main_id, &main_id_bson);
     }
-
-    str = bson_as_canonical_extended_json(main_id_bson, NULL);
-    fprintf(stderr, "pttdb_main.create_main_from_fd: main_id_bson: %s\n", str);
-    bson_free(str);
 
     if(!error_code) {
         error_code = db_update_one(MONGO_MAIN, main_id_bson, main_bson, true);
@@ -412,6 +404,21 @@ update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int f
     return error_code;
 }
 
+Err
+read_main_header_to_bson(UUID main_id, bson_t *fields, bson_t **b_main)
+{
+    Err error_code = S_OK;
+    bson_t *key = BCON_NEW(
+        "the_id", BCON_BINARY(main_id, UUIDLEN)
+        );
+
+    error_code = db_find_one(MONGO_MAIN, key, fields, b_main);
+
+    bson_safe_destroy(&key);
+
+    return error_code;
+}
+
 /**
  * @brief Serialize main-header to bson
  * @details Serialize main-header to bson
@@ -464,10 +471,6 @@ _serialize_main_bson(MainHeader *main_header, bson_t **main_bson)
 Err
 _deserialize_main_bson(bson_t *main_bson, MainHeader *main_header)
 {    
-    char *str = bson_as_canonical_extended_json(main_bson, NULL);
-    fprintf(stderr, "pttdb_main._deserialze_main_bson: start: main_bson: %s\n", str);
-    bson_free(str);
-
     Err error_code;
     error_code = bson_get_value_int32(main_bson, "version", (int *)&main_header->version);
     if (error_code) return error_code;

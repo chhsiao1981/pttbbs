@@ -5,7 +5,7 @@
 #include "pttdb_internal.h"
 #include "util_db_internal.h"
 
-TEST(pttdb, save_content_block) {
+TEST(pttdb_content_block, save_content_block) {
     Err error;
 
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
@@ -48,7 +48,7 @@ TEST(pttdb, save_content_block) {
     destroy_content_block(&content_block2);
 }
 
-TEST(pttdb, read_content_block_forgot_init) {
+TEST(pttdb_content_block, read_content_block_forgot_init) {
     Err error;
 
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
@@ -86,7 +86,7 @@ TEST(pttdb, read_content_block_forgot_init) {
     //destroy_content_block(&content_block2);
 }
 
-TEST(pttdb, reset_content_block) {
+TEST(pttdb_content_block, reset_content_block) {
     Err error;
     ContentBlock content_block = {};
 
@@ -108,7 +108,7 @@ TEST(pttdb, reset_content_block) {
     EXPECT_EQ(0, content_block.max_buf_len);
 }
 
-TEST(pttdb, init_content_block_with_buf_block) {
+TEST(pttdb_content_block, init_content_block_with_buf_block) {
     Err error;
     ContentBlock content_block = {};
 
@@ -131,7 +131,7 @@ TEST(pttdb, init_content_block_with_buf_block) {
     EXPECT_EQ(0, content_block.max_buf_len);
 }
 
-TEST(pttdb, associate_content_block) {
+TEST(pttdb_content_block, associate_content_block) {
     Err error;
     ContentBlock content_block = {};
 
@@ -159,7 +159,7 @@ TEST(pttdb, associate_content_block) {
     EXPECT_EQ(0, content_block.max_buf_len);
 }
 
-TEST(pttdb, serialize_content_block_bson) {
+TEST(pttdb_content_block, serialize_content_block_bson) {
     ContentBlock content_block = {};
     ContentBlock content_block2 = {};
 
@@ -200,7 +200,7 @@ TEST(pttdb, serialize_content_block_bson) {
     destroy_content_block(&content_block2);
 }
 
-TEST(pttdb, dynamic_read_content_blocks)
+TEST(pttdb_content_block, dynamic_read_content_blocks)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
@@ -249,7 +249,7 @@ TEST(pttdb, dynamic_read_content_blocks)
     }
 }
 
-TEST(pttdb, dynamic_read_content_blocks2)
+TEST(pttdb_content_block, dynamic_read_content_blocks2)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
@@ -298,7 +298,7 @@ TEST(pttdb, dynamic_read_content_blocks2)
     }
 }
 
-TEST(pttdb, read_content_blocks)
+TEST(pttdb_content_block, read_content_blocks)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
@@ -347,7 +347,7 @@ TEST(pttdb, read_content_blocks)
     }
 }
 
-TEST(pttdb, read_content_blocks_get_db_results)
+TEST(pttdb_content_block, read_content_blocks_get_b_content_blocks)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
@@ -374,11 +374,11 @@ TEST(pttdb, read_content_blocks_get_db_results)
     bson_t *key = BCON_NEW(
             "the_id", BCON_BINARY(content_id, UUIDLEN)
         );
-    Err error = _read_content_blocks_get_db_results(b2, key, 10, 0, MONGO_MAIN_CONTENT, &n_block);
+    Err error = _read_content_blocks_get_b_content_blocks(b2, key, 10, 0, MONGO_MAIN_CONTENT, &n_block);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(10, n_block);
 
-    error = _ensure_block_ids(b2, 0, 10);
+    error = _ensure_b_content_blocks_block_ids(b2, 0, 10);
     EXPECT_EQ(S_OK, error);
 
     bson_safe_destroy(&key);
@@ -388,32 +388,32 @@ TEST(pttdb, read_content_blocks_get_db_results)
     }
 }
 
-TEST(pttdb, form_b_array_block_ids)
+TEST(pttdb_content_block, form_content_block_b_array_block_ids)
 {
-    bson_t *b = bson_new();
+    bson_t *b = NULL;
 
-    Err error = _form_b_array_block_ids(5, 10, b);
+    Err error = _form_content_block_b_array_block_ids(5, 10, &b);
     EXPECT_EQ(S_OK, error);
 
     char *str = bson_as_canonical_extended_json(b, NULL);
     EXPECT_STREQ("{ \"$in\" : [ { \"$numberInt\" : \"5\" }, { \"$numberInt\" : \"6\" }, { \"$numberInt\" : \"7\" }, { \"$numberInt\" : \"8\" }, { \"$numberInt\" : \"9\" }, { \"$numberInt\" : \"10\" }, { \"$numberInt\" : \"11\" }, { \"$numberInt\" : \"12\" }, { \"$numberInt\" : \"13\" }, { \"$numberInt\" : \"14\" } ] }", str);
-    fprintf(stderr, "test_pttdb_content_block.form_b_array_block_ids: str: %s\n", str);
+    fprintf(stderr, "test_pttdb_content_block.form_content_block_b_array_block_ids: str: %s\n", str);
     free(str);
 
     bson_safe_destroy(&b);
 }
 
-TEST(pttdb, ensure_block_ids)
+TEST(pttdb_content_block, ensure_b_content_blocks_block_ids)
 {
     bson_t *b[10];
     for (int i = 0; i < 10; i++) {
         b[i] = BCON_NEW("block_id", BCON_INT32(i));
     }
 
-    Err error = _ensure_block_ids(b, 0, 10);
+    Err error = _ensure_b_content_blocks_block_ids(b, 0, 10);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_block_ids(b, 1, 10);
+    error = _ensure_b_content_blocks_block_ids(b, 1, 10);
     EXPECT_EQ(S_ERR, error);
 
     for (int i = 0; i < 10; i++) {
@@ -421,17 +421,17 @@ TEST(pttdb, ensure_block_ids)
     }
 }
 
-TEST(pttdb, ensure_block_ids2)
+TEST(pttdb_content_block, ensure_b_content_blocks_block_ids2)
 {
     bson_t *b[10];
     for (int i = 0; i < 10; i++) {
         b[i] = BCON_NEW("block_id", BCON_INT32(i + 5));
     }
 
-    Err error = _ensure_block_ids(b, 5, 10);
+    Err error = _ensure_b_content_blocks_block_ids(b, 5, 10);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_block_ids(b, 1, 10);
+    error = _ensure_b_content_blocks_block_ids(b, 1, 10);
     EXPECT_EQ(S_ERR, error);
 
     for (int i = 0; i < 10; i++) {
@@ -439,16 +439,16 @@ TEST(pttdb, ensure_block_ids2)
     }
 }
 
-TEST(pttdb, sort_by_block_id)
+TEST(pttdb_content_block, sort_b_content_blocks_by_block_id)
 {
     bson_t *b[10];
     for (int i = 0; i < 10; i++) {
         b[i] = BCON_NEW("block_id", BCON_INT32(9 - i));
     }
-    Err error = _sort_by_block_id(b, 10);
+    Err error = _sort_b_content_blocks_by_block_id(b, 10);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_block_ids(b, 0, 10);
+    error = _ensure_b_content_blocks_block_ids(b, 0, 10);
     EXPECT_EQ(S_OK, error);
 
     for (int i = 0; i < 10; i++) {
@@ -456,7 +456,7 @@ TEST(pttdb, sort_by_block_id)
     }
 }
 
-TEST(pttdb, split_contents_core)
+TEST(pttdb_content_block, split_contents_core)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
@@ -493,7 +493,7 @@ TEST(pttdb, split_contents_core)
     destroy_content_block(&content_block);
 }
 
-TEST(pttdb, split_contents_core2)
+TEST(pttdb_content_block, split_contents_core2)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
@@ -530,7 +530,7 @@ TEST(pttdb, split_contents_core2)
     destroy_content_block(&content_block);
 }
 
-TEST(pttdb, split_contents_core3)
+TEST(pttdb_content_block, split_contents_core3)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
@@ -605,7 +605,7 @@ TEST(pttdb, split_contents_core3)
     destroy_content_block(&content_block);
 }
 
-TEST(pttdb, split_contents_core4)
+TEST(pttdb_content_block, split_contents_core4)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
@@ -677,7 +677,7 @@ TEST(pttdb, split_contents_core4)
     destroy_content_block(&content_block);
 }
 
-TEST(pttdb, split_contents_core_one_line)
+TEST(pttdb_content_block, split_contents_core_one_line)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
@@ -711,7 +711,7 @@ TEST(pttdb, split_contents_core_one_line)
     destroy_content_block(&content_block);
 }
 
-TEST(pttdb, split_contents_core_one_line2_reaching_max_line)
+TEST(pttdb_content_block, split_contents_core_one_line2_reaching_max_line)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
@@ -767,7 +767,7 @@ TEST(pttdb, split_contents_core_one_line2_reaching_max_line)
     destroy_content_block(&content_block);
 }
 
-TEST(pttdb, split_contents_deal_with_last_line_block)
+TEST(pttdb_content_block, split_contents_deal_with_last_line_block)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
@@ -812,6 +812,77 @@ TEST(pttdb, split_contents_deal_with_last_line_block)
     destroy_content_block(&content_block);
 }
 
+TEST(pttdb_content_block, read_content_blocks_to_bsons)
+{
+    Err error = S_OK;
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    int fd = open("data_test/test1.txt", O_RDONLY);
+
+    aidu_t aid = 12345;
+    char board[IDLEN + 1] = {};
+    char title[TTLEN + 1] = {};
+    char poster[IDLEN + 1] = {};
+    char ip[IPV4LEN + 1] = {};
+    char origin[MAX_ORIGIN_LEN + 1] = {};
+    char web_link[MAX_WEB_LINK_LEN + 1] = {};
+    int len = 10020;
+    UUID main_id;
+    UUID content_id;
+
+    strcpy(board, "test_board");
+    strcpy(title, "test_title");
+    strcpy(poster, "test_poster");
+    strcpy(ip, "test_ip");
+    strcpy(origin, "ptt.cc");
+    strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
+
+    // create-main-from-fd
+    Err error_code = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    EXPECT_EQ(S_OK, error_code);
+
+    close(fd);
+
+    // read-main-header
+    bson_t *main_fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "n_total_line", BCON_BOOL(true),
+        "n_total_block", BCON_BOOL(true)
+        );
+    bson_t *main_result = NULL;
+
+    error = read_main_header_to_bson(main_id, main_fields, &main_result); 
+    EXPECT_EQ(S_OK, error);
+
+    int n_total_block = 0;
+    error = bson_get_value_int32(main_result, (char *)"n_total_block", &n_total_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(2, n_total_block);
+
+    // read content-blocks
+    bson_t **b_content_blocks = (bson_t **)malloc(sizeof(bson_t *) * n_total_block);
+    int n_content_blocks;
+    bson_t *fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "block_id", BCON_BOOL(true),
+        "n_line", BCON_BOOL(true)
+        );
+
+    error = read_content_blocks_to_bsons(content_id, fields, n_total_block, MONGO_MAIN_CONTENT, b_content_blocks, &n_content_blocks);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(n_total_block, n_content_blocks);
+
+    for(int i = 0; i < n_content_blocks; i++) {
+        bson_safe_destroy(&b_content_blocks[i]);
+    }
+    safe_free((void **)&b_content_blocks);
+    bson_safe_destroy(&fields);
+
+    bson_safe_destroy(&main_fields);
+    bson_safe_destroy(&main_result);
+}
+
 /**********
  * MAIN
  */
@@ -844,6 +915,16 @@ void MyEnvironment::SetUp() {
         fprintf(stderr, "[ERROR] UNABLE TO init mongo collections\n");
         return;
     }
+
+    FILE *f = fopen("data_test/test1.txt", "w");
+    for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < 1000; i++) {
+            fprintf(f, "%c", 64 + (i % 26));
+        }
+        fprintf(f, "\r\n");
+    }
+    fclose(f);
+
 }
 
 void MyEnvironment::TearDown() {
