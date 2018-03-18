@@ -85,9 +85,6 @@ gen_uuid(UUID uuid)
 
     uuid[6] &= 0x0f;
     uuid[6] |= 0x60;
-    for(int i = 0; i < UUIDLEN; i++) {
-        fprintf(stderr, "pttdb_misc.gen_uuid: (%d/%d) %d\n", i, UUIDLEN, uuid[i]);
-    }
 
     // b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
 
