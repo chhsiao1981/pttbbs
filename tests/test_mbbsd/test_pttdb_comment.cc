@@ -1276,14 +1276,18 @@ TEST(pttdb_comment, get_newest_comment2)
     bson_t *comment_bson = NULL;
 
     int n_comment = 100;
-    for(int i = 0; i < 15; i++) {
+
+    for(int i = 85; i < 100; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
+        comment.create_milli_timestamp = create_milli_timestamp + 85;
+        comment.update_milli_timestamp = create_milli_timestamp + 85;
+
         error = _serialize_comment_bson(&comment, &comment_bson);
         error = _serialize_uuid_bson(comment_id, &comment_id_bson);
-
+        
         error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
 
         bson_safe_destroy(&comment_bson);
@@ -1311,17 +1315,14 @@ TEST(pttdb_comment, get_newest_comment2)
         EXPECT_EQ(S_OK, error);
     }
 
-    for(int i = 85; i < 100; i++) {
+    for(int i = 0; i < 15; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
-        comment.create_milli_timestamp = create_milli_timestamp + 85;
-        comment.update_milli_timestamp = create_milli_timestamp + 85;
-
         error = _serialize_comment_bson(&comment, &comment_bson);
         error = _serialize_uuid_bson(comment_id, &comment_id_bson);
-        
+
         error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
 
         bson_safe_destroy(&comment_bson);
@@ -1329,7 +1330,6 @@ TEST(pttdb_comment, get_newest_comment2)
 
         EXPECT_EQ(S_OK, error);
     }
-
     // get newest_comments
 
     UUID newest_comment_id = {};
