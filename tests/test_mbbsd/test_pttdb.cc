@@ -100,6 +100,10 @@ TEST(pttdb, get_file_info_by_main_get_main_info) {
     EXPECT_EQ(10, file_info.n_main_line);
     EXPECT_EQ(2, file_info.n_main_block);
     EXPECT_EQ(0, file_info.n_comments);
+    EXPECT_EQ(NULL, file_info.content_block_info);
+    EXPECT_EQ(NULL, file_info.comment_comment_reply_info);
+
+    destroy_file_info(&file_info);
 }
 
 TEST(pttdb, get_file_info_by_main_get_content_block_info) {
@@ -133,7 +137,26 @@ TEST(pttdb, get_file_info_by_main_get_content_block_info) {
 
     close(fd);
 
+    FileInfo file_info = {};
+
+    // get file info by main get main-info
+    error = _get_file_info_by_main_get_main_info(main_id, &file_info);
+    EXPECT_EQ(S_OK, error);
+
     // get file info by main get content block_info
+    error = _get_file_info_by_main_get_content_block_info(&file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(2, file_info.n_main_block);
+    EXPECT_EQ(0, file_info.n_comments);
+    EXPECT_NE(NULL, file_info.content_block_info);
+    EXPECT_EQ(NULL, file_info.comment_comment_reply_info);
+
+    EXPECT_EQ(0, file_info.content_block_info[0].bock_id);
+    EXPECT_EQ(8, file_info.content_block_info[0].n_line);
+    EXPECT_EQ(1, file_info.content_block_info[1].bock_id);
+    EXPECT_EQ(2, file_info.content_block_info[1].n_line);
+
+    destroy_file_info(&file_info);
 }
 
 /**********

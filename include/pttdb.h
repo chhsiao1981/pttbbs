@@ -228,7 +228,7 @@ Err uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp);
 Err n_line_post(UUID main_id, int *n_line);
 Err get_file_info_by_main(UUID main_id, FileInfo *file_info);
 
-Err destroy_file_info(FileInfo **file_info);
+Err destroy_file_info(FileInfo *file_info);
 
 /**********
  * Main
