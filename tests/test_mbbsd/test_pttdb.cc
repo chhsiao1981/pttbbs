@@ -212,7 +212,7 @@ TEST(pttdb, get_file_info_by_main_get_comment_comment_reply_info) {
     EXPECT_EQ(2, file_info.content_block_info[1].n_line);
 
     // get file info by main get comment comment reply info
-    error = _get_file_info_by_main_get_comment_comment_reply_info(main_id, file_info);
+    error = _get_file_info_by_main_get_comment_comment_reply_info(main_id, &file_info);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(0, file_info.n_comment);
     EXPECT_EQ(NULL, (long)file_info.comment_comment_reply_info);
