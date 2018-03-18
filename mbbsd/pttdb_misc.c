@@ -291,6 +291,8 @@ safe_free_b_list(bson_t ***b, int n)
         bson_safe_destroy(p_b);
     }
     safe_free((void **)b);
+
+    return S_OK;
 }
 
 Err

@@ -405,13 +405,13 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
     // construct query
     bson_t *q_array = bson_new();
     bson_t child;
-    char buf[16];
+    bzero(buf, MAX_BUF_SIZE);
     const char *key;
     size_t keylen;
     bool status;
     BSON_APPEND_ARRAY_BEGIN(q_array, "$in", &child);
     bson_t **p_b_comments = b_comments;
-    for(int i = start_i; i < 15; i++, p_b_comments++) {
+    for(int i = 0; i < 15; i++, p_b_comments++) {
         keylen = bson_uint32_to_string(i, &key, buf, sizeof(buf));
         error = bson_get_value_bin(*p_b_comments, (char *)"the_id", UUIDLEN, comment_id, &len);
         status = bson_append_bin(&child, key, (int)keylen, comment_id, UUIDLEN);
