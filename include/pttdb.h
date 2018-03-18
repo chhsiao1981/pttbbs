@@ -11,8 +11,8 @@
 extern "C" {
 #endif
 
-#define UUIDLEN 16
-#define _UUIDLEN 16
+#define UUIDLEN 24
+#define _UUIDLEN 24
 
 #define MAX_ORIGIN_LEN 20
 #define MAX_WEB_LINK_LEN 100                  // MAX_ORIGN_LEN + 8 + 12 + BOARDLEN + 1 + 23
