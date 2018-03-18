@@ -401,6 +401,13 @@ TEST(pttdb, get_file_info_by_main_get_comment_comment_reply_info_comments_no_rep
     EXPECT_EQ(100, file_info.n_comment);
     EXPECT_NE(NULL, (long)file_info.comment_comment_reply_info);
 
+    char cmp_poster[IDLEN + 1] = {};
+    for(int i = 0; i < 100; i++) {
+        sprintf(cmp_poster, "poster%03d", i);
+        EXPECT_STREQ(cmp_poster, file_info.comment_comment_reply_info[i].comment_poster);
+    }
+
+    // free
     destroy_file_info(&file_info);
 }
 
