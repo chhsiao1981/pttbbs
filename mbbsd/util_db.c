@@ -311,6 +311,8 @@ db_count(int collection, bson_t *key, int *count)
     bson_error_t error;
     int64_t tmp_count = mongoc_collection_count_with_opts(MONGO_COLLECTIONS[collection], MONGOC_QUERY_NONE, key, 0, 0, NULL, NULL, &error);
 
+    fprintf(stderr, "util_db.db_count: after count: tmp_count: %lld\n", tmp_count);
+
     if(tmp_count == -1) {
         error_code = S_ERR;
         tmp_count = 0;
