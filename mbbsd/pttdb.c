@@ -242,7 +242,7 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
 
     //sort comment_comment_reply_info
     if(!error_code) {
-        error_code = _sort_comment_comment_reply_info_by_comment_create_milli_timestamp(file_info->comment_comment_reply_info, file_info->n_comment)
+        error_code = _sort_comment_comment_reply_info_by_comment_create_milli_timestamp(file_info->comment_comment_reply_info, file_info->n_comment);
     }
 
     // free
@@ -387,7 +387,7 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
 Err
 _sort_comment_comment_reply_info_by_comment_create_milli_timestamp(CommentCommentReplyInfo *comment_comment_reply_info, int n_comment_comment_reply_info)
 {
-    qsort(comment_comment_reply_info, n_comment_comment_reply_info, _cmp_comment_comment_reply_info_by_comment_create_milli_timestamp);
+    qsort(comment_comment_reply_info, n_comment_comment_reply_info, sizeof(CommentCommentReplyInfo),_cmp_comment_comment_reply_info_by_comment_create_milli_timestamp);
 
     return S_OK;
 }
