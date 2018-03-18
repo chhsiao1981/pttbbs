@@ -48,8 +48,12 @@ gen_uuid(UUID uuid)
     time64_t milli_timestamp;
     time64_t *p_milli_timestamp;
 
+    // RAND_MAX is 2147483647
+
+    int *p_rand;
+    const int n_random = (UUIDLEN - 8) / 4;
+
     long int rand_num;
-    long int *p_rand;
     unsigned short *p_short_rand_num;
 
     unsigned short *p_short;
@@ -70,16 +74,12 @@ gen_uuid(UUID uuid)
     p_short_rand_num = (unsigned short *)&rand_num;
     p_short = (unsigned short*)(uuid + UUIDLEN - 8);
     *p_short = *p_short_rand_num;
-    fprintf(stderr, "pttdb_misc.gen_uuid: p_short: %d\n", *p_short);
 
     // first 16 chars as random, but 6th char is version (6 for now)
     p_rand = (long int *)uuid;
-    int steps = (int) sizeof(long int);
-    int n_random = (UUIDLEN - 8) / steps;
-    fprintf(stderr, "pttdb_misc.gen_uuid: long: %d long_int: %d RAND_MAX: %d n_random: %d\n", sizeof(long), sizeof(long int), RAND_MAX, n_random);
     for (int i = 0; i < n_random; i++) {
         rand_num = random();
-        *p_rand = rand_num;
+        *p_rand = (int)rand_num;
         p_rand++;
     }
 
