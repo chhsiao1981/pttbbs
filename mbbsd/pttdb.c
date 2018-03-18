@@ -93,6 +93,7 @@ _get_file_info_by_main_get_main_info(UUID main_id, FileInfo *file_info)
         "n_total_block", BCON_BOOL(true)
         );
 
+    memcpy(file_info->main_id, main_id, UUIDLEN);
     int len = 0;
     error_code = read_main_header_to_bson(main_id, fields, &b_main);
     if(!error_code) {
