@@ -54,35 +54,35 @@ gen_uuid(UUID uuid)
 
     unsigned short *p_short;
     unsigned char *p_char;
-    _UUID _uuid;
+    // _UUID _uuid;
 
-    // last 8 chars as milli-timestamp, but only the last 6 chars will be used.
+    // last 8 chars as milli-timestamp, but only the last 6 chars will be used. little-endian
     error_code = get_milli_timestamp(&milli_timestamp);
     if (error_code) return error_code;
 
     milli_timestamp <<= 16;
     p_char = (unsigned char *)&milli_timestamp;
 
-    p_milli_timestamp = (time64_t *)(_uuid + 40);
+    p_milli_timestamp = (time64_t *)(uuid + UUIDLEN - 8);
     *p_milli_timestamp = milli_timestamp;
 
     rand_num = random();
     p_short_rand_num = (unsigned short *)&rand_num;
-    p_short = (unsigned short*)(_uuid + 40);
+    p_short = (unsigned short*)(uuid + UUIDLEN - 8);
     *p_short = *p_short_rand_num;
 
     // first 40 chars as random, but 6th char is version (6 for now)
-    p_rand = (long int *)_uuid;
-    for (int i = 0; i < (_UUIDLEN - 8) / (int)sizeof(long int); i++) {
+    p_rand = (long int *)uuid;
+    for (int i = 0; i < (UUIDLEN - 8) / (int)sizeof(long int); i++) {
         rand_num = random();
         *p_rand = rand_num;
         p_rand++;
     }
 
-    _uuid[6] &= 0x0f;
-    _uuid[6] |= 0x60;
+    uuid[6] &= 0x0f;
+    uuid[6] |= 0x60;
 
-    b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
+    // b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
 
     return S_OK;
 }
@@ -193,9 +193,9 @@ _serialize_content_uuid_bson(UUID uuid, int block_id, bson_t **uuid_bson)
 Err
 uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp)
 {
-    _UUID _uuid;
-    time64_t *p_uuid = (time64_t *)(_uuid + 40);
-    b64_pton((char *)uuid, _uuid, _UUIDLEN);
+    //_UUID _uuid;
+    time64_t *p_uuid = (time64_t *)(uuid + UUIDLEN - 8);
+    //b64_pton((char *)uuid, _uuid, _UUIDLEN);
 
     *milli_timestamp = *p_uuid;
     *milli_timestamp >>= 16;
