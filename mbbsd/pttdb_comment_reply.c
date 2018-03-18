@@ -228,12 +228,30 @@ read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_c
 }
 
 Err
-sort_comment_reply_bsons_by_inferred_comment_create_milli_timestamp(bson_t **b_comment_replys, int n_comment_reply)
+sort_comment_reply_bsons_by_comment_id(bson_t **b_comment_replys, int n_comment_reply)
 {
-    Err error_code = S_OK;
-    return error_code;
+    qsort(b_comment_replys, n_comment_reply, sizeof(bson_t *), _cmp_b_comment_replys_by_comment_id);
+    return S_OK;
 }
 
+
+Err
+_cmp_b_comment_replys_by_comment_id(const void *a, const void *b)
+{
+    bson_t **p_b_comment_reply_a = (bson_t **)a;
+    bson_t **p_b_comment_reply_b = (bson_t **)b;
+    bson_t *b_comment_reply_a = *p_b_comment_reply_a;
+    bson_t *b_comment_reply_b = *p_b_comment_reply_b;
+
+    UUID comment_id_a = {};
+    UUID comment_id_b = {};
+    int len = 0;
+
+    error_code = bson_get_value_bin(b_comment_reply_a, "comment_id", UUIDLEN, comment_id_a, &len);
+    error_code = bson_get_value_bin(b_comment_reply_b, "comment_id", UUIDLEN, comment_id_b, &len);
+
+    return strncmp(comment_id_a, comment_id_b, UUIDLEN);
+}
 
 Err
 _get_comment_reply_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_comment_reply, int *n_line, int *total_len)

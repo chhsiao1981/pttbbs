@@ -417,16 +417,39 @@ read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestam
 
     *n_comment = n_comment_lt_create_milli_timestamp + n_comment_eq_create_milli_timestamp;
 
-    if(!error_code) {
-        error_code = _sort_b_comments_order(b_comments, *n_comment, READ_COMMENTS_OP_TYPE_GTE);
-    }
-
     // free
     bson_safe_destroy(&query_lt);
     bson_safe_destroy(&sort);
     bson_safe_destroy(&query_eq);
 
     return error_code;
+}
+
+Err
+sort_b_comments_by_comment_id(bson_t **b_comments, int n_comment)
+{
+    qsort(b_comments, n_comment, sizeof(bson_t *), _cmp_b_comments_by_comment_id);
+
+    return S_OK;        
+}
+
+Err
+_cmp_b_comments_by_comment_id(const void *a, const void *b)
+{
+    Err error_code = S_OK;
+    bson_t **p_b_comment_a = (bson_t **)a;
+    bson_t **p_b_comment_b = (bson_t **)b;
+    bson_t *b_comment_a = *p_b_comment_a;
+    bson_t *b_comment_b = *p_b_comment_b;
+
+    UUID comment_id_a = {};
+    UUID comment_id_b = {};
+    int len = 0;
+
+    error_code = bson_get_value_bin(b_comment_a, "comment_id", UUIDLEN, comment_id_a, &len);
+    error_code = bson_get_value_bin(b_comment_b, "comment_id", UUIDLEN, comment_id_b, &len);
+
+    return strncmp(comment_id_a, comment_id_b, UUIDLEN);
 }
 
 

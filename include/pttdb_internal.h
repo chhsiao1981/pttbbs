@@ -73,6 +73,9 @@ int _cmp_b_comments_ascending(const void *a, const void *b);
 int _cmp_b_comments_descending(const void *a, const void *b);
 Err _reverse_b_comments(bson_t **b_comments, int n_comment);
 
+// for file-info
+int _cmp_b_comments_by_comment_id(const void *a, const void *b);
+
 /**********
  * CommentReply
  **********/
@@ -81,6 +84,9 @@ Err _serialize_comment_reply_bson(CommentReply *comment_reply, bson_t **comment_
 Err _deserialize_comment_reply_bson(bson_t *comment_reply_bson, CommentReply *comment_reply);
 Err _deserialize_comment_reply_bson_with_buf(bson_t *comment_reply_bson, CommentReply *comment_reply);
 Err _get_comment_reply_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_comment_reply, int *n_line, int *total_len);
+
+// for file-info
+int _cmp_b_comment_replys_by_comment_id(const void *a, const void *b);
 
 /**********
  * Misc

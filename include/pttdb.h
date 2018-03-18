@@ -303,6 +303,7 @@ Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *p
 // for file_info
 Err get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timestamp, char *poster, int *n_comment);
 Err read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestamp, char *poster, bson_t *fields, int max_n_comment, bson_t **b_comments, int *n_comment);
+Err sort_b_comments_by_comment_id(bson_t **b_comments, int n_comment);
 
 /**********
  * CommentReply

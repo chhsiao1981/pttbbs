@@ -202,6 +202,10 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
         error_code = read_comments_until_newest_to_bsons(main_id, create_milli_timestamp, poster, comment_fields, n_expected_comment, b_comments, &n_comment);
     }
 
+    if(!error_code) {
+        error_code = sort_b_comments_by_comment_id(b_comments, *n_comment);
+    }
+
     // init file_info.comment_comment_reply_info
     if(!error_code) {
         file_info->comment_comment_reply_info = malloc(sizeof(CommentCommentReplyInfo) * n_comment);
@@ -233,6 +237,8 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
             if(error_code) break;
         }
     }
+
+    //sort comment_comment_reply_info
 
     // free
     bson_safe_destroy(&comment_fields);
@@ -275,10 +281,6 @@ _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_c
         "comment_id", BCON_DOCUMENT(q_array)
         );
 
-    char *str = bson_as_canonical_extended_json(query, NULL);
-    fprintf(stderr, "pttdb._get_file_info_by_main_get_comment_comment_reply_info: query: %s\n", str);
-    bson_free(str);
-
     // get comment-replys
     bson_t **b_comment_replys = malloc(sizeof(bson_t *) * n_comment_comment_reply_info);
     if(!b_comment_replys) error_code = S_ERR;
@@ -286,14 +288,16 @@ _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_c
     int n_comment_reply = 0;
     bson_t *fields = BCON_NEW(
         "_id", BCON_BOOL(false),
-        "comment_id", BCON_BOOL(true)
+        "comment_id", BCON_BOOL(true),
+        "comment_reply_id", BCON_BOOL(true),
+        "n_line", BCON_BOOL(true)
         );
     if(!error_code) {
         error_code = read_comment_replys_by_query_to_bsons(query, fields, n_comment_comment_reply_info, b_comment_replys, &n_comment_reply);
     }
 
     if(!error_code) {
-        error_code = sort_comment_reply_bsons_by_inferred_comment_create_milli_timestamp(b_comment_replys, n_comment_reply);
+        error_code = sort_b_comment_replys_by_comment_id(b_comment_replys, n_comment_reply);
     }
 
     // align comment_replys to comment_comment_reply_info
