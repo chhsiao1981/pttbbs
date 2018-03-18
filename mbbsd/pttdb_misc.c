@@ -72,9 +72,12 @@ gen_uuid(UUID uuid)
     p_short = (unsigned short*)(uuid + UUIDLEN - 8);
     *p_short = *p_short_rand_num;
 
-    // first 40 chars as random, but 6th char is version (6 for now)
+    // first 16 chars as random, but 6th char is version (6 for now)
     p_rand = (long int *)uuid;
-    for (int i = 0; i < (UUIDLEN - 8) / (int)sizeof(long int); i++) {
+    int steps = (int) sizeof(long int);
+    int n_random = (UUIDLEN - 8) / steps;
+    fprintf(stderr, "pttdb_mics.gen_uuid: n_random: %d\n", n_random);
+    for (int i = 0; i < n_random; i++) {
         rand_num = random();
         *p_rand = rand_num;
         p_rand++;
