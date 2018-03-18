@@ -1481,15 +1481,15 @@ TEST(pttdb_comment, read_comments_until_newest_to_bsons)
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
 
-    int result_create_milli_timestamp = 0;
+    time64_t result_create_milli_timestamp = 0;
     char expected_poster[IDLEN + 1] = {};
     char poster[IDLEN + 1] = {};
     int len = 0;
     for(int i = 0; i < 15; i++) {                
         sprintf(expected_poster, "poster%03d", i);
-        error = bson_get_value_int64(b_comments[i], "create_milli_timestamp", &result_create_milli_timestamp);
+        error = bson_get_value_int64(b_comments[i], (char *)"create_milli_timestamp", (long *)&result_create_milli_timestamp);
         EXPECT_EQ(S_OK, error);
-        error = bson_get_value_bin(b_comments[i], "poster", IDLEN, poster, &len);
+        error = bson_get_value_bin(b_comments[i], (char *)"poster", IDLEN, poster, &len);
         EXPECT_EQ(S_OK, error);
         EXPECT_EQ(create_milli_timestamp, result_create_milli_timestamp);
         EXPECT_STREQ(expected_poster, poster);
