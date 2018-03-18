@@ -122,29 +122,33 @@ Err
 _get_file_info_by_main_get_content_block_info(FileInfo *file_info)
 {
     Err error_code = S_OK;
-    // malloc file_info.content_block_info
-    file_info->content_block_info = malloc(sizeof(ContentBlockInfo) * file_info->n_main_block);
-    if(!file_info->content_block_info) error_code = S_ERR;
 
     // get bson data
-    int n_content_blocks = 0;
-    bson_t **b_content_blocks = NULL;
     bson_t *content_block_fields = BCON_NEW(
             "_id", BCON_BOOL(false),
             "block_id", BCON_BOOL(true),
             "n_line", BCON_BOOL(true)
         );
 
-    if(!error_code) {
-        b_content_blocks = malloc(sizeof(bson_t *) * file_info->n_main_block);
-        if(!b_content_blocks) error_code = S_ERR;
-    }
+    int n_content_blocks = 0;
+    bson_t **b_content_blocks = malloc(sizeof(bson_t *) * file_info->n_main_block);
+    if(!b_content_blocks) error_code = S_ERR;
 
     if(!error_code) {
         error_code = read_content_blocks_to_bsons(file_info->main_content_id, content_block_fields, file_info->n_main_block, MONGO_MAIN_CONTENT, b_content_blocks, &n_content_blocks);
         if(n_content_blocks != file_info->n_main_block) error_code = S_ERR; // not matched.
     }
 
+    // sort bson-data
+    if(!error_code) {
+        error_code = _sort_b_content_blocks_by_block_id(b_content_blocks, n_content_blocks);
+    }
+
+    if(!error_code) {
+        file_info->content_block_info = malloc(sizeof(ContentBlockInfo) * file_info->n_main_block);
+        if(!file_info->content_block_info) error_code = S_ERR_INIT;
+    }
+    
     // bson data to content block info
     bson_t **p_b_content_blocks = b_content_blocks;
     ContentBlockInfo *p_content_block_info = file_info->content_block_info;
@@ -155,6 +159,12 @@ _get_file_info_by_main_get_content_block_info(FileInfo *file_info)
             error_code = bson_get_value_int32(*p_b_content_blocks, "n_line", &p_content_block_info->n_line);
             if(error_code) break;
         }
+    }
+
+    // reset n_main_block and n_main_line if error
+    if(error) {
+        file_info->n_main_block = 0;
+        file_info->n_main_line = 0;
     }
 
     // free

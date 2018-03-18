@@ -5,10 +5,7 @@
 #include "pttdb_internal.h"
 #include "util_db_internal.h"
 
-TEST(pttdb, n_line_post)
-{
-    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
-    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+TEST(pttdb, n_line_post) {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
@@ -60,6 +57,83 @@ TEST(pttdb, n_line_post)
     error = n_line_post(main_id, &n_line);
     EXPECT_EQ(S_OK, error)    ;
     EXPECT_EQ(15, n_line);
+}
+
+TEST(pttdb, get_file_info_by_main_get_main_info) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+
+    int fd = open("data_test/test1.txt", O_RDONLY);
+
+    aidu_t aid = 12345;
+    char board[IDLEN + 1] = {};
+    char title[TTLEN + 1] = {};
+    char poster[IDLEN + 1] = {};
+    char ip[IPV4LEN + 1] = {};
+    char origin[MAX_ORIGIN_LEN + 1] = {};
+    char web_link[MAX_WEB_LINK_LEN + 1] = {};
+    int len = 10020;
+    UUID main_id = {};
+    UUID content_id = {};
+
+    strcpy(board, "test_board");
+    strcpy(title, "test_title");
+    strcpy(poster, "test_poster");
+    strcpy(ip, "test_ip");
+    strcpy(origin, "ptt.cc");
+    strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
+
+    // create-main-from-fd
+    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    EXPECT_EQ(S_OK, error);
+
+    close(fd);
+
+    FileInfo file_info = {};
+
+    error = _get_file_info_by_main_get_main_info(main_id, &file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(0, strncmp((char *)main_id, (char *)file_info.main_id));
+    EXPECT_STREQ(poster, file_info.main_updater);
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)file_info.content_id));
+    EXPECT_EQ(10, file_info.n_main_line);
+    EXPECT_EQ(2, file_info.n_main_block);
+    EXPECT_EQ(0, file_info.n_comments);
+}
+
+TEST(pttdb, get_file_info_by_main_get_content_block_info) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+
+    int fd = open("data_test/test1.txt", O_RDONLY);
+
+    aidu_t aid = 12345;
+    char board[IDLEN + 1] = {};
+    char title[TTLEN + 1] = {};
+    char poster[IDLEN + 1] = {};
+    char ip[IPV4LEN + 1] = {};
+    char origin[MAX_ORIGIN_LEN + 1] = {};
+    char web_link[MAX_WEB_LINK_LEN + 1] = {};
+    int len = 10020;
+    UUID main_id = {};
+    UUID content_id = {};
+
+    strcpy(board, "test_board");
+    strcpy(title, "test_title");
+    strcpy(poster, "test_poster");
+    strcpy(ip, "test_ip");
+    strcpy(origin, "ptt.cc");
+    strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
+
+    // create-main-from-fd
+    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    EXPECT_EQ(S_OK, error);
+
+    close(fd);
+
+    // get file info by main get content block_info
 }
 
 /**********
