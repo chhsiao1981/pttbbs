@@ -1648,9 +1648,9 @@ TEST(pttdb_comment, sort_b_comments_by_comment_id)
     UUID next_comment_id = {};
     int len = 0;
     for(int i = 0; i < 99; i++, p_b_comments++, p_next_b_comments++) {
-        error = bson_get_value_bin(*p_b_comments, "comment_id", UUIDLEN, comment_id, &len);
+        error = bson_get_value_bin(*p_b_comments, "comment_id", UUIDLEN, (char *)comment_id, &len);
         EXPECT_EQ(S_OK, error);
-        error = bson_get_value_bin(*p_next_b_comments, "comment_id", UUIDLEN, next_comment_id, &len);
+        error = bson_get_value_bin(*p_next_b_comments, "comment_id", UUIDLEN, (char *)next_comment_id, &len);
         EXPECT_EQ(S_OK, error);
         EXPECT_LT(0, strncmp(comment_id, next_comment_id, UUIDLEN));
     }
