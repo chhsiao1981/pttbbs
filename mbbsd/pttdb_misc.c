@@ -68,6 +68,7 @@ gen_uuid(UUID uuid)
 
     rand_num = random();
     p_short_rand_num = (unsigned short *)&rand_num;
+    p_short_rand_num++;
     p_short = (unsigned short*)(uuid + UUIDLEN - 8);
     *p_short = *p_short_rand_num;
 
