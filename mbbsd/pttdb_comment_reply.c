@@ -36,6 +36,10 @@ create_comment_reply(UUID main_id, UUID comment_id, char *poster, char *ip, int 
 
     error_code = pttdb_count_lines(content, len, &comment_reply.n_line);
 
+    char *display_uuid = _display_uuid(comment_id);
+    fprintf(stderr, "pttdb_comment_reply.create_comment_reply: comment_id: %s n_line: %d\n", display_uuid, comment_reply.n_line);
+    safe_free((void **)&display_uuid);
+
     // db-comment
     bson_t *comment_reply_id_bson = NULL;
     bson_t *comment_reply_bson = NULL;
