@@ -235,7 +235,7 @@ sort_comment_reply_bsons_by_comment_id(bson_t **b_comment_replys, int n_comment_
 }
 
 
-Err
+int
 _cmp_b_comment_replys_by_comment_id(const void *a, const void *b)
 {
     bson_t **p_b_comment_reply_a = (bson_t **)a;

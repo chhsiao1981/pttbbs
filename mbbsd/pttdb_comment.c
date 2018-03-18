@@ -433,7 +433,7 @@ sort_b_comments_by_comment_id(bson_t **b_comments, int n_comment)
     return S_OK;        
 }
 
-Err
+int
 _cmp_b_comments_by_comment_id(const void *a, const void *b)
 {
     Err error_code = S_OK;
