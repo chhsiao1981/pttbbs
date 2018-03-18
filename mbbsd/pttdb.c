@@ -203,7 +203,7 @@ _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *fi
     }
 
     if(!error_code) {
-        error_code = sort_b_comments_by_comment_id(b_comments, *n_comment);
+        error_code = sort_b_comments_by_comment_id(b_comments, n_comment);
     }
 
     // init file_info.comment_comment_reply_info
