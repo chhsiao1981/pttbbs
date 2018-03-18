@@ -335,11 +335,11 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
 
     UUID tmp_comment_id = {};
     int len = 0;
-    for(int i = 0; i < n_comment_reply i++) {
-        bson_get_value_bin(b_comment_replys[i], "comment_id", UUIDLEN, tmp_comment_id, &len);
+    for(int i = 0; i < n_comment_reply; i++) {
+        bson_get_value_bin(b_comment_replys[i], "comment_id", UUIDLEN, (char *)tmp_comment_id, &len);
         display_uuid = _display_uuid(tmp_comment_id);
         fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: (%d/%d) comment_reply: %s", i, n_comment_reply, display_uuid);
-        safe_free(&display_uuid);
+        safe_free((void **)&display_uuid);
     }
 
     // init
