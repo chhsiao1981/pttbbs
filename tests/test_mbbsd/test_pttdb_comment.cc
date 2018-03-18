@@ -1466,7 +1466,7 @@ TEST(pttdb_comment, read_comments_until_newest_to_bsons)
 
         EXPECT_EQ(S_OK, error);
     }
-
+    
     // read comments until newest to bsons
     bson_t *fields = BCON_NEW(
         "_id", BCON_BOOL(false),
