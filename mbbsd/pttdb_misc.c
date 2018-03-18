@@ -76,7 +76,7 @@ gen_uuid(UUID uuid)
     *p_short = *p_short_rand_num;
 
     // first 16 chars as random, but 6th char is version (6 for now)
-    p_rand = (long int *)uuid;
+    p_rand = (int *)uuid;
     for (int i = 0; i < n_random; i++) {
         rand_num = random();
         *p_rand = (int)rand_num;
