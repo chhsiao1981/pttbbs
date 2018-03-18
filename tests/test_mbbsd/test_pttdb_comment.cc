@@ -1475,7 +1475,7 @@ TEST(pttdb_comment, read_comments_until_newest_to_bsons)
         "poster", BCON_BOOL(true)
         );
 
-    bson_t **b_comments = malloc(sizeof(bson_t *) * n_expected_comment);
+    bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_expected_comment);
     n_comment = 0;
     error = read_comments_until_newest_to_bsons(main_id, newest_create_milli_timestamp, newest_poster, fields, n_expected_comment, b_comments, &n_comment);
     EXPECT_EQ(S_OK, error);
@@ -1489,10 +1489,10 @@ TEST(pttdb_comment, read_comments_until_newest_to_bsons)
         sprintf(expected_poster, "poster%03d", i);
         error = bson_get_value_int64(b_comments[i], "create_milli_timestamp", &result_create_milli_timestamp);
         EXPECT_EQ(S_OK, error);
-        error = bson_get_value_bin(b_comments[i], "poster", IDLEN, result_poster, &len);
+        error = bson_get_value_bin(b_comments[i], "poster", IDLEN, poster, &len);
         EXPECT_EQ(S_OK, error);
         EXPECT_EQ(create_milli_timestamp, result_create_milli_timestamp);
-        EXPECT_STREQ(expected_poster, result_poster);
+        EXPECT_STREQ(expected_poster, poster);
     }
 
     // free

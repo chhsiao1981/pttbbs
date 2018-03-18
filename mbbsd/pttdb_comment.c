@@ -416,7 +416,7 @@ read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestam
     *n_comment = n_comment_lt_create_milli_timestamp + n_comment_eq_create_milli_timestamp;
 
     if(!error_code) {
-        error_code = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+        error_code = _sort_b_comments_order(b_comments, *n_comment, READ_COMMENTS_OP_TYPE_GTE);
     }
 
     // free
