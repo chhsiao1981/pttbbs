@@ -362,9 +362,9 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
         display_uuid2 = _display_uuid(comment_reply_comment_id);
 
         fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: i: (%d/%d) j: (%d/%d) comment_id: %s comment_reply_comment_id: %s\n", i, n_comment_comment_reply_info, j, n_comment_reply, display_uuid, display_uuid2);
-        safe_free(&display_uuid);
-        safe_free(&display_uuid2);
-        
+        safe_free((void **)&display_uuid);
+        safe_free((void **)&display_uuid2);
+
         if(tmp_cmp < 0) {
             // increase comment_comment_reply_info
             i++;
@@ -384,6 +384,7 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
         }
         else {
             // setup
+            fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: to setup: i: (%d/%d) j: (%d/%d)\n", i, n_comment_comment_reply_info, j, n_comment_reply);
             error_code = bson_get_value_bin(*p_b_comment_replys, "the_id", UUIDLEN, (char *)p_comment_comment_reply_info->comment_reply_id, &len);
             if(error_code) break;
             error_code = bson_get_value_int32(*p_b_comment_replys, "n_line", &p_comment_comment_reply_info->n_comment_reply_line);
@@ -405,6 +406,10 @@ _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo 
                 if(error_code) break;
             }
         }
+    }
+
+    for(int i = 0; i < n_comment_comment_reply_info; i++) {
+        fprintf(stderr, "pttdb._get_file_info_by_main_align_comment_comment_reply_info: final: (%d/%d): (%d/%d/%d)\n", i, n_comment_comment_reply_info, comment_comment_reply_info[i].comment_id, comment_comment_reply_info[i].comment_reply_id, comment_comment_reply_info[i].n_comment_reply_line);
     }
 
     return error_code;
