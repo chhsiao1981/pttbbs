@@ -33,8 +33,8 @@ TEST(pttdb_misc, gen_uuid) {
     EXPECT_GE(milli_timestamp, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
 
-    b64_pton((char *)uuid, _uuid, _UUIDLEN);
-    EXPECT_EQ(0x60, _uuid[6] & 0xf0);
+    //b64_pton((char *)uuid, _uuid, _UUIDLEN);
+    EXPECT_EQ(0x60, uuid[6] & 0xf0);
 
     gen_uuid(uuid2);
     uuid_to_milli_timestamp(uuid2, &milli_timestamp2);
@@ -44,8 +44,8 @@ TEST(pttdb_misc, gen_uuid) {
     EXPECT_LT(milli_timestamp2, END_MILLI_TIMESTAMP);
     EXPECT_GE(milli_timestamp2, milli_timestamp);
 
-    b64_pton((char *)uuid2, _uuid2, _UUIDLEN);
-    EXPECT_EQ(0x60, _uuid2[6] & 0xf0);
+    //b64_pton((char *)uuid2, _uuid2, _UUIDLEN);
+    EXPECT_EQ(0x60, uuid2[6] & 0xf0);
 }
 
 TEST(pttdb_misc, gen_uuid_with_db) {
@@ -64,8 +64,8 @@ TEST(pttdb_misc, gen_uuid_with_db) {
     EXPECT_GE(milli_timestamp, START_MILLI_TIMESTAMP);
     EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
 
-    b64_pton((char *)uuid, _uuid, _UUIDLEN);
-    EXPECT_EQ(0x60, _uuid[6] & 0xf0);
+    //b64_pton((char *)uuid, _uuid, _UUIDLEN);
+    EXPECT_EQ(0x60, uuid[6] & 0xf0);
 
     gen_uuid_with_db(MONGO_TEST, uuid2);
     uuid_to_milli_timestamp(uuid2, &milli_timestamp2);
@@ -74,8 +74,8 @@ TEST(pttdb_misc, gen_uuid_with_db) {
     EXPECT_LT(milli_timestamp2, END_MILLI_TIMESTAMP);
     EXPECT_GE(milli_timestamp2, milli_timestamp);
 
-    b64_pton((char *)uuid2, _uuid2, _UUIDLEN);
-    EXPECT_EQ(0x60, _uuid2[6] & 0xf0);
+    //b64_pton((char *)uuid2, _uuid2, _UUIDLEN);
+    EXPECT_EQ(0x60, uuid2[6] & 0xf0);
 
     EXPECT_NE(0, strncmp((char *)uuid, (char *)uuid2, UUIDLEN));
 
@@ -88,8 +88,8 @@ TEST(pttdb_misc, serialize_uuid_bson) {
     char *str;
     char buf[MAX_BUF_SIZE];
 
-    bzero(_uuid, sizeof(_UUID));
-    b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
+    bzero(uuid, sizeof(UUID));
+    //b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
 
     bson_t *uuid_bson = NULL;
 
@@ -112,8 +112,8 @@ TEST(pttdb_misc, serialize_content_uuid_bson) {
     char *str;
     char buf[MAX_BUF_SIZE];
 
-    bzero(_uuid, sizeof(_UUID));
-    b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
+    bzero(uuid, sizeof(UUID));
+    //b64_ntop(_uuid, _UUIDLEN, (char *)uuid, UUIDLEN);
 
     bson_t *uuid_bson;
 
