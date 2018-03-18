@@ -305,7 +305,7 @@ safe_free(void **a)
     return S_OK;
 }
 
-char *;
+char *
 _display_uuid(UUID uuid)
 {
     char *result = malloc(DISPLAY_UUID);
