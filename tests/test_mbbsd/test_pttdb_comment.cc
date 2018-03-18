@@ -1475,6 +1475,7 @@ TEST(pttdb_comment, read_comments_until_newest_to_bsons)
         "poster", BCON_BOOL(true)
         );
 
+    fprintf(stderr, "test_pttdb_comment.read_comments_util_newest_to_bson: to read_comments_until_newest_to_bsons\n");
     bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_expected_comment);
     n_comment = 0;
     error = read_comments_until_newest_to_bsons(main_id, newest_create_milli_timestamp, newest_poster, fields, n_expected_comment, b_comments, &n_comment);
