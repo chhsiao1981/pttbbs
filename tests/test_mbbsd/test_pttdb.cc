@@ -96,7 +96,7 @@ TEST(pttdb, get_file_info_by_main_get_main_info) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(0, strncmp((char *)main_id, (char *)file_info.main_id, UUIDLEN));
     EXPECT_STREQ(poster, file_info.main_updater);
-    EXPECT_EQ(0, strncmp((char *)content_id, (char *)file_info.content_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)file_info.main_content_id, UUIDLEN));
     EXPECT_EQ(10, file_info.n_main_line);
     EXPECT_EQ(2, file_info.n_main_block);
     EXPECT_EQ(0, file_info.n_comments);
