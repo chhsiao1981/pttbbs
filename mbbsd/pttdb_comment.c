@@ -447,7 +447,9 @@ _cmp_b_comments_by_comment_id(const void *a, const void *b)
     int len = 0;
 
     error_code = bson_get_value_bin(b_comment_a, "comment_id", UUIDLEN, (char *)comment_id_a, &len);
+    if(error_code) comment_id_a[0] = 0;
     error_code = bson_get_value_bin(b_comment_b, "comment_id", UUIDLEN, (char *)comment_id_b, &len);
+    if(error_code) comment_id_b[0] = 0;
 
     return strncmp((char *)comment_id_a, (char *)comment_id_b, UUIDLEN);
 }
