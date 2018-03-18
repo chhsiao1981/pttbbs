@@ -446,10 +446,10 @@ _cmp_b_comments_by_comment_id(const void *a, const void *b)
     UUID comment_id_b = {};
     int len = 0;
 
-    error_code = bson_get_value_bin(b_comment_a, "comment_id", UUIDLEN, comment_id_a, &len);
-    error_code = bson_get_value_bin(b_comment_b, "comment_id", UUIDLEN, comment_id_b, &len);
+    error_code = bson_get_value_bin(b_comment_a, "comment_id", UUIDLEN, (char *)comment_id_a, &len);
+    error_code = bson_get_value_bin(b_comment_b, "comment_id", UUIDLEN, (char *)comment_id_b, &len);
 
-    return strncmp(comment_id_a, comment_id_b, UUIDLEN);
+    return strncmp((char *)comment_id_a, (char *)comment_id_b, UUIDLEN);
 }
 
 

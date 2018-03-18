@@ -238,6 +238,7 @@ sort_comment_reply_bsons_by_comment_id(bson_t **b_comment_replys, int n_comment_
 int
 _cmp_b_comment_replys_by_comment_id(const void *a, const void *b)
 {
+    Err error_code = S_OK;
     bson_t **p_b_comment_reply_a = (bson_t **)a;
     bson_t **p_b_comment_reply_b = (bson_t **)b;
     bson_t *b_comment_reply_a = *p_b_comment_reply_a;
@@ -247,10 +248,10 @@ _cmp_b_comment_replys_by_comment_id(const void *a, const void *b)
     UUID comment_id_b = {};
     int len = 0;
 
-    error_code = bson_get_value_bin(b_comment_reply_a, "comment_id", UUIDLEN, comment_id_a, &len);
-    error_code = bson_get_value_bin(b_comment_reply_b, "comment_id", UUIDLEN, comment_id_b, &len);
+    error_code = bson_get_value_bin(b_comment_reply_a, "comment_id", UUIDLEN, (char *)comment_id_a, &len);
+    error_code = bson_get_value_bin(b_comment_reply_b, "comment_id", UUIDLEN, (char *)comment_id_b, &len);
 
-    return strncmp(comment_id_a, comment_id_b, UUIDLEN);
+    return strncmp((char *)comment_id_a, (char *)comment_id_b, UUIDLEN);
 }
 
 Err
