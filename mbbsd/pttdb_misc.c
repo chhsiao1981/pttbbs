@@ -70,7 +70,7 @@ gen_uuid(UUID uuid)
     p_short_rand_num = (unsigned short *)&rand_num;
     p_short = (unsigned short*)(uuid + UUIDLEN - 8);
     *p_short = *p_short_rand_num;
-    fprintf(stder, "pttdb_misc.gen_uuid: p_short: %d\n", *p_short);
+    fprintf(stderr, "pttdb_misc.gen_uuid: p_short: %d\n", *p_short);
 
     // first 16 chars as random, but 6th char is version (6 for now)
     p_rand = (long int *)uuid;
