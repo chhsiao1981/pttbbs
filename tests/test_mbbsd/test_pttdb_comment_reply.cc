@@ -445,14 +445,21 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
     EXPECT_EQ(S_OK, error);
 
     // check
-    for(int i = 0; i < n_comment_reply; i++)
+    UUID comment_reply_comment_id = {};
+    for(int i = 0; i < n_comment_reply; i++) {
+        error = bson_get_value_bin(b_comments[i], (char *)"the_id", UUIDLEN, (char *)comment_id, &len);
+        EXPECT_EQ(S_OK, error);
+        error = bson_get_value_bin(b_comment_replys[i], (char *)"comment_id", UUIDLEN, (char *)comment_reply_comment_id, &len);
+        EXPECT_EQ(S_OK, error);
+        EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply_comment_id, UUIDLEN));
+    }
 
     // free
     safe_free_b_list(&b_comment_replys);
 
     bson_safe_destroy(&query);
     bson_safe_destroy(&q_array);
-    
+
     safe_free_b_list(&b_comments);
 
     bson_safe_destroy(&fields);
