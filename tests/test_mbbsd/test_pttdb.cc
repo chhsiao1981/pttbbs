@@ -477,6 +477,7 @@ TEST(pttdb, get_file_info_by_main_get_comment_comment_reply_info_comments_with_r
     char *p_buf = NULL;
 
     UUID comment_id = {};
+    UUID comment_reply_id = {};    
     for(int i = 85; i < 100; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
