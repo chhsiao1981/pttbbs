@@ -1312,10 +1312,14 @@ TEST(pttdb_comment, get_newest_comment2)
         EXPECT_EQ(S_OK, error);
     }
 
+
     for(int i = 0; i < 15; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
+
+        comment.create_milli_timestamp = create_milli_timestamp;
+        comment.update_milli_timestamp = create_milli_timestamp;
 
         error = _serialize_comment_bson(&comment, &comment_bson);
         error = _serialize_uuid_bson(comment_id, &comment_id_bson);
