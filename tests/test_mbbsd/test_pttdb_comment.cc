@@ -1336,7 +1336,7 @@ TEST(pttdb_comment, get_newest_comment2)
     time64_t newest_create_milli_timestamp = 0;
     char newest_poster[IDLEN + 1] = {};
     n_comment = 0;
-    error = get_newest_comment(main_id, newest_comment_id, newest_create_milli_timestamp, newest_poster, &n_comment);
+    error = get_newest_comment(main_id, newest_comment_id, &newest_create_milli_timestamp, newest_poster, &n_comment);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
     EXPECT_EQ(create_milli_timestamp + 85, newest_create_milli_timestamp);
