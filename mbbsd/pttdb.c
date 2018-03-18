@@ -162,7 +162,7 @@ _get_file_info_by_main_get_content_block_info(FileInfo *file_info)
     }
 
     // reset n_main_block and n_main_line if error
-    if(error) {
+    if(error_code) {
         file_info->n_main_block = 0;
         file_info->n_main_line = 0;
     }
