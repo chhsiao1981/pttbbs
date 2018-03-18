@@ -53,7 +53,7 @@ TEST(pttdb_comment, create_comment) {
 
     EXPECT_EQ(len, comment.len);
     EXPECT_STREQ(content, comment.buf);
-    EXPECT_EQ(0, strncmp(empty_uuid, comment.comment_reply_id));
+    EXPECT_EQ(0, strncmp(empty_uuid, comment.comment_reply_id, UUIDLEN));
     EXPECT_EQ(0, comment.n_comment_reply_line);
 
     destroy_comment(&comment);
@@ -171,7 +171,7 @@ TEST(pttdb_comment, serialize_comment_bson) {
     EXPECT_EQ(comment.update_milli_timestamp, comment2.update_milli_timestamp);
     EXPECT_EQ(comment.len, comment2.len);
     EXPECT_STREQ(comment.buf, comment2.buf);
-    EXPECT_EQ(0, strncmp(comment.comment_reply_id, comment2.comment_reply_id));
+    EXPECT_EQ(0, strncmp(comment.comment_reply_id, comment2.comment_reply_id, UUIDLEN));
     EXPECT_EQ(comment.n_comment_reply_line, comment2.n_comment_reply_line);
 
     destroy_comment(&comment);
