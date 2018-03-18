@@ -1466,7 +1466,7 @@ TEST(pttdb_comment, read_comments_until_newest_to_bsons)
 
         EXPECT_EQ(S_OK, error);
     }
-    
+
     // read comments until newest to bsons
     bson_t *fields = BCON_NEW(
         "_id", BCON_BOOL(false),
@@ -1481,6 +1481,14 @@ TEST(pttdb_comment, read_comments_until_newest_to_bsons)
     error = read_comments_until_newest_to_bsons(main_id, newest_create_milli_timestamp, newest_poster, fields, n_expected_comment, b_comments, &n_comment);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
+
+    char *str = NULL;
+    for(int i = 0; i < 100; i++) {
+        str = bson_as_canonical_extended_json(b_comments[i], NULL);
+        fprintf(stderr, "test_pttdb_comment.read_comments_util_newest_to_bson: (%d/%d): %s\n", i, 100, str);
+        bson_free(str);
+    }
+
 
     time64_t result_create_milli_timestamp = 0;
     char expected_poster[IDLEN + 1] = {};
