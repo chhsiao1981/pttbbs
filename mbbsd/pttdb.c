@@ -57,14 +57,10 @@ destroy_file_info(FileInfo *file_info)
     if(file_info->content_block_info) {
         free(file_info->content_block_info);
     }
-    if(file_info->comment_comment_reply_info) {
-        free(file_info->comment_comment_reply_info);
+    if(file_info->page_info) {
+        free(file_info->page_info);
     }
-    file_info->comment_comment_reply_info = NULL;
-    file_info->content_block_info = NULL;
-    file_info->n_main_line = 0;
-    file_info->n_main_block = 0;
-    file_info->n_comment = 0;
+    bzero(file_info, sizeof(FileInfo));
 
     return S_OK;
 }

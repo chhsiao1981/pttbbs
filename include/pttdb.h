@@ -231,8 +231,8 @@ typedef struct FileInfo {
     int n_main_line;
     int n_main_block;
     int n_page;                                       // number of pages for comment.
-    int n_total_comment;
-    int n_total_comment_reply_line;
+    int n_comment;
+    int n_comment_reply_line;
     time64_t newest_comment_create_milli_timestamp;
     char newest_comment_poster[IDLEN + 1];
 
