@@ -602,7 +602,7 @@ _read_comments_get_b_comments_core(bson_t **b_comments, bson_t *key, bson_t *sor
 
     Err error_code_ensure_order = S_OK;
     if (!error_code) {
-        error_code_ensure_order = _ensure_b_comments_order(b_comments, tmp_n_comment, op_type);
+        error_code_ensure_order = ensure_b_comments_order(b_comments, tmp_n_comment, op_type);
     }
 
     if (!error_code && error_code_ensure_order) {
@@ -613,7 +613,7 @@ _read_comments_get_b_comments_core(bson_t **b_comments, bson_t *key, bson_t *sor
 }
 
 Err
-_ensure_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type)
+ensure_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type)
 {
     Err error_code = S_OK;
     bson_t **p_b_comments = b_comments;
