@@ -103,7 +103,6 @@ TEST(pttdb, get_file_info_by_main_get_main_info) {
     EXPECT_EQ(2, file_info.n_main_block);
     EXPECT_EQ(0, file_info.n_comment);
     EXPECT_EQ(NULL, file_info.content_block_info);
-    EXPECT_EQ(NULL, file_info.comment_comment_reply_info);
 
     destroy_file_info(&file_info);
 }
@@ -153,7 +152,6 @@ TEST(pttdb, get_file_info_by_main_get_content_block_info) {
     EXPECT_EQ(2, file_info.n_main_block);
     EXPECT_EQ(0, file_info.n_comment);
     EXPECT_NE(NULL, (long)file_info.content_block_info);
-    EXPECT_EQ(NULL, (long)file_info.comment_comment_reply_info);
 
     EXPECT_EQ(0, file_info.content_block_info[0].block_id);
     EXPECT_EQ(8, file_info.content_block_info[0].n_line);
