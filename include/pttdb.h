@@ -11,9 +11,9 @@
 extern "C" {
 #endif
 
-#define UUIDLEN 24
-#define _UUIDLEN 24
-#define DISPLAY_UUIDLEN 32
+#define UUIDLEN 16
+#define _UUIDLEN 16
+#define DISPLAY_UUIDLEN 24
 
 #define MAX_ORIGIN_LEN 20
 #define MAX_WEB_LINK_LEN 100                  // MAX_ORIGN_LEN + 8 + 12 + BOARDLEN + 1 + 23
@@ -157,7 +157,7 @@ typedef struct Comment {
  * CommentReply
  **********/
 typedef struct CommentReply {
-    unsigned int version;                           // version
+    unsigned int version;                            // version
 
     UUID the_id;                                     // comment-reply-id
 
@@ -184,27 +184,54 @@ typedef struct CommentReply {
 /**********
  * FileInfo
  **********/
+// 8 bytes.
 typedef struct ContentBlockInfo {
     int block_id;
     int n_line;
 } ContentBlockInfo;
 
+// pointer: 8-bytes, UUID: 16-bytes.
+// 36 bytes.
 typedef struct CommentCommentReplyInfo {
     UUID comment_id;
-
-    time64_t comment_create_milli_timestamp;
-    char comment_poster[IDLEN + 1];
-
     UUID comment_reply_id;
     int n_comment_reply_line;
 } CommentCommentReplyInfo;
 
-typedef struct CommentComentReplySimplifiedInfo{
-    UUID comment_id;
-    UUID comment_reply_id;
-    int n_comment_reply_line;
-} CommentCommentReplySimplifiedInfo;
+// allocate sizeof(TextLine) + len - 1
+// 8 + 8 + 4 + 16 + 8 + 13 + 2 + 4 + 4 + 2 + 1 = 70-bytes
+typedef struct TextLine {
+    struct TextLine *prev;
+    struct TextLine *next;
 
+    enum LineType line_type;
+    UUID the_id;
+    UUID ref_id;
+    time64_t ref_create_milli_timestamp;             // ref_create_milli_timestamp for retrieving data (info for comment_reply (comment-create-milli_timestamp) will be filled from comment-data))
+    char ref_poster[IDLEN + 1];                      // ref_poster for retrieving data (info for comment_reply (comment-poster) will be filled from comment-data)
+    short offset_line;
+
+    int block_id;
+    int page_no;
+
+    short len;
+    char data[1];
+} TextLine;
+
+typedef struct PageInfo {
+    enum LineType line_type;
+    UUID the_id;                                     // main_content_id, comment_id, comment_reply_id
+    UUID ref_id;                                     // main_id, main_id, comment_id
+    time64_t ref_create_milli_timestamp;             // ref_create_milli_timestamp for retrieving data (info for comment_reply (comment-create-milli_timestamp) will be filled from comment-data))
+    char ref_poster[IDLEN + 1];                      // ref_poster for retrieving data (info for comment_reply (comment-poster) will be filled from comment-data)
+
+    int block_id;                                    // block_id for main_content_id.
+    short offset_line;                               // offset_line in the block. (this is for content-block and comment-reply. always 0 for comment).
+} PageInfo;
+
+// FileInfo is for editing. storing meta-data of all comments. It's for the integrity of the article.
+// XXX TODO: able to partially load meta-data of comments.
+// 16 + 13 + 8 + 16 + 4 + 4 + 4 + 8 + 8 = 81-bytes
 typedef struct FileInfo {
     UUID main_id;
     char main_updater[IDLEN + 1];
@@ -216,6 +243,20 @@ typedef struct FileInfo {
     ContentBlockInfo *content_block_info;
     CommentCommentReplyInfo *comment_comment_reply_info;
 } FileInfo;
+
+// ReadFileInfo is for reading. storing meta-data of partial comments.
+typedef struct ReadFileInfo {
+    UUID main_id;
+    char main_updater[IDLEN + 1];
+    time64_t main_update_milli_timestamp;
+    UUID main_content_id;
+    int n_main_line;
+    int n_main_block;
+    int n_page;                                       // number of pages for comment.
+    int n_total_comment;
+    ContentBlockInfo *content_block_info;
+    PageInfo *page_info;
+} ReadFileInfo;
 
 /**********
  * Milli-timestamp
@@ -315,6 +356,8 @@ Err update_comment_reply_to_comment(UUID comment_id, UUID comment_reply_id, int 
 // for file_info
 Err get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timestamp, char *poster, int *n_comment);
 Err read_comments_until_newest_to_bsons(UUID main_id, time64_t create_milli_timestamp, char *poster, bson_t *fields, int max_n_comment, bson_t **b_comments, int *n_comment);
+Err ensure_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type);
+Err sort_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type);
 Err sort_b_comments_by_comment_id(bson_t **b_comments, int n_comment);
 
 /**********

@@ -606,7 +606,7 @@ _read_comments_get_b_comments_core(bson_t **b_comments, bson_t *key, bson_t *sor
     }
 
     if (!error_code && error_code_ensure_order) {
-        error_code = _sort_b_comments_order(b_comments, tmp_n_comment, op_type);
+        error_code = sort_b_comments_order(b_comments, tmp_n_comment, op_type);
     }
 
     return error_code;
@@ -633,7 +633,7 @@ _ensure_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOp
 }
 
 Err
-_sort_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type)
+sort_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type)
 {
     int (*_cmp)(const void *a, const void *b) = (op_type == READ_COMMENTS_OP_TYPE_LT || op_type == READ_COMMENTS_OP_TYPE_LTE) ? _cmp_b_comments_descending : _cmp_b_comments_ascending;
 

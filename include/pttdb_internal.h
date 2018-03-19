@@ -23,10 +23,6 @@ Err _serialize_content_uuid_bson(UUID uuid, int block_id, bson_t **uuid_bson);
 Err _get_file_info_by_main_get_main_info(UUID main_id, FileInfo *file_info);
 Err _get_file_info_by_main_get_content_block_info(FileInfo *file_info);
 Err _get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *file_info);
-Err _get_file_info_by_main_get_comment_reply_info(CommentCommentReplyInfo *comment_comment_reply_info, int start_i, int next_i);
-Err _get_file_info_by_main_align_comment_comment_reply_info(CommentCommentReplyInfo *comment_comment_reply_info, bson_t **b_comment_replys, int n_comment_comment_reply_info, int n_comment_reply);
-Err _sort_comment_comment_reply_info_by_comment_create_milli_timestamp(CommentCommentReplyInfo *comment_comment_reply_info, int n_comment_comment_reply_info);
-int _cmp_comment_comment_reply_info_by_comment_create_milli_timestamp(const void *a, const void *b);
 
 /**********
  * Main
@@ -68,8 +64,6 @@ Err _read_comments_get_b_comments(bson_t **b_comments, UUID main_id, time64_t cr
 Err _read_comments_get_b_comments_same_create_milli_timestamp(bson_t **b_comments, UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comment, enum MongoDBId mongo_db_id, int *n_comment);
 Err _read_comments_get_b_comments_diff_create_milli_timestamp(bson_t **b_comments, UUID main_id, time64_t create_milli_timestamp, enum ReadCommentsOpType op_type, int max_n_comment, enum MongoDBId mongo_db_id, int *n_comment);
 Err _read_comments_get_b_comments_core(bson_t **b_comments, bson_t *key, bson_t *sort, enum ReadCommentsOpType op_type, int max_n_comment, enum MongoDBId mongo_db_id, int *n_comment);
-Err _ensure_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type);
-Err _sort_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type);
 int _cmp_b_comments_ascending(const void *a, const void *b);
 int _cmp_b_comments_descending(const void *a, const void *b);
 Err _reverse_b_comments(bson_t **b_comments, int n_comment);
@@ -85,9 +79,6 @@ Err _serialize_comment_reply_bson(CommentReply *comment_reply, bson_t **comment_
 Err _deserialize_comment_reply_bson(bson_t *comment_reply_bson, CommentReply *comment_reply);
 Err _deserialize_comment_reply_bson_with_buf(bson_t *comment_reply_bson, CommentReply *comment_reply);
 Err _get_comment_reply_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_comment_reply, int *n_line, int *total_len);
-
-// for file-info
-int _cmp_b_comment_replys_by_comment_id(const void *a, const void *b);
 
 /**********
  * Misc
