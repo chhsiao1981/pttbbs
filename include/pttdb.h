@@ -190,14 +190,6 @@ typedef struct ContentBlockInfo {
     int n_line;
 } ContentBlockInfo;
 
-// pointer: 8-bytes, UUID: 16-bytes.
-// 36 bytes.
-typedef struct CommentCommentReplyInfo {
-    UUID comment_id;
-    UUID comment_reply_id;
-    int n_comment_reply_line;
-} CommentCommentReplyInfo;
-
 // allocate sizeof(TextLine) + len - 1
 // 8 + 8 + 4 + 16 + 8 + 13 + 2 + 4 + 4 + 2 + 1 = 70-bytes
 typedef struct TextLine {
@@ -229,34 +221,24 @@ typedef struct PageInfo {
     short offset_line;                               // offset_line in the block. (this is for content-block and comment-reply. always 0 for comment).
 } PageInfo;
 
-// FileInfo is for editing. storing meta-data of all comments. It's for the integrity of the article.
-// XXX TODO: able to partially load meta-data of comments.
-// 16 + 13 + 8 + 16 + 4 + 4 + 4 + 8 + 8 = 81-bytes
+// ReadFileInfo is for reading. storing meta-data of partial comments.
 typedef struct FileInfo {
     UUID main_id;
     char main_updater[IDLEN + 1];
     time64_t main_update_milli_timestamp;
     UUID main_content_id;
-    int n_main_line;
-    int n_main_block;
-    int n_comment;
-    ContentBlockInfo *content_block_info;
-    CommentCommentReplyInfo *comment_comment_reply_info;
-} FileInfo;
 
-// ReadFileInfo is for reading. storing meta-data of partial comments.
-typedef struct ReadFileInfo {
-    UUID main_id;
-    char main_updater[IDLEN + 1];
-    time64_t main_update_milli_timestamp;
-    UUID main_content_id;
     int n_main_line;
     int n_main_block;
     int n_page;                                       // number of pages for comment.
     int n_total_comment;
+    int n_total_comment_reply_line;
+    time64_t newest_comment_create_milli_timestamp;
+    char newest_comment_poster[IDLEN + 1];
+
     ContentBlockInfo *content_block_info;
     PageInfo *page_info;
-} ReadFileInfo;
+} FileInfo;
 
 /**********
  * Milli-timestamp

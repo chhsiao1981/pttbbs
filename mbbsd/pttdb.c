@@ -45,9 +45,6 @@ get_file_info_by_main(UUID main_id, FileInfo *file_info)
     if(!error_code) {
         error_code = _get_file_info_by_main_get_content_block_info(file_info);
     }
-    if(!error_code) {
-        error_code = _get_file_info_by_main_get_comment_comment_reply_info(main_id, file_info);
-    }
 
     return error_code;
 }
@@ -168,76 +165,6 @@ _get_file_info_by_main_get_content_block_info(FileInfo *file_info)
     bson_safe_destroy(&content_block_fields);
 
     safe_free_b_list(&b_content_blocks, n_content_block);
-
-    return error_code;
-}
-
-Err
-_get_file_info_by_main_get_comment_comment_reply_info(UUID main_id, FileInfo *file_info)
-{
-    Err error_code = S_OK;
-
-    UUID comment_id = {};
-    time64_t create_milli_timestamp = 0;
-    char poster[IDLEN + 1] = {};
-
-    bson_t **b_comments = NULL;    
-    int n_expected_comment = 0;
-    int n_comment = 0;
-
-    // get newest-comment and n_expected_comments
-    error_code = get_newest_comment(main_id, comment_id, &create_milli_timestamp, poster, &n_expected_comment);
-
-    // get comments
-    bson_t *comment_fields = BCON_NEW(
-        "_id", BCON_BOOL(false),
-        "the_id", BCON_BOOL(true),
-        "comment_reply_id", BCON_BOOL(true),
-        "n_comment_reply_line", BCON_BOOL(true)
-        );
-    if(!error_code) {
-        b_comments = malloc(sizeof(bson_t *) * n_expected_comment);
-        error_code = read_comments_until_newest_to_bsons(main_id, create_milli_timestamp, poster, comment_fields, n_expected_comment, b_comments, &n_comment);
-    }
-
-    Err error_code_ensure_order = S_OK;
-    if (!error_code) {
-        error_code_ensure_order = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
-    }
-
-    if(!error_code && error_code_ensure_order) {
-        error_code = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
-    }
-
-    // XXX init file_info->comment_comment_reply_info
-    if(!error_code) {
-        file_info->comment_comment_reply_info = malloc(sizeof(CommentCommentReplyInfo) * n_comment);
-        if(!file_info->comment_comment_reply_info) error_code = S_ERR;
-    }
-    if(!error_code) {
-        file_info->n_comment = n_comment;
-    }
-
-    int len = 0;
-    bson_t **p_b_comments = b_comments;
-    CommentCommentReplyInfo *p_comment_comment_reply_info = file_info->comment_comment_reply_info;
-    if(!error_code) {
-        for(int i = 0; i < n_comment; i++, p_b_comments++, p_comment_comment_reply_info++) {
-            error_code = bson_get_value_bin(*p_b_comments, "the_id", UUIDLEN, (char *)p_comment_comment_reply_info->comment_id, &len);
-            if(error_code) break;
-            error_code = bson_get_value_bin(*p_b_comments, "comment_reply_id", UUIDLEN, (char *)p_comment_comment_reply_info->comment_reply_id, &len);
-            if(error_code) break;
-            error_code = bson_get_value_int32(*p_b_comments, "n_comment_reply_line", &p_comment_comment_reply_info->n_comment_reply_line);
-            if(error_code) break;
-        }
-    }
-
-    // free
-    bson_safe_destroy(&comment_fields);
-
-    safe_free_b_list(&b_comments, n_comment);
-
-    if(error_code == S_ERR_NOT_EXISTS) error_code = S_OK;
 
     return error_code;
 }
