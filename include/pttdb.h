@@ -351,6 +351,7 @@ Err dissociate_comment(Comment *comment);
 Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, Comment *comments, int *n_read_comment, int *len);
 
 Err update_comment_reply_to_comment(UUID comment_id, UUID comment_reply_id, int n_comment_reply_line);
+Err remove_comment_reply_from_comment(UUID comment_id, UUID comment_reply_id);
 
 
 // for file_info
@@ -380,7 +381,6 @@ Err dissociate_comment_reply(CommentReply *comment_reply);
 
 // for file_info
 Err read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_comment_reply, bson_t **b_comment_replys, int *n_comment_reply);
-Err sort_b_comment_replys_by_comment_id(bson_t **b_comment_replys, int n_comment_reply);
 
 #ifdef __cplusplus
 }

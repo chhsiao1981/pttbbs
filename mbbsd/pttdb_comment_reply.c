@@ -157,9 +157,30 @@ delete_comment_reply(UUID comment_reply_id, char *updater, char *ip) {
 
     error_code = db_update_one(MONGO_COMMENT_REPLY, key, val, true);
 
+    bson_t *fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "comment_id", BCON_BOOL(true)
+        );
+    bson_t *b_comment_reply = NULL;
+
+    if(!error_code) {
+        error_code = db_find_one(MONGO_COMMENT_REPLY, key, fields, &b_comment_reply);
+    }
+
+    int len = 0;
+    UUID comment_id = {};
+    if(!error_code) {
+        error_code = bson_get_value_bin(b_comment_reply, "comment_id", UUIDLEN, comment_id, &len);
+    }
+
+    if(!error_code) {
+        error_code = remove_comment_reply_from_comment(comment_id, comment_reply_id);
+    }
+
     bson_safe_destroy(&key);
     bson_safe_destroy(&val);
-
+    bson_safe_destroy(&fields);
+    bson_safe_destroy(&b_comment_reply);
     return error_code;
 }
 
@@ -228,35 +249,6 @@ read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_c
     error_code = db_find(MONGO_COMMENT_REPLY, query, fields, NULL, max_n_comment_replys, n_comment_reply, b_comment_replys);
 
     return error_code;
-}
-
-Err
-sort_b_comment_replys_by_comment_id(bson_t **b_comment_replys, int n_comment_reply)
-{
-    qsort(b_comment_replys, n_comment_reply, sizeof(bson_t *), _cmp_b_comment_replys_by_comment_id);
-    return S_OK;
-}
-
-
-int
-_cmp_b_comment_replys_by_comment_id(const void *a, const void *b)
-{
-    Err error_code = S_OK;
-    bson_t **p_b_comment_reply_a = (bson_t **)a;
-    bson_t **p_b_comment_reply_b = (bson_t **)b;
-    bson_t *b_comment_reply_a = *p_b_comment_reply_a;
-    bson_t *b_comment_reply_b = *p_b_comment_reply_b;
-
-    UUID comment_id_a = {};
-    UUID comment_id_b = {};
-    int len = 0;
-
-    error_code = bson_get_value_bin(b_comment_reply_a, "comment_id", UUIDLEN, (char *)comment_id_a, &len);
-    if(error_code) comment_id_a[0] = 0;
-    error_code = bson_get_value_bin(b_comment_reply_b, "comment_id", UUIDLEN, (char *)comment_id_b, &len);
-    if(error_code) comment_id_b[0] = 0;
-
-    return strncmp((char *)comment_id_a, (char *)comment_id_b, UUIDLEN);
 }
 
 Err

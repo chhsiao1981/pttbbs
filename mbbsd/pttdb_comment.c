@@ -310,6 +310,30 @@ update_comment_reply_to_comment(UUID comment_id, UUID comment_reply_id, int n_co
 }
 
 Err
+remove_comment_reply_from_comment(UUID comment_id, UUID comment_reply_id)
+{
+    Err error_code = S_OK;
+    bson_t *key = BCON_NEW(
+        "the_id", BCON_BINARY(comment_id, UUIDLEN),
+        "comment_reply_id", BCON_BINARY(comment_reply_id, UUIDLEN)
+        );
+
+    UUID empty_id = {};    
+    bson_t *val = BCON_NEW(
+        "comment_reply_id", BCON_BINARY(empty_id, UUIDLEN),
+        "n_comment_reply_line", BCON_INT32(0)
+        );
+
+    error_code = db_update_one(MONGO_COMMENT, key, val, false);
+
+    bson_safe_destroy(&key);
+    bson_safe_destroy(&val);
+
+    return error_code;    
+}
+
+
+Err
 get_newest_comment(UUID main_id, UUID comment_id, time64_t *create_milli_timestamp, char *poster, int *n_comment)
 {
     Err error_code = S_OK;
