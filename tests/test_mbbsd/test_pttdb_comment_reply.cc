@@ -23,7 +23,7 @@ TEST(pttdb_comment_reply, create_comment_reply) {
     gen_uuid(main_id);
 
     // create comment
-    Err error_code = create_comment_(main_id, (char *)"poster0", (char *)"10.1.1.1", 10, "testtest\r\n", COMMENT_TYPE_GOOD, comment_id);
+    Err error_code = create_comment(main_id, (char *)"poster0", (char *)"10.1.1.1", 10, "testtest\r\n", COMMENT_TYPE_GOOD, comment_id);
     EXPECT_EQ(S_OK, error_code);
 
     Err error_code = create_comment_reply(main_id, comment_id, poster, ip, len, content, comment_reply_id);
