@@ -405,8 +405,6 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
         EXPECT_STREQ(expected_poster, poster);
     }
 
-    error = sort_b_comments_by_comment_id(b_comments, n_comment);
-
     // read comment-replys
     // construct query
     bson_t *q_array = bson_new();
@@ -446,20 +444,6 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
     error = read_comment_replys_by_query_to_bsons(query, fields, n_comment, b_comment_replys, &n_comment_reply);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment_reply);
-
-    // sort
-    error = sort_b_comment_replys_by_comment_id(b_comment_replys, n_comment_reply);
-    EXPECT_EQ(S_OK, error);
-
-    // check
-    UUID comment_reply_comment_id = {};
-    for(int i = 0; i < n_comment_reply; i++) {
-        error = bson_get_value_bin(b_comments[i], (char *)"the_id", UUIDLEN, (char *)comment_id, &len);
-        EXPECT_EQ(S_OK, error);
-        error = bson_get_value_bin(b_comment_replys[i], (char *)"comment_id", UUIDLEN, (char *)comment_reply_comment_id, &len);
-        EXPECT_EQ(S_OK, error);
-        EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply_comment_id, UUIDLEN));
-    }
 
     // free
     safe_free_b_list(&b_comment_replys, n_comment_reply);
