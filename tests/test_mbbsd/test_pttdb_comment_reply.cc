@@ -58,6 +58,7 @@ TEST(pttdb_comment_reply, create_comment_reply) {
     EXPECT_EQ(n_line, comment_reply.n_line);
 
     Comment comment = {};
+    init_comment_buf(&comment);
     error_code = read_comment(comment_id, &comment);
     EXPECT_EQ(S_OK, error_code);
     EXPECT_EQ(0, strncmp((char *)comment.comment_reply_id, (char *)comment_reply.the_id, UUIDLEN));
