@@ -170,7 +170,7 @@ delete_comment_reply(UUID comment_reply_id, char *updater, char *ip) {
     int len = 0;
     UUID comment_id = {};
     if(!error_code) {
-        error_code = bson_get_value_bin(b_comment_reply, "comment_id", UUIDLEN, comment_id, &len);
+        error_code = bson_get_value_bin(b_comment_reply, "comment_id", UUIDLEN, (char *)comment_id, &len);
     }
 
     if(!error_code) {
