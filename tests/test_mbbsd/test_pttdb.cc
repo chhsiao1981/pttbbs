@@ -504,7 +504,6 @@ TEST(pttdb, get_file_info_by_main_get_comment_comment_reply_info_comments_with_r
 
         error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, buf, comment_reply_id);
         EXPECT_EQ(S_OK, error);
-        EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply_id, UUIDLEN));
     }
 
     for(int i = 15; i < 85; i++) {
@@ -534,7 +533,6 @@ TEST(pttdb, get_file_info_by_main_get_comment_comment_reply_info_comments_with_r
 
         error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, buf, comment_reply_id);
         EXPECT_EQ(S_OK, error);
-        EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply_id, UUIDLEN));
     }
 
     int the_i = 0;
@@ -566,7 +564,6 @@ TEST(pttdb, get_file_info_by_main_get_comment_comment_reply_info_comments_with_r
 
         create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", the_i * 10, buf, comment_reply_id);
         EXPECT_EQ(S_OK, error);
-        EXPECT_EQ(0, strncmp((char *)comment_id, (char *)comment_reply_id, UUIDLEN));
     }
 
     // get file info by main get main-info
