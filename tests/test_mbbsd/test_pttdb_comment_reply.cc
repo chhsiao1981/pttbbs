@@ -6,21 +6,25 @@
 #include "util_db_internal.h"
 
 TEST(pttdb_comment_reply, create_comment_reply) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
 
-    UUID main_id;
+    UUID main_id = {};
     char poster[IDLEN + 1] = {};
     char ip[IPV4LEN + 1] = {};
     char content[] = "temp_content\r\n";
     int len = strlen(content);
     int n_line = 1;
 
-    UUID comment_id;
-    UUID comment_reply_id;
-    UUID tmp_comment_reply_id;
+    UUID comment_id = {};
+    UUID comment_reply_id = {};
+    UUID tmp_comment_reply_id = {};
 
     gen_uuid(main_id);
-    gen_uuid(comment_reply_id);
+
+    // create comment
+    Err error_code = create_comment_(main_id, (char *)"poster0", (char *)"10.1.1.1", 10, "testtest\r\n", COMMENT_TYPE_GOOD, comment_id);
+    EXPECT_EQ(S_OK, error_code);
 
     Err error_code = create_comment_reply(main_id, comment_id, poster, ip, len, content, comment_reply_id);
     EXPECT_EQ(S_OK, error_code);
