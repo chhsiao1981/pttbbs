@@ -235,16 +235,16 @@ TEST(pttdb_comment, ensure_b_comments_order) {
             );    
     }
 
-    Err error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    Err error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_ERR, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_ERR, error);
 
     for(int i = 0; i < n_comment; i++) {
@@ -264,16 +264,16 @@ TEST(pttdb_comment, ensure_b_comments_order2) {
             );    
     }
 
-    Err error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    Err error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_ERR, error);
 
     for(int i = 0; i < n_comment; i++) {
@@ -293,16 +293,16 @@ TEST(pttdb_comment, ensure_b_comments_order3) {
             );    
     }
 
-    Err error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    Err error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_ERR, error);
 
     for(int i = 0; i < n_comment; i++) {
@@ -324,16 +324,16 @@ TEST(pttdb_comment, ensure_b_comments_order4) {
             );    
     }
 
-    Err error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    Err error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_ERR, error);
 
     for(int i = 0; i < n_comment; i++) {
@@ -355,16 +355,16 @@ TEST(pttdb_comment, ensure_b_comments_order5) {
             );    
     }
 
-    Err error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    Err error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_ERR, error);
 
     for(int i = 0; i < n_comment; i++) {
@@ -386,37 +386,37 @@ TEST(pttdb_comment, sort_b_comments_order) {
             );    
     }
 
-    Err error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    Err error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_ERR, error);
 
-    error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_ERR, error);
 
-    error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);
 
     for(int i = 0; i < n_comment; i++) {
@@ -440,37 +440,37 @@ TEST(pttdb_comment, sort_b_comments_order2) {
             );    
     }
 
-    Err error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    Err error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_ERR, error);
 
-    error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_ERR, error);
 
-    error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_ERR, error);
 
-    error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);
 
-    error = _ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);
 
     for(int i = 0; i < n_comment; i++) {
@@ -1497,7 +1497,7 @@ TEST(pttdb_comment, read_comments_until_newest_to_bsons)
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
 
-    error = _sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
 
     char *str = NULL;
     for(int i = 0; i < 100; i++) {
