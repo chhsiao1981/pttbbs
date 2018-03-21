@@ -1,8 +1,7 @@
 #include "gtest/gtest.h"
 #include "bbs.h"
 #include "ptterr.h"
-#include "pttdb.h"
-#include "pttdb_internal.h"
+#include "pttdb_uuid.h"
 #include "pttdb_uuid_internal.h"
 
 // 2018-01-01
@@ -142,3 +141,62 @@ TEST(pttdb_uuid, uuid_to_milli_timestamp) {
     EXPECT_LT(milli_timestamp, END_MILLI_TIMESTAMP);
 }
 
+/**********
+ * MAIN
+ */
+int FD = 0;
+
+class MyEnvironment: public ::testing::Environment {
+public:
+    void SetUp();
+    void TearDown();
+};
+
+void MyEnvironment::SetUp() {
+    Err err = S_OK;
+
+    FD = open("log.test_pttdb.err", O_WRONLY|O_CREAT|O_TRUNC, 0660);
+    dup2(FD, 2);
+
+    const char *db_name[] = {
+        "test_post",
+        "test",
+    };
+
+    err = init_mongo_global();
+    if(err != S_OK) {
+        fprintf(stderr, "[ERROR] UNABLE TO init mongo global\n");
+        return;
+    }
+    err = init_mongo_collections(db_name);
+    if(err != S_OK) {
+        fprintf(stderr, "[ERROR] UNABLE TO init mongo collections\n");
+        return;
+    }
+
+    FILE *f = fopen("data_test/test1.txt", "w");
+    for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < 1000; i++) {
+            fprintf(f, "%c", 64 + (i % 26));
+        }
+        fprintf(f, "\r\n");
+    }
+    fclose(f);    
+}
+
+void MyEnvironment::TearDown() {
+    free_mongo_collections();
+    free_mongo_global();
+
+    if(FD) {
+        close(FD);
+        FD = 0;
+    }
+}
+
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    ::testing::AddGlobalTestEnvironment(new MyEnvironment);
+
+    return RUN_ALL_TESTS();
+}
