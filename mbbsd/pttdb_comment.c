@@ -510,7 +510,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
     }
 
     if(!error_code) {
-        error_code = extract_b_comments_commment_reply_id_to_bsons(b_comments, n_comment, "$in", &q_b_comment_reply_ids, &n_expected_comment_reply);
+        error_code = extract_b_comments_comment_reply_id_to_bsons(b_comments, n_comment, "$in", &q_b_comment_reply_ids, &n_expected_comment_reply);
     }
 
     if(!error_code) {
@@ -567,7 +567,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
 }
 
 Err
-extract_b_comments_commment_id_to_bsons(bson_t **b_comments, int n_comment, char *result_key, bson_t **b_comment_ids)
+extract_b_comments_comment_id_to_bsons(bson_t **b_comments, int n_comment, char *result_key, bson_t **b_comment_ids)
 {
     bson_t child;
     char buf[16];
@@ -599,7 +599,7 @@ extract_b_comments_commment_id_to_bsons(bson_t **b_comments, int n_comment, char
 }
 
 Err
-extract_b_comments_commment_reply_id_to_bsons(bson_t **b_comments, int n_comment, *result_key, bson_t **b_comment_reply_ids, int *n_comment_reply)
+extract_b_comments_comment_reply_id_to_bsons(bson_t **b_comments, int n_comment, *result_key, bson_t **b_comment_reply_ids, int *n_comment_reply)
 {
     bson_t child;
     char buf[16];
