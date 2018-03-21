@@ -418,6 +418,7 @@ TEST(pttdb_comment, sort_b_comments_order2) {
     bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
     long int rand_int = 0;
 
+    char *str = NULL;
     char poster[IDLEN + 1] = {};
     for(int i = 0; i < n_comment; i++) {
         rand_int = random();
@@ -425,7 +426,10 @@ TEST(pttdb_comment, sort_b_comments_order2) {
         b_comments[i] = BCON_NEW(
                 "poster", BCON_BINARY((unsigned char *)poster, IDLEN),
                 "create_milli_timestamp", BCON_INT64(100)
-            );    
+            );
+        str = bson_as_canonical_extended_json(b_comments[i], NULL);
+        fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: (%d/%d) b_comments: %s\n", i, n_comment, str);
+        bson_free(str);
     }
 
     fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: to sort_b_comments_order: long: %lu long int: %lu long long int: %lu\n", sizeof(long), sizeof(long int), sizeof(long long int));
