@@ -629,7 +629,7 @@ extract_b_comments_comment_reply_id_to_bsons(bson_t **b_comments, int n_comment,
     int tmp_n_comment_reply = 0;
     BSON_APPEND_ARRAY_BEGIN(tmp_b, result_key, &child);
     for (int i = 0; i < n_comment; i++, p_b_comments++) {
-        error_code = bson_get_value_bin(p_b_comments, "comment_reply_id", UUIDLEN, uuid, &len);
+        error_code = bson_get_value_bin(*p_b_comments, "comment_reply_id", UUIDLEN, uuid, &len);
         if(error_code) break;
 
         if(!strncmp(uuid, empty_id)) continue;
