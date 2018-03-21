@@ -369,12 +369,27 @@ TEST(pttdb_comment, sort_b_comments_order) {
     long int rand_int = 0;
 
     int *rand_list = NULL;
+    fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: to form rand list\n");
     Err error = form_rand_list(100, &rand_list);
+    EXPECT_EQ(S_OK, error);
+
+    for(int i = 0; i < 100; i++) {
+        fprintf(stderr, "test_pttdb_comment.sort_b_comments_order: (%d/%d): %d\n", i, 100, rand_list[i]);
+    }
+
+    int sum = 0;
+    for(int i = 0; i < 100; i++) {
+        sum += rand_list[i];
+    }
+    EXPECT_EQ(4950, sum);
+
+    char poster[IDLEN + 1] = {};
+    sprintf(poster, "test_poster");
 
     for(int i = 0; i < n_comment; i++) {
         rand_int = rand_list[i];
         b_comments[i] = BCON_NEW(
-                "poster", BCON_BINARY((unsigned char *)"test_poster", 11),
+                "poster", BCON_BINARY((unsigned char *)"test_poser", IDLEN),
                 "create_milli_timestamp", BCON_INT64(rand_int)
             );    
     }
