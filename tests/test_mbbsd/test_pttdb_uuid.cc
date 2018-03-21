@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+
 #include "bbs.h"
 #include "ptterr.h"
 #include "pttdb_uuid.h"
