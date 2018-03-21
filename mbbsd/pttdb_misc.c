@@ -143,6 +143,8 @@ form_rand_list(int n, int **rand_list) {
         tmp_available_pos[n_available_pos - 1] = tmp;
     }
 
+    fprintf(stderr, "pttdb_misc.form_rand_list: to safe_free\n");
+
     safe_free((void **)&tmp_available_pos);
 
     return S_OK;
