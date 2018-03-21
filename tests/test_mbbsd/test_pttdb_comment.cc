@@ -368,8 +368,11 @@ TEST(pttdb_comment, sort_b_comments_order) {
     bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
     long int rand_int = 0;
 
+    int *rand_list = NULL;
+    Err error = form_rand_list(100, &rand_list);
+
     for(int i = 0; i < n_comment; i++) {
-        rand_int = random();
+        rand_int = rand_list[i];
         b_comments[i] = BCON_NEW(
                 "poster", BCON_BINARY((unsigned char *)"test_poster", 11),
                 "create_milli_timestamp", BCON_INT64(rand_int)
@@ -411,6 +414,7 @@ TEST(pttdb_comment, sort_b_comments_order) {
 
     // free
     safe_free_b_list(&b_comments, n_comment);
+    safe_free((void **)&rand_list);
 }
 
 TEST(pttdb_comment, sort_b_comments_order2) {
@@ -418,10 +422,13 @@ TEST(pttdb_comment, sort_b_comments_order2) {
     bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
     long int rand_int = 0;
 
+    int *rand_list = NULL;
+    Err error = form_rand_list(100, &rand_list);
+
     char *str = NULL;
     char poster[IDLEN + 1] = {};
     for(int i = 0; i < n_comment; i++) {
-        rand_int = random();
+        rand_int = rand_list[i];
         sprintf(poster, "poster%03ld", rand_int);
         b_comments[i] = BCON_NEW(
                 "poster", BCON_BINARY((unsigned char *)poster, IDLEN),
@@ -483,6 +490,8 @@ TEST(pttdb_comment, sort_b_comments_order2) {
 
     // free
     safe_free_b_list(&b_comments, n_comment);
+
+    safe_free((void **)rand_list);
 }
 
 TEST(pttdb_comment, read_comments_by_main)

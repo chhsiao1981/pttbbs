@@ -113,3 +113,35 @@ _display_uuid(UUID uuid)
 
     return result;
 }
+
+Err
+form_rand_list(int n, int **rand_list) {
+    *rand_list = malloc(sizeof(int) * n);
+    if(!rand_list) return S_ERR;
+
+    int *tmp_rand_list = *rand_list;
+
+    int *tmp_available_pos = malloc(size(int) * n);
+    for(int i = 0; i < n; i++) {
+        tmp_available_pos[i] = i;
+    }
+
+    int n_available_pos = n;
+    int idx;
+    int pos;
+    int tmp;        
+    for(int i = 0; i < n; i++, n_available_pos--) {
+        idx = random() % n_available_pos;
+        pos = tmp_available_pos[idx];
+        rand_list[pos] = i;
+
+        // swap with last one
+        tmp = pos;
+        tmp_available_pos[idx] = tmp_available_pos[n_available_pos - 1];
+        tmp_available_pos[n_available_pos - 1] = tmp;
+    }
+
+    safe_free((void **)&tmp_available_pos);
+
+    return S_OK;
+}

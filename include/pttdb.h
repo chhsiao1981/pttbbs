@@ -356,6 +356,8 @@ Err read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max
 Err safe_free(void **a);
 Err safe_free_b_list(bson_t ***b, int n);
 
+Err form_rand_list(int n, int **rand_list);
+
 
 #ifdef __cplusplus
 }
