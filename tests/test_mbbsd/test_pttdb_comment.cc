@@ -2067,7 +2067,8 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_no_comment_repl
 
     // extract_b_comments_comment_id_to_bsons
     bson_t *b_comment_reply_ids = NULL;
-    error = extract_b_comments_comment_reply_id_to_bsons(b_comments, n_comment, (char *)"$in", &b_comment_reply_ids);
+    int n_comment_reply;
+    error = extract_b_comments_comment_reply_id_to_bsons(b_comments, n_comment, (char *)"$in", &b_comment_reply_ids, &n_comment_reply);
     EXPECT_EQ(S_OK, error);
 
     bool is_exist = false;
@@ -2088,7 +2089,7 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_no_comment_repl
         is_exist_in_array[the_id] = true;
     }
     for(int i = 0; i < 100; i++) {
-        EXPECT_EQ(true, is_exist_in_array[i]);
+        EXPECT_EQ(false, is_exist_in_array[i]);
     }
 
     // free
