@@ -628,16 +628,16 @@ extract_b_comments_comment_reply_id_to_bsons(bson_t **b_comments, int n_comment,
 
     int tmp_n_comment_reply = 0;
     bool status = true;
-    
+
     BSON_APPEND_ARRAY_BEGIN(tmp_b, result_key, &child);
     for (int i = 0; i < n_comment; i++, p_b_comments++) {
         error_code = bson_get_value_bin(*p_b_comments, "comment_reply_id", UUIDLEN, (char *)uuid, &len);
         if(error_code) break;
 
-        if(!strncmp(uuid, empty_id, UUIDLEN)) continue;
+        if(!strncmp((char *)uuid, (char *)empty_id, UUIDLEN)) continue;
 
         array_keylen = bson_uint32_to_string(i, &array_key, buf, sizeof(buf));
-        status = bson_append_bin(&child, array_key, (int)array_keylen, (char *)uuid, UUIDLEN);
+        status = bson_append_bin(&child, array_key, (int)array_keylen, uuid, UUIDLEN);
         if (!status) {
             error_code = S_ERR;
             break;
@@ -664,11 +664,14 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
     char *p_comment_id_key = comment_id_key + UUIDLEN;
     char *p_reset_comment_id_key = comment_id_key + UUIDLEN;
     bool is_with_comment_reply = false;
+
+    int len_comment = 0;
+    int len_comment_reply = 0;
     int len_read_comment = 0;
     int len_read_comment_reply = 0;
 
     int tmp_n_comment_reply = 0;
-    for(int i = 0; i < n_comment; i++, p_b_comments++, len_comment_reply = 0, len_read_comment = 0, len_read_comment_reply = 0, *p_reset_comment_id_key = 0) {
+    for(int i = 0; i < n_comment; i++, p_b_comments++, len_comment = 0, len_comment_reply = 0, len_read_comment = 0, len_read_comment_reply = 0, *p_reset_comment_id_key = 0) {
         // get comment_id and comment_reply_id
         error_code = bson_get_value_bin(*p_b_comments, "the_id", UUIDLEN, comment_id_key, &len);
 
