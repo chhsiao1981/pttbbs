@@ -1,5 +1,5 @@
 #include "pttdb_uuid.h"
-#include "util_db.h"
+#include "pttdb_uuid_internal.h"
 
 const UUID EMPTY_ID = {};
 

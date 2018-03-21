@@ -12,12 +12,6 @@ extern "C" {
 #include <resolv.h>
 
 /**********
- * UUID
- **********/
-Err _serialize_uuid_bson(UUID uuid, bson_t **uuid_bson);
-Err _serialize_content_uuid_bson(UUID uuid, int block_id, bson_t **uuid_bson);
-
-/**********
  * Post
  **********/
 Err _get_file_info_by_main_get_main_info(UUID main_id, FileInfo *file_info);
@@ -89,8 +83,6 @@ Err _get_comment_reply_info_by_main_deal_with_result(bson_t *result, int n_resul
 
 Err get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offset_line, int *bytes_in_new_line);
 Err pttdb_count_lines(char *content, int len, int *n_line);
-
-char *_display_uuid(UUID uuid);
 
 #ifdef __cplusplus
 }
