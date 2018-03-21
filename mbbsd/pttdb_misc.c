@@ -133,7 +133,7 @@ form_rand_list(int n, int **rand_list) {
     for(int i = 0; i < n; i++, n_available_pos--) {
         idx = random() % n_available_pos;
         pos = tmp_available_pos[idx];
-        rand_list[pos] = i;
+        tmp_rand_list[pos] = i;
 
         fprintf(stderr, "pttdb_misc.form_rand_list: (%d/%d): idx: %d pos: %d n_available_pos: %d\n", i, n, idx, pos, n_available_pos);        
 
