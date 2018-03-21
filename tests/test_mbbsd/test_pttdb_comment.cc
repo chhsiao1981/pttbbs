@@ -248,7 +248,7 @@ TEST(pttdb_comment, ensure_b_comments_order) {
     EXPECT_EQ(S_ERR, error);
 
     // free
-    safe_free_b_list(&b_comments);
+    safe_free_b_list(&b_comments, n_comment);
 }
 
 TEST(pttdb_comment, ensure_b_comments_order2) {
@@ -275,7 +275,7 @@ TEST(pttdb_comment, ensure_b_comments_order2) {
     EXPECT_EQ(S_ERR, error);
 
     // free
-    safe_free_b_list(&b_comments);
+    safe_free_b_list(&b_comments, n_comment);
 }
 
 TEST(pttdb_comment, ensure_b_comments_order3) {
@@ -302,7 +302,7 @@ TEST(pttdb_comment, ensure_b_comments_order3) {
     EXPECT_EQ(S_ERR, error);
 
     // free
-    safe_free_b_list(&b_comments);
+    safe_free_b_list(&b_comments, n_comment);
 }
 
 TEST(pttdb_comment, ensure_b_comments_order4) {
@@ -331,7 +331,7 @@ TEST(pttdb_comment, ensure_b_comments_order4) {
     EXPECT_EQ(S_ERR, error);
 
     // free
-    safe_free_b_list(&b_comments);
+    safe_free_b_list(&b_comments, n_comment);
 }
 
 TEST(pttdb_comment, ensure_b_comments_order5) {
@@ -360,7 +360,7 @@ TEST(pttdb_comment, ensure_b_comments_order5) {
     EXPECT_EQ(S_ERR, error);
 
     // free
-    safe_free_b_list(&b_comments);
+    safe_free_b_list(&b_comments, n_comment);
 }
 
 TEST(pttdb_comment, sort_b_comments_order) {
@@ -410,7 +410,7 @@ TEST(pttdb_comment, sort_b_comments_order) {
     EXPECT_EQ(S_OK, error);
 
     // free
-    safe_free_b_list(&b_comments);
+    safe_free_b_list(&b_comments, n_comment);
 }
 
 TEST(pttdb_comment, sort_b_comments_order2) {
@@ -462,7 +462,7 @@ TEST(pttdb_comment, sort_b_comments_order2) {
     EXPECT_EQ(S_OK, error);
 
     // free
-    safe_free_b_list(&b_comments);
+    safe_free_b_list(&b_comments, n_comment);
 }
 
 TEST(pttdb_comment, read_comments_by_main)
@@ -1508,7 +1508,7 @@ TEST(pttdb_comment, read_comments_until_newest_to_bsons)
     }
 
     // free
-    safe_free_b_list(&b_comments);
+    safe_free_b_list(&b_comments, n_comment);
     bson_safe_destroy(&fields);
 
     destroy_comment(&comment);
@@ -1654,7 +1654,7 @@ TEST(pttdb_comment, sort_b_comments_by_comment_id)
     }
 
     //free
-    safe_free_b_list(&b_comments);
+    safe_free_b_list(&b_comments, n_comment);
     bson_safe_destroy(&fields);
 
     destroy_comment(&comment);
@@ -1819,7 +1819,7 @@ TEST(pttdb_comment, extract_b_comments_comment_id_to_bsons_no_comment_reply_ids)
     // extract_b_comments_comment_id_to_bsons
 
     // free
-    safe_free_b_list(&b_comments);
+    safe_free_b_list(&b_comments, n_comment);
     bson_safe_destroy(&fields);
 
     destroy_comment(&comment);
