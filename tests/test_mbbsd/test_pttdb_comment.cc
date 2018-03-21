@@ -427,6 +427,12 @@ TEST(pttdb_comment, sort_b_comments_order2) {
                 "poster", BCON_BINARY((unsigned char *)poster, IDLEN),
                 "create_milli_timestamp", BCON_INT64(100)
             );
+
+        if(!b_comments[i]) {
+            n_comment = i;
+            fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: unable to allocate b_comments\n");
+            break;
+        }
         str = bson_as_canonical_extended_json(b_comments[i], NULL);
         fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: (%d/%d) b_comments: %s\n", i, n_comment, str);
         bson_free(str);
