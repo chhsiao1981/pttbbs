@@ -428,11 +428,17 @@ TEST(pttdb_comment, sort_b_comments_order2) {
             );    
     }
 
+    fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: to sort_b_comments_order\n");
+
     Err error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
+    fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: after b_comments_order\n");
+
     error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
+
+    fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: after ensure b comments order\n");
 
     error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
     EXPECT_EQ(S_ERR, error);
