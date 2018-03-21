@@ -71,7 +71,8 @@ Err _reverse_b_comments(bson_t **b_comments, int n_comment);
 int _cmp_b_comments_by_comment_id(const void *a, const void *b);
 
 // 
-Err _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, int n_comment, bson_t *b_comment_reply_dict, char *buf, int *n_read_comment, int *n_read_comment_reply, int *len_buf);
+Err _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, int n_comment, bson_t *b_comment_content_dict, bson_t *b_comment_reply_dict, char *buf, int max_buf_size, int *n_read_comment, int *n_read_comment_reply, int *len_buf);
+
 
 /**********
  * CommentReply
