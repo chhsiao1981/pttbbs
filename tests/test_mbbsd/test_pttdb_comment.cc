@@ -369,7 +369,7 @@ TEST(pttdb_comment, sort_b_comments_order) {
     long int rand_int = 0;
 
     int *rand_list = NULL;
-    fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: to form rand list\n");
+    fprintf(stderr, "test_pttdb_comment.sort_b_comments_order: to form rand list\n");
     Err error = form_rand_list(100, &rand_list);
     EXPECT_EQ(S_OK, error);
 
