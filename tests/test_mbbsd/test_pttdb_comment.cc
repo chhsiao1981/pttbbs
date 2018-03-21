@@ -2276,6 +2276,10 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_some_comment_re
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(15, n_comment_reply);
 
+    str = bson_as_canonical_extended_json(b_comment_reply_ids, NULL);
+    fprintf(stderr, "test_pttdb_comment.extract_b_comments_comment_reply_id_to_bsons_some_comment_reply_ids: b_comment_reply_ids: %s", b_comment_reply_ids);
+    bson_free(stderr);
+
     bool is_exist = false;
     error = bson_exists(b_comment_reply_ids, (char *)"$in", &is_exist);
     EXPECT_EQ(S_OK, error);
