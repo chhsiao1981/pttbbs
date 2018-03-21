@@ -2158,6 +2158,9 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_some_comment_re
         EXPECT_EQ(S_OK, error);
     }
 
+    bzero(comment.comment_reply_id, UUIDLEN);
+    comment.n_comment_reply_line = 0;
+
     for(int i = 15; i < 85; i++) {
         gen_uuid(comment_id);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
