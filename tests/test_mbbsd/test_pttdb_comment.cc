@@ -1876,11 +1876,11 @@ TEST(pttdb_comment, extract_b_comments_comment_id_to_bsons_no_comment_reply_ids)
 
     // extract_b_comments_comment_id_to_bsons
     bson_t *b_comment_ids = NULL;
-    error = extract_b_comments_comment_id_to_bsons(b_comments, n_comment, "$in", &b_comment_ids);
+    error = extract_b_comments_comment_id_to_bsons(b_comments, n_comment, (char *)"$in", &b_comment_ids);
     EXPECT_EQ(S_OK, error);
 
     bool is_exist = false;
-    error = bson_exists(b_comment_ids, "$in", &is_exist);
+    error = bson_exists(b_comment_ids, (char *)"$in", &is_exist);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(true, is_exist);
 
