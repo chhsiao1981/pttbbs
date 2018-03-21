@@ -636,7 +636,7 @@ extract_b_comments_comment_reply_id_to_bsons(bson_t **b_comments, int n_comment,
 
         if(!strncmp((char *)uuid, (char *)empty_id, UUIDLEN)) continue;
 
-        array_keylen = bson_uint32_to_string(i, &array_key, buf, sizeof(buf));
+        array_keylen = bson_uint32_to_string(tmp_n_comment_reply, &array_key, buf, sizeof(buf));
         status = bson_append_bin(&child, array_key, (int)array_keylen, uuid, UUIDLEN);
         if (!status) {
             error_code = S_ERR;
