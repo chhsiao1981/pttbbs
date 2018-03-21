@@ -1875,11 +1875,12 @@ TEST(pttdb_comment, extract_b_comments_comment_id_to_bsons_no_comment_reply_ids)
     }
 
     // extract_b_comments_comment_id_to_bsons
+    bson_t *b_comment_ids = NULL;
     error = extract_b_comments_comment_id_to_bsons(b_comments, n_comment, "$in", &b_comment_ids);
     EXPECT_EQ(S_OK, error);
 
     bool is_exist = false;
-    error = bson_exists(b_comments, "$in", &is_exist);
+    error = bson_exists(b_comment_ids, "$in", &is_exist);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(true, is_exist);
 
@@ -1889,7 +1890,7 @@ TEST(pttdb_comment, extract_b_comments_comment_id_to_bsons_no_comment_reply_ids)
     bool is_exist_in_array[100] = {};
 
     int the_id = 0;
-    bson_iter_init_find(&iter, b_comments, "$in");
+    bson_iter_init_find(&iter, b_comment_ids, "$in");
     bson_iter_recurse(&iter, &sub_iter);
     while(bson_iter_next(&sub_iter)) {
         the_id = atoi(bson_iter_key (&sub_iter));
@@ -1900,6 +1901,7 @@ TEST(pttdb_comment, extract_b_comments_comment_id_to_bsons_no_comment_reply_ids)
     }
 
     // free
+    bson_safe_destroy(&b_comment_ids);
     safe_free_b_list(&b_comments, n_comment);
     bson_safe_destroy(&fields);
 
