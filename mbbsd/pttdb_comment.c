@@ -671,6 +671,7 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
     int len_read_comment_reply = 0;
 
     int tmp_n_comment_reply = 0;
+    int len = 0;
     for(int i = 0; i < n_comment; i++, p_b_comments++, len_comment = 0, len_comment_reply = 0, len_read_comment = 0, len_read_comment_reply = 0, *p_reset_comment_id_key = 0) {
         // get comment_id and comment_reply_id
         error_code = bson_get_value_bin(*p_b_comments, "the_id", UUIDLEN, comment_id_key, &len);
@@ -680,7 +681,7 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
         }
 
         // is-with-comment-reply
-        is_with_comment_reply = strncmp(comment_reply_id, empty_id, UUIDLEN) ? false : true
+        is_with_comment_reply = strncmp(comment_reply_id, empty_id, UUIDLEN) ? false : true;
         if(!error_code && is_with_comment_reply) {
             error_code = bson_exists(b_comment_reply_dict, comment_id_key, &is_with_comment_reply);
         }
