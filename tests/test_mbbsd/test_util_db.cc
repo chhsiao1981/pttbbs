@@ -271,6 +271,58 @@ TEST(util_db, bson_safe_destroy2) {
     EXPECT_EQ(NULL, b);
 }
 
+TEST(util_db, bson_exists) {
+    bson_t *b = BCON_NEW(
+        "test1", BCON_BOOL(true)
+        );
+
+    bool is_exist = false;    
+    Err error = S_OK;    
+    
+    error = bson_exists(b, "test1", &is_exist);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_exist);
+
+    error = bson_exists(b, "test2", &is_exist);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_exist);
+}
+
+TEST(util_db, bson_get_value_int32) {
+    bson_t *b = BCON_NEW(
+        "test1", BCON_BOOL(true),
+        "test2", BCON_INT32(1)
+        );
+
+    int value = 0;
+    Err error = S_OK;    
+    
+    error = bson_get_value_int32(b, "test1", &value);
+    EXPECT_EQ(S_ERR, error);
+    EXPECT_EQ(0, value);
+
+    error = bson_get_value_int32(b, "test2", &value);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1, value);
+}
+
+TEST(util_db, bson_get_descendant_value_int32) {
+    bson_t *b = BCON_NEW(
+        "test1", BCON_BOOL(true),
+        "test2", BCON_NEW(
+                "a", BCON_INT32(1)
+            )
+        );
+
+    int value = 0;
+    Err error = S_OK;    
+    
+    error = bson_get_descendant_value_int32(b, "test2.a", &value);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1, value);
+}
+
+
 /**********
  * MAIN
  */

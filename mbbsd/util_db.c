@@ -383,6 +383,35 @@ bson_get_value_int32(bson_t *b, char *name, int *value)
 }
 
 /**
+ * @brief get int32 value in bson
+ * @details [long description]
+ *
+ * @param b [description]
+ * @param name [description]
+ * @param value [description]
+ */
+Err
+bson_get_descendant_value_int32(bson_t *b, char *name, int *value)
+{
+    bool status;
+    bson_iter_t iter;
+    bson_iter_t iter_value;
+
+    status = bson_iter_init(&iter, b);
+    if(!status) return S_ERR;
+
+    status = bson_iter_find_descendant(&iter, name, &iter_value);
+    if (!status) return S_ERR;
+
+    status = BSON_ITER_HOLDS_INT32(&iter_value);
+    if (!status) return S_ERR;
+
+    *value = bson_iter_int32(&iter_value);
+
+    return S_OK;
+}
+
+/**
  * @brief get int64 value in bson
  * @details [long description]
  *
@@ -470,6 +499,51 @@ bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len)
 
     char *p_value;
     bson_iter_binary(&iter, &subtype, (unsigned int *)p_len, (const unsigned char **)&p_value);
+
+    int tmp_len = *p_len;
+    if (tmp_len > max_len) {
+        tmp_len = max_len;
+        error = S_ERR_BUFFER_LEN;
+    }
+
+    memcpy(value, p_value, tmp_len);
+    if (tmp_len < max_len) {
+        value[tmp_len + 1] = 0;
+    }
+
+    return error;
+}
+
+/**
+ * @brief get binary value without init
+ * @details [long description]
+ *
+ * @param b [description]
+ * @param name [description]
+ * @param max_len max-length of the buffer
+ * @param value [MUST INITIALIZED WITH max_len!]
+ * @param len real received length
+ */
+Err
+bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len)
+{    
+    Err error = S_OK;
+
+    bool status;
+    bson_subtype_t subtype;
+    bson_iter_t iter;
+    bson_iter_t iter_value;
+
+    status = bson_iter_init(&iter, b);
+    if (!status) return S_ERR;
+
+    status = bson_iter_find_descendant(&iter, name, &iter_value);
+
+    status = BSON_ITER_HOLDS_BINARY(&iter_value);
+    if (!status) return S_ERR;
+
+    char *p_value;
+    bson_iter_binary(&iter_value, &subtype, (unsigned int *)p_len, (const unsigned char **)&p_value);
 
     int tmp_len = *p_len;
     if (tmp_len > max_len) {

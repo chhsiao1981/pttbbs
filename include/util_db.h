@@ -65,6 +65,8 @@ Err bson_get_value_int32(bson_t *b, char *name, int *value);
 Err bson_get_value_int64(bson_t *b, char *name, long int *value);
 Err bson_get_value_bin_not_initialized(bson_t *b, char *name, char **value, int *p_len);
 Err bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len);
+Err bson_get_descendant_value_int32(bson_t *b, char *name, int *value);
+Err bson_get_descendant_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len);
 
 Err bson_safe_destroy(bson_t **b);
 
