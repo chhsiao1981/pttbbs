@@ -135,6 +135,8 @@ form_rand_list(int n, int **rand_list) {
         pos = tmp_available_pos[idx];
         rand_list[pos] = i;
 
+        fprintf(stderr, "pttdb_misc.form_rand_list: (%d/%d): idx: %d pos: %d n_available_pos: %d", i, n, idx, pos, n_available_pos);        
+
         // swap with last one
         tmp = pos;
         tmp_available_pos[idx] = tmp_available_pos[n_available_pos - 1];
