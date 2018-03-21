@@ -2293,9 +2293,12 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_some_comment_re
     int the_id = 0;
     bson_iter_init_find(&iter, b_comment_reply_ids, "$in");
     bson_iter_recurse(&iter, &sub_iter);
+    int sub_iter_i = 0;
     while(bson_iter_next(&sub_iter)) {
         the_id = atoi(bson_iter_key (&sub_iter));
         is_exist_in_array[the_id] = true;
+        fprintf(stderr, "test_pttdb_comment.extract_b_comments_comment_reply_id_to_bsons_some_comment_reply_ids: b_comment_reply_ids: sub_iter_i: %d the_id: %d\n", sub_iter_i, the_id);
+        sub_iter_i++;
     }
     for(int i = 0; i < 15; i++) {
         EXPECT_EQ(true, is_exist_in_array[i]);
