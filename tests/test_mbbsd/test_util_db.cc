@@ -315,11 +315,12 @@ TEST(util_db, bson_get_value_int32) {
 }
 
 TEST(util_db, bson_get_descendant_value_int32) {
+    bson_t *b2 = BCON_NEW(
+        "a", BCON_INT32(1)
+        );
     bson_t *b = BCON_NEW(
         "test1", BCON_BOOL(true),
-        "test2", BCON_NEW(
-                "a", BCON_INT32(1)
-            )
+        "test2", BCON_DOCUMENT(b2)
         );
 
     char *str = bson_as_canonical_extended_json(b, NULL);
@@ -335,6 +336,7 @@ TEST(util_db, bson_get_descendant_value_int32) {
 
     //free
     bson_safe_destroy(&b);
+    bson_safe_destroy(&b2);
 }
 
 
