@@ -347,6 +347,9 @@ Err ensure_b_comments_order(bson_t **b_comments, int n_comment, enum ReadComment
 Err sort_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type);
 Err sort_b_comments_by_comment_id(bson_t **b_comments, int n_comment);
 
+// for file_info
+Err read_comments_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_comment, bson_t **b_comments, int *n_comment);
+
 // for migrate
 Err dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_comment, char *buf, int max_buf_size, int *n_read_comment, int *n_comment_reply, int *len);
 

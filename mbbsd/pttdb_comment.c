@@ -567,6 +567,17 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
 }
 
 Err
+read_comments_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_comment, bson_t **b_comments, int *n_comment)
+{
+    Err error_code = S_OK;
+
+    error_code = db_find(MONGO_COMMENT, query, fields, NULL, max_n_comment, n_comment, b_comments);
+
+    return error_code;
+}
+
+
+Err
 extract_b_comments_comment_id_to_bsons(bson_t **b_comments, int n_comment, char *result_key, bson_t **b_comment_ids)
 {
     bson_t child;
