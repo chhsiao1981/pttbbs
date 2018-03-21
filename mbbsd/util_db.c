@@ -525,7 +525,7 @@ bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len)
  * @param len real received length
  */
 Err
-bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len)
+bson_get_descendant_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len)
 {    
     Err error = S_OK;
 
