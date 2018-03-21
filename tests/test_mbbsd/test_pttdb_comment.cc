@@ -433,6 +433,8 @@ TEST(pttdb_comment, sort_b_comments_order2) {
             fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: unable to allocate b_comments\n");
             break;
         }
+        fprintf(stderr, "test_pttdb_comment.cc.sort_b_comments_order2: to bson_as_canonical_extended_json\n");
+
         str = bson_as_canonical_extended_json(b_comments[i], NULL);
         fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: (%d/%d) b_comments: %s\n", i, n_comment, str);
         bson_free(str);
