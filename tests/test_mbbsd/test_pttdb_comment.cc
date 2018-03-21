@@ -493,7 +493,7 @@ TEST(pttdb_comment, read_comments_by_main)
     EXPECT_EQ(100, len);
     for(int i = 0; i < 10; i++) {
         sprintf(poster, "poster%03d", i);
-        fprintf(stderr, "test_pttdb_comment.read_comments_by_main: (%d/%d) (%lld/%s)\n", i, 10, comments[i].create_milli_timestamp, comments[i].poster);
+        fprintf(stderr, "test_pttdb_comment.read_comments_by_main: (%d/%d) (%ld/%s)\n", i, 10, comments[i].create_milli_timestamp, comments[i].poster);
         EXPECT_STREQ(poster, comments[i].poster);
     }
 
@@ -873,7 +873,7 @@ TEST(pttdb_comment, read_comments_by_main5_GTE)
     EXPECT_EQ(100, len);
     char poster[20] = {};
     for(int i = 0; i < 10; i++) {
-        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_GTE: after 1st read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 10, comments[i].create_milli_timestamp, comments[i].poster);
+        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_GTE: after 1st read-comments-by-main: (%d/%d) (%ld/%s)\n", i, 10, comments[i].create_milli_timestamp, comments[i].poster);
         EXPECT_EQ(create_milli_timestamp, comments[i].create_milli_timestamp);
         sprintf(poster, "poster%03d", i);
         EXPECT_STREQ(poster, comments[i].poster);
@@ -885,14 +885,14 @@ TEST(pttdb_comment, read_comments_by_main5_GTE)
     EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     for(int i = 10; i < 16; i++) {
-        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_GTE: after 2nd read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 16, comments[i].create_milli_timestamp, comments[i].poster);
+        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_GTE: after 2nd read-comments-by-main: (%d/%d) (%ld/%s)\n", i, 16, comments[i].create_milli_timestamp, comments[i].poster);
         EXPECT_EQ(create_milli_timestamp, comments[i].create_milli_timestamp);
         sprintf(poster, "poster%03d", i - 1);
         EXPECT_STREQ(poster, comments[i].poster);
     }
 
     for(int i = 16; i < 20; i++) {
-        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_GTE: after 2nd read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 20, comments[i].create_milli_timestamp, comments[i].poster);
+        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_GTE: after 2nd read-comments-by-main: (%d/%d) (%ld/%s)\n", i, 20, comments[i].create_milli_timestamp, comments[i].poster);
         EXPECT_EQ(create_milli_timestamp + i - 1, comments[i].create_milli_timestamp);
         sprintf(poster, "poster%03d", i - 1);
         EXPECT_STREQ(poster, comments[i].poster);
@@ -1009,7 +1009,7 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
     EXPECT_EQ(100, len);
     char poster[20] = {};
     for(int i = 0; i < 10; i++) {
-        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LT: after 1st read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 10, comments[i].create_milli_timestamp, comments[i].poster);
+        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LT: after 1st read-comments-by-main: (%d/%d) (%ld/%s)\n", i, 10, comments[i].create_milli_timestamp, comments[i].poster);
         EXPECT_EQ(create_milli_timestamp + 85, comments[i].create_milli_timestamp);
         sprintf(poster, "poster%03d", 90 + i);
         EXPECT_STREQ(poster, comments[i].poster);
@@ -1021,14 +1021,14 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
     EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     for(int i = 10; i < 15; i++) {
-        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LT: after 2st read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 15, comments[i].create_milli_timestamp, comments[i].poster);
+        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LT: after 2st read-comments-by-main: (%d/%d) (%ld/%s)\n", i, 15, comments[i].create_milli_timestamp, comments[i].poster);
         EXPECT_EQ(create_milli_timestamp + 70 + i, comments[i].create_milli_timestamp);
         sprintf(poster, "poster%03d", 70 + i);
         EXPECT_STREQ(poster, comments[i].poster);
     }
 
     for(int i = 15; i < 20; i++) {
-        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LT: after 2st read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 20, comments[i].create_milli_timestamp, comments[i].poster);
+        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LT: after 2st read-comments-by-main: (%d/%d) (%ld/%s)\n", i, 20, comments[i].create_milli_timestamp, comments[i].poster);
         EXPECT_EQ(create_milli_timestamp + 85, comments[i].create_milli_timestamp);
         sprintf(poster, "poster%03d", 70 + i);
         EXPECT_STREQ(poster, comments[i].poster);
@@ -1145,7 +1145,7 @@ TEST(pttdb_comment, read_comments_by_main5_LTE)
     EXPECT_EQ(100, len);
     char poster[20] = {};
     for(int i = 0; i < 10; i++) {
-        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LTE: after 1st read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 10, comments[i].create_milli_timestamp, comments[i].poster);
+        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LTE: after 1st read-comments-by-main: (%d/%d) (%ld/%s)\n", i, 10, comments[i].create_milli_timestamp, comments[i].poster);
         EXPECT_EQ(create_milli_timestamp + 85, comments[i].create_milli_timestamp);
         sprintf(poster, "poster%03d", 90 + i);
         EXPECT_STREQ(poster, comments[i].poster);
@@ -1157,14 +1157,14 @@ TEST(pttdb_comment, read_comments_by_main5_LTE)
     EXPECT_EQ(10, n_comment);
     EXPECT_EQ(100, len);
     for(int i = 10; i < 14; i++) {
-        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LTE: after 2st read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 14, comments[i].create_milli_timestamp, comments[i].poster);
+        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LTE: after 2st read-comments-by-main: (%d/%d) (%ld/%s)\n", i, 14, comments[i].create_milli_timestamp, comments[i].poster);
         EXPECT_EQ(create_milli_timestamp + 70 + i + 1, comments[i].create_milli_timestamp);
         sprintf(poster, "poster%03d", 70 + i + 1);
         EXPECT_STREQ(poster, comments[i].poster);
     }
 
     for(int i = 14; i < 20; i++) {
-        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LTE: after 2st read-comments-by-main: (%d/%d) (%lld/%s)\n", i, 20, comments[i].create_milli_timestamp, comments[i].poster);
+        fprintf(stderr, "test_pttdb_comment.read_comments_by_main5_LTE: after 2st read-comments-by-main: (%d/%d) (%ld/%s)\n", i, 20, comments[i].create_milli_timestamp, comments[i].poster);
         EXPECT_EQ(create_milli_timestamp + 85, comments[i].create_milli_timestamp);
         sprintf(poster, "poster%03d", 70 + i + 1);
         EXPECT_STREQ(poster, comments[i].poster);

@@ -417,7 +417,7 @@ TEST(pttdb_main, create_main_from_fd_test1_full_read_main_content) {
 
     get_milli_timestamp(&end_timestamp);
 
-    fprintf(stderr, "test_pttdb_main.create_main_from_fd_test1_full_read_main_content: read: elapsed time: %lld\n", end_timestamp - start_timestamp);
+    fprintf(stderr, "test_pttdb_main.create_main_from_fd_test1_full_read_main_content: read: elapsed time: %ld\n", end_timestamp - start_timestamp);
 
     destroy_content_block(&content_block0);
     destroy_content_block(&content_block1);
