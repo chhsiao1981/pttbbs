@@ -610,7 +610,7 @@ extract_b_comments_comment_id_to_bsons(bson_t **b_comments, int n_comment, char 
 }
 
 Err
-extract_b_comments_comment_reply_id_to_bsons(bson_t **b_comments, int n_comment, *result_key, bson_t **b_comment_reply_ids, int *n_comment_reply)
+extract_b_comments_comment_reply_id_to_bsons(bson_t **b_comments, int n_comment, char *result_key, bson_t **b_comment_reply_ids, int *n_comment_reply)
 {
     bson_t child;
     char buf[16];
