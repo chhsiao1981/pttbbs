@@ -2240,7 +2240,7 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_some_comment_re
         "poster", BCON_BOOL(true)
         );
 
-    fprintf(stderr, "test_pttdb_comment.read_comments_util_newest_to_bson: to read_comments_until_newest_to_bsons\n");
+    fprintf(stderr, "test_pttdb_comment.extract_b_comments_comment_reply_id_to_bsons_some_comment_reply_ids: to read_comments_until_newest_to_bsons\n");
     bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_expected_comment);
     n_comment = 0;
     error = read_comments_until_newest_to_bsons(main_id, newest_create_milli_timestamp, newest_poster, fields, n_expected_comment, b_comments, &n_comment);
@@ -2248,6 +2248,12 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_some_comment_re
     EXPECT_EQ(100, n_comment);
 
     error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    char *str = NULL;
+    for(int i = 0; i < n_comment; i++) {
+        str = bson_as_canonical_extended_json(b_comments[i], NULL);
+        fprintf(stderr, "test_pttdb_comment.extract_b_comments_comment_reply_id_to_bsons_some_comment_reply_ids: (%d/%d) %s\n", i, n_comment, str);
+        bson_free(str);
+    }
 
     time64_t result_create_milli_timestamp = 0;
     char expected_poster[IDLEN + 1] = {};
