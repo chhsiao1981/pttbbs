@@ -121,7 +121,7 @@ form_rand_list(int n, int **rand_list) {
 
     int *tmp_rand_list = *rand_list;
 
-    int *tmp_available_pos = malloc(size(int) * n);
+    int *tmp_available_pos = malloc(sizeof(int) * n);
     for(int i = 0; i < n; i++) {
         tmp_available_pos[i] = i;
     }
