@@ -336,8 +336,8 @@ Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *p
 
 Err update_comment_reply_to_comment(UUID comment_id, UUID comment_reply_id, int n_comment_reply_line);
 Err remove_comment_reply_from_comment(UUID comment_id, UUID comment_reply_id);
-Err extract_b_comments_commment_id_to_bsons(bson_t **b_comments, int n_comment, *result_key, bson_t **b_comment_ids);
-Err extract_b_comments_commment_reply_id_to_bsons(bson_t **b_comments, int n_comment, *result_key, bson_t **b_comment_reply_ids, int *n_comment_reply);
+Err extract_b_comments_commment_id_to_bsons(bson_t **b_comments, int n_comment, char *result_key, bson_t **b_comment_ids);
+Err extract_b_comments_commment_reply_id_to_bsons(bson_t **b_comments, int n_comment, char *result_key, bson_t **b_comment_reply_ids, int *n_comment_reply);
 
 
 // for file_info
