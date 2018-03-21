@@ -461,6 +461,8 @@ TEST(pttdb_comment, sort_b_comments_order2) {
     error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
     EXPECT_EQ(S_OK, error);
 
+    fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: to safe_free_b_list\n");
+
     // free
     safe_free_b_list(&b_comments, n_comment);
 }
