@@ -428,7 +428,7 @@ TEST(pttdb_comment, sort_b_comments_order2) {
             );    
     }
 
-    fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: to sort_b_comments_order\n");
+    fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: to sort_b_comments_order: long: %d long int: %d long long int: %d\n", sizeof(long), sizeof(long int), sizeof(long long int));
 
     Err error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
