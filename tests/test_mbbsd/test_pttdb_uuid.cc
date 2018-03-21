@@ -4,6 +4,8 @@
 #include "ptterr.h"
 #include "pttdb_uuid.h"
 #include "pttdb_uuid_internal.h"
+#include "util_db_internal.h"
+#include "pttdb.h"
 
 // 2018-01-01
 time64_t START_MILLI_TIMESTAMP = 1514764800000;
