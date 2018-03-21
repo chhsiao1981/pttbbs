@@ -193,7 +193,7 @@ TEST(pttdb_misc, form_rand_list) {
     }
     EXPECT_EQ(4950, sum);
 
-    safe_free(rand_list);
+    safe_free((void **)&rand_list);
 }
 
 /**********
