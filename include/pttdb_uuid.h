@@ -37,6 +37,11 @@ Err gen_content_uuid_with_db(int collection, UUID uuid);
 
 Err uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp);
 
+Err _serialize_uuid_bson(UUID uuid, bson_t **uuid_bson);
+Err _serialize_content_uuid_bson(UUID uuid, int block_id, bson_t **uuid_bson);
+
+char *_display_uuid(UUID uuid);
+
 
 #ifdef __cplusplus
 }
