@@ -204,6 +204,7 @@ TEST(util_db, db_aggregate) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(15, len);
 
+    //free
     bson_safe_destroy(&pipeline);
 
     bson_safe_destroy(&key);
@@ -249,6 +250,7 @@ TEST(util_db, db_count) {
 
     EXPECT_EQ(2, count);
 
+    //free
     bson_safe_destroy(&query_key);
 
     bson_safe_destroy(&key);
@@ -286,6 +288,9 @@ TEST(util_db, bson_exists) {
     error = bson_exists(b, (char *)"test2", &is_exist);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(false, is_exist);
+
+    //free
+    bson_safe_destroy(&b);
 }
 
 TEST(util_db, bson_get_value_int32) {
@@ -304,6 +309,9 @@ TEST(util_db, bson_get_value_int32) {
     error = bson_get_value_int32(b, (char *)"test2", &value);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(1, value);
+
+    //free
+    bson_safe_destroy(&b);
 }
 
 TEST(util_db, bson_get_descendant_value_int32) {
@@ -314,12 +322,19 @@ TEST(util_db, bson_get_descendant_value_int32) {
             )
         );
 
+    char *str = bson_as_canonical_extended_json(b, NULL);
+    fprintf(stderr, "test_util_db.bson_get_descendant_value_int32: b: %s\n", str);
+    bson_free(str);
+
     int value = 0;
     Err error = S_OK;    
     
     error = bson_get_descendant_value_int32(b, (char *)"test2.a", &value);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(1, value);
+
+    //free
+    bson_safe_destroy(&b);
 }
 
 
