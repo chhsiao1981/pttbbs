@@ -495,3 +495,24 @@ bson_safe_destroy(bson_t **b)
 
     return S_OK;
 }
+
+
+Err
+bsons_to_bson_dict_by_uu(bson_t **b, int n_b, char *key, bson_t **b_result)
+{
+    Err error_code = S_OK;
+    *b_result = bson_new();
+    bson_t *p_b_result = *b_result;
+
+    bson_t **p_b = b;
+    bool status = false;
+    for(int i = 0; i < n_b; i++, p_b++) {
+        error_code = bson_get_value_bin(p_b, key, UUIDLEN, uuid, &len);
+        if(error_code) break;
+
+        status = bson_append_document(p_b_result, uuid, UUIDLEN, *p_b);
+        if(!status) break;
+    }
+
+    return error_code;
+}

@@ -68,6 +68,7 @@ Err bson_get_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_l
 
 Err bson_safe_destroy(bson_t **b);
 
+Err bsons_to_bson_dict_by_uu(bson_t **b, int n_b, char *key, bson_t **b_result);
 
 #ifdef __cplusplus
 }
