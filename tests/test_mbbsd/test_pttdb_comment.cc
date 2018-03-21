@@ -2278,7 +2278,7 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_some_comment_re
 
     str = bson_as_canonical_extended_json(b_comment_reply_ids, NULL);
     fprintf(stderr, "test_pttdb_comment.extract_b_comments_comment_reply_id_to_bsons_some_comment_reply_ids: b_comment_reply_ids: %s", str);
-    bson_free(stderr);
+    bson_free(str);
 
     bool is_exist = false;
     error = bson_exists(b_comment_reply_ids, (char *)"$in", &is_exist);
