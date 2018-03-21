@@ -590,9 +590,11 @@ extract_b_comments_comment_id_to_bsons(bson_t **b_comments, int n_comment, char 
 
     UUID uuid = {};
     int len = 0;
+    bool status = false;
+
     BSON_APPEND_ARRAY_BEGIN(tmp_b, result_key, &child);
     for (int i = 0; i < n_comment; i++, p_b_comments++) {
-        error_code = bson_get_value_bin(p_b_comments, "the_id", UUIDLEN, uuid, &len);
+        error_code = bson_get_value_bin(*p_b_comments, "the_id", UUIDLEN, (char *)uuid, &len);
         if(error_code) break;
 
         array_keylen = bson_uint32_to_string(i, &array_key, buf, sizeof(buf));
