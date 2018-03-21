@@ -2,6 +2,8 @@
 #ifndef PTTDB_UUID_H
 #define PTTDB_UUID_H
 
+#include "ptterr.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
