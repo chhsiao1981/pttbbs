@@ -959,6 +959,12 @@ _cmp_b_comments_ascending(const void *a, const void *b)
     char poster_a[IDLEN + 1] = {};
     char poster_b[IDLEN + 1] = {};
 
+    char *str = bson_as_canonical_extended_json(b_comment_a, NULL);
+    char *str2 = bson_as_canonical_extended_json(b_comment_b, NULL);
+    fprintf(stderr, "pttdb_comment._cmp_b_comments_ascending: b_comment_a: %s b_comment_b: %s\n", str, str2);
+    bson_free(str);
+    bson_free(str2);
+
     Err error_code;
     error_code = bson_get_value_int64(b_comment_a, "create_milli_timestamp", (long *)&create_milli_timestamp_a);
     if (error_code) create_milli_timestamp_a = -1;
