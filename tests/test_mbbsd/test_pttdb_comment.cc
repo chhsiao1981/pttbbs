@@ -379,7 +379,7 @@ TEST(pttdb_comment, sort_b_comments_order) {
             );    
     }
 
-    Err error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
     error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
@@ -449,7 +449,7 @@ TEST(pttdb_comment, sort_b_comments_order2) {
 
     fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: to sort_b_comments_order: long: %lu long int: %lu long long int: %lu\n", sizeof(long), sizeof(long int), sizeof(long long int));
 
-    Err error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
     EXPECT_EQ(S_OK, error);
 
     fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: after b_comments_order\n");
