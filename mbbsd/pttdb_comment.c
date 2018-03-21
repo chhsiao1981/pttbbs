@@ -627,15 +627,17 @@ extract_b_comments_comment_reply_id_to_bsons(bson_t **b_comments, int n_comment,
     int len = 0;
 
     int tmp_n_comment_reply = 0;
+    bool status = true;
+    
     BSON_APPEND_ARRAY_BEGIN(tmp_b, result_key, &child);
     for (int i = 0; i < n_comment; i++, p_b_comments++) {
-        error_code = bson_get_value_bin(*p_b_comments, "comment_reply_id", UUIDLEN, uuid, &len);
+        error_code = bson_get_value_bin(*p_b_comments, "comment_reply_id", UUIDLEN, (char *)uuid, &len);
         if(error_code) break;
 
-        if(!strncmp(uuid, empty_id)) continue;
+        if(!strncmp(uuid, empty_id, UUIDLEN)) continue;
 
         array_keylen = bson_uint32_to_string(i, &array_key, buf, sizeof(buf));
-        status = bson_append_bin(&child, array_key, (int)array_keylen, uuid, UUIDLEN);
+        status = bson_append_bin(&child, array_key, (int)array_keylen, (char *)uuid, UUIDLEN);
         if (!status) {
             error_code = S_ERR;
             break;
