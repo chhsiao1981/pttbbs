@@ -471,6 +471,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
     bson_t *comment_reply_fields = NULL;
     bson_t **b_comment_replys = NULL;
     bson_t *b_comment_reply_dict = NULL;
+    int n_expected_comment_reply = 0;
     int n_comment_reply = 0;
 
     // prepare query
@@ -516,7 +517,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
         query_comment_reply = BCON_NEW(
             "the_id", BCON_DOCUMENT(q_b_comment_reply_ids)
             );
-        if(!query) error_code = S_ERR;
+        if(!query_comment_reply) error_code = S_ERR;
     }
 
     if(!error_code) {
@@ -551,11 +552,16 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
 
     // free
     safe_free_b_list(&b_comment_replys);
-
     bson_safe_destroy(&b_comment_reply_dict);
-    bson_safe_destroy(&fields);
-    bson_safe_destroy(&query);
+    bson_safe_destroy(&comment_reply_fields);
+    bson_safe_destroy(&query_comment_reply);
     bson_safe_destroy(&q_b_comment_reply_ids);
+
+    bson_safe_destroy(&b_comment_content_dict);
+    safe_free_b_list(&b_comment_contents);
+    bson_safe_destroy(&comment_fields);
+    bson_safe_destroy(&query_comment);
+    bson_safe_destroy(&q_b_comment_ids);
 
     return error_code;
 }
