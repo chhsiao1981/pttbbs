@@ -17,7 +17,7 @@ extern "C" {
 
 
 // XXX hack for time64_t and UUID
-typedef long int time64_t;
+typedef long time64_t;
 
 typedef unsigned char UUID[UUIDLEN];
 typedef unsigned char _UUID[_UUIDLEN];
