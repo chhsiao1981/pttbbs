@@ -12,8 +12,6 @@
 extern "C" {
 #endif
 
-#define DISPLAY_UUIDLEN 24
-
 #define MAX_ORIGIN_LEN 20
 #define MAX_WEB_LINK_LEN 100                  // MAX_ORIGN_LEN + 8 + 12 + BOARDLEN + 1 + 23
 #define MAX_BUF_SIZE 8192
@@ -22,8 +20,6 @@ extern "C" {
 #define MAX_BUF_LINES 256
 
 #define MAX_CREATE_MILLI_TIMESTAMP 9999999999999 // XXX 2286-11-20
-
-#define N_GEN_UUID_WITH_DB 10
 
 enum CommentType {
     COMMENT_TYPE_GOOD,

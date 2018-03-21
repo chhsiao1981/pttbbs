@@ -10,6 +10,10 @@ extern "C" {
 
 #define UUIDLEN 16
 #define _UUIDLEN 16
+#define DISPLAY_UUIDLEN 24
+
+#define N_GEN_UUID_WITH_DB 10
+
 
 // XXX hack for time64_t and UUID
 typedef long int time64_t;
