@@ -520,7 +520,7 @@ TEST(pttdb_comment, sort_b_comments_order2) {
     // free
     safe_free_b_list(&b_comments, n_comment);
 
-    safe_free((void **)rand_list);
+    safe_free((void **)&rand_list);
 }
 
 TEST(pttdb_comment, read_comments_by_main)
