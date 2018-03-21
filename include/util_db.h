@@ -4,6 +4,7 @@
 
 #include <mongoc.h>
 #include "ptterr.h"
+#include "pttdb_uuid.h"
 
 #ifdef __cplusplus
 extern "C" {

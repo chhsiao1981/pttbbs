@@ -3,6 +3,7 @@
 #define PTTDB_H
 
 #include "ptterr.h"
+#include "pttdb_uuid.h"
 #include "util_db.h"
 
 #include "bbs.h"
@@ -11,8 +12,6 @@
 extern "C" {
 #endif
 
-#define UUIDLEN 16
-#define _UUIDLEN 16
 #define DISPLAY_UUIDLEN 24
 
 #define MAX_ORIGIN_LEN 20
@@ -25,13 +24,6 @@ extern "C" {
 #define MAX_CREATE_MILLI_TIMESTAMP 9999999999999 // XXX 2286-11-20
 
 #define N_GEN_UUID_WITH_DB 10
-
-// XXX hack for time64_t and UUID
-typedef long long int time64_t;
-typedef unsigned char UUID[UUIDLEN];
-typedef unsigned char _UUID[_UUIDLEN];
-
-extern const UUID EMPTY_ID;
 
 enum CommentType {
     COMMENT_TYPE_GOOD,
@@ -241,20 +233,6 @@ typedef struct FileInfo {
     ContentBlockInfo *content_block_info;
     PageInfo *page_info;
 } FileInfo;
-
-/**********
- * Milli-timestamp
- **********/
-Err get_milli_timestamp(time64_t *milli_timestamp);
-
-/**********
- * UUID
- **********/
-Err gen_uuid(UUID uuid);
-Err gen_uuid_with_db(int collection, UUID uuid);
-Err gen_content_uuid_with_db(int collection, UUID uuid);
-
-Err uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp);
 
 /**********
  * Post

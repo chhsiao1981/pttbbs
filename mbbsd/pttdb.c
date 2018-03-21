@@ -1,8 +1,6 @@
 #include "pttdb.h"
 #include "pttdb_internal.h"
 
-const UUID EMPTY_ID = {};
-
 /**
  * @brief Get the lines of the post to be able to show the percentage.
  * @details Get the lines of the post to be able to show the percentage.
