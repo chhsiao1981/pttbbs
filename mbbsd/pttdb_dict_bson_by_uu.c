@@ -52,12 +52,12 @@ get_bson_from_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu, UUID uuid, bson_t *
     int idx = uuid[0] % dict_bson_by_uu->n_dict;
     _DictBsonByUU *p_dict = dict_bson_by_uu->dicts[idx];
 
-    if(!p_dict_bson_by_uu) {
+    if(!p_dict) {
         return S_ERR_NOT_EXISTS;
     }
 
     for(; p_dict; p_dict = p_dict->next) {
-        if(!strncmp(uuid, p_dict->uuid, UUIDLEN)) {
+        if(!strncmp((char *)uuid, (char *)p_dict->uuid, UUIDLEN)) {
             *b = p_dict->b;
             return S_OK;
         }
@@ -93,12 +93,12 @@ bsons_to_dict_bson_by_uu(bson_t **b, int n_b, char *key, DictBsonByUU *dict_bson
 Err
 safe_destroy_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu)
 {
+    int n_dict = dict_bson_by_uu->n_dict;
     _DictBsonByUU **p_dict = dict_bson_by_uu->dicts;
-    for(int i = 0; i < n_dict_bson_by_uu; i++, p_dict++) {
+    for(int i = 0; i < n_dict; i++, p_dict++) {
         error_code = _safe_destroy_dict_bson_by_uu_core(*p_dict);
     }
     safe_free((void **)dict_bson_by_uu->dicts);
-    dict_bson_by_uu->dicts = NULL;
     dict_bson_by_uu->n_dict = 0;
 
     return S_OK;
