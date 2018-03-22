@@ -26,7 +26,7 @@ TEST(pttdb_dict_bson_by_uu, add_to_dict_bson_by_uu) {
     error = get_bson_from_dict_bson_by_uu(&dict_bson_by_uu, uuid, &b2);
     EXPECT_EQ(b, b2);
     int len = 0;
-    error = bson_get_value_bin(b2, "poster", IDLEN, poster, &len);
+    error = bson_get_value_bin(b2, (char *)"poster", IDLEN, poster, &len);
     EXPECT_STREQ(poster, "poster0");
 
     // free
