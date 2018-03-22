@@ -726,7 +726,7 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
             error_code = bson_get_value_bin(b_comment_reply, "buf", len_comment_reply, p_buf, &len_read_comment_reply);
         }
 
-        if(!error_code) {
+        if(!error_code && b_comment_reply) {
             p_buf += len_read_comment_reply;
             max_buf_size -= len_read_comment_reply;
             tmp_n_comment_reply++;
