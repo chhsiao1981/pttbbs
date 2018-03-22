@@ -4,6 +4,7 @@
 #include "util_db.h"
 #include "util_db_internal.h"
 #include "pttdb.h"
+#include "pttdb_internal.h"
 
 TEST(util_db, db_set_if_not_exists) {
     Err error;
@@ -347,11 +348,11 @@ TEST(util_db, bsons_to_bson_dict_by_uu) {
     UUID the_id = {};
     char poster[IDLEN + 1] = {};
     for(int i = 0; i < n_bson; i++) {
-        sprintf((char *)the_id, "id%03d", i);
+        sprintf(the_id, "id%03d", i);
         sprintf(poster, "poster%03d", i);
         bsons[i] = BCON_NEW(
             (char *)"the_id", BCON_BINARY(the_id, UUIDLEN),
-            (char *)"poster", BCON_BINARY(poster, IDLEN)
+            (char *)"poster", BCON_BINARY((unsigned char *)poster, IDLEN)
             );
     }
 
@@ -371,7 +372,7 @@ TEST(util_db, bsons_to_bson_dict_by_uu) {
     }
 
     // free
-    safe_free_b_list(&bsons);
+    safe_free_b_list(&bsons, n_bson);
     bson_safe_destroy(&bson_dict);
 
 }
