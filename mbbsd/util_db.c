@@ -576,6 +576,7 @@ bsons_to_bson_dict_by_uu(bson_t **b, int n_b, char *key, bson_t **b_result)
 {
     Err error_code = S_OK;
     *b_result = bson_new();
+    if(!*b_result) return S_ERR;
     bson_t *p_b_result = *b_result;
 
     bson_t **p_b = b;
