@@ -601,8 +601,7 @@ extract_b_comments_comment_id_to_bsons(bson_t **b_comments, int n_comment, char 
     size_t array_keylen;
 
     Err error_code = S_OK;
-    *b_comment_ids = bson_new();
-    bson_t *tmp_b = *b_comment_ids;
+    bson_t *tmp_b = bson_new();
     bson_t **p_b_comments = b_comments;
 
     UUID uuid = {};
@@ -631,6 +630,8 @@ extract_b_comments_comment_id_to_bsons(bson_t **b_comments, int n_comment, char 
         }
     }
     bson_append_array_end(tmp_b, &child);
+
+    *b_comment_ids = tmp_b;
 
     return error_code;    
 }
