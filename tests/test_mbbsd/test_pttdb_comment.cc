@@ -2100,9 +2100,6 @@ TEST(pttdb_comment, extract_b_comments_comment_id_to_bsons_no_comment_reply_ids2
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(true, is_exist);
 
-    bson_iter_t iter;
-    bson_iter_t sub_iter;
-
     bzero(is_exist_in_array, sizeof(is_exist_in_array));
 
     the_id = 0;
