@@ -2497,6 +2497,8 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf) {
     EXPECT_EQ(15, n_read_comment_reply);
     EXPECT_EQ(1180, len_buf);
 
+    fprintf(stderr, "test_pttdb_comment.dynamic_read_b_comment_comment_Reply_by_ids_to_buf: result_buf: %s\n", result_buf);
+
     // extract_b_comments_comment_reply_id_to_bsons
 
     // free
