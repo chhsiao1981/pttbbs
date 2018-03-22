@@ -591,7 +591,7 @@ bsons_to_bson_dict_by_uu(bson_t **b, int n_b, char *key, bson_t **b_result)
     }
 
     char *str = bson_as_canonical_extended_json(p_b_result, NULL);
-    fprintf(stderr, "util_db.bsons_to_bson_dict_by_uu: p_b_result: %s\n", p_b_result);
+    fprintf(stderr, "util_db.bsons_to_bson_dict_by_uu: p_b_result: %s\n", str);
     bson_free(str);
 
     return error_code;
