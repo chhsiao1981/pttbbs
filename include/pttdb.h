@@ -238,7 +238,7 @@ typedef struct _DictBsonByUU {
     struct _DictBsonByUU *next;
 } _DictBsonByUU;
 
-typedf struct DictBsonByUU {
+typedef struct DictBsonByUU {
     int n_dict;
     _DictBsonByUU **dicts;
 } DictBsonByUU;
