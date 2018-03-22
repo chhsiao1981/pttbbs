@@ -191,7 +191,7 @@ TEST(pttdb_util, form_rand_list) {
     }
     EXPECT_EQ(4950, sum);
 
-        ((void **)&rand_list);
+    safe_free((void **)&rand_list);
 }
 
 /**********
@@ -206,8 +206,6 @@ public:
 };
 
 void MyEnvironment::SetUp() {
-    Err err = S_OK;
-
     FD = open("log.test_pttdb_util.err", O_WRONLY | O_CREAT | O_TRUNC, 0660);
     dup2(FD, 2);
 }
