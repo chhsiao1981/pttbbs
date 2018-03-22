@@ -610,10 +610,15 @@ extract_b_comments_comment_id_to_bsons(bson_t **b_comments, int n_comment, char 
     bool status = false;
 
     BSON_APPEND_ARRAY_BEGIN(tmp_b, result_key, &child);
+    char *disp_uuid = NULL;
     for (int i = 0; i < n_comment; i++, p_b_comments++) {
         fprintf(stderr, "pttdb_comment.extract_b_comments_comment_id_to_bsons: (%d/%d)\n", i, n_comment);
         error_code = bson_get_value_bin(*p_b_comments, "the_id", UUIDLEN, (char *)uuid, &len);
         if(error_code) break;
+
+        disp_uuid = display_uuid(uuid);
+        fprintf(stderr, "pttdb_comment.extract_b_comments_comment_id_to_bsons: (%d/%d): %s\n", i, n_comment, disp_uuid);
+        free(disp_uuid);
 
         array_keylen = bson_uint32_to_string(i, &array_key, buf, sizeof(buf));
         status = bson_append_bin(&child, array_key, (int)array_keylen, uuid, UUIDLEN);
