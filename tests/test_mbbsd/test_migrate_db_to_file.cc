@@ -69,7 +69,6 @@ TEST(migrate_db_to_file, migrate_db_to_file) {
     bson_t *comment_bson = NULL;
 
     char replier[IDLEN + 1] = {};
-    int n_comment = 100;
 
     UUID comment_id = {};
     UUID comment_reply_id = {};
