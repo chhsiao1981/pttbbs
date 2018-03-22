@@ -735,7 +735,9 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
     *n_read_comment_reply = tmp_n_comment_reply;
     *len_buf = p_buf - buf;
 
-    return S_OK;
+    fprintf(stderr, "pttdb_comment._dynamic_read_b_comment_comment_reply_by_ids_to_buf_core: n_read_comment: %d n_read_comment_reply: %d len_buf: %d e: %d\n", *n_read_comment, *n_read_comment_reply, *len_buf, error_code);
+
+    return error_code;
 }
 
 
