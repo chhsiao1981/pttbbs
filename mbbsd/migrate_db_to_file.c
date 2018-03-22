@@ -75,6 +75,7 @@ _migrate_main_content_to_file_core(UUID content_id, FILE *fp, int start_block_id
     if(error_code) return error_code;
 
     int i = 0;
+    int ret = 0;
     if(!error_code) {
         ret = fprintf(fp, buf);
         if(ret < 0) error_code = S_ERR;
@@ -130,7 +131,7 @@ _migrate_comment_comment_reply_by_main_to_file(UUID main_id, FILE *fp)
 
     // free
     bson_safe_destroy(&fields);
-    safe_free_b_list(&b_comments);
+    safe_free_b_list(&b_comments, n_comment);
 
     return error_code;
 }
