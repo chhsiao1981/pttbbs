@@ -3,6 +3,7 @@
 #include "ptterr.h"
 #include "util_db.h"
 #include "util_db_internal.h"
+#include "pttdb.h"
 
 TEST(util_db, db_set_if_not_exists) {
     Err error;
@@ -349,8 +350,8 @@ TEST(util_db, bsons_to_bson_dict_by_uu) {
         sprintf((char *)the_id, "id%03d", i);
         sprintf(poster, "poster%03d", i);
         bsons[i] = BCON_NEW(
-            "the_id", BCON_BINARY(the_id, UUIDLEN),
-            "poster", BCON_BINARY(poster, IDLEN)
+            (char *)"the_id", BCON_BINARY(the_id, UUIDLEN),
+            (char *)"poster", BCON_BINARY(poster, IDLEN)
             );
     }
 
