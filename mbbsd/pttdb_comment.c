@@ -497,6 +497,13 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
 
     fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: to extract b_comments_comment_id_to_bson: n_comment: %d\n", n_comment);
 
+    char *str = NULL;
+    for(int i = 0; i < n_comment; i++) {
+        str == bson_as_canonical_extended_json(b_comments[i], NULL);
+        fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: (%d/%d) b_comment: %s\n", i, n_comment, str);
+        bson_free(str);
+    }
+
     if(!error_code) {
         error_code = extract_b_comments_comment_id_to_bsons(b_comments, n_comment, "$in", &q_b_comment_ids);
     }
