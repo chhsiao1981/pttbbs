@@ -658,9 +658,9 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
 
     bson_t **p_b_comments = b_comments;    
     char *p_buf = buf;
-    char comment_id[UUIDLEN] = {};
-    char comment_reply_id[UUIDLEN] = {};
-    char empty_id[UUIDLEN] = {};
+    UUID comment_id = {};
+    UUID comment_reply_id = {};
+    UUID empty_id = {};
 
     int len_comment = 0;
     int len_comment_reply = 0;
