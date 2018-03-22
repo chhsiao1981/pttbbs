@@ -551,13 +551,13 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
     }
 
     // free
-    safe_destroy_dict_bson_by_uu(dict_comment_reply);    
+    safe_destroy_dict_bson_by_uu(&dict_comment_reply);    
     safe_free_b_list(&b_comment_replys, n_comment_reply);
     bson_safe_destroy(&comment_reply_fields);
     bson_safe_destroy(&query_comment_reply);
     bson_safe_destroy(&q_b_comment_reply_ids);
 
-    safe_destroy_dict_bson_by_uu(dict_comment_content);
+    safe_destroy_dict_bson_by_uu(&dict_comment_content);
     safe_free_b_list(&b_comment_contents, n_comment_content);
     bson_safe_destroy(&comment_fields);
     bson_safe_destroy(&query_comment);
@@ -658,8 +658,7 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
 
     bson_t **p_b_comments = b_comments;    
     char *p_buf = buf;
-    char comment_id_key[UUIDLEN + 5] = {};
-    char comment_reply_id[UUIDLEN] = {};
+    char comment_id[UUIDLEN] = {};
     char empty_id[UUIDLEN] = {};
     char *p_comment_id_key = comment_id_key + UUIDLEN;
     char *p_reset_comment_id_key = comment_id_key + UUIDLEN;
@@ -676,12 +675,8 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
     bson_t *b_comment_content = NULL;
     bson_t *b_comment_reply = NULL;
     for(int i = 0; i < n_comment; i++, p_b_comments++, len_comment = 0, len_comment_reply = 0, len_read_comment = 0, len_read_comment_reply = 0, *p_reset_comment_id_key = 0, b_comment_content = NULL, b_comment_reply = NULL) {
-        // get comment_id and comment_reply_id
-        error_code = bson_get_value_bin(*p_b_comments, "the_id", UUIDLEN, comment_id_key, &len);
-
-        if(!error_code) {
-            error_code = bson_get_value_bin(*p_b_comments, "comment_reply_id", UUIDLEN, comment_reply_id, &len);
-        }
+        // get comment_id
+        error_code = bson_get_value_bin(*p_b_comments, "the_id", UUIDLEN, comment_id, &len);
 
         // get comment
         if(!error_code) {
