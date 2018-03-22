@@ -506,6 +506,11 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
             "the_id", BCON_DOCUMENT(q_b_comment_ids)
             );
     }
+
+    char *str = bson_as_canonical_extended_json(query_comment, NULL);
+    fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: query_comment: %s\n", str);
+    bson_free(str);
+
     if(!error_code) {
         b_comment_contents = malloc(sizeof(bson_t *) * n_comment);
         if(!b_comment_contents) error_code = S_ERR;
