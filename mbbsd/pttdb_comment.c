@@ -676,6 +676,7 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
 
     _display_dict_bson_by_uu(dict_comment_content, "pttdb_comment._dynamic_read_b_comment_comment_reply_by_ids_to_buf_core: dict_comment_content: ");
 
+    *n_read_comment = n_comment;
     for(int i = 0; i < n_comment; i++, p_b_comments++, len_comment = 0, len_comment_reply = 0, len_read_comment = 0, len_read_comment_reply = 0, b_comment_content = NULL, b_comment_reply = NULL) {
         // get comment_id
         error_code = bson_get_value_bin(*p_b_comments, "the_id", UUIDLEN, (char *)comment_id, &len);
