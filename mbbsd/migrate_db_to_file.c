@@ -140,28 +140,27 @@ _migrate_comment_comment_reply_by_main_to_file_core(bson_t **b_comments, int n_c
 {
     Err error_code = S_OK;
 
-    char buf[MAX_BUF_SIZE] = {};
+    char buf[MAX_MIGRATE_COMMENT_COMMENT_REPLY_BUF_SIZE] = {};
     int ret = 0;
     int n_read_comment = 0;
     int n_comment_reply = 0;
     int len = 0;
 
-    while(n_comment > 0) {
-        error_code = dynamic_read_b_comment_comment_reply_by_ids_to_buf(b_comments, n_comment, buf, MAX_BUF_SIZE, &n_read_comment, &n_comment_reply, &len);
+    bson_t **p_b_comments = b_comments;
+    for(; n_comment > 0; p_b_comments += n_read_comment, n_comment -= n_read_comment, bzero(buf, len)) {
+        error_code = dynamic_read_b_comment_comment_reply_by_ids_to_buf(p_b_comments, n_comment, buf, MAX_BUF_SIZE, &n_read_comment, &n_comment_reply, &len);
+        fprintf(stderr, "migrate_db_to_file._migrate_comment_comment_reply_by_main_to_file_core: after dynamic_read: e: %d n_read_comment: %d n_comment_reply: %d\n", error_code, n_read_comment, n_comment_reply);
         if(error_code == S_ERR_BUFFER_LEN) error_code = S_OK;
         if(error_code) break;
 
         buf[len] = 0;
         ret = fprintf(fp, "%s", buf);
+
         if(ret < 0) {
             error_code = S_ERR;
             break;
-        }
-
-        n_comment -= n_read_comment;
+        }        
     }
-
-    if(n_comment == 0) error_code = S_OK;
 
     return error_code;
 }

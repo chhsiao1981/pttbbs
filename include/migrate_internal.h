@@ -10,6 +10,7 @@ extern "C" {
 
 #define N_MIGRATE_MAIN_CONTENT_TO_FILE_BLOCK 5
 #define N_MIGRATE_COMMENT_COMMENT_REPLY_TO_FILE_BLOCK 256
+#define MAX_MIGRATE_COMMENT_COMMENT_REPLY_BUF_SIZE 8192 * 5
 
 Err _migrate_main_content_to_file(MainHeader *main_header, FILE *fp);
 Err _migrate_main_content_to_file_core(UUID content_id, FILE *fp, int start_block_id, int next_block_id);
