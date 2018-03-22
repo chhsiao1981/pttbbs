@@ -570,6 +570,17 @@ bson_safe_destroy(bson_t **b)
     return S_OK;
 }
 
+Err
+safe_free_b_list(bson_t ***b, int n)
+{
+    bson_t **p_b = *b;
+    for(int i = 0; i < n; i++, p_b++) {
+        bson_safe_destroy(p_b);
+    }
+    safe_free((void **)b);
+
+    return S_OK;
+}
 
 Err
 bsons_to_bson_dict_by_uu(bson_t **b, int n_b, char *key, bson_t **b_result)

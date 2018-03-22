@@ -70,6 +70,7 @@ Err bson_get_descendant_value_int32(bson_t *b, char *name, int *value);
 Err bson_get_descendant_value_bin(bson_t *b, char *name, int max_len, char *value, int *p_len);
 
 Err bson_safe_destroy(bson_t **b);
+Err safe_free_b_list(bson_t ***b, int n);
 
 Err bsons_to_bson_dict_by_uu(bson_t **b, int n_b, char *key, bson_t **b_result);
 

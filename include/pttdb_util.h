@@ -14,7 +14,6 @@ Err get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int 
 Err pttdb_count_lines(char *content, int len, int *n_line);
 
 Err safe_free(void **a);
-Err safe_free_b_list(bson_t ***b, int n);
 
 Err form_rand_list(int n, int **rand_list);
 

@@ -81,18 +81,6 @@ pttdb_count_lines(char *content, int len, int *n_line)
 }
 
 Err
-safe_free_b_list(bson_t ***b, int n)
-{
-    bson_t **p_b = *b;
-    for(int i = 0; i < n; i++, p_b++) {
-        bson_safe_destroy(p_b);
-    }
-    safe_free((void **)b);
-
-    return S_OK;
-}
-
-Err
 safe_free(void **a)
 {
     if(!(*a)) return S_OK;
