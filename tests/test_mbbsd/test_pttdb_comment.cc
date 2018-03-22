@@ -2487,10 +2487,10 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf) {
     }
 
     // dynamic read b comment comment reply by ids to buf
-    char result_buf[MAX_BUF_SIZE];
-    int n_read_comment;
-    int n_read_comment_reply;
-    int len_buf;
+    char result_buf[MAX_BUF_SIZE] = {};
+    int n_read_comment = 0;
+    int n_read_comment_reply = 0;
+    int len_buf = 0;
     error = dynamic_read_b_comment_comment_reply_by_ids_to_buf(b_comments, n_comment, result_buf, MAX_BUF_SIZE, &n_read_comment, &n_read_comment_reply, &len_buf);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_read_comment);
