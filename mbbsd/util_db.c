@@ -329,6 +329,8 @@ _DB_FORCE_DROP_COLLECTION(int collection)
     bson_error_t error;
     fprintf(stderr, "to drop collection: collection: %d MONGO_COLLECTIONS: %lu\n", collection, MONGO_COLLECTIONS[collection]);
     status = mongoc_collection_drop(MONGO_COLLECTIONS[collection], &error);
+    fprintf(stderr, "after drop collection: collection: %d MONGO_COLLECTIONS: %lu\n", collection, MONGO_COLLECTIONS[collection]);
+
     if (!status) return S_ERR;
 
     return S_OK;
