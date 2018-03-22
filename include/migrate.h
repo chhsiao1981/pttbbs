@@ -10,7 +10,7 @@
 extern "C" {
 #endif
 
-Err migrate_db_to_file(UUID main_id, const char *fpath, int saveheader);
+Err migrate_db_to_file(UUID main_id, const char *fpath);
 
 #ifdef __cplusplus
 }

@@ -28,10 +28,10 @@ migrate_db_to_file(UUID main_id, const char *fpath)
     error_code = read_main_header(main_id, &main_header);
 
     if(!error_code) {
-        error_code = _migrate_main_content_to_file(main_header, fp);
+        error_code = _migrate_main_content_to_file(&main_header, fp);
     }
     if(!error_code) {
-        error_code = _migrate_comment_comment_reply_by_main_to_file(main_header, fp);
+        error_code = _migrate_comment_comment_reply_by_main_to_file(main_header.the_id, fp);
     }
 
     // free
@@ -43,13 +43,15 @@ migrate_db_to_file(UUID main_id, const char *fpath)
 
 
 Err
-_migrate_main_content_to_file(MainHeader main_header, FILE *fp)
+_migrate_main_content_to_file(MainHeader *main_header, FILE *fp)
 {
     Err error_code = S_OK;
     int next_i = 0;
-    for(int i = 0; i < main_header.n_total_block; i += N_MIGRATE_MAIN_CONTENT_TO_FILE_BLOCK) {
-        next_i = (i + N_MIGRATE_MAIN_CONTENT_TO_FILE_BLOCK) < main_header.n_total_block ? (i + N_MIGRATE_MAIN_CONTENT_TO_FILE_BLOCK) : main_header.n_total_block;
-        error_code = _migrate_main_content_to_file_core(main_header.content_id, fp, i, next_i);
+    int n_total_block = main_header->n_total_block;
+    UUID content_id = main_header->content_id;
+    for(int i = 0; i < n_total_block; i += N_MIGRATE_MAIN_CONTENT_TO_FILE_BLOCK) {
+        next_i = (i + N_MIGRATE_MAIN_CONTENT_TO_FILE_BLOCK) < n_total_block ? (i + N_MIGRATE_MAIN_CONTENT_TO_FILE_BLOCK) : n_total_block;
+        error_code = _migrate_main_content_to_file_core(content_id, fp, i, next_i);
         if(error_code) break;
     }
 
@@ -65,7 +67,10 @@ _migrate_main_content_to_file_core(UUID content_id, FILE *fp, int start_block_id
     int n_block = 0;
     int len = 0;
 
-    error_code = dynamic_read_content_blocks(content_id, next_block_id - start_block_id, start_block_id, MONGO_MAIN_CONTENT, buf, MAX_BUF_SIZE, content_blocks, &n_block, &len);
+    int max_n_block = next_block_id - start_block_id;
+    ContentBlock content_blocks[N_MIGRATE_COMMENT_COMMENT_REPLY_TO_FILE_BLOCK] = {};
+
+    error_code = dynamic_read_content_blocks(content_id, next_block_id - start_block_id, start_block_id, MONGO_MAIN_CONTENT, buf, MAX_BUF_SIZE * N_MIGRATE_COMMENT_COMMENT_REPLY_TO_FILE_BLOCK, content_blocks, &n_block, &len);
 
     if(error_code) return error_code;
 
@@ -79,7 +84,7 @@ _migrate_main_content_to_file_core(UUID content_id, FILE *fp, int start_block_id
 }
 
 Err
-_migrate_comment_comment_reply_by_main_to_file(UUID main_header, FILE *fp)
+_migrate_comment_comment_reply_by_main_to_file(UUID main_id, FILE *fp)
 {
     Err error_code = S_OK;
     UUID comment_id = {};
@@ -87,7 +92,7 @@ _migrate_comment_comment_reply_by_main_to_file(UUID main_header, FILE *fp)
     char poster[IDLEN + 1] = {};
     int n_expected_comment = 0;
 
-    error_code = get_newest_comment(main_header.main_id, comment_id, &create_milli_timestamp, poster, &n_expected_comment);
+    error_code = get_newest_comment(main_id, comment_id, &create_milli_timestamp, poster, &n_expected_comment);
 
     bson_t **b_comments = NULL;
     int n_comment = 0;
@@ -106,7 +111,7 @@ _migrate_comment_comment_reply_by_main_to_file(UUID main_header, FILE *fp)
     if(!fields) error_code = S_ERR_ABORT_BBS;
 
     if(!error_code) {
-        error_code = read_comments_until_newest_to_bsons(main_header.main_id, create_milli_timestamp, poster, fields, n_expected_comment, b_comments, &n_comment);
+        error_code = read_comments_until_newest_to_bsons(main_id, create_milli_timestamp, poster, fields, n_expected_comment, b_comments, &n_comment);
     }
 
     if(!error_code) {
@@ -131,7 +136,7 @@ _migrate_comment_comment_reply_by_main_to_file(UUID main_header, FILE *fp)
 }
 
 Err
-_migrate_comment_comment_reply_by_main_to_file_core(bsont_t **b_comments, int n_comment, FILE *fp)
+_migrate_comment_comment_reply_by_main_to_file_core(bson_t **b_comments, int n_comment, FILE *fp)
 {
     Err error_code = S_OK;
 
