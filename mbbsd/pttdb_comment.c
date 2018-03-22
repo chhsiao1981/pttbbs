@@ -595,10 +595,10 @@ read_comments_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_comment
 Err
 extract_b_comments_comment_id_to_bsons(bson_t **b_comments, int n_comment, char *result_key, bson_t **b_comment_ids)
 {
-    bson_t child;
-    char buf[16];
-    const char *array_key;
-    size_t array_keylen;
+    bson_t child = {};
+    char buf[16] = {};
+    const char *array_key = NULL;
+    size_t array_keylen = 0;
 
     Err error_code = S_OK;
     bson_t *tmp_b = bson_new();
