@@ -2095,7 +2095,7 @@ TEST(pttdb_comment, extract_b_comments_comment_id_to_bsons_no_comment_reply_ids2
     error = extract_b_comments_comment_id_to_bsons(b_comments, n_comment, (char *)"$in", &b_comment_ids2);
     EXPECT_EQ(S_OK, error);
 
-    bool is_exist = false;
+    is_exist = false;
     error = bson_exists(b_comment_ids2, (char *)"$in", &is_exist);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(true, is_exist);
@@ -2103,9 +2103,9 @@ TEST(pttdb_comment, extract_b_comments_comment_id_to_bsons_no_comment_reply_ids2
     bson_iter_t iter;
     bson_iter_t sub_iter;
 
-    bool is_exist_in_array[100] = {};
+    bzero(is_exist_in_array, sizeof(is_exist_in_array));
 
-    int the_id = 0;
+    the_id = 0;
     bson_iter_init_find(&iter, b_comment_ids2, "$in");
     bson_iter_recurse(&iter, &sub_iter);
     while(bson_iter_next(&sub_iter)) {
