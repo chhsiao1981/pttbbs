@@ -32,8 +32,8 @@ TEST(migrate_db_to_file, migrate_db_to_file) {
     strcpy(web_link, "http://www.ptt.cc/bbs/longboardid/M.1234567890.ABCD.html");
 
     // create-main-from-fd
-    Err error_code = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
-    EXPECT_EQ(S_OK, error_code);
+    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    EXPECT_EQ(S_OK, error);
 
     close(fd);
 
@@ -71,6 +71,7 @@ TEST(migrate_db_to_file, migrate_db_to_file) {
     char replier[IDLEN + 1] = {};
     int n_comment = 100;
 
+    UUID comment_id = {};
     UUID comment_reply_id = {};
 
     for (int i = 85; i < 100; i++) {
