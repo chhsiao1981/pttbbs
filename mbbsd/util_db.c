@@ -588,7 +588,10 @@ bsons_to_bson_dict_by_uu(bson_t **b, int n_b, char *key, bson_t **b_result)
         if(error_code) break;
 
         status = bson_append_document(p_b_result, (char *)uuid, UUIDLEN, *p_b);
-        if(!status) break;
+        if(!status) {
+            error_code = S_ERR;
+            break;
+        }
     }
 
     char *str = bson_as_canonical_extended_json(p_b_result, NULL);
