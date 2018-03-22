@@ -141,4 +141,6 @@ _display_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu, char *prompt)
             bson_free(str);
         }
     }
+
+    return S_OK;
 }

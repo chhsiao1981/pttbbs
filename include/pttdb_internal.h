@@ -82,6 +82,8 @@ Err _get_comment_reply_info_by_main_deal_with_result(bson_t *result, int n_resul
  **********/
 
 Err _safe_destroy_dict_bson_by_uu_core(_DictBsonByUU *dict_bson_by_uu);
+Err _display_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu, char *prompt);
+
 #ifdef __cplusplus
 }
 #endif
