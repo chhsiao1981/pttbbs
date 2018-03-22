@@ -661,7 +661,6 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
     char comment_id[UUIDLEN] = {};
     char comment_reply_id[UUIDLEN] = {};
     char empty_id[UUIDLEN] = {};
-    bool is_with_comment_reply = false;
 
     int len_comment = 0;
     int len_comment_reply = 0;
@@ -684,12 +683,12 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
 
         // get comment
         if(!error_code) {
-            error_code = get_bson_from_dict_bson_by_uu(dict_comment_content, (char *)comment_id, &b_comment_content);
+            error_code = get_bson_from_dict_bson_by_uu(dict_comment_content, comment_id, &b_comment_content);
         }
 
         // get comment-reply
         if(!error_code && strncmp(comment_reply_id, empty_id, UUIDLEN)) {
-            error_code_b_comment_reply = get_bson_from_dict_bson_by_uu(dict_comment_reply, (char *)comment_id, &b_comment_reply);
+            error_code_b_comment_reply = get_bson_from_dict_bson_by_uu(dict_comment_reply, comment_id, &b_comment_reply);
         }
 
         // get comment-len
