@@ -126,3 +126,19 @@ _safe_destroy_dict_bson_by_uu_core(_DictBsonByUU *dict_bson_by_uu)
     free(pre_p);
     return S_OK;
 }
+
+Err
+_display_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu, char *prompt)
+{
+    int n_dict = dict_bson_by_uu->n_dict;
+    int j = 0;
+    _DictBsonByUU *p_dict = NULL;
+    char *str = NULL;
+    for(int i = 0; i < n_dict; i++) {
+        for(p_dict = dict_bson_by_uu->dicts[i], j = 0; p_dict; p_dict = p_dict->next, j++) {
+            str = bson_as_canonical_extended_json(p_dict->b, NULL);
+            fprintf(stderr, "%s (%d/%d): %d: bson: %s\n", prompt, i, n_dict, j, str);
+            bson_free(str);
+        }
+    }
+}
