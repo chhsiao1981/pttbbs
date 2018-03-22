@@ -601,10 +601,10 @@ bsons_to_bson_dict_by_uu(bson_t **b, int n_b, char *key, bson_t **b_result)
         error_code = bson_get_value_bin(*p_b, key, UUIDLEN, (char *)uuid, &len);
         if(error_code) break;
 
-        disp_uuid = _display_uuid(uuid);
+        disp_uuid = display_uuid(uuid);
 
         status = bson_append_document(p_b_result, (char *)disp_uuid, UUIDLEN, *p_b);
-        safe_free(disp_uuid);
+        safe_free((void **)&disp_uuid);
         if(!status) {
             error_code = S_ERR;
             break;
