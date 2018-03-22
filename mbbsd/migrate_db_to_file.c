@@ -154,6 +154,7 @@ _migrate_comment_comment_reply_by_main_to_file_core(bson_t **b_comments, int n_c
         if(error_code) break;
 
         buf[len] = 0;
+        fprintf(stderr, "migrate_db_to_file._migrate_comment_comment_reply_by_main_to_file_core: buf: %s\n", buf);
         ret = fprintf(fp, "%s", buf);
 
         if(ret < 0) {
