@@ -38,7 +38,7 @@ TEST(pttdb_main, create_main_from_fd_test1_read_main_content) {
     char *disp_uuid = NULL;
     disp_uuid = display_uuid(main_id);
     fprintf(stderr, "test_pttdb_main.create_main_from_fd: after create_main_from_fd: main_id: %s\n", disp_uuid);
-    safe_free(&disp_uuid);
+    safe_free((void **)&disp_uuid);
 
     // read main-header
     MainHeader main_header = {};
