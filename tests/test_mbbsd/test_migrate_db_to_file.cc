@@ -62,13 +62,11 @@ TEST(migrate_db_to_file, migrate_db_to_file) {
     strcpy(comment.update_ip, "10.1.1.4");
     comment.update_milli_timestamp = create_milli_timestamp;
 
-    strcpy(comment.buf, "test1test1\r\n");
-    comment.len = 12;
-
     bson_t *comment_id_bson = NULL;
     bson_t *comment_bson = NULL;
 
     char replier[IDLEN + 1] = {};
+    char reply_buf[MAX_BUF_SIZE] = {};
 
     UUID comment_id = {};
     UUID comment_reply_id = {};
@@ -81,13 +79,18 @@ TEST(migrate_db_to_file, migrate_db_to_file) {
         comment.create_milli_timestamp = create_milli_timestamp + 85;
         comment.update_milli_timestamp = create_milli_timestamp + 85;
 
+        sprintf(comment.buf, "testtest%03d\r\n", i);
+        comment.len = strlen(comment.buf);
+
+
         error = _serialize_comment_bson(&comment, &comment_bson);
         error = _serialize_uuid_bson(comment_id, &comment_id_bson);
 
         error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
 
         sprintf(replier, "reply%03d", i);
-        error = create_comment_reply(main_id, comment_id, replier, (char *)"10.1.1.5", 12, (char *)"replyreply\r\n", comment_reply_id);
+        sprintf(reply_buf, "replyreply%03d\r\n", i);
+        error = create_comment_reply(main_id, comment_id, replier, (char *)"10.1.1.5", strlen(reply_buf), reply_buf, comment_reply_id);
 
         bson_safe_destroy(&comment_bson);
         bson_safe_destroy(&comment_id_bson);
@@ -102,6 +105,9 @@ TEST(migrate_db_to_file, migrate_db_to_file) {
 
         comment.create_milli_timestamp = create_milli_timestamp + i;
         comment.update_milli_timestamp = create_milli_timestamp + i;
+
+        sprintf(comment.buf, "testtest%03d\r\n", i);
+        comment.len = strlen(comment.buf);
 
         error = _serialize_comment_bson(&comment, &comment_bson);
         error = _serialize_uuid_bson(comment_id, &comment_id_bson);
@@ -121,6 +127,9 @@ TEST(migrate_db_to_file, migrate_db_to_file) {
 
         comment.create_milli_timestamp = create_milli_timestamp;
         comment.update_milli_timestamp = create_milli_timestamp;
+
+        sprintf(comment.buf, "testtest%03d\r\n", i);
+        comment.len = strlen(comment.buf);
 
         error = _serialize_comment_bson(&comment, &comment_bson);
         error = _serialize_uuid_bson(comment_id, &comment_id_bson);
