@@ -511,6 +511,8 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
         if(!b_comment_contents) error_code = S_ERR;
     }
 
+    fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: to extract b_comments_comment_reply_id_to_bson: n_comment: %d\n", n_comment);
+
     if(!error_code) {
         error_code = extract_b_comments_comment_reply_id_to_bsons(b_comments, n_comment, "$in", &q_b_comment_reply_ids, &n_expected_comment_reply);
     }
