@@ -2369,8 +2369,8 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf) {
         
         error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
 
-        sprintf(replier, "reply%03d", i)
-        error = create_comment_reply(main_id, comment_id, replier, "10.1.1.5", 12, "replyreply\r\n", comment_reply_id);
+        sprintf(replier, "reply%03d", i);
+        error = create_comment_reply(main_id, comment_id, replier, (char *)"10.1.1.5", 12, (char *)"replyreply\r\n", comment_reply_id);
 
         bson_safe_destroy(&comment_bson);
         bson_safe_destroy(&comment_id_bson);
