@@ -3,6 +3,7 @@
 #define PTTDB_H
 
 #include "ptterr.h"
+#include "pttdb_util.h"
 #include "pttdb_uuid.h"
 #include "util_db.h"
 
@@ -14,7 +15,6 @@ extern "C" {
 
 #define MAX_ORIGIN_LEN 20
 #define MAX_WEB_LINK_LEN 100                  // MAX_ORIGN_LEN + 8 + 12 + BOARDLEN + 1 + 23
-#define MAX_BUF_SIZE 8192
 #define MAX_BUF_BLOCK 8192
 #define MAX_BUF_COMMENT 256
 #define MAX_BUF_LINES 256
@@ -348,16 +348,6 @@ Err dissociate_comment_reply(CommentReply *comment_reply);
 
 // for file_info
 Err read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_comment_reply, bson_t **b_comment_replys, int *n_comment_reply);
-
-/**********
- * Misc
- **********/
-
-Err safe_free(void **a);
-Err safe_free_b_list(bson_t ***b, int n);
-
-Err form_rand_list(int n, int **rand_list);
-
 
 #ifdef __cplusplus
 }

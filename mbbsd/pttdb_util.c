@@ -1,5 +1,4 @@
-#include "pttdb.h"
-#include "pttdb_internal.h"
+#include "pttdb_util.h"
 
 /**********
  * Get line from buf
@@ -101,17 +100,6 @@ safe_free(void **a)
     free(*a);
     *a = NULL;
     return S_OK;
-}
-
-char *
-_display_uuid(UUID uuid)
-{
-    char *result = malloc(DISPLAY_UUIDLEN + 1);
-    result[DISPLAY_UUIDLEN] = 0;
-
-    b64_ntop(uuid, UUIDLEN, (char *)result, DISPLAY_UUIDLEN);
-
-    return result;
 }
 
 Err

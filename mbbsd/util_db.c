@@ -591,12 +591,9 @@ bsons_to_bson_dict_by_uu(bson_t **b, int n_b, char *key, bson_t **b_result)
         if(error_code) break;
 
         disp_uuid = _display_uuid(uuid);
-        str = bson_as_canonical_extended_json(*p_b, NULL);
-        fprintf(stderr, "util_db.bsons_to_bson_dict_by_uu: uuid: %s p_b: %s\n", disp_uuid, str);
-        safe_free(&disp_uuid);
-        bson_free(str);
 
-        status = bson_append_document(p_b_result, (char *)uuid, UUIDLEN, *p_b);
+        status = bson_append_document(p_b_result, (char *)disp_uuid, UUIDLEN, *p_b);
+        safe_free(disp_uuid);
         if(!status) {
             error_code = S_ERR;
             break;

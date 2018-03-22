@@ -1,11 +1,9 @@
 #include "gtest/gtest.h"
 #include "bbs.h"
 #include "ptterr.h"
-#include "pttdb.h"
-#include "pttdb_internal.h"
-#include "util_db_internal.h"
+#include "pttdb_util.h"
 
-TEST(pttdb_mics, get_line_from_buf) {
+TEST(pttdb_util, get_line_from_buf) {
     int len_buf = 24;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -22,7 +20,7 @@ TEST(pttdb_mics, get_line_from_buf) {
     EXPECT_STREQ("0123456789\r\n", line);
 }
 
-TEST(pttdb_misc, get_line_from_buf_with_offset_buf) {
+TEST(pttdb_util, get_line_from_buf_with_offset_buf) {
     int len_buf = 24;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -39,7 +37,7 @@ TEST(pttdb_misc, get_line_from_buf_with_offset_buf) {
     EXPECT_STREQ("ABCDEFGHIJ\r\n", line);
 }
 
-TEST(pttdb_misc, get_line_from_buf_with_line_offset) {
+TEST(pttdb_util, get_line_from_buf_with_line_offset) {
     int len_buf = 24;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -58,7 +56,7 @@ TEST(pttdb_misc, get_line_from_buf_with_line_offset) {
     EXPECT_STREQ("!@0123456789\r\n", line);
 }
 
-TEST(pttdb_misc, get_line_from_buf_not_end) {
+TEST(pttdb_util, get_line_from_buf_not_end) {
     int len_buf = 10;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -75,7 +73,7 @@ TEST(pttdb_misc, get_line_from_buf_not_end) {
     EXPECT_STREQ("0123456789", line);
 }
 
-TEST(pttdb_misc, get_line_from_buf_offset_buf_not_end) {
+TEST(pttdb_util, get_line_from_buf_offset_buf_not_end) {
     int len_buf = 13;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -92,7 +90,7 @@ TEST(pttdb_misc, get_line_from_buf_offset_buf_not_end) {
     EXPECT_STREQ("0123456789", line);
 }
 
-TEST(pttdb_misc, get_line_from_buf_r_only) {
+TEST(pttdb_util, get_line_from_buf_r_only) {
     int len_buf = 13;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -109,7 +107,7 @@ TEST(pttdb_misc, get_line_from_buf_r_only) {
     EXPECT_STREQ("A\r0123456789", line);
 }
 
-TEST(pttdb_misc, get_line_from_buf_n_only) {
+TEST(pttdb_util, get_line_from_buf_n_only) {
     int len_buf = 13;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -126,7 +124,7 @@ TEST(pttdb_misc, get_line_from_buf_n_only) {
     EXPECT_STREQ("A\n0123456789", line);
 }
 
-TEST(pttdb_misc, get_line_from_buf_line_with_max_buf_size) {
+TEST(pttdb_util, get_line_from_buf_line_with_max_buf_size) {
     int len_buf = 22;
     char buf[MAX_BUF_SIZE] = {};
     char line[MAX_BUF_SIZE] = {};
@@ -144,7 +142,7 @@ TEST(pttdb_misc, get_line_from_buf_line_with_max_buf_size) {
     EXPECT_EQ(0, strncmp("0123456789", line + MAX_BUF_SIZE - 10, 10));
 }
 
-TEST(pttdb_misc, get_line_from_buf_partial_line_break) {
+TEST(pttdb_util, get_line_from_buf_partial_line_break) {
     int len_buf = 13;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -162,7 +160,7 @@ TEST(pttdb_misc, get_line_from_buf_partial_line_break) {
     EXPECT_STREQ("!\r\n", line);
 }
 
-TEST(pttdb_misc, get_line_from_buf_end_of_buf) {
+TEST(pttdb_util, get_line_from_buf_end_of_buf) {
     int len_buf = 12;
     char buf[MAX_BUF_SIZE];
     char line[MAX_BUF_SIZE];
@@ -178,7 +176,7 @@ TEST(pttdb_misc, get_line_from_buf_end_of_buf) {
     EXPECT_EQ(0, bytes_in_new_line);
 }
 
-TEST(pttdb_misc, form_rand_list) {
+TEST(pttdb_util, form_rand_list) {
     int *rand_list = NULL;
     Err error = form_rand_list(100, &rand_list);
     EXPECT_EQ(S_OK, error);

@@ -77,13 +77,6 @@ Err _deserialize_comment_reply_bson(bson_t *comment_reply_bson, CommentReply *co
 Err _deserialize_comment_reply_bson_with_buf(bson_t *comment_reply_bson, CommentReply *comment_reply);
 Err _get_comment_reply_info_by_main_deal_with_result(bson_t *result, int n_result, int *n_comment_reply, int *n_line, int *total_len);
 
-/**********
- * Misc
- **********/
-
-Err get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offset_line, int *bytes_in_new_line);
-Err pttdb_count_lines(char *content, int len, int *n_line);
-
 #ifdef __cplusplus
 }
 #endif
