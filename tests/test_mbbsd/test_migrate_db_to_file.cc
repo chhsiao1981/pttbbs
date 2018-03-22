@@ -3,6 +3,7 @@
 #include "migrate.h"
 #include "pttdb.h"
 #include "pttdb_internal.h"
+#include "util_db_internal.h"
 
 TEST(migrate_db_to_file, migrate_db_to_file) {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
