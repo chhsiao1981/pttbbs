@@ -592,7 +592,7 @@ bsons_to_bson_dict_by_uu(bson_t **b, int n_b, char *key, bson_t **b_result)
 
         disp_uuid = _display_uuid(uuid);
         str = bson_as_canonical_extended_json(*p_b, NULL);
-        fprintf(stderr, "util_db.bsons_to_bson_dict_by_uu: uuid: %s p_b: %s", disp_uuid, str);
+        fprintf(stderr, "util_db.bsons_to_bson_dict_by_uu: uuid: %s p_b: %s\n", disp_uuid, str);
         safe_free(disp_uuid);
         bson_free(str);
 
@@ -605,6 +605,10 @@ bsons_to_bson_dict_by_uu(bson_t **b, int n_b, char *key, bson_t **b_result)
 
     str = bson_as_canonical_extended_json(p_b_result, NULL);
     fprintf(stderr, "util_db.bsons_to_bson_dict_by_uu: p_b_result: %s\n", str);
+    bson_free(str);
+
+    str = bson_as_canonical_extended_json(*b_result, NULL);
+    fprintf(stderr, "util_db.bsons_to_bson_dict_by_uu: b_result: %s\n", str);
     bson_free(str);
 
     return error_code;
