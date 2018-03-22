@@ -48,7 +48,8 @@ _migrate_main_content_to_file(MainHeader *main_header, FILE *fp)
     Err error_code = S_OK;
     int next_i = 0;
     int n_total_block = main_header->n_total_block;
-    UUID content_id = main_header->content_id;
+    UUID content_id = {};
+    strncpy(content_id, main_header->content_id, UUIDLEN);
     for(int i = 0; i < n_total_block; i += N_MIGRATE_MAIN_CONTENT_TO_FILE_BLOCK) {
         next_i = (i + N_MIGRATE_MAIN_CONTENT_TO_FILE_BLOCK) < n_total_block ? (i + N_MIGRATE_MAIN_CONTENT_TO_FILE_BLOCK) : n_total_block;
         error_code = _migrate_main_content_to_file_core(content_id, fp, i, next_i);
@@ -67,17 +68,15 @@ _migrate_main_content_to_file_core(UUID content_id, FILE *fp, int start_block_id
     int n_block = 0;
     int len = 0;
 
-    int max_n_block = next_block_id - start_block_id;
     ContentBlock content_blocks[N_MIGRATE_COMMENT_COMMENT_REPLY_TO_FILE_BLOCK] = {};
 
     error_code = dynamic_read_content_blocks(content_id, next_block_id - start_block_id, start_block_id, MONGO_MAIN_CONTENT, buf, MAX_BUF_SIZE * N_MIGRATE_COMMENT_COMMENT_REPLY_TO_FILE_BLOCK, content_blocks, &n_block, &len);
 
     if(error_code) return error_code;
 
-    int i = 0;
     int ret = 0;
     if(!error_code) {
-        ret = fprintf(fp, buf);
+        ret = fprintf(fp, "%s", buf);
         if(ret < 0) error_code = S_ERR;
     }
 
@@ -152,7 +151,7 @@ _migrate_comment_comment_reply_by_main_to_file_core(bson_t **b_comments, int n_c
         if(error_code && error_code != S_ERR_BUFFER_LEN) break;
 
         buf[len] = 0;
-        ret = fprintf(fp, buf);
+        ret = fprintf(fp, "%s", buf);
         if(ret < 0) {
             error_code = S_ERR;
             break;
