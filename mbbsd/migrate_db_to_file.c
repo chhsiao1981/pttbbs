@@ -148,6 +148,7 @@ _migrate_comment_comment_reply_by_main_to_file_core(bson_t **b_comments, int n_c
 
     bson_t **p_b_comments = b_comments;
     for(; n_comment > 0; p_b_comments += n_read_comment, n_comment -= n_read_comment, bzero(buf, len)) {
+        fprintf(stderr, "migrate_db_to_file._migrate_comment_comment_reply_by_main_to_file_core: to dynamic_read: n_comment: %d\n", n_comment);
         error_code = dynamic_read_b_comment_comment_reply_by_ids_to_buf(p_b_comments, n_comment, buf, MAX_BUF_SIZE, &n_read_comment, &n_comment_reply, &len);
         fprintf(stderr, "migrate_db_to_file._migrate_comment_comment_reply_by_main_to_file_core: after dynamic_read: e: %d n_read_comment: %d n_comment_reply: %d\n", error_code, n_read_comment, n_comment_reply);
         if(error_code == S_ERR_BUFFER_LEN) error_code = S_OK;
