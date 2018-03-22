@@ -495,6 +495,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
         if(!comment_reply_fields) error_code = S_ERR;
     }
 
+    /*
     fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: to extract b_comments_comment_id_to_bson: n_comment: %d\n", n_comment);
 
     char *str = NULL;
@@ -566,6 +567,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
     if(!error_code) {
         error_code = _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(b_comments, n_comment, &dict_comment_content, &dict_comment_reply, buf, max_buf_size, n_read_comment, n_read_comment_reply, len_buf);
     }
+    */
 
     // free
     safe_destroy_dict_bson_by_uu(&dict_comment_reply);    
