@@ -148,7 +148,8 @@ _migrate_comment_comment_reply_by_main_to_file_core(bson_t **b_comments, int n_c
 
     while(n_comment > 0) {
         error_code = dynamic_read_b_comment_comment_reply_by_ids_to_buf(b_comments, n_comment, buf, MAX_BUF_SIZE, &n_read_comment, &n_comment_reply, &len);
-        if(error_code && error_code != S_ERR_BUFFER_LEN) break;
+        if(error_code == S_ERR_BUFFER_LEN) error_code = S_OK;
+        if(error_code) break;
 
         buf[len] = 0;
         ret = fprintf(fp, "%s", buf);
