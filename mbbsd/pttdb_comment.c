@@ -660,8 +660,6 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
     char *p_buf = buf;
     char comment_id[UUIDLEN] = {};
     char empty_id[UUIDLEN] = {};
-    char *p_comment_id_key = comment_id_key + UUIDLEN;
-    char *p_reset_comment_id_key = comment_id_key + UUIDLEN;
     bool is_with_comment_reply = false;
 
     int len_comment = 0;
@@ -674,7 +672,7 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
 
     bson_t *b_comment_content = NULL;
     bson_t *b_comment_reply = NULL;
-    for(int i = 0; i < n_comment; i++, p_b_comments++, len_comment = 0, len_comment_reply = 0, len_read_comment = 0, len_read_comment_reply = 0, *p_reset_comment_id_key = 0, b_comment_content = NULL, b_comment_reply = NULL) {
+    for(int i = 0; i < n_comment; i++, p_b_comments++, len_comment = 0, len_comment_reply = 0, len_read_comment = 0, len_read_comment_reply = 0, b_comment_content = NULL, b_comment_reply = NULL) {
         // get comment_id
         error_code = bson_get_value_bin(*p_b_comments, "the_id", UUIDLEN, comment_id, &len);
 
