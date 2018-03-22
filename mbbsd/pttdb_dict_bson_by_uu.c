@@ -2,9 +2,9 @@
 #include "pttdb_internal.h"
 
 Err
-init_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu, int n_dict_bson_by_uu)
+init_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu, int n_dict)
 {
-    dict_bson_by_uu->n_dict = n_dict_bson_by_uu;
+    dict_bson_by_uu->n_dict = n_dict;
     dict_bson_by_uu->dicts = malloc(sizeof(_DictBsonByUU *) * n_dict);
     if(!dict_bson_by_uu->dicts) {
         dict_bson_by_uu->n_dict = 0;
@@ -18,8 +18,8 @@ init_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu, int n_dict_bson_by_uu)
 Err 
 add_to_dict_bson_by_uu(UUID uuid, bson_t *b, DictBsonByUU *dict_bson_by_uu)
 {    
-    n_dict_bson_by_uu = dict_bson_by_uu->n_dict_bson_by_uu;
-    int idx = uuid[0] % n_dict_bson_by_uu;
+    int n_dict = dict_bson_by_uu->n_dict;
+    int idx = uuid[0] % n_dict;
     _DictBsonByUU *p_dict = dict_bson_by_uu->dicts[idx];
 
     if(!p_dict) {
