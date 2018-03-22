@@ -2702,23 +2702,21 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf) {
     }
 
     // dynamic read b comment comment reply by ids to buf
-    /*
     char result_buf[MAX_BUF_SIZE] = {};
     int n_read_comment = 0;
     int n_read_comment_reply = 0;
     int len_buf = 0;
-    error = dynamic_read_b_comment_comment_reply_by_ids_to_buf(b_comments, n_comment, result_buf, MAX_BUF_SIZE, &n_read_comment, &n_read_comment_reply, &len_buf);
-    EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(100, n_read_comment);
-    EXPECT_EQ(15, n_read_comment_reply);
-    EXPECT_EQ(1180, len_buf);
+    //error = dynamic_read_b_comment_comment_reply_by_ids_to_buf(b_comments, n_comment, result_buf, MAX_BUF_SIZE, &n_read_comment, &n_read_comment_reply, &len_buf);
+    //EXPECT_EQ(S_OK, error);
+    //EXPECT_EQ(100, n_read_comment);
+    //EXPECT_EQ(15, n_read_comment_reply);
+    //EXPECT_EQ(1180, len_buf);
 
     char expected_result_buf[] = "test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1replyreply\r\ntest1test1replyreply\r\ntest1test1replyreply\r\ntest1test1replyreply\r\ntest1test1replyreply\r\ntest1test1replyreply\r\ntest1test1replyreply\r\ntest1test1replyreply\r\ntest1test1replyreply\r\ntest1test1replyreply\r\ntest1test1replyreply\r\ntest1test1replyreply\r\ntest1test1replyreply\r\ntest1test1replyreply\r\ntest1test1replyreply\r\n";
 
 
     fprintf(stderr, "test_pttdb_comment.dynamic_read_b_comment_comment_Reply_by_ids_to_buf: result_buf: %s\n", result_buf);
-    EXPECT_STREQ(expected_result_buf, result_buf);
-    */
+    //EXPECT_STREQ(expected_result_buf, result_buf);
 
     // free
     safe_free_b_list(&b_comments, n_comment);
