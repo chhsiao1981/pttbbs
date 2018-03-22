@@ -21,6 +21,8 @@ extern "C" {
 
 #define MAX_CREATE_MILLI_TIMESTAMP 9999999999999 // XXX 2286-11-20
 
+#define MAX_N_DICT_BSON_BY_UU 256
+
 enum CommentType {
     COMMENT_TYPE_GOOD,
     COMMENT_TYPE_BAD,
@@ -230,6 +232,17 @@ typedef struct FileInfo {
     PageInfo *page_info;
 } FileInfo;
 
+typedef struct _DictBsonByUU {
+    UUID uuid;
+    bson_t *b;
+    struct _DictBsonByUU *next;
+} _DictBsonByUU;
+
+typedf struct DictBsonByUU {
+    int n_dict;
+    _DictBsonByUU **dicts;
+} DictBsonByUU;
+
 /**********
  * Post
  **********/
@@ -348,6 +361,15 @@ Err dissociate_comment_reply(CommentReply *comment_reply);
 
 // for file_info
 Err read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_comment_reply, bson_t **b_comment_replys, int *n_comment_reply);
+
+/**********
+ * DictBSonByUU
+ **********/
+Err init_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu, int n_dict_bson_by_uu);
+Err add_to_dict_bson_by_uu(UUID uuid, bson_t *b, DictBsonByUU *dict_bson_by_uu);
+Err get_bson_from_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu, UUID uuid, bson_t **b);
+Err bsons_to_dict_bson_by_uu(bson_t **b, int n_b, char *key, DictBsonByUU *dict_bson_by_uu);
+Err safe_destroy_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu);
 
 #ifdef __cplusplus
 }

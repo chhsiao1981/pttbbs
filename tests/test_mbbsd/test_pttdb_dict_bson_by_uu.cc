@@ -1,0 +1,75 @@
+#include "gtest/gtest.h"
+#include "bbs.h"
+#include "ptterr.h"
+#include "pttdb.h"
+#include "pttdb_internal.h"
+#include "util_db_internal.h"
+
+TEST(pttdb_dict_bson_by_uu, add_to_dict_bson_by_uu) {
+    DictBsonByUU dict_bson_by_uu = {};
+
+    Err error = init_dict_bson_by_uu(&dict_bson_by_uu, 100);
+
+    UUID uuid = {};
+    gen_uuid(uuid);
+
+    bson_t *b = BCON_NEW(
+        "the_id", BCON_BINARY(uuid, UUIDLEN),
+        "poster", BCON_BINARY("poster0", 7)
+        );
+
+    error = add_to_dict_bson_by_uu(uuid, b, &dict_bson_by_uu);
+    EXPECT_EQ(S_OK, error);
+
+    char poster[IDLEN + 1] = {};
+    bson_t *b2 = NULL;
+    error = get_bson_from_dict_bson_by_uu(&dict_bson_by_uu, uuid, b2);
+    EXPECT_EQ(b, b2);
+    int len = 0;
+    error = bson_get_bin(b2, "poster", IDLEN, poster, &len);
+    EXPECT_STREQ(poster, "poster");
+
+    // free
+    bson_safe_destroy(&b);
+
+    safe_destroy_dict_bson_by_uu(&dict_bson_by_uu);
+}
+
+
+/**********
+ * MAIN
+ */
+int FD = 0;
+
+class MyEnvironment: public ::testing::Environment {
+public:
+    void SetUp();
+    void TearDown();
+};
+
+void MyEnvironment::SetUp() {
+    Err err = S_OK;
+
+    FD = open("log.test_pttdb_dict_bson_by_uu.err", O_WRONLY | O_CREAT | O_TRUNC, 0660);
+    dup2(FD, 2);
+
+    const char *db_name[] = {
+        "test_post",
+        "test",
+    };
+
+}
+
+void MyEnvironment::TearDown() {
+    if (FD) {
+        close(FD);
+        FD = 0;
+    }
+}
+
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    ::testing::AddGlobalTestEnvironment(new MyEnvironment);
+
+    return RUN_ALL_TESTS();
+}

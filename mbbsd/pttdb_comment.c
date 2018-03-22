@@ -463,14 +463,14 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
     bson_t *query_comment = NULL;
     bson_t *comment_fields = NULL;
     bson_t **b_comment_contents = NULL;
-    bson_t *b_comment_content_dict = NULL;
+    DictBsonByUU dict_comment_content = {};
     int n_comment_content = 0;
 
     bson_t *q_b_comment_reply_ids = NULL;
     bson_t *query_comment_reply = NULL;
     bson_t *comment_reply_fields = NULL;
     bson_t **b_comment_replys = NULL;
-    bson_t *b_comment_reply_dict = NULL;
+    DictBsonByUU dict_comment_reply = {};
     int n_expected_comment_reply = 0;
     int n_comment_reply = 0;
 
@@ -538,26 +538,26 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
 
     // to dict
     if(!error_code) {
-        error_code = bsons_to_bson_dict_by_uu(b_comment_contents, n_comment_content, "the_id", &b_comment_content_dict);
+        error_code = bsons_to_dict_bson_by_uu(b_comment_contents, n_comment_content, "the_id", dict_comment_content);
     }
 
     if(!error_code) {
-        error_code = bsons_to_bson_dict_by_uu(b_comment_replys, n_comment_reply, "comment_id", &b_comment_reply_dict);
+        error_code = bsons_to_dict_bson_by_uu(b_comment_replys, n_comment_reply, "comment_id", dict_comment_reply);
     }
 
     // read to buf
     if(!error_code) {
-        error_code = _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(b_comments, n_comment, b_comment_content_dict, b_comment_reply_dict, buf, max_buf_size, n_read_comment, n_read_comment_reply, len_buf);
+        error_code = _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(b_comments, n_comment, dict_comment_content, dict_comment_reply, buf, max_buf_size, n_read_comment, n_read_comment_reply, len_buf);
     }
 
     // free
+    safe_destroy_dict_bson_by_uu(dict_comment_reply);    
     safe_free_b_list(&b_comment_replys, n_comment_reply);
-    bson_safe_destroy(&b_comment_reply_dict);
     bson_safe_destroy(&comment_reply_fields);
     bson_safe_destroy(&query_comment_reply);
     bson_safe_destroy(&q_b_comment_reply_ids);
 
-    bson_safe_destroy(&b_comment_content_dict);
+    safe_destroy_dict_bson_by_uu(dict_comment_content);
     safe_free_b_list(&b_comment_contents, n_comment_content);
     bson_safe_destroy(&comment_fields);
     bson_safe_destroy(&query_comment);
@@ -652,7 +652,7 @@ extract_b_comments_comment_reply_id_to_bsons(bson_t **b_comments, int n_comment,
 }
 
 Err
-_dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, int n_comment, bson_t *b_comment_content_dict, bson_t *b_comment_reply_dict, char *buf, int max_buf_size, int *n_read_comment, int *n_read_comment_reply, int *len_buf)
+_dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, int n_comment, DictBsonByUU dict_comment_content, DictBsonByUU dict_comment_reply, char *buf, int max_buf_size, int *n_read_comment, int *n_read_comment_reply, int *len_buf)
 {
     Err error_code = S_OK;
 
@@ -672,7 +672,10 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
 
     int tmp_n_comment_reply = 0;
     int len = 0;
-    for(int i = 0; i < n_comment; i++, p_b_comments++, len_comment = 0, len_comment_reply = 0, len_read_comment = 0, len_read_comment_reply = 0, *p_reset_comment_id_key = 0) {
+
+    bson_t *b_comment_content = NULL;
+    bson_t *b_comment_reply = NULL;
+    for(int i = 0; i < n_comment; i++, p_b_comments++, len_comment = 0, len_comment_reply = 0, len_read_comment = 0, len_read_comment_reply = 0, *p_reset_comment_id_key = 0, b_comment_content = NULL, b_comment_reply = NULL) {
         // get comment_id and comment_reply_id
         error_code = bson_get_value_bin(*p_b_comments, "the_id", UUIDLEN, comment_id_key, &len);
 
@@ -680,34 +683,33 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
             error_code = bson_get_value_bin(*p_b_comments, "comment_reply_id", UUIDLEN, comment_reply_id, &len);
         }
 
-        // is-with-comment-reply
-        is_with_comment_reply = strncmp(comment_reply_id, empty_id, UUIDLEN) ? false : true;
-        if(!error_code && is_with_comment_reply) {
-            error_code = bson_exists(b_comment_reply_dict, comment_id_key, &is_with_comment_reply);
+        // get comment
+        if(!error_code) {
+            error_code = get_bson_from_dict_bson_by_uu(dict_comment_content, comment_id, &b_comment_content);
         }
 
-        sprintf(p_comment_id_key, ".len");
+        // get comment-reply
+        if(!error_code && strncmp(comment_reply_id, empty_id, UUIDLEN)) {
+            error_code_b_comment_reply = get_bson_from_dict_bson_by_uu(dict_comment_reply, comment_id, &b_comment_reply);
+        }
 
         // get comment-len
         if(!error_code) {
-            error_code = bson_get_descendant_value_int32(b_comment_content_dict, comment_id_key, &len_comment);
+            error_code = bson_get_value_int32(b_comment_content, "len", &len_comment);
         }
 
         // get comment-reply-len
-        if(!error_code && is_with_comment_reply) {
-            error_code = bson_get_descendant_value_int32(b_comment_reply_dict, comment_id_key, &len_comment_reply);
-            if(error_code) break;
+        if(!error_code && b_comment_reply) {
+            error_code = bson_get_value_int32(b_comment_reply, "len", &len_comment_reply);
         }
 
         if(!error_code && (len_comment + len_comment_reply > max_buf_size)) {
             error_code = S_ERR_BUFFER_LEN;
         }
 
-        sprintf(p_comment_id_key, ".buf");
-
         // get comment-buf
         if(!error_code) {
-            error_code = bson_get_descendant_value_bin(b_comment_content_dict, comment_id_key, len_comment, p_buf, &len_read_comment);
+            error_code = bson_get_value_bin(b_comment_content, "buf", len_comment, p_buf, &len_read_comment);
         }
 
         if(!error_code) {
@@ -716,8 +718,8 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
         }
 
         // get comment-reply-buf
-        if(!error_code && is_with_comment_reply) {
-            error_code = bson_get_descendant_value_bin(b_comment_reply_dict, comment_id_key, len_comment_reply, p_buf, &len_read_comment_reply);
+        if(!error_code && b_comment_reply) {
+            error_code = bson_get_value_bin(b_comment_reply, "buf", len_comment_reply, p_buf, &len_read_comment_reply);
         }
 
         if(!error_code) {
