@@ -659,6 +659,7 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
     bson_t **p_b_comments = b_comments;    
     char *p_buf = buf;
     char comment_id[UUIDLEN] = {};
+    char comment_reply_id[UUIDLEN] = {};
     char empty_id[UUIDLEN] = {};
     bool is_with_comment_reply = false;
 
@@ -677,14 +678,18 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
         // get comment_id
         error_code = bson_get_value_bin(*p_b_comments, "the_id", UUIDLEN, comment_id, &len);
 
+        if(!error_code) {
+            error_code = bson_get_value_bin(*p_b_comments, "comment_reply_id", UUIDLEN, comment_reply_id, &len);
+        }
+
         // get comment
         if(!error_code) {
-            error_code = get_bson_from_dict_bson_by_uu(dict_comment_content, comment_id, &b_comment_content);
+            error_code = get_bson_from_dict_bson_by_uu(dict_comment_content, (char *)comment_id, &b_comment_content);
         }
 
         // get comment-reply
         if(!error_code && strncmp(comment_reply_id, empty_id, UUIDLEN)) {
-            error_code_b_comment_reply = get_bson_from_dict_bson_by_uu(dict_comment_reply, comment_id, &b_comment_reply);
+            error_code_b_comment_reply = get_bson_from_dict_bson_by_uu(dict_comment_reply, (char *)comment_id, &b_comment_reply);
         }
 
         // get comment-len
