@@ -93,6 +93,7 @@ bsons_to_dict_bson_by_uu(bson_t **b, int n_b, char *key, DictBsonByUU *dict_bson
 Err
 safe_destroy_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu)
 {
+    Err error_code;
     int n_dict = dict_bson_by_uu->n_dict;
     _DictBsonByUU **p_dict = dict_bson_by_uu->dicts;
     for(int i = 0; i < n_dict; i++, p_dict++) {
