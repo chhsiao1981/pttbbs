@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "bbs.h"
 #include "migrate.h"
+#include "pttdb.h"
 
 TEST(migrate_db_to_file, migrate_db_to_file) {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
