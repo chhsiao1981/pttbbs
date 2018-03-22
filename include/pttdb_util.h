@@ -3,6 +3,7 @@
 #define PTTDB_UTIL_H
 
 #include "ptterr.h"
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {
