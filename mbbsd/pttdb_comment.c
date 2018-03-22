@@ -538,11 +538,11 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
 
     // to dict
     if(!error_code) {
-        error_code = bsons_to_dict_bson_by_uu(b_comment_contents, n_comment_content, "the_id", dict_comment_content);
+        error_code = bsons_to_dict_bson_by_uu(b_comment_contents, n_comment_content, "the_id", &dict_comment_content);
     }
 
     if(!error_code) {
-        error_code = bsons_to_dict_bson_by_uu(b_comment_replys, n_comment_reply, "comment_id", dict_comment_reply);
+        error_code = bsons_to_dict_bson_by_uu(b_comment_replys, n_comment_reply, "comment_id", &dict_comment_reply);
     }
 
     // read to buf
