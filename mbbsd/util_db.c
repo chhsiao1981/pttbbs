@@ -583,9 +583,18 @@ bsons_to_bson_dict_by_uu(bson_t **b, int n_b, char *key, bson_t **b_result)
     bool status = false;
     UUID uuid = {};
     int len = 0;
+
+    char *disp_uuid = NULL;
+    char *str = NULL;
     for(int i = 0; i < n_b; i++, p_b++) {
         error_code = bson_get_value_bin(*p_b, key, UUIDLEN, (char *)uuid, &len);
         if(error_code) break;
+
+        disp_uuid = _display_uuid(uuid);
+        str = bson_as_canonical_extended_json(*p_b, NULL);
+        fprintf(stderr, "util_db.bsons_to_bson_dict_by_uu: uuid: %s p_b: %s", disp_uuid, str);
+        safe_free(disp_uuid);
+        bson_free(str);
 
         status = bson_append_document(p_b_result, (char *)uuid, UUIDLEN, *p_b);
         if(!status) {
@@ -594,7 +603,7 @@ bsons_to_bson_dict_by_uu(bson_t **b, int n_b, char *key, bson_t **b_result)
         }
     }
 
-    char *str = bson_as_canonical_extended_json(p_b_result, NULL);
+    str = bson_as_canonical_extended_json(p_b_result, NULL);
     fprintf(stderr, "util_db.bsons_to_bson_dict_by_uu: p_b_result: %s\n", str);
     bson_free(str);
 
