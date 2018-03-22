@@ -3,6 +3,7 @@
 #define PTTDB_UUID_H
 
 #include "ptterr.h"
+#include "pttdb_util.h"
 #include "util_db.h"
 
 #ifdef __cplusplus
