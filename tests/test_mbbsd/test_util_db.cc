@@ -362,6 +362,7 @@ TEST(util_db, bsons_to_bson_dict_by_uu) {
     int len = 0;
     bson_t *bson_dict = NULL;
     Err error = bsons_to_bson_dict_by_uu(bsons, n_bson, (char *)"the_id", &bson_dict);
+    EXPECT_EQ(S_OK, error);
 
     char *str = bson_as_canonical_extended_json(bson_dict, NULL);
     fprintf(stderr, "test_util_db.bsons_to_bson_dict_by_uu: after bsons_to_bson_dict_by_uu: bson_dict: %s\n", str);
