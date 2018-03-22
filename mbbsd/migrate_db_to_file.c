@@ -162,5 +162,6 @@ _migrate_comment_comment_reply_by_main_to_file_core(bson_t **b_comments, int n_c
         }        
     }
 
+    fprintf(stderr, "migrate_db_to_file._migrate_comment_comment_reply_by_main_to_file_core: final: e: %d\n", error_code);
     return error_code;
 }
