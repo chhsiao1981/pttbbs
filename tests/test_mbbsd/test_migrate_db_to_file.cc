@@ -20,7 +20,7 @@ TEST(migrate_db_to_file, migrate_db_to_file) {
     char ip[IPV4LEN + 1] = {};
     char origin[MAX_ORIGIN_LEN + 1] = {};
     char web_link[MAX_WEB_LINK_LEN + 1] = {};
-    int len = 10000;
+    int len = 10020;
     UUID main_id;
     UUID content_id;
 
@@ -62,8 +62,8 @@ TEST(migrate_db_to_file, migrate_db_to_file) {
     strcpy(comment.update_ip, "10.1.1.4");
     comment.update_milli_timestamp = create_milli_timestamp;
 
-    strcpy(comment.buf, "test1test1");
-    comment.len = 10;
+    strcpy(comment.buf, "test1test1\r\n");
+    comment.len = 12;
 
     bson_t *comment_id_bson = NULL;
     bson_t *comment_bson = NULL;
