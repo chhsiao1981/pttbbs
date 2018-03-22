@@ -49,7 +49,7 @@ _migrate_main_content_to_file(MainHeader *main_header, FILE *fp)
     int next_i = 0;
     int n_total_block = main_header->n_total_block;
     UUID content_id = {};
-    strncpy(content_id, main_header->content_id, UUIDLEN);
+    memcpy(content_id, main_header->content_id, UUIDLEN);
     for(int i = 0; i < n_total_block; i += N_MIGRATE_MAIN_CONTENT_TO_FILE_BLOCK) {
         next_i = (i + N_MIGRATE_MAIN_CONTENT_TO_FILE_BLOCK) < n_total_block ? (i + N_MIGRATE_MAIN_CONTENT_TO_FILE_BLOCK) : n_total_block;
         error_code = _migrate_main_content_to_file_core(content_id, fp, i, next_i);
