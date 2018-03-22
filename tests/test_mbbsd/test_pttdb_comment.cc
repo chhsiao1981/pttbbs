@@ -2533,6 +2533,7 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_some_comment_re
 
 TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf) {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
 
     Err error = S_OK;
     UUID main_id = {};
@@ -2726,6 +2727,9 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf) {
 
 TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_large_content) {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+
+    fprintf(stderr, "test_pttdb_comment.extract_b_comments_comment_reply_id_to_bsons_some_comment_reply_ids_large_content: to read_comments_until_newest_to_bsons\n");
 
     Err error = S_OK;
     UUID main_id = {};
