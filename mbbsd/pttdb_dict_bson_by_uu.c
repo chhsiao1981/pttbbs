@@ -99,7 +99,7 @@ safe_destroy_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu)
     for(int i = 0; i < n_dict; i++, p_dict++) {
         error_code = _safe_destroy_dict_bson_by_uu_core(*p_dict);
     }
-    safe_free((void **)dict_bson_by_uu->dicts);
+    safe_free((void **)&dict_bson_by_uu->dicts);
     dict_bson_by_uu->n_dict = 0;
 
     return S_OK;
