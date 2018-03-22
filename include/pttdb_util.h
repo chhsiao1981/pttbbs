@@ -21,4 +21,4 @@ Err form_rand_list(int n, int **rand_list);
 }
 #endif
 
-#endif /* PTTDB_H */
+#endif /* PTTDB_UTIL_H */
