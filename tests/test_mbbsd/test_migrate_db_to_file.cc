@@ -79,7 +79,7 @@ TEST(migrate_db_to_file, migrate_db_to_file) {
         comment.create_milli_timestamp = create_milli_timestamp + 85;
         comment.update_milli_timestamp = create_milli_timestamp + 85;
 
-        sprintf(comment.buf, "testtest%03d\r\n", i);
+        sprintf(comment.buf, "testtest0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789%03d\r\n", i);
         comment.len = strlen(comment.buf);
 
 
@@ -106,7 +106,7 @@ TEST(migrate_db_to_file, migrate_db_to_file) {
         comment.create_milli_timestamp = create_milli_timestamp + i;
         comment.update_milli_timestamp = create_milli_timestamp + i;
 
-        sprintf(comment.buf, "testtest%03d\r\n", i);
+        sprintf(comment.buf, "testtest0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789%03d\r\n", i);
         comment.len = strlen(comment.buf);
 
         error = _serialize_comment_bson(&comment, &comment_bson);
@@ -128,7 +128,7 @@ TEST(migrate_db_to_file, migrate_db_to_file) {
         comment.create_milli_timestamp = create_milli_timestamp;
         comment.update_milli_timestamp = create_milli_timestamp;
 
-        sprintf(comment.buf, "testtest%03d\r\n", i);
+        sprintf(comment.buf, "testtest0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789%03d\r\n", i);
         comment.len = strlen(comment.buf);
 
         error = _serialize_comment_bson(&comment, &comment_bson);
