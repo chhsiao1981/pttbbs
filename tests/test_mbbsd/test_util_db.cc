@@ -341,12 +341,12 @@ TEST(util_db, bson_get_descendant_value_int32) {
 
 TEST(util_db, bsons_to_bson_dict_by_uu) {
     int n_bson = 100;
-    bson_t **bsons = malloc(sizeof(bson_t *) * n_bson);
+    bson_t **bsons = (bson_t **)malloc(sizeof(bson_t *) * n_bson);
 
     UUID the_id = {};
     char poster[IDLEN + 1] = {};
     for(int i = 0; i < n_bson; i++) {
-        sprintf(the_id, "id%03d", i);
+        sprintf((char *)the_id, "id%03d", i);
         sprintf(poster, "poster%03d", i);
         bsons[i] = BCON_NEW(
             "the_id", BCON_BINARY(the_id, UUIDLEN),
@@ -357,6 +357,7 @@ TEST(util_db, bsons_to_bson_dict_by_uu) {
     char poster2[IDLEN + 1] = {};
     char poster3[IDLEN + 1] = {};
     char key[100] = {};
+    int len = 0;
     bson_t *bson_dict = NULL;
     Err error = bsons_to_bson_dict_by_uu(bsons, n_bson, "the_id", &bson_dict);
     EXPECT_EQ(S_OK, error);
