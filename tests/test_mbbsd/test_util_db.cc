@@ -341,48 +341,6 @@ TEST(util_db, bson_get_descendant_value_int32) {
     bson_safe_destroy(&b2);
 }
 
-TEST(util_db, bsons_to_bson_dict_by_uu) {
-    int n_bson = 100;
-    bson_t **bsons = (bson_t **)malloc(sizeof(bson_t *) * n_bson);
-
-    UUID the_id = {};
-    char poster[IDLEN + 1] = {};
-    for(int i = 0; i < n_bson; i++) {
-        sprintf((char *)the_id, "id%03d", i);
-        sprintf(poster, "poster%03d", i);
-        bsons[i] = BCON_NEW(
-            (char *)"the_id", BCON_BINARY(the_id, UUIDLEN),
-            (char *)"poster", BCON_BINARY((unsigned char *)poster, IDLEN)
-            );
-    }
-
-    char poster2[IDLEN + 1] = {};
-    char poster3[IDLEN + 1] = {};
-    char key[100] = {};
-    int len = 0;
-    bson_t *bson_dict = NULL;
-    Err error = bsons_to_bson_dict_by_uu(bsons, n_bson, (char *)"the_id", &bson_dict);
-    EXPECT_EQ(S_OK, error);
-
-    char *str = bson_as_canonical_extended_json(bson_dict, NULL);
-    fprintf(stderr, "test_util_db.bsons_to_bson_dict_by_uu: after bsons_to_bson_dict_by_uu: bson_dict: %s\n", str);
-    bson_free(str);
-
-    EXPECT_EQ(S_OK, error);
-    for(int i = 0; i < n_bson; i++) {
-        sprintf(key, "id%03d.poster", i);
-        sprintf(poster3, "poster%03d", i);
-        error = bson_get_descendant_value_bin(bson_dict, key, IDLEN, poster2, &len);
-        EXPECT_STREQ(poster3, poster2);
-        bzero(poster2, IDLEN);
-    }
-
-    // free
-    safe_free_b_list(&bsons, n_bson);
-    bson_safe_destroy(&bson_dict);
-
-}
-
 
 /**********
  * MAIN
