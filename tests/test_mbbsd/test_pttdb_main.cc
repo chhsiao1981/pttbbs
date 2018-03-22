@@ -38,7 +38,10 @@ TEST(pttdb_main, create_main_from_fd_test1_read_main_content) {
     close(fd);
 
     strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
-    fprintf(stderr, "test_pttdb_main.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
+    char *disp_uuid = NULL;
+    disp_uuid = display_uuid(tmp_main_id);
+    fprintf(stderr, "test_pttdb_main.create_main_from_fd: after create_main_from_fd: main_id: %s\n", disp_uuid);
+    safe_free(&disp_uuid);
 
     // read main-header
     MainHeader main_header = {};
@@ -96,6 +99,7 @@ TEST(pttdb_main, create_main_from_fd_test1_read_main_content) {
     EXPECT_EQ(0, strncmp((char *)content_block0.buf_block, str_content, content_block0.len_block));
     EXPECT_EQ(0, strncmp((char *)content_block1.buf_block, str_content + content_block0.len_block, content_block1.len_block));
 
+    // free
     destroy_content_block(&content_block0);
     destroy_content_block(&content_block1);
     free(str_content);
