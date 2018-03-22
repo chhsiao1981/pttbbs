@@ -499,7 +499,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
 
     char *str = NULL;
     for(int i = 0; i < n_comment; i++) {
-        str == bson_as_canonical_extended_json(b_comments[i], NULL);
+        str = bson_as_canonical_extended_json(b_comments[i], NULL);
         fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: (%d/%d) b_comment: %s\n", i, n_comment, str);
         bson_free(str);
     }
@@ -514,7 +514,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
             );
     }
 
-    char *str = bson_as_canonical_extended_json(query_comment, NULL);
+    str = bson_as_canonical_extended_json(query_comment, NULL);
     fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: query_comment: %s\n", str);
     bson_free(str);
 
