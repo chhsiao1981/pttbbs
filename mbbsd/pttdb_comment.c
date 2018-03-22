@@ -621,6 +621,9 @@ extract_b_comments_comment_id_to_bsons(bson_t **b_comments, int n_comment, char 
         free(disp_uuid);
 
         array_keylen = bson_uint32_to_string(i, &array_key, buf, sizeof(buf));
+
+        fprintf(stderr, "pttdb_comment.extract_b_comments_comment_id_to_bsons: to append_bin: (%d/%d) array_key: %s array_keylen: %d\n", i, n_comment, array_key, array_keylen);
+
         status = bson_append_bin(&child, array_key, (int)array_keylen, uuid, UUIDLEN);
         if (!status) {
             error_code = S_ERR;
