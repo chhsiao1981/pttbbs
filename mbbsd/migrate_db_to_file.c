@@ -13,7 +13,7 @@
  * @param flags [description]
  */
 Err
-migrate_db_to_file(UUID main_id, const char *fpath, int saveheader, char title[STRLEN], int flags)
+migrate_db_to_file(UUID main_id, const char *fpath, int saveheader)
 {
     Err error_code = S_OK;
     FILE *fp = NULL;
@@ -24,12 +24,13 @@ migrate_db_to_file(UUID main_id, const char *fpath, int saveheader, char title[S
         return S_ERR_ABORT_BBS;
     }
 
-    if(saveheader) {
-        write_header(fp, title);
-    }
-
     MainHeader main_header = {};
     error_code = read_main_header(main_id, &main_header);
+
+    if(!error_code && saveheader) {
+        write_header(fp, main_header.title);
+    }
+
     if(!error_code) {
         error_code = _migrate_main_content_to_file(main_header, fp);
     }

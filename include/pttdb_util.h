@@ -3,11 +3,39 @@
 #define PTTDB_UTIL_H
 
 #include "ptterr.h"
-#include <stdlib.h>
-#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+#include "osdep.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <assert.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <signal.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <time.h>
+#include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/socket.h>
+#include <sys/resource.h>
+#include <arpa/inet.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <sys/mman.h>
+#include <sys/shm.h>
+#include <sys/sem.h>
+
+#include "config.h"
+
+#ifndef INCLUDE_VAR_H
+    #include "var.h"
 #endif
 
 #define MAX_BUF_SIZE 8192
