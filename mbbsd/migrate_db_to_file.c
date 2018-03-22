@@ -63,14 +63,14 @@ Err
 _migrate_main_content_to_file_core(UUID content_id, FILE *fp, int start_block_id, int next_block_id)
 {
     Err error_code = S_OK;
-    char buf[MAX_BUF_SIZE * N_MIGRATE_MAIN_CONTENT_TO_FILE_BLOCK] = {};
+    char buf[MAX_BUF_SIZE] = {};
 
     int n_block = 0;
     int len = 0;
 
     ContentBlock content_blocks[N_MIGRATE_COMMENT_COMMENT_REPLY_TO_FILE_BLOCK] = {};
 
-    error_code = dynamic_read_content_blocks(content_id, next_block_id - start_block_id, start_block_id, MONGO_MAIN_CONTENT, buf, MAX_BUF_SIZE * N_MIGRATE_COMMENT_COMMENT_REPLY_TO_FILE_BLOCK, content_blocks, &n_block, &len);
+    error_code = dynamic_read_content_blocks(content_id, next_block_id - start_block_id, start_block_id, MONGO_MAIN_CONTENT, buf, MAX_BUF_SIZE, content_blocks, &n_block, &len);
 
     if(error_code) return error_code;
 
