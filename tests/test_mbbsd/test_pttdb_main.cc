@@ -22,8 +22,6 @@ TEST(pttdb_main, create_main_from_fd_test1_read_main_content) {
     UUID main_id;
     UUID content_id;
 
-    char tmp_main_id[UUIDLEN + 1] = {};
-
     strcpy(board, "test_board");
     strcpy(title, "test_title");
     strcpy(poster, "test_poster");
@@ -37,9 +35,8 @@ TEST(pttdb_main, create_main_from_fd_test1_read_main_content) {
 
     close(fd);
 
-    strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
     char *disp_uuid = NULL;
-    disp_uuid = display_uuid(tmp_main_id);
+    disp_uuid = display_uuid(main_id);
     fprintf(stderr, "test_pttdb_main.create_main_from_fd: after create_main_from_fd: main_id: %s\n", disp_uuid);
     safe_free(&disp_uuid);
 
