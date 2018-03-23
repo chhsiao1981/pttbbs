@@ -531,6 +531,7 @@ TEST(pttdb_main, len_main) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(main_header.len_total, len);
 
+    // free
     bson_safe_destroy(&main_bson);
 }
 
@@ -574,6 +575,7 @@ TEST(pttdb_main, len_main_by_aid) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(main_header.len_total, len);
 
+    // free
     bson_safe_destroy(&main_bson);
 }
 
@@ -617,6 +619,7 @@ TEST(pttdb_main, n_line_main) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(main_header.n_total_line, n_line);
 
+    // free
     bson_safe_destroy(&main_bson);
 }
 
@@ -660,6 +663,7 @@ TEST(pttdb_main, n_line_main_by_aid) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(main_header.n_total_line, n_line);
 
+    // free
     bson_safe_destroy(&main_bson);
 }
 
@@ -727,6 +731,7 @@ TEST(pttdb_main, read_main_header) {
     EXPECT_EQ(main_header.n_total_block, main_header2.n_total_block);
     EXPECT_EQ(main_header.len_total, main_header2.len_total);
 
+    // free
     bson_safe_destroy(&main_bson);
 }
 
@@ -793,6 +798,7 @@ TEST(pttdb_main, read_main_header_by_aid) {
     EXPECT_EQ(main_header.n_total_block, main_header2.n_total_block);
     EXPECT_EQ(main_header.len_total, main_header2.len_total);
 
+    // free
     bson_safe_destroy(&main_bson);
 }
 
@@ -865,9 +871,11 @@ TEST(pttdb_main, delete_main) {
     EXPECT_STREQ(del_updater, result_status_updater);
     EXPECT_STREQ(status_update_ip, result_status_update_ip);
 
+    // free
     bson_safe_destroy(&query);
     bson_safe_destroy(&fields);
     bson_safe_destroy(&result);
+    bson_safe_destroy(&main_bson);
 }
 
 TEST(pttdb_main, delete_main_by_aid) {
@@ -936,9 +944,11 @@ TEST(pttdb_main, delete_main_by_aid) {
     EXPECT_STREQ(del_updater, result_status_updater);
     EXPECT_STREQ(status_update_ip, result_status_update_ip);
 
+    // free
     bson_safe_destroy(&query);
     bson_safe_destroy(&result);
     bson_safe_destroy(&fields);
+    bson_safe_destroy(&main_bson);
 }
 
 TEST(pttdb_main, serialize_main_bson) {
@@ -1002,6 +1012,7 @@ TEST(pttdb_main, serialize_main_bson) {
     EXPECT_EQ(main_header.n_total_block, main_header2.n_total_block);
     EXPECT_EQ(main_header.len_total, main_header2.len_total);
 
+    // free
     bson_safe_destroy(&main_bson);
 }
 
@@ -1064,6 +1075,7 @@ TEST(pttdb_main, serialize_update_main_bson) {
     EXPECT_EQ(n_block, result_n_block);
     EXPECT_EQ(len, result_len);
 
+    // free
     bson_safe_destroy(&main_bson);
 
 }
@@ -1112,6 +1124,7 @@ TEST(pttdb_main, read_main_header_to_bson) {
     EXPECT_STREQ(str, "{ \"n_total_block\" : { \"$numberInt\" : \"2\" }, \"n_total_line\" : { \"$numberInt\" : \"10\" }, \"updater\" : { \"$binary\" : { \"base64\": \"dGVzdF9wb3N0ZXIA\", \"subType\" : \"00\" } } }");
     bson_free(str);
 
+    // free
     bson_safe_destroy(&fields);
     bson_safe_destroy(&result);
 }
