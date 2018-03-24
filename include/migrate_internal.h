@@ -38,13 +38,17 @@ Err _parse_legacy_file_comment_comment_reply_core_last_line(int bytes_in_line, c
 
 Err _parse_legacy_file_comment_create_milli_timestamp(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp);
 Err _parse_legacy_file_comment_poster(char *line, int bytes_in_line, char *poster);
-Err _parse_legacy_file_comment_type(char *line, int bytes_in_line, enum COMMENT_TYPE *comment_type);
+Err _parse_legacy_file_comment_type(char *line, int bytes_in_line, enum CommentType *comment_type);
 
 // is-comment-line
 Err _is_comment_line(char *line, int bytes_in_line, bool *is_valid);
 Err _is_comment_line_good_bad_arrow(char *line, int bytes_in_line, bool *is_valid, enum CommentType comment_type);
 Err _is_comment_line_forward(char *line, int bytes_in_line, bool *is_valid);
 
+// migrate db to file
+Err _migrate_main_content_to_file(MainHeader *main_header, FILE *fp);
+Err _migrate_main_content_to_file_core(UUID content_id, FILE *fp, int start_block_id, int next_block_id);
+Err _migrate_comment_comment_reply_by_main_to_file(UUID main_id, FILE *fp);
 
 #ifdef __cplusplus
 }
