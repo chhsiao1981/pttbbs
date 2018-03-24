@@ -14,7 +14,7 @@ migrate_file_to_db(const char *fpath, char *poster, char *board, char *title, ch
     strcpy(legacy_file_info.origin, origin);
     legacy_file_info.aid = aid;
     strcpy(legacy_file_info.web_link, web_link);    
-    error_code = _parse_create_milli_timestamp(web_link, &legacy_file_info.create_milli_timestamp);
+    error_code = _parse_create_milli_timestamp_from_web_link(web_link, &legacy_file_info.create_milli_timestamp);
 
     // parse
     if(!error_code) {
@@ -75,7 +75,7 @@ migrate_file_to_db(const char *fpath, char *poster, char *board, char *title, ch
 }
 
 Err
-_parse_create_milli_timestamp(char *web_link, time64_t *create_milli_timestamp)
+_parse_create_milli_timestamp_from_web_link(char *web_link, time64_t *create_milli_timestamp)
 {
     char *p_web_link = web_link + strlen(web_link) - LEN_WEBLINK_POSTFIX - 1 - LEN_AID_POSTFIX - 1 - LEN_AID_INFIX - 1 - LEN_AID_TIMESTAMP;
     int create_timestamp = atoi(p_web_link);
@@ -430,7 +430,7 @@ _parse_legacy_file_comment_comment_reply_core_one_line_comment(char *line, int b
     if(error_code) return error_code;
 
     // comment-poster
-    error_code = _parse_legacy_file_comment_poster(line, bytes_in_line, &legacy_file_info->comment_info[comment_idx].comment_poster);
+    error_code = _parse_legacy_file_comment_poster(line, bytes_in_line, legacy_file_info->comment_info[comment_idx].comment_poster);
     if(error_code) return error_code;
 
     // comment-len
@@ -448,9 +448,30 @@ _parse_legacy_file_comment_comment_reply_core_one_line_comment(char *line, int b
 
     // set status
     *status = LEGACY_FILE_STATUS_COMMENT_REPLY;
+    *current_create_milli_timestamp = legacy_file_info->comment_info[comment_idx].comment_create_milli_timestamp;
 
     return S_OK;
 }
+
+
+Err
+_parse_legacy_file_comment_create_milli_timestamp(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp)
+{
+    return S_OK;
+}
+
+Err
+_parse_legacy_file_comment_poster(char *line, int bytes_in_line, char *poster)
+{
+    return S_OK;
+}
+
+Err
+_parse_legacy_file_comment_type(char *line, int bytes_in_line, enum COMMENT_TYPE *comment_type)
+{
+    return S_OK;
+}
+
 
 Err
 _parse_legacy_file_comment_comment_reply_core_one_line_comment_reply(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int comment_idx, enum LEGACY_FILE_STATUS *status)
@@ -478,7 +499,7 @@ _parse_legacy_file_comment_comment_reply_core_last_line(int bytes_in_line, char 
 }
 
 /*****
- * Misc
+ * Is Comment line
  *****/
 
 Err
