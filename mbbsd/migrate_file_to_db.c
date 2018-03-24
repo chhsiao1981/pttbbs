@@ -91,8 +91,8 @@ _parse_create_milli_timestamp(char *web_link, time64_t *create_milli_timestamp)
  * @brief [brief description]
  * @details [long description]
  *          parse state
- *          start => first-2-lines => main-content => origin-block => comment => [comment-reply] => end
- *                                                                         <=======
+ *          main-content => comment => [comment-reply] => end
+ *                               <=======
  *                                                                         
  *          Can we get poster / board / title / create_milli_timestamp / origin / ip from some place?
  * @param fpath [description]
@@ -111,6 +111,10 @@ parse_legacy_file(const char *fpath, LegacyFileInfo *legacy_file_info)
 
     return error_code;
 }
+
+/*****
+ * Parse main info
+ *****/
 
 Err
 _parse_legacy_file_main_info(const char *fpath, LegacyFileInfo *legacy_file_info)
@@ -158,12 +162,14 @@ _parse_legacy_file_main_info_core(char *buf, int bytes, char *line, int *bytes_i
 
         if(error_code) break;
 
+        if(*status == LEGACY_FILE_STATUS_COMMENT) break;
+
         // reset line
         bzero(line, *bytes_in_line);
         *bytes_in_line = 0;
     }
 
-    return error_code; d
+    return error_code;
 }
 
 /**
@@ -190,18 +196,9 @@ _parse_legacy_file_main_info_core_one_line(char *line, int bytes_in_line, Legacy
     }
 
     // status
-    switch(status) {
+    switch(*status) {
     case LEGACY_FILE_STATUS_MAIN_CONTENT:
         error_code = _parse_legacy_file_main_info_core_one_line_main_content(line, bytes_in_line, legacy_file_info, status);
-        break;
-    case LEGACY_FILE_STATUS_ORIGIN:
-        error_code = _parse_legacy_file_main_info_core_one_line_origin(line, bytes_in_line, legacy_file_info, status);
-        break;
-    case LEGACY_FILE_STATUS_ORIGIN_IP:
-        error_code = _parse_legacy_file_main_info_core_one_line_origin_ip(line, bytes_in_line, legacy_file_info, status);
-        break;
-    case LEGACY_FILE_STATUS_ORIGIN_BLOCK:
-        error_code = _parse_legacy_file_main_info_core_one_line_origin_block(line, bytes_in_line, legacy_file_info, status);
         break;
     default:
         break;
@@ -210,88 +207,8 @@ _parse_legacy_file_main_info_core_one_line(char *line, int bytes_in_line, Legacy
     return error_code;
 }
 
-
 Err
 _parse_legacy_file_main_info_core_one_line_main_content(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info enum LEGACY_FILE_STATUS *status)
-{
-    Err error_code = S_OK;
-
-    bool is_origin_line = false;
-    error_code = _is_origin_line(line, bytes, is_origin_line);
-    if(error_code) {
-        *status = LEGACY_FILE_STATUS_ERROR;
-        retrun S_ERR;
-    }
-
-    if(is_origin_line) {
-        *status = LEGACY_FILE_STATUS_ORIGIN;
-        return S_OK;
-    }
-
-    // set main-content-len
-    legacy_file_info->main_content_len += bytes_in_line;
-
-    return S_OK;
-}
-
-Err
-_parse_legacy_file_main_info_core_one_line_origin(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info enum LEGACY_FILE_STATUS *status)
-{    
-
-    legacy_file_info->main_content_len += bytes_in_line;
-    char *end_line = line + bytes_in_line - 1;
-    while(end_line > line && *end_line != ':') end_line--;
-
-    // set status
-    if(end_line - line == LEN_ORIGIN_PREFIX - 1) {
-        *status = LEGACY_FILE_STATUS_ORIGIN_IP;
-    }
-    else {
-        end_line += 1; // whitespace
-        error_code = _parse_legacy_file_copy_ip(end_line, bytes_in_line - 2 - (end_line - line), legacy_file_info);        
-        *status = error_code ? LEGACY_FILE_STATUS_ERROR : LEGACY_FILE_STATUS_ORIGIN_BLOCK;
-    }
-
-    return error_code;
-}
-
-Err
-_parse_legacy_file_main_info_core_one_line_origin_ip(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info enum LEGACY_FILE_STATUS *status)
-{
-    Err error_code = S_OK;
-
-    if(strncmp(line, LEGACY_ORIGIN_IP, LEN_LEGACY_ORIGIN_IP)) {
-        *status = LEGACY_FILE_STATUS_ERROR;
-        return S_ERR;
-    }
-
-    char *p_line = line + LEN_LEGACY_ORIGIN_IP + 1;
-    error_code = _parse_legacy_file_copy_ip(p_line, bytes_in_line - 2 - LEN_LEGACY_ORIGIN_IP - 1, legacy_file_info);
-
-    // set status    
-    *status = error_code ? LEGACY_FILE_STATUS_ERROR : LEGACY_FILE_STATUS_ORIGIN_BLOCK;
-    
-    legacy_file_info->main_content_len += bytes_in_line;
-
-    return S_OK;
-}
-
-Err
-_parse_legacy_file_copy_ip(char *line, int len_ip, LegacyFileInfo *legacy_file_info)
-{
-    if(len_ip < 0) {
-        return S_ERR;
-    }
-
-    int len_cpy = len_ip < IPV4LEN ? len_ip, IPV4LEN;
-    strncpy(legacy_file_info->ip, line, len_cpy);
-
-    return S_OK;
-}
-
-
-Err
-_parse_legacy_file_main_info_core_one_line_origin_block(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info enum LEGACY_FILE_STATUS *status)
 {
     Err error_code = S_OK;
 
@@ -333,6 +250,10 @@ _parse_legacy_file_comment_comment_reply(const char *fpath, LegacyFileInfo *lega
 
     return error_code;
 }
+
+/*****
+ * Parse n Comment Comment-Reply
+ *****/
 
 Err
 _parse_legacy_file_n_comment_comment_reply(const char *fpath, int main_content_len, int *n_comment_comment_reply)
@@ -410,6 +331,155 @@ _parse_legacy_file_n_comment_comment_reply_core_one_line(char *line, int bytes_i
     return S_OK;
 }
 
+Err
+_parse_legacy_file_n_comment_comment_reply_last_line(int bytes_in_line, char *line, int *n_comment_comment_reply)
+{
+    return _parse_legacy_file_n_comment_comment_reply_core_one_line(line, bytes_in_line, n_comment_comment_reply);
+}
+
+
+/*****
+ * Parse Comment Comment-Reply Core
+ *****/
+Err
+_parse_legacy_file_comment_comment_reply_core(const char *fpath, LegacyFileInfo *legacy_file_info)
+{
+    Err error_code = S_OK;
+
+    int bytes = 0;
+    char buf[MAX_BUF_SIZE] = {};
+    int bytes_in_line = 0;
+    char line[MAX_BUF_SIZE] = {};
+
+    int fd = open(fpath, O_RDONLY);
+    lseek(fd, main_content_len, SEEK_SET);
+
+    enum LEGACY_FILE_STATUS status = LEGACY_FILE_STATUS_COMMENT;
+    int comment_idx = 0;
+
+    time64_t current_create_milli_timestamp = legacy_file_info->create_milli_timestamp;
+    while((bytes = read(fd, buf, MAX_BUF_SIZE)) > 0) {
+        error_code = _parse_legacy_file_comment_comment_reply_core_core(buf, bytes, line, &bytes_in_line, legacy_file_info, &comment_idx, &current_create_milli_timestamp, &status);
+        if(error_code) break;
+    }
+    if(!error_code && bytes_in_line) {
+        error_code = _parse_legacy_file_comment_comment_reply_core_last_line(bytes_in_line, line, legacy_file_info, &comment_idx, &current_create_milli_timestamp, &status);
+    }
+
+    // free
+    close(fd);
+
+    return error_code;    
+}
+
+Err
+_parse_legacy_file_comment_comment_reply_core_core(char *buf, int bytes, char *line, int *bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LEGACY_FILE_STATUS *status)
+{
+    Err error_code = S_OK;
+    int bytes_in_new_line = 0;
+    for(int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
+        error_code = get_line_from_buf(buf, offset_buf, bytes, line, *bytes_in_line, &bytes_in_new_line);
+        *bytes_in_line += bytes_in_new_line;
+        if(error_code) {
+            error_code = S_OK;
+            break;
+        }
+
+        error_code = _parse_legacy_file_comment_comment_reply_core_one_line(line, *bytes_in_line, legacy_file_info, comment_idx, current_create_milli_timestamp, status);
+
+        if(error_code) break;
+
+        // reset line
+        bzero(line, *bytes_in_line);
+        *bytes_in_line = 0;
+    }
+
+    return error_code;
+}
+
+Err
+_parse_legacy_file_comment_comment_reply_core_one_line(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LEGACY_FILE_STATUS *status)
+{
+    Err error_code = S_OK;
+
+    // hack for state-transition in comment-reply -> comment
+    switch(*status) {
+    case LEGACY_FILE_STATUS_COMMENT:
+        error_code = _parse_legacy_file_comment_comment_reply_core_one_line_comment(line, bytes_in_line, legacy_file_info, comment_idx, current_create_milli_timestamp, status);
+        break;
+    case LEGACY_FILE_STATUS_COMMENT_REPLY:
+        error_code = _parse_legacy_file_comment_comment_reply_core_one_line_comment_reply(line, bytes_in_line, legacy_file_info, comment_idx, status);
+        if(!error_code && *status == LEGACY_FILE_STATUS_COMMENT) {
+            error_code = _parse_legacy_file_comment_comment_reply_core_one_line_comment(line, bytes_in_line, legacy_file_info, comment_idx, current_create_milli_timestamp, status);
+        }
+        break;
+    default:
+        break;
+    }
+
+    return error_code;
+}
+
+Err
+_parse_legacy_file_comment_comment_reply_core_one_line_comment(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LEGACY_FILE_STATUS *status)
+{
+    Err error_code = S_OK:
+
+    // comment-create-milli-timestamp
+    error_code = _parse_legacy_file_comment_create_milli_timestamp(line, bytes_in_line, *current_create_milli_timestamp, &legacy_file_info->comment_info[comment_idx].comment_create_milli_timestamp);
+    if(error_code) return error_code;
+
+    // comment-poster
+    error_code = _parse_legacy_file_comment_poster(line, bytes_in_line, &legacy_file_info->comment_info[comment_idx].comment_poster);
+    if(error_code) return error_code;
+
+    // comment-len
+    legacy_file_info->comment_info[comment_idx].comment_len = bytes_in_line;
+
+    // comment-type
+    error_code = _parse_legacy_file_comment_type(line, bytes_in_line, &legacy_file_info->comment_info[comment_idx].comment_type);
+    if(error_code) return error_code;
+
+    // comment-reply-create-milli-timestamp
+    legacy_file_info->comment_info[comment_info].comment_reply_create_milli_timestamp = legacy_file_info->comment_info[comment_idx].comment_create_milli_timestamp + 1;
+
+    // comment-reply-poster
+    strcpy(legacy_file_info->comment_info[comment_idx].comment_reply_poster, legacy_file_info->poster);
+
+    // set status
+    *status = LEGACY_FILE_STATUS_COMMENT_REPLY;
+
+    return S_OK;
+}
+
+Err
+_parse_legacy_file_comment_comment_reply_core_one_line_comment_reply(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int comment_idx, enum LEGACY_FILE_STATUS *status)
+{
+    Err error_code = S_OK;
+    bool is_comment_line = false;
+    error_code = _is_comment_line(line, bytes_in_line, &is_comment_line);
+    if(error_code) return error_code;
+
+    if(is_comment_line) {
+        (*comment_idx)++;
+        *status = LEGACY_FILE_STATUS_COMMENT;
+        return S_OK;
+    }
+
+    legacy_file_info->comment_info[comment_info].comment_reply_len += bytes_in_line;
+
+    return S_OK;
+}
+
+Err
+_parse_legacy_file_comment_comment_reply_core_last_line(int bytes_in_line, char *line, LegacyFileInfo *legacy_file_info, enum LEGACY_FILE_STATUS *status)
+{
+    return _parse_legacy_file_comment_comment_reply_core_one_line(chline, bytes_in_line, legacy_file_info, status)
+}
+
+/*****
+ * Misc
+ *****/
 
 Err
 _is_comment_line(char *line, int bytes_in_line, bool *is_valid)
@@ -480,12 +550,6 @@ _is_comment_line_forward(char *line, int bytes_in_line, bool *is_valid)
 
     *is_valid = true
     return S_Ok;
-}
-
-Err
-_parse_legacy_file_n_comment_comment_reply_last_line(int bytes_in_line, char *line, int *n_comment_comment_reply)
-{
-    return _parse_legacy_file_n_comment_comment_reply_core_one_line(line, bytes_in_line, n_comment_comment_reply);
 }
 
 Err
