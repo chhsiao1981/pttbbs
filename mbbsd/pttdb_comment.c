@@ -1,15 +1,6 @@
 #include "pttdb.h"
 #include "pttdb_internal.h"
 
-enum Karma KARMA_BY_COMMENT_TYPE[] = {
-    KARMA_GOOD,
-    KARMA_BAD,
-    KARMA_ARROW,
-    0,
-    0,                   // forward
-    0,                   // other
-};
-
 char *_read_comments_op_type[] = {
     "$lt",
     "$lte",

@@ -3,6 +3,8 @@
 #define PTTDB_H
 
 #include "ptterr.h"
+#include "ansi.h"
+#include "pttdb_const.h"
 #include "pttdb_util.h"
 #include "pttdb_uuid.h"
 #include "util_db.h"
@@ -22,6 +24,7 @@ extern "C" {
 #define MAX_CREATE_MILLI_TIMESTAMP 9999999999999 // XXX 2286-11-20
 
 #define MAX_N_DICT_BSON_BY_UU 256
+
 
 enum CommentType {
     COMMENT_TYPE_GOOD,
@@ -61,7 +64,10 @@ enum ReadCommentsOpType {
     READ_COMMENTS_OP_TYPE_GTE,
 };
 
-extern enum Karma KARMA_BY_COMMENT_TYPE[COMMENT_TYPE_N_TYPE];
+extern const enum Karma KARMA_BY_COMMENT_TYPE[COMMENT_TYPE_N_TYPE];
+extern const char *COMMENT_TYPE_ATTR[COMMENT_TYPE_N_TYPE];
+extern const char *BIG5_COMMENT_TYPE_ATTR[COMMENT_TYPE_N_TYPE];
+extern const char *COMMENT_TYPE_ATTR2[COMMENT_TYPE_N_TYPE];
 
 /**********
  * Main
