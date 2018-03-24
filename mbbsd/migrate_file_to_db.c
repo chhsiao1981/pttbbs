@@ -453,7 +453,6 @@ _parse_legacy_file_comment_comment_reply_core_one_line_comment(char *line, int b
     return S_OK;
 }
 
-
 Err
 _parse_legacy_file_comment_create_milli_timestamp(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp)
 {
