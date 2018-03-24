@@ -66,7 +66,7 @@ MONGO_LIBS:=	-lmongoc-1.0 -lbson-1.0 -lresolv
 CXXFLAGS+=	${MONGO_CXXFLAGS}
 LDFLAGS+=	${MONGO_LDFLAGS}
 LDLIBS+=	${MONGO_LIBS}
-MBBSD_OBJS+=	${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/pttdb_main.o ${MBBSD_DIR}/pttdb_comment.o ${MBBSD_DIR}/pttdb_comment_reply.o ${MBBSD_DIR}/pttdb_content_block.o ${MBBSD_DIR}/pttdb_uuid.o ${MBBSD_DIR}/pttdb_util.o ${MBBSD_DIR}/util_db.o ${MBBSD_DIR}/pttdb_dict_bson_by_uu.o ${MBBSD_DIR}/migrate_db_to_file.o
+MBBSD_OBJS+=	${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/pttdb_main.o ${MBBSD_DIR}/pttdb_comment.o ${MBBSD_DIR}/pttdb_comment_reply.o ${MBBSD_DIR}/pttdb_const.o ${MBBSD_DIR}/pttdb_content_block.o ${MBBSD_DIR}/pttdb_uuid.o ${MBBSD_DIR}/pttdb_util.o ${MBBSD_DIR}/util_db.o ${MBBSD_DIR}/pttdb_dict_bson_by_uu.o ${MBBSD_DIR}/migrate_db_to_file.o ${MBBSD_DIR}/migrate_file_to_db.o
 .endif # MONGO_CLIENT_URL
 
 ##########
