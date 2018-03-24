@@ -128,7 +128,7 @@ _parse_legacy_file_main_info(const char *fpath, LegacyFileInfo *legacy_file_info
 
     int fd = open(fpath, O_RDONLY);
 
-    enum LEGACY_FILE_STATUS status = LEGACY_FILE_STATUS_MAIN_CONTENT;
+    enum LegacyFileStatus status = LEGACY_FILE_STATUS_MAIN_CONTENT;
     while((bytes = read(fd, buf, MAX_BUF_SIZE)) > 0) {
         error_code = _parse_legacy_file_main_info_core(buf, bytes, line, &bytes_in_line, legacy_file_info, &status);
         if(error_code) break;
@@ -146,7 +146,7 @@ _parse_legacy_file_main_info(const char *fpath, LegacyFileInfo *legacy_file_info
 }
 
 Err
-_parse_legacy_file_main_info_core(char *buf, int bytes, char *line, int *bytes_in_line, LegacyFileInfo *legacy_file_info, enum LEGACY_FILE_STATUS *status)
+_parse_legacy_file_main_info_core(char *buf, int bytes, char *line, int *bytes_in_line, LegacyFileInfo *legacy_file_info, enum LegacyFileStatus *status)
 {
     Err error_code = S_OK;
     int bytes_in_new_line = 0;
@@ -182,7 +182,7 @@ _parse_legacy_file_main_info_core(char *buf, int bytes, char *line, int *bytes_i
  * @param LEGACY_FILE_STATUS [description]
  */
 Err
-_parse_legacy_file_main_info_core_one_line(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, enum LEGACY_FILE_STATUS *status)
+_parse_legacy_file_main_info_core_one_line(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, enum LegacyFileStatus *status)
 {
     Err error_code = S_OK;
 
@@ -208,7 +208,7 @@ _parse_legacy_file_main_info_core_one_line(char *line, int bytes_in_line, Legacy
 }
 
 Err
-_parse_legacy_file_main_info_core_one_line_main_content(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info enum LEGACY_FILE_STATUS *status)
+_parse_legacy_file_main_info_core_one_line_main_content(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info enum LegacyFileStatus *status)
 {
     Err error_code = S_OK;
 
@@ -354,7 +354,7 @@ _parse_legacy_file_comment_comment_reply_core(const char *fpath, LegacyFileInfo 
     int fd = open(fpath, O_RDONLY);
     lseek(fd, main_content_len, SEEK_SET);
 
-    enum LEGACY_FILE_STATUS status = LEGACY_FILE_STATUS_COMMENT;
+    enum LegacyFileStatus status = LEGACY_FILE_STATUS_COMMENT;
     int comment_idx = 0;
 
     time64_t current_create_milli_timestamp = legacy_file_info->create_milli_timestamp;
@@ -373,7 +373,7 @@ _parse_legacy_file_comment_comment_reply_core(const char *fpath, LegacyFileInfo 
 }
 
 Err
-_parse_legacy_file_comment_comment_reply_core_core(char *buf, int bytes, char *line, int *bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LEGACY_FILE_STATUS *status)
+_parse_legacy_file_comment_comment_reply_core_core(char *buf, int bytes, char *line, int *bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LegacyFileStatus *status)
 {
     Err error_code = S_OK;
     int bytes_in_new_line = 0;
@@ -398,7 +398,7 @@ _parse_legacy_file_comment_comment_reply_core_core(char *buf, int bytes, char *l
 }
 
 Err
-_parse_legacy_file_comment_comment_reply_core_one_line(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LEGACY_FILE_STATUS *status)
+_parse_legacy_file_comment_comment_reply_core_one_line(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LegacyFileStatus *status)
 {
     Err error_code = S_OK;
 
@@ -421,7 +421,7 @@ _parse_legacy_file_comment_comment_reply_core_one_line(char *line, int bytes_in_
 }
 
 Err
-_parse_legacy_file_comment_comment_reply_core_one_line_comment(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LEGACY_FILE_STATUS *status)
+_parse_legacy_file_comment_comment_reply_core_one_line_comment(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LegacyFileStatus *status)
 {
     Err error_code = S_OK:
 
@@ -466,14 +466,14 @@ _parse_legacy_file_comment_poster(char *line, int bytes_in_line, char *poster)
 }
 
 Err
-_parse_legacy_file_comment_type(char *line, int bytes_in_line, enum COMMENT_TYPE *comment_type)
+_parse_legacy_file_comment_type(char *line, int bytes_in_line, enum CommentType *comment_type)
 {
     return S_OK;
 }
 
 
 Err
-_parse_legacy_file_comment_comment_reply_core_one_line_comment_reply(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int comment_idx, enum LEGACY_FILE_STATUS *status)
+_parse_legacy_file_comment_comment_reply_core_one_line_comment_reply(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int comment_idx, enum LegacyFileStatus *status)
 {
     Err error_code = S_OK;
     bool is_comment_line = false;
@@ -492,7 +492,7 @@ _parse_legacy_file_comment_comment_reply_core_one_line_comment_reply(char *line,
 }
 
 Err
-_parse_legacy_file_comment_comment_reply_core_last_line(int bytes_in_line, char *line, LegacyFileInfo *legacy_file_info, enum LEGACY_FILE_STATUS *status)
+_parse_legacy_file_comment_comment_reply_core_last_line(int bytes_in_line, char *line, LegacyFileInfo *legacy_file_info, enum LegacyFileStatus *status)
 {
     return _parse_legacy_file_comment_comment_reply_core_one_line(chline, bytes_in_line, legacy_file_info, status)
 }
