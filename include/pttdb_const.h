@@ -1,5 +1,5 @@
 /* $Id$ */
-#ifndef PTTDB_CONSNT_H
+#ifndef PTTDB_CONST_H
 #define PTTDB_CONST_H
 
 #include "pttdb.h"
@@ -41,4 +41,4 @@ extern "C" {
 }
 #endif
 
-#endif /* PTTDB_H */
+#endif /* PTTDB_CONST_H */
