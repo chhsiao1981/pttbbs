@@ -42,7 +42,7 @@ typedef struct LegacyFileInfo {
     LegacyCommentInfo *comment_info;
 } LegacyFileInfo;
 
-enum LegcayFileStatus {
+enum LegacyFileStatus {
     LEGACY_FILE_STATUS_MAIN_CONTENT,
     LEGACY_FILE_STATUS_COMMENT,
     LEGACY_FILE_STATUS_COMMENT_REPLY,
