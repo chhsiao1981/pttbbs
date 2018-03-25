@@ -27,32 +27,6 @@ ARFLAGS:=	rv
 #######################################################################
 # mbbsd modules
 #######################################################################
-#COREOBJS = bbs.o announce.o read.o board.o brc.o mail.o record.o fav.o
-COREOBJS =
-#ABUSEOBJS = captcha.o
-ABUSEOBJS =
-#ACCOBJS  = user.o acl.o register.o passwd.o emaildb.o
-ACCOBJS  =
-#NETOBJS  = mbbsd.o io.o term.o telnet.o nios.o
-MBBSD_MOCK_OBJ	= mbbsd_mock.o
-NETOBJS  = io.o term.o nios.o
-#TALKOBJS = friend.o talk.o ccw.o
-TALKOBJS = talk.o
-#UTILOBJS = stuff.o kaede.o convert.o name.o syspost.o cache.o cal.o
-UTILOBJS = stuff.o convert.o
-#UIOBJS   = menu.o vtuikit.o psb.o
-UIOBJS   = vtuikit.o
-#PAGEROBJS= more.o pmore.o
-PAGEROBJS=
-#PLUGOBJS = ordersong.o angel.o timecap.o
-PLUGOBJS =
-#CHESSOBJS= chess.o chc.o chc_tab.o ch_go.o ch_gomo.o ch_dark.o ch_reversi.o ch_conn6.o
-CHESSOBJS=
-#GAMEOBJS = chicken.o gamble.o
-GAMEOBJS =
-
-MISCOBJS =
-
 BBSCONF:=	$(SRCROOT)/pttbbs.conf
 DEF_PATTERN:=	^[ \t]*\#[ \t]*define[ \t]*
 DEF_CMD:=	grep -Ewq "${DEF_PATTERN}"
@@ -62,6 +36,22 @@ USE_PFTERM!=	sh -c '${DEF_CMD}"USE_PFTERM" ${BBSCONF} ${DEF_YES}'
 USE_NIOS!=	sh -c '${DEF_CMD}"USE_NIOS"   ${BBSCONF} ${DEF_YES}'
 USE_CONVERT!=	sh -c '${DEF_CMD}"CONVERT"    ${BBSCONF} ${DEF_YES}'
 MONGO_CLIENT_URL!=	sh -c '${DEF_CMD}"MONGO_CLIENT_URL" ${BBSCONF} ${DEF_YES}'
+
+COREOBJS = bbs.o announce.o read.o board.o brc.o mail.o record.o fav.o
+ABUSEOBJS = captcha.o
+ACCOBJS  = user.o acl.o register.o passwd.o emaildb.o
+#NETOBJS  = mbbsd.o io.o term.o telnet.o nios.o
+MBBSD_MOCK_OBJ	= mbbsd_mock.o
+NETOBJS  = io.o term.o telnet.o nios.o
+TALKOBJS = friend.o talk.o ccw.o
+UTILOBJS = stuff.o kaede.o convert.o name.o syspost.o cache.o cal.o
+UIOBJS   = menu.o vtuikit.o psb.o
+PAGEROBJS= more.o pmore.o
+PLUGOBJS = ordersong.o angel.o timecap.o
+CHESSOBJS= chess.o chc.o chc_tab.o ch_go.o ch_gomo.o ch_dark.o ch_reversi.o ch_conn6.o
+GAMEOBJS = chicken.o gamble.o
+
+MISCOBJS =
 
 .if $(USE_PFTERM)
 MISCOBJS+=		pfterm.o
