@@ -215,7 +215,7 @@ _parse_legacy_file_main_info_core_one_line_main_content(char *line, int bytes_in
     error_code = _is_comment_line(line, bytes_in_line, &is_comment_line);
     if(error_code) {
         *status = LEGACY_FILE_STATUS_ERROR;
-        retrun S_ERR;
+        return S_ERR;
     }
 
     if(is_comment_line) {
@@ -240,6 +240,7 @@ _parse_legacy_file_comment_comment_reply(const char *fpath, LegacyFileInfo *lega
 {
     Err error_code = S_OK;
 
+    int n_comment_comment_reply = 0;    
     error_code = _parse_legacy_file_n_comment_comment_reply(fpath, legacy_file_info->main_content_len, &n_comment_comment_reply);
 
     if(!error_code && n_comment_comment_reply) {
