@@ -479,7 +479,7 @@ _parse_legacy_file_comment_type(char *line, int bytes_in_line, enum CommentType 
 
 
 Err
-_parse_legacy_file_comment_comment_reply_core_one_line_comment_reply(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int comment_idx, enum LegacyFileStatus *status)
+_parse_legacy_file_comment_comment_reply_core_one_line_comment_reply(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, enum LegacyFileStatus *status)
 {
     Err error_code = S_OK;
     bool is_comment_line = false;
@@ -492,7 +492,7 @@ _parse_legacy_file_comment_comment_reply_core_one_line_comment_reply(char *line,
         return S_OK;
     }
 
-    legacy_file_info->comment_info[comment_info].comment_reply_len += bytes_in_line;
+    legacy_file_info->comment_info[*comment_idx].comment_reply_len += bytes_in_line;
 
     return S_OK;
 }
