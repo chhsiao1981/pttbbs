@@ -502,7 +502,7 @@ _parse_legacy_file_comment_comment_reply_core_one_line_comment_reply(char *line,
 Err
 _parse_legacy_file_comment_comment_reply_core_last_line(int bytes_in_line, char *line, LegacyFileInfo *legacy_file_info, enum LegacyFileStatus *status)
 {
-    return _parse_legacy_file_comment_comment_reply_core_one_line(chline, bytes_in_line, legacy_file_info, status)
+    return _parse_legacy_file_comment_comment_reply_core_one_line(line, bytes_in_line, legacy_file_info, status)
 }
 
 /*****
