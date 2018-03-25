@@ -557,7 +557,7 @@ _is_comment_line_good_bad_arrow(char *line, int bytes_in_line, bool *is_valid, e
 Err
 _is_comment_line_forward(char *line, int bytes_in_line, bool *is_valid)
 {
-    if(strncmp(line, COMMENT_TYPE_ATTR[COMMENT_TYPE_FORWARD])) {
+    if(strncmp(line, COMMENT_TYPE_ATTR[COMMENT_TYPE_FORWARD], 2)) {
         *is_valid = false;
         return S_OK;
     }
