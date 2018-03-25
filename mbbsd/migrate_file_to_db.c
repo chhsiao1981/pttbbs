@@ -1,6 +1,32 @@
 #include "migrate.h"
 #include "migrate_internal.h"
 
+int
+get_web_url(const boardheader_t *bp, const fileheader_t *fhdr, char *buf,
+          size_t szbuf)
+{
+    const char *folder = bp->brdname, *fn = fhdr->filename, *ext = ".html";
+
+/*
+#ifdef USE_AID_URL
+    char aidc[32] = "";
+    aidu_t aidu = fn2aidu(fhdr->filename);
+    if (!aidu)
+    return 0;
+
+    aidu2aidc(aidc, aidu);
+    fn = aidc;
+    ext = "";
+#endif
+*/
+
+    if (!fhdr || !*fhdr->filename || *fhdr->filename == 'L' ||
+        *fhdr->filename == '.')
+    return 0;
+
+    return snprintf(buf, szbuf, URL_PREFIX "/%s/%s%s", folder, fn, ext);
+}
+
 Err
 migrate_get_file_info(const fileheader_t *fhdr, const boardheader_t *bp, char *poster, char *board, char *title, char *origin, aidu_t *aid, char *web_link, time64_t *create_milli_timestamp)
 {

@@ -63,7 +63,7 @@ Err safe_destroy_legacy_file_info(LegacyFileInfo *legacy_file_info);
 /*****
  * from bbs.c
  *****/
-static int GetWebUrl(const boardheader_t *bp, const fileheader_t *fhdr, char *buf, size_t szbuf);
+int get_web_url(const boardheader_t *bp, const fileheader_t *fhdr, char *buf, size_t szbuf);
 
 
 #ifdef __cplusplus
