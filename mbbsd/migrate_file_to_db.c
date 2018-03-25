@@ -263,7 +263,7 @@ _parse_legacy_file_comment_comment_reply(const char *fpath, LegacyFileInfo *lega
 Err
 _parse_legacy_file_n_comment_comment_reply(const char *fpath, int main_content_len, int *n_comment_comment_reply)
 {
-    int fd = open(fpath, O_RDONLY);
+    Err error_code = S_OK;
 
     int tmp_n_comment_comment_reply = 0;
     int each_n_comment_comment_reply = 0;
@@ -272,6 +272,7 @@ _parse_legacy_file_n_comment_comment_reply(const char *fpath, int main_content_l
     int bytes_in_line = 0;
     char line[MAX_BUF_SIZE] = {};
 
+    int fd = open(fpath, O_RDONLY);
     lseek(fd, main_content_len, SEEK_SET);
     while((bytes = read(fd, buf, MAX_BUF_SIZE)) > 0) {
         error_code = _parse_legacy_file_n_comment_comment_reply_core(buf, bytes, line, &bytes_in_line, &each_n_comment_comment_reply);
