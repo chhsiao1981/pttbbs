@@ -109,6 +109,7 @@ OBJS+=		screen.o
 MONGO_CFLAGS:=	-I/usr/local/include/libmongoc-1.0 -I/usr/local/include/libbson-1.0
 MONGO_LDFLAGS:=	-L/usr/local/lib
 MONGO_LIBS:=	-L/usr/local/lib -lmongoc-1.0 -lbson-1.0 -lresolv
+CXXFLAGS+=	${MONGO_CFLAGS}
 CFLAGS+=	${MONGO_CFLAGS}
 LDFLAGS+=	${MONGO_LDFLAGS}
 LDLIBS+=	${MONGO_LIBS}
