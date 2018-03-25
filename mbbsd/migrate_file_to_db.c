@@ -449,7 +449,7 @@ _parse_legacy_file_comment_comment_reply_core_one_line_comment(char *line, int b
     if(error_code) return error_code;
 
     // comment-reply-create-milli-timestamp
-    legacy_file_info->comment_info[comment_info].comment_reply_create_milli_timestamp = legacy_file_info->comment_info[tmp_comment_idx].comment_create_milli_timestamp + 1;
+    legacy_file_info->comment_info[tmp_comment_idx].comment_reply_create_milli_timestamp = legacy_file_info->comment_info[tmp_comment_idx].comment_create_milli_timestamp + 1;
 
     // comment-reply-poster
     strcpy(legacy_file_info->comment_info[tmp_comment_idx].comment_reply_poster, legacy_file_info->poster);
@@ -557,7 +557,7 @@ _is_comment_line_good_bad_arrow(char *line, int bytes_in_line, bool *is_valid, e
 Err
 _is_comment_line_forward(char *line, int bytes_in_line, bool *is_valid)
 {
-    if(strncmp(line, COMMENT_TYPE_ATTR[COMMENT_TYPE_FORAWRD])) {
+    if(strncmp(line, COMMENT_TYPE_ATTR[COMMENT_TYPE_FORWARD])) {
         *is_valid = false;
         return S_OK;
     }
