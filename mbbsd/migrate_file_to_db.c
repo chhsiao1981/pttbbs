@@ -207,12 +207,12 @@ _parse_legacy_file_main_info_core_one_line(char *line, int bytes_in_line, Legacy
 }
 
 Err
-_parse_legacy_file_main_info_core_one_line_main_content(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info enum LegacyFileStatus *status)
+_parse_legacy_file_main_info_core_one_line_main_content(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, enum LegacyFileStatus *status)
 {
     Err error_code = S_OK;
 
     bool is_comment_line = false;
-    error_code = _is_comment_line(line, bytes, is_comment_line);
+    error_code = _is_comment_line(line, bytes_in_line, is_comment_line);
     if(error_code) {
         *status = LEGACY_FILE_STATUS_ERROR;
         retrun S_ERR;
