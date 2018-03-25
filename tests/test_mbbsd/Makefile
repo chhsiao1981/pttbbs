@@ -50,7 +50,7 @@ CHESSOBJS=
 #GAMEOBJS = chicken.o gamble.o
 GAMEOBJS =
 
-MISCOBJS=
+MISCOBJS =
 
 .if $(USE_PFTERM)
 MISCOBJS+=		pfterm.o
