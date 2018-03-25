@@ -432,30 +432,31 @@ _parse_legacy_file_comment_comment_reply_core_one_line_comment(char *line, int b
 {
     Err error_code = S_OK;
 
+    int tmp_comment_idx = *comment_idx;
     // comment-create-milli-timestamp
-    error_code = _parse_legacy_file_comment_create_milli_timestamp(line, bytes_in_line, *current_create_milli_timestamp, &legacy_file_info->comment_info[comment_idx].comment_create_milli_timestamp);
+    error_code = _parse_legacy_file_comment_create_milli_timestamp(line, bytes_in_line, *current_create_milli_timestamp, &legacy_file_info->comment_info[tmp_comment_idx].comment_create_milli_timestamp);
     if(error_code) return error_code;
 
     // comment-poster
-    error_code = _parse_legacy_file_comment_poster(line, bytes_in_line, legacy_file_info->comment_info[comment_idx].comment_poster);
+    error_code = _parse_legacy_file_comment_poster(line, bytes_in_line, legacy_file_info->comment_info[tmp_comment_idx].comment_poster);
     if(error_code) return error_code;
 
     // comment-len
-    legacy_file_info->comment_info[comment_idx].comment_len = bytes_in_line;
+    legacy_file_info->comment_info[tmp_comment_idx].comment_len = bytes_in_line;
 
     // comment-type
-    error_code = _parse_legacy_file_comment_type(line, bytes_in_line, &legacy_file_info->comment_info[comment_idx].comment_type);
+    error_code = _parse_legacy_file_comment_type(line, bytes_in_line, &legacy_file_info->comment_info[tmp_comment_idx].comment_type);
     if(error_code) return error_code;
 
     // comment-reply-create-milli-timestamp
-    legacy_file_info->comment_info[comment_info].comment_reply_create_milli_timestamp = legacy_file_info->comment_info[comment_idx].comment_create_milli_timestamp + 1;
+    legacy_file_info->comment_info[comment_info].comment_reply_create_milli_timestamp = legacy_file_info->comment_info[tmp_comment_idx].comment_create_milli_timestamp + 1;
 
     // comment-reply-poster
-    strcpy(legacy_file_info->comment_info[comment_idx].comment_reply_poster, legacy_file_info->poster);
+    strcpy(legacy_file_info->comment_info[tmp_comment_idx].comment_reply_poster, legacy_file_info->poster);
 
     // set status
     *status = LEGACY_FILE_STATUS_COMMENT_REPLY;
-    *current_create_milli_timestamp = legacy_file_info->comment_info[comment_idx].comment_create_milli_timestamp;
+    *current_create_milli_timestamp = legacy_file_info->comment_info[tmp_comment_idx].comment_create_milli_timestamp;
 
     return S_OK;
 }
