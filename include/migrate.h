@@ -4,6 +4,7 @@
 
 #include "ptterr.h"
 #include "pttstruct.h"
+#include "proto.h"
 #include "pttdb.h"
 
 #ifdef __cplusplus
