@@ -36,7 +36,7 @@ migrate_get_file_info(const fileheader_t *fhdr, const boardheader_t *bp, char *p
     strcpy(origin, "ptt.cc");
     *aid = fn2aidu((char *)fhdr->filename);
 
-    bool status = GetWebUrl(bp, fhdr, web_link, MAX_WEB_LINK_LEN);
+    bool status = get_web_url(bp, fhdr, web_link, MAX_WEB_LINK_LEN);
     if(!status) bzero(web_link, MAX_WEB_LINK_LEN);
 
     Err error_code = _parse_create_milli_timestamp_from_filename(fhdr->filename, create_milli_timestamp);
