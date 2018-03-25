@@ -2,7 +2,7 @@
 #include "migrate_internal.h"
 
 Err
-migrate_get_file_info(const fileheadr_t *fhdr, const boardheader_t *bp, char *poster, char *board, char *title, char *origin, aidu_t *aid, char *web_link, time64_t *create_milli_timestamp)
+migrate_get_file_info(const fileheader_t *fhdr, const boardheader_t *bp, char *poster, char *board, char *title, char *origin, aidu_t *aid, char *web_link, time64_t *create_milli_timestamp)
 {
     memcpy(poster, fhdr->owner, strlen(fhdr->owner) - 1);
     strcpy(board, bp->brdname);
