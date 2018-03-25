@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "bbs.h"
 #include "migrate.h"
+#include "migrate_internal.h"
 #include "pttdb_internal.h"
 #include "util_db_internal.h"
 
