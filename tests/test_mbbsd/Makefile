@@ -88,7 +88,11 @@ MBBSD_UTILOBJS:=
 .for obj in ${UTILOBJS}
 MBBSD_UTILOBJS+= ${MBBSD_DIR}/${obj}
 .endfor
-MBBSD_TALKOBJS:=
+MBBSD_UIOBJS:=
+.for obj in ${UIOBJS}
+MBBSD_UIOBJS+= ${MBBSD_DIR}/${obj}
+.endfor
+MBBSD_PAGEROBJS:=
 .for obj in ${PAGEROBJS}
 MBBSD_PAGEROBJS+= ${MBBSD_DIR}/${obj}
 .endfor
