@@ -52,6 +52,8 @@ enum LegacyFileStatus {
 
 Err migrate_db_to_file(UUID main_id, const char *fpath);
 
+Err migrate_get_file_info(const fileheadr_t *fhdr, const boardheader_t *bp, char *poster, char *board, char *title, char *origin, aidu_t *aid, char *web_link, time64_t *create_milli_timestamp);
+Err migrate_file_to_db(const char *fpath, char *poster, char *board, char *title, char *origin, aidu_t aid, char *web_link, UUID main_id);
 Err parse_legacy_file(const char *fpath, LegacyFileInfo *legacy_file_info);
 Err init_legacy_file_info_comment_comment_reply(LegacyFileInfo *legacy_file_info, int n_comment_comment_reply);
 Err safe_destroy_legacy_file_info(LegacyFileInfo *legacy_file_info);

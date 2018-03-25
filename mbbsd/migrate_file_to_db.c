@@ -2,6 +2,23 @@
 #include "migrate_internal.h"
 
 Err
+migrate_get_file_info(const fileheadr_t *fhdr, const boardheader_t *bp, char *poster, char *board, char *title, char *origin, aidu_t *aid, char *web_link, time64_t *create_milli_timestamp)
+{
+    memcpy(poster, fhdr->owner, strlen(fhdr->owner) - 1);
+    strcpy(board, bp->brdname);
+    strcpy(title, fhdr->title);
+    strcpy(origin, "ptt.cc");
+    *aid = fn2aidu((char *)fhdr->filename);
+
+    bool status = GetWebUrl(bp, fhdr, web_link, MAX_WEB_LINK_LEN);
+    if(!status) bzero(web_link, MAX_WEB_LINK_LEN);
+
+    *create_milli_timestamp = _parse_create_milli_timestamp_from_filename(fhdr->filename);
+
+    return S_OK;
+}
+
+Err
 migrate_file_to_db(const char *fpath, char *poster, char *board, char *title, char *origin, aidu_t aid, char *web_link, UUID main_id)
 {
     Err error_code = S_OK;
@@ -71,6 +88,18 @@ migrate_file_to_db(const char *fpath, char *poster, char *board, char *title, ch
     safe_destroy_legacy_file_info(&legacy_file_info);
 
     return error_code;
+}
+
+Err
+_parse_create_milli_timestamp_from_filename(char *filename, time64_t *create_milli_timestamp)
+{
+    char *p_filename_milli_timestamp = filename + 2;
+    long create_timestamp = atol(p_filename_milli_timestamp);
+    if(!create_timestamp) return S_ERR;
+
+    *create_milli_timestamp = create_timestamp * 1000;
+
+    return S_OK;
 }
 
 Err
