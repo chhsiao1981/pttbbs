@@ -119,7 +119,7 @@ OBJS+=		pttdb.o pttdb_main.o pttdb_comment.o pttdb_comment_reply.o pttdb_const.o
 # mbbsd-objs
 #######################################################################
 
-MBBSD_OBJS	= mbbsd_mock.o
+MBBSD_OBJS	= mbbsd_mock.o vers_mock.o
 .for obj in ${OBJS}
 MBBSD_OBJS+= ${MBBSD_DIR}/${obj}
 .endfor
@@ -159,6 +159,12 @@ gtest_main.a: gtest-all.o gtest_main.o
 ##########
 
 .SUFFIXES: .c .o
+
+vers_mock.o: vers.c
+	sh $(SRCROOT)/util/newvers.sh
+	$(CC) $(CFLAGS) -c $<
+
+
 .c.o:	$(SRCROOT)/include/var.h
 	$(CC) $(CFLAGS) -c $*.c
 
