@@ -27,7 +27,67 @@ ARFLAGS:=	rv
 #######################################################################
 # mbbsd modules
 #######################################################################
-MBBSD_OBJS:=
+#COREOBJS = bbs.o announce.o read.o board.o brc.o mail.o record.o fav.o
+COREOBJS =
+#ABUSEOBJS = captcha.o
+ABUSEOBJS =
+#ACCOBJS  = user.o acl.o register.o passwd.o emaildb.o
+ACCOBJS  =
+#NETOBJS  = mbbsd.o io.o term.o telnet.o nios.o
+NETOBJS  = io.o term.o telnet.o nios.o
+#TALKOBJS = friend.o talk.o ccw.o
+TALKOBJS =
+#UTILOBJS = stuff.o kaede.o convert.o name.o syspost.o cache.o cal.o
+UTILOBJS = stuff.o
+#UIOBJS   = menu.o vtuikit.o psb.o
+UIOBJS   = vtuikit.o
+#PAGEROBJS= more.o pmore.o
+PAGEROBJS=
+#PLUGOBJS = ordersong.o angel.o timecap.o
+PLUGOBJS =
+#CHESSOBJS= chess.o chc.o chc_tab.o ch_go.o ch_gomo.o ch_dark.o ch_reversi.o ch_conn6.o
+CHESSOBJS=
+#GAMEOBJS = chicken.o gamble.o
+GAMEOBJS =
+
+MBBSD_COREOJBS:=
+.for obj in ${COREOBJS}
+MBBSD_COREOBJS+= ${MBBSD_DIR}/${obj}
+.endfor
+MBBSD_ABUSEOBJS:=
+.for obj in ${ABUSEOBJS}
+MBBSD_ABUSEOBJS+= ${MBBSD_DIR}/${obj}
+.endfor
+MBBSD_NETOBJS:=
+.for obj in ${NETOBJS}
+MBBSD_NETOBJS+= ${MBBSD_DIR}/${obj}
+.endfor
+MBBSD_TALKOBJS:=
+.for obj in ${TALKOBJS}
+MBBSD_TALKOBJS+= ${MBBSD_DIR}/${obj}
+.endfor
+MBBSD_UTILOBJS:=
+.for obj in ${UTILOBJS}
+MBBSD_UTILOBJS+= ${MBBSD_DIR}/${obj}
+.endfor
+MBBSD_TALKOBJS:=
+.for obj in ${PAGEROBJS}
+MBBSD_PAGEROBJS+= ${MBBSD_DIR}/${obj}
+.endfor
+MBBSD_PLUGOBJS:=
+.for obj in ${PLUGOBJS}
+MBBSD_PLUGOBJS+= ${MBBSD_DIR}/${obj}
+.endfor
+MBBSD_CHESSOBJS:=
+.for obj in ${CHESSOBJS}
+MBBSD_CHESSOBJS+= ${MBBSD_DIR}/${obj}
+.endfor
+MBBSD_GAMEOBJS:=
+.for obj in ${GAMEOBJS}
+MBBSD_GAMEOBJS+= ${MBBSD_DIR}/${obj}
+.endfor
+
+MBBSD_OBJS:= ${MBBSD_COREOBJS} ${MBBSD_ABUSEOBJS} ${MBBSD_NETOBJS} ${MBBSD_TALKOBJS} ${MBBSD_UTILOBJS} ${MBBSD_PAGEROBJS} ${MBBSD_PLUGOBJS} ${MBBSD_CHESSOJBS} ${MBBSD_GAMEOBJS}
 
 #######################################################################
 # reduce .bss align overhead
@@ -66,7 +126,7 @@ MONGO_LIBS:=	-lmongoc-1.0 -lbson-1.0 -lresolv
 CXXFLAGS+=	${MONGO_CXXFLAGS}
 LDFLAGS+=	${MONGO_LDFLAGS}
 LDLIBS+=	${MONGO_LIBS}
-MBBSD_OBJS+=	${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/pttdb_main.o ${MBBSD_DIR}/pttdb_comment.o ${MBBSD_DIR}/pttdb_comment_reply.o ${MBBSD_DIR}/pttdb_const.o ${MBBSD_DIR}/pttdb_content_block.o ${MBBSD_DIR}/pttdb_uuid.o ${MBBSD_DIR}/pttdb_util.o ${MBBSD_DIR}/util_db.o ${MBBSD_DIR}/pttdb_dict_bson_by_uu.o ${MBBSD_DIR}/migrate_db_to_file.o ${MBBSD_DIR}/migrate_file_to_db.o ${MBBSD_DIR}/stuff.o ${MBBSD_DIR}/var.o ${MBBSD_DIR}/screen.o ${MBBSD_DIR}/vtuikit.o ${MBBSD_DIR}/nios.o
+MBBSD_OBJS+=	${MBBSD_DIR}/var.o ${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/pttdb_main.o ${MBBSD_DIR}/pttdb_comment.o ${MBBSD_DIR}/pttdb_comment_reply.o ${MBBSD_DIR}/pttdb_const.o ${MBBSD_DIR}/pttdb_content_block.o ${MBBSD_DIR}/pttdb_uuid.o ${MBBSD_DIR}/pttdb_util.o ${MBBSD_DIR}/util_db.o ${MBBSD_DIR}/pttdb_dict_bson_by_uu.o ${MBBSD_DIR}/migrate_db_to_file.o ${MBBSD_DIR}/migrate_file_to_db.o
 .endif # MONGO_CLIENT_URL
 
 ##########
