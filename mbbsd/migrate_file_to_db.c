@@ -359,7 +359,7 @@ _parse_legacy_file_comment_comment_reply_core(const char *fpath, LegacyFileInfo 
     char line[MAX_BUF_SIZE] = {};
 
     int fd = open(fpath, O_RDONLY);
-    lseek(fd, main_content_len, SEEK_SET);
+    lseek(fd, legacy_file_info->main_content_len, SEEK_SET);
 
     enum LegacyFileStatus status = LEGACY_FILE_STATUS_COMMENT;
     int comment_idx = 0;
