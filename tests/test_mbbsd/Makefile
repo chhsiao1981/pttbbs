@@ -161,7 +161,7 @@ gtest_main.a: gtest-all.o gtest_main.o
 .SUFFIXES: .c .o
 
 vers_mock.o: ${MBBSD_DIR}/vers.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $> -o $@
 
 .c.o:	$(SRCROOT)/include/var.h
 	$(CC) $(CFLAGS) -c $*.c
