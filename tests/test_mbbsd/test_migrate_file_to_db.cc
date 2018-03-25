@@ -5,7 +5,7 @@
 #include "util_db_internal.h"
 
 TEST(migrate_file_to_db, parse_create_milli_timestamp_from_web_link) {
-    char web_link[] = 'https://www.ptt.cc/bbs/SYSOP/M.1510537375.A.8B4.html';
+    const char web_link[] = 'https://www.ptt.cc/bbs/SYSOP/M.1510537375.A.8B4.html';
 
     time64_t create_milli_timestamp = 0;
     Err error = _parse_create_milli_timestamp_from_web_link(web_link, &create_milli_timestamp);
