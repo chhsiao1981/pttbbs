@@ -60,7 +60,7 @@ migrate_file_to_db(const char *fpath, char *poster, char *board, char *title, ch
                 legacy_file_info.comment_info[i].comment_reply_len,
                 buf,
                 comment_reply_id
-                )
+                );
             if(error_code) break;
         }
     }
@@ -80,7 +80,7 @@ _parse_create_milli_timestamp_from_web_link(char *web_link, time64_t *create_mil
     int create_timestamp = atoi(p_web_link);
     if(create_timestamp < MIN_CREATE_TIMESTAMP) return S_ERR;
 
-    *create_milli_timestamp = (tim64_t)create_timestamp * 1000;
+    *create_milli_timestamp = (time64_t)create_timestamp * 1000;
 
     return S_OK;
 }
@@ -227,6 +227,12 @@ _parse_legacy_file_main_info_core_one_line_main_content(char *line, int bytes_in
     legacy_file_info->main_content_len += bytes_in_line;
 
     return S_OK;
+}
+
+Err
+_parse_legacy_file_main_info_last_line(int bytes_in_line, char *line, LegacyFileInfo *legacy_file_info, enum LegacyFileStatus *status)
+{
+    return _parse_legacy_file_main_info_core_one_line(line, bytes_in_line, legacy_file_info, status);
 }
 
 Err

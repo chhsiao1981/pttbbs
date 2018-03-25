@@ -14,12 +14,19 @@ extern "C" {
 
 Err _parse_create_milli_timestamp_from_web_link(char *web_link, time64_t *create_milli_timestamp);
 
-// main-info
+/*****
+ * main-info
+ *****/
 Err _parse_legacy_file_main_info(const char *fpath, LegacyFileInfo *legacy_file_info);
 Err _parse_legacy_file_main_info_core(char *buf, int bytes, char *line, int *bytes_in_line, LegacyFileInfo *legacy_file_info, enum LegacyFileStatus *status);
 Err _parse_legacy_file_main_info_core_one_line(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, enum LegacyFileStatus *status);
 Err _parse_legacy_file_main_info_core_one_line_main_content(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, enum LegacyFileStatus *status);
+Err _parse_legacy_file_main_info_last_line(int bytes_in_line, char *line, LegacyFileInfo *legacy_file_info, enum LegacyFileStatus *status);
 
+
+/*****
+ * comment comment-reply
+ *****/
 Err _parse_legacy_file_comment_comment_reply(const char *fpath, LegacyFileInfo *legacy_file_info);
 
 // n comment comment-reply
