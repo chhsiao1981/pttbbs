@@ -50,11 +50,11 @@ CHESSOBJS=
 #GAMEOBJS = chicken.o gamble.o
 GAMEOBJS =
 
-MISC_OBJS:=
+MISCOBJS:=
 .if $(USE_PFTERM)
-MISC_OBJS+=		pfterm.o
+MISCOBJS+=		pfterm.o
 .else
-MISC_OBJS+=		screen.o
+MISCOBJS+=		screen.o
 .endif
 
 MBBSD_COREOJBS:=
