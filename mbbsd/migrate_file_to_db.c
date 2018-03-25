@@ -430,7 +430,7 @@ _parse_legacy_file_comment_comment_reply_core_one_line(char *line, int bytes_in_
 Err
 _parse_legacy_file_comment_comment_reply_core_one_line_comment(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LegacyFileStatus *status)
 {
-    Err error_code = S_OK:
+    Err error_code = S_OK;
 
     // comment-create-milli-timestamp
     error_code = _parse_legacy_file_comment_create_milli_timestamp(line, bytes_in_line, *current_create_milli_timestamp, &legacy_file_info->comment_info[comment_idx].comment_create_milli_timestamp);
