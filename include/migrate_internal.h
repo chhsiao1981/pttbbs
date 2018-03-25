@@ -13,6 +13,7 @@ extern "C" {
 #define N_MIGRATE_COMMENT_COMMENT_REPLY_TO_FILE_BLOCK 256
 #define MAX_MIGRATE_COMMENT_COMMENT_REPLY_BUF_SIZE 8192 * 5
 
+Err _parse_create_milli_timestamp_from_filename(char *filename, time64_t *create_milli_timestamp);
 Err _parse_create_milli_timestamp_from_web_link(char *web_link, time64_t *create_milli_timestamp);
 
 /*****

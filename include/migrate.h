@@ -59,6 +59,13 @@ Err parse_legacy_file(const char *fpath, LegacyFileInfo *legacy_file_info);
 Err init_legacy_file_info_comment_comment_reply(LegacyFileInfo *legacy_file_info, int n_comment_comment_reply);
 Err safe_destroy_legacy_file_info(LegacyFileInfo *legacy_file_info);
 
+
+/*****
+ * from bbs.c
+ *****/
+static int GetWebUrl(const boardheader_t *bp, const fileheader_t *fhdr, char *buf, size_t szbuf);
+
+
 #ifdef __cplusplus
 }
 #endif
