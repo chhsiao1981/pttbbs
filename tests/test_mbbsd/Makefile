@@ -160,7 +160,7 @@ gtest_main.a: gtest-all.o gtest_main.o
 
 .SUFFIXES: .c .o
 
-vers_mock.o: vers.c
+vers_mock.o: ${MBBSD_DIR}/vers.c
 	sh $(SRCROOT)/util/newvers.sh
 	$(CC) $(CFLAGS) -c $<
 
