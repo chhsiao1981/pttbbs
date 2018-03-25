@@ -34,7 +34,8 @@ ABUSEOBJS =
 #ACCOBJS  = user.o acl.o register.o passwd.o emaildb.o
 ACCOBJS  =
 #NETOBJS  = mbbsd.o io.o term.o telnet.o nios.o
-NETOBJS  = mbbsd_internal.c io.o term.o nios.o
+MBBSD_MOCK_OBJ	= mbbsd_mock.o
+NETOBJS  = io.o term.o nios.o
 #TALKOBJS = friend.o talk.o ccw.o
 TALKOBJS = talk.o
 #UTILOBJS = stuff.o kaede.o convert.o name.o syspost.o cache.o cal.o
@@ -113,7 +114,7 @@ MBBSD_MISCOBJS:=
 MBBSD_MISCOBJS+= ${MBBSD_DIR}/${obj}
 .endfor
 
-MBBSD_OBJS:= ${MBBSD_COREOBJS} ${MBBSD_ABUSEOBJS} ${MBBSD_NETOBJS} ${MBBSD_TALKOBJS} ${MBBSD_UTILOBJS} ${MBBSD_UIOBJS} ${MBBSD_PAGEROBJS} ${MBBSD_PLUGOBJS} ${MBBSD_CHESSOJBS} ${MBBSD_GAMEOBJS} ${MBBSD_MISCOBJS}
+MBBSD_OBJS:= ${MBBSD_COREOBJS} ${MBBSD_ABUSEOBJS} ${MBBSD_MOCK_OBJ} ${MBBSD_NETOBJS} ${MBBSD_TALKOBJS} ${MBBSD_UTILOBJS} ${MBBSD_UIOBJS} ${MBBSD_PAGEROBJS} ${MBBSD_PLUGOBJS} ${MBBSD_CHESSOJBS} ${MBBSD_GAMEOBJS} ${MBBSD_MISCOBJS}
 
 #######################################################################
 # reduce .bss align overhead
@@ -178,6 +179,10 @@ gtest_main.a: gtest-all.o gtest_main.o
 ##########
 # all
 ##########
+
+.SUFFIXES: .c .o
+.c.o:	$(SRCROOT)/include/var.h
+	$(CC) $(CFLAGS) -c $*.c
 
 .SUFFIXES: .cc .o
 
