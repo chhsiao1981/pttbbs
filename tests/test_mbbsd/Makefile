@@ -24,9 +24,57 @@ GTEST_SRCS_= $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 AR:=		ar
 ARFLAGS:=	rv
 
+
 #######################################################################
-# mbbsd modules
+#
+# FROM mbbsd/Makefile
+#
 #######################################################################
+
+COREOBJS = bbs.o announce.o read.o board.o brc.o mail.o record.o fav.o
+ABUSEOBJS = captcha.o
+ACCOBJS  = user.o acl.o register.o passwd.o emaildb.o
+#NETOBJS  = mbbsd.o io.o term.o telnet.o nios.o
+NETOBJS  = io.o term.o telnet.o nios.o
+TALKOBJS = friend.o talk.o ccw.o
+UTILOBJS = stuff.o kaede.o convert.o name.o syspost.o cache.o cal.o
+UIOBJS   = menu.o vtuikit.o psb.o
+PAGEROBJS= more.o pmore.o
+PLUGOBJS = ordersong.o angel.o timecap.o
+CHESSOBJS= chess.o chc.o chc_tab.o ch_go.o ch_gomo.o ch_dark.o ch_reversi.o ch_conn6.o
+GAMEOBJS = chicken.o gamble.o
+OBJS:=	admin.o assess.o edit.o xyz.o var.o vote.o voteboard.o comments.o \
+	$(COREOBJS) $(ABUSEOBJS) $(ACCOBJS) $(NETOBJS) $(TALKOBJS) $(UTILOBJS) \
+	$(UIOBJS) $(PAGEROBJS) $(PLUGOBJS) \
+	$(CHESSOBJS) $(GAMEOBJS)
+
+#######################################################################
+# special library (DIET) configuration
+#######################################################################
+
+.if defined(DIET)
+LDFLAGS+=	-L$(SRCROOT)/common/diet
+LDLIBS+=	-ldiet
+DIETCC:=	diet -Os
+.endif
+
+# reduce .bss align overhead
+.if !defined(DEBUG) && $(OSTYPE)!="Darwin"
+LDFLAGS+=-Wl,--sort-common
+.endif
+
+#######################################################################
+# common libraries
+#######################################################################
+
+LDFLAGS+= -L$(SRCROOT)/common/bbs -L$(SRCROOT)/common/sys \
+	  -L$(SRCROOT)/common/osdep 
+LDLIBS:= -lcmbbs -lcmsys -losdep $(LDLIBS)
+
+#######################################################################
+# conditional configurations and optional modules
+#######################################################################
+
 BBSCONF:=	$(SRCROOT)/pttbbs.conf
 DEF_PATTERN:=	^[ \t]*\#[ \t]*define[ \t]*
 DEF_CMD:=	grep -Ewq "${DEF_PATTERN}"
@@ -37,104 +85,44 @@ USE_NIOS!=	sh -c '${DEF_CMD}"USE_NIOS"   ${BBSCONF} ${DEF_YES}'
 USE_CONVERT!=	sh -c '${DEF_CMD}"CONVERT"    ${BBSCONF} ${DEF_YES}'
 MONGO_CLIENT_URL!=	sh -c '${DEF_CMD}"MONGO_CLIENT_URL" ${BBSCONF} ${DEF_YES}'
 
-COREOBJS = bbs.o announce.o read.o board.o brc.o mail.o record.o fav.o
-ABUSEOBJS = captcha.o
-ACCOBJS  = user.o acl.o register.o passwd.o emaildb.o
-#NETOBJS  = mbbsd.o io.o term.o telnet.o nios.o
-MBBSD_MOCK_OBJ	= mbbsd_mock.o
-NETOBJS  = io.o term.o telnet.o nios.o
-TALKOBJS = friend.o talk.o ccw.o
-UTILOBJS = stuff.o kaede.o convert.o name.o syspost.o cache.o cal.o
-UIOBJS   = menu.o vtuikit.o psb.o
-PAGEROBJS= more.o pmore.o
-PLUGOBJS = ordersong.o angel.o timecap.o
-CHESSOBJS= chess.o chc.o chc_tab.o ch_go.o ch_gomo.o ch_dark.o ch_reversi.o ch_conn6.o
-GAMEOBJS = chicken.o gamble.o
-
-MISCOBJS =
+.if $(USE_BBSLUA)
+.if $(OSTYPE)=="FreeBSD"
+LUA_PKG_NAME?=	lua-5.1
+LDLIBS+=	-Wl,--no-as-needed
+.else
+LUA_PKG_NAME?=	lua5.1
+.endif
+LUA_CFLAGS!=	pkg-config --cflags ${LUA_PKG_NAME}
+LUA_LIBS!=	pkg-config --libs ${LUA_PKG_NAME}
+CFLAGS+=	${LUA_CFLAGS}
+LDLIBS+=	${LUA_LIBS}
+OBJS+=		bbslua.o bbsluaext.o
+.endif
 
 .if $(USE_PFTERM)
-MISCOBJS+=		pfterm.o
+OBJS+=		pfterm.o
 .else
-MISCOBJS+=		screen.o
+OBJS+=		screen.o
 .endif
-
-MBBSD_COREOJBS:=
-.for obj in ${COREOBJS}
-MBBSD_COREOBJS+= ${MBBSD_DIR}/${obj}
-.endfor
-MBBSD_ABUSEOBJS:=
-.for obj in ${ABUSEOBJS}
-MBBSD_ABUSEOBJS+= ${MBBSD_DIR}/${obj}
-.endfor
-MBBSD_NETOBJS:=
-.for obj in ${NETOBJS}
-MBBSD_NETOBJS+= ${MBBSD_DIR}/${obj}
-.endfor
-MBBSD_TALKOBJS:=
-.for obj in ${TALKOBJS}
-MBBSD_TALKOBJS+= ${MBBSD_DIR}/${obj}
-.endfor
-MBBSD_UTILOBJS:=
-.for obj in ${UTILOBJS}
-MBBSD_UTILOBJS+= ${MBBSD_DIR}/${obj}
-.endfor
-MBBSD_UIOBJS:=
-.for obj in ${UIOBJS}
-MBBSD_UIOBJS+= ${MBBSD_DIR}/${obj}
-.endfor
-MBBSD_PAGEROBJS:=
-.for obj in ${PAGEROBJS}
-MBBSD_PAGEROBJS+= ${MBBSD_DIR}/${obj}
-.endfor
-MBBSD_PLUGOBJS:=
-.for obj in ${PLUGOBJS}
-MBBSD_PLUGOBJS+= ${MBBSD_DIR}/${obj}
-.endfor
-MBBSD_CHESSOBJS:=
-.for obj in ${CHESSOBJS}
-MBBSD_CHESSOBJS+= ${MBBSD_DIR}/${obj}
-.endfor
-MBBSD_GAMEOBJS:=
-.for obj in ${GAMEOBJS}
-MBBSD_GAMEOBJS+= ${MBBSD_DIR}/${obj}
-.endfor
-MBBSD_MISCOBJS:=
-.for obj in ${MISCOBJS}
-MBBSD_MISCOBJS+= ${MBBSD_DIR}/${obj}
-.endfor
-
-MBBSD_OBJS:= ${MBBSD_COREOBJS} ${MBBSD_ABUSEOBJS} ${MBBSD_MOCK_OBJ} ${MBBSD_NETOBJS} ${MBBSD_TALKOBJS} ${MBBSD_UTILOBJS} ${MBBSD_UIOBJS} ${MBBSD_PAGEROBJS} ${MBBSD_PLUGOBJS} ${MBBSD_CHESSOJBS} ${MBBSD_GAMEOBJS} ${MBBSD_MISCOBJS}
-
-#######################################################################
-# reduce .bss align overhead
-#######################################################################
-
-.if !defined(DEBUG) && $(OSTYPE)!="Darwin"
-LDFLAGS+=-Wl,--sort-common
-.endif
-
-#######################################################################
-# common libraries
-#######################################################################
-
-LDFLAGS+= -L$(SRCROOT)/common/bbs -L$(SRCROOT)/common/sys \
-	  -L$(SRCROOT)/common/osdep
-LDLIBS:= -lcmbbs -lcmsys -losdep $(LDLIBS)
-
-#######################################################################
-# conditional configurations and optional modules
-#######################################################################
 
 .if $(MONGO_CLIENT_URL)
-MONGO_CXXFLAGS:=	-I/usr/local/include/libmongoc-1.0 -I/usr/local/include/libbson-1.0	
-MONGO_LDFLAGS:= -L/usr/local/lib -Wl,-rpath,/usr/local/lib -rdynamic
-MONGO_LIBS:=	-lmongoc-1.0 -lbson-1.0 -lresolv
-CXXFLAGS+=	${MONGO_CXXFLAGS}
+MONGO_CFLAGS:=	-I/usr/local/include/libmongoc-1.0 -I/usr/local/include/libbson-1.0
+MONGO_LDFLAGS:=	-L/usr/local/lib
+MONGO_LIBS:=	-L/usr/local/lib -lmongoc-1.0 -lbson-1.0 -lresolv
+CFLAGS+=	${MONGO_CFLAGS}
 LDFLAGS+=	${MONGO_LDFLAGS}
 LDLIBS+=	${MONGO_LIBS}
-MBBSD_OBJS+=	${MBBSD_DIR}/var.o ${MBBSD_DIR}/pttdb.o ${MBBSD_DIR}/pttdb_main.o ${MBBSD_DIR}/pttdb_comment.o ${MBBSD_DIR}/pttdb_comment_reply.o ${MBBSD_DIR}/pttdb_const.o ${MBBSD_DIR}/pttdb_content_block.o ${MBBSD_DIR}/pttdb_uuid.o ${MBBSD_DIR}/pttdb_util.o ${MBBSD_DIR}/util_db.o ${MBBSD_DIR}/pttdb_dict_bson_by_uu.o ${MBBSD_DIR}/migrate_db_to_file.o ${MBBSD_DIR}/migrate_file_to_db.o
+OBJS+=		pttdb.o pttdb_main.o pttdb_comment.o pttdb_comment_reply.o pttdb_const.o pttdb_content_block.o pttdb_uuid.o pttdb_util.o util_db.o pttdb_dict_bson_by_uu.o migrate_db_to_file.o migrate_file_to_db.o
 .endif # MONGO_CLIENT_URL
+
+#######################################################################
+# mbbsd-objs
+#######################################################################
+
+MBBSD_OBJS	= mbbsd_mock.o
+.for obj in ${OBJS}
+MBBSD_OBJS+= ${MBBSD_DIR}/${obj}
+.endfor
 
 ##########
 # test
