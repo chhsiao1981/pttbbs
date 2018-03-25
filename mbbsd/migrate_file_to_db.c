@@ -23,7 +23,6 @@ migrate_file_to_db(const char *fpath, char *poster, char *board, char *title, ch
 
     int fd = open(fpath, O_RDONLY);
 
-    UUID main_id = {};
     UUID content_id = {};
 
     if(!error_code) {
