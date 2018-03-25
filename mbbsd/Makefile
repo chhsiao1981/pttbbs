@@ -88,7 +88,7 @@ MONGO_LIBS:=	-L/usr/local/lib -lmongoc-1.0 -lbson-1.0 -lresolv
 CFLAGS+=	${MONGO_CFLAGS}
 LDFLAGS+=	${MONGO_LDFLAGS}
 LDLIBS+=	${MONGO_LIBS}
-OBJS+=		pttdb.o pttdb_main.o pttdb_comment.o pttdb_comment_reply.o pttdb_const.o pttdb_content_block.o pttdb_uuid.o pttdb_util.o util_db.o pttdb_dict_bson_by_uu.o migrate_db_to_file.o
+OBJS+=		pttdb.o pttdb_main.o pttdb_comment.o pttdb_comment_reply.o pttdb_const.o pttdb_content_block.o pttdb_uuid.o pttdb_util.o util_db.o pttdb_dict_bson_by_uu.o migrate_db_to_file.o migrate_file_to_db.o
 .endif # MONGO_CLIENT_URL
 
 #######################################################################
