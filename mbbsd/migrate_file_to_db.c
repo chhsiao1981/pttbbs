@@ -13,9 +13,9 @@ migrate_get_file_info(const fileheader_t *fhdr, const boardheader_t *bp, char *p
     bool status = GetWebUrl(bp, fhdr, web_link, MAX_WEB_LINK_LEN);
     if(!status) bzero(web_link, MAX_WEB_LINK_LEN);
 
-    *create_milli_timestamp = _parse_create_milli_timestamp_from_filename(fhdr->filename);
+    Err error_code = _parse_create_milli_timestamp_from_filename(fhdr->filename, create_milli_timestamp);
 
-    return S_OK;
+    return error_code;
 }
 
 Err
