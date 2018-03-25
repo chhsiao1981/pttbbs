@@ -212,7 +212,7 @@ _parse_legacy_file_main_info_core_one_line_main_content(char *line, int bytes_in
     Err error_code = S_OK;
 
     bool is_comment_line = false;
-    error_code = _is_comment_line(line, bytes_in_line, is_comment_line);
+    error_code = _is_comment_line(line, bytes_in_line, &is_comment_line);
     if(error_code) {
         *status = LEGACY_FILE_STATUS_ERROR;
         retrun S_ERR;

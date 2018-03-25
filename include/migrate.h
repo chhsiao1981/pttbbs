@@ -46,7 +46,8 @@ enum LegacyFileStatus {
     LEGACY_FILE_STATUS_MAIN_CONTENT,
     LEGACY_FILE_STATUS_COMMENT,
     LEGACY_FILE_STATUS_COMMENT_REPLY,
-    LEGACY_FILE_STATUS_END
+    LEGACY_FILE_STATUS_END,
+    LEGACY_FILE_STATUS_ERROR
 };
 
 Err migrate_db_to_file(UUID main_id, const char *fpath);
