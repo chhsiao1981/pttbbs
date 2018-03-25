@@ -3,6 +3,7 @@
 #define MIGRATE_H
 
 #include "ptterr.h"
+#include "pttstruct.h"
 #include "pttdb.h"
 
 #ifdef __cplusplus
