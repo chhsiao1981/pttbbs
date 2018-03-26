@@ -24,7 +24,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
 
     char buf[MAX_BUF_SIZE] = {};
 
-    int fd = open(fpath, O_RDONLY);
+    int fd = open('data_test/original_msg.1.txt', O_RDONLY);
     read(fd, buf, legacy_file_info.main_content_len);
     fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
 
