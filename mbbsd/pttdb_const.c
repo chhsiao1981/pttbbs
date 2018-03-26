@@ -19,9 +19,9 @@ const char *COMMENT_TYPE_ATTR[] = {
 };
 
 const char *COMMENT_TYPE_ATTR2[] = {
-    ANSI_COLOR(1; 37),
-    ANSI_COLOR(1; 31),
-    ANSI_COLOR(1; 31),
+    ANSI_COLOR(1;37),
+    ANSI_COLOR(1;31),
+    ANSI_COLOR(1;31),
     "",
     "",
     "",
