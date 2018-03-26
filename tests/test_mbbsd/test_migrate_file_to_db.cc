@@ -154,6 +154,22 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
     free(buf);
 }
 
+TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_1) {
+    // M.1510537375.A.8B4
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.1.txt", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1780, legacy_file_info.main_content_len);
+
+    int n_comment_comment_reply = 0;
+    Err error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.1.txt", legacy_file_info.main_content_len, &n_comment_comment_reply);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(-1, n_comment_comment_reply);
+
+    //free
+}
+
 TEST(migrate_file_to_db, parse_legacy_file_main_info_2) {
     // M.1500464247.A.6AA
     LegacyFileInfo legacy_file_info = {};
