@@ -201,7 +201,7 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_2) {
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.2.txt", legacy_file_info.main_content_len, &n_comment_comment_reply);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(4, n_comment_comment_reply);
+    EXPECT_EQ(15, n_comment_comment_reply);
 
     //free
 }
