@@ -67,8 +67,8 @@ TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_good) {
     sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "02/31");
 
     bool is_valid = false;
-    Err error = _is_comment_line_good_bad_arrow(line, &is_valid, COMMENT_TYPE_GOOD);
-    EXPECT_EQ(S_OK, error)
+    Err error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_GOOD);
+    EXPECT_EQ(S_OK, error);
     EXPECT_EQ(true, is_valid);
 }
 
