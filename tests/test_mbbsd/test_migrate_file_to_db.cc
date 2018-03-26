@@ -240,7 +240,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_6) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.6.txt", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+    EXPECT_EQ(779, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -261,7 +261,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_7) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.7.txt", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+    EXPECT_EQ(781, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -281,7 +281,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_8) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.8.txt", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+    EXPECT_EQ(1993, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -301,7 +301,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_9) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.9.txt", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+    EXPECT_EQ(1031, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -321,7 +321,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_10) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.10.txt", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+    EXPECT_EQ(2789, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
