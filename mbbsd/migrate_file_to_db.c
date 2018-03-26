@@ -599,6 +599,7 @@ _is_comment_line_good_bad_arrow(char *line, int bytes_in_line, bool *is_valid, e
     static char comment_header[COMMENT_BUF_SIZE] = {};
     sprintf(comment_header, "%s%s " ANSI_COLOR(33), COMMENT_TYPE_ATTR2[comment_type], COMMENT_TYPE_ATTR[comment_type]);
 
+    fprintf(stderr, "migrate_file_to_db._is_comment_good_bad_arrow: line: %s comment_header: %s\n", line, comment_header);
     if(!strncmp(line, comment_header, LEN_COMMENT_HEADER)) {
         *is_valid = true;
     }
