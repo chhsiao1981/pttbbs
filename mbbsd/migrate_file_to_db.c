@@ -534,28 +534,28 @@ _parse_legacy_file_comment_type(char *line, int bytes_in_line, enum CommentType 
     Err error = S_OK;
 
     bool is_valid = false;
-    error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_GOOD);
+    error = _is_comment_line_good_bad_arrow(line, bytes_in_line, &is_valid, COMMENT_TYPE_GOOD);
     if(error) return error;
     if(is_valid) {
         *comment_type = COMMENT_TYPE_GOOD;
         return S_OK;
     }
 
-    error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_BAD);
+    error = _is_comment_line_good_bad_arrow(line, bytes_in_line, &is_valid, COMMENT_TYPE_BAD);
     if(error) return error;
     if(is_valid) {
         *comment_type = COMMENT_TYPE_BAD;
         return S_OK;
     }
 
-    error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_ARROW);
+    error = _is_comment_line_good_bad_arrow(line, bytes_in_line, &is_valid, COMMENT_TYPE_ARROW);
     if(error) return error;
     if(is_valid) {
         *comment_type = COMMENT_TYPE_ARROW;
         return S_OK;
     }
 
-    error = _is_comment_line_cross(line, MAX_BUF_SIZE, &is_valid);
+    error = _is_comment_line_cross(line, bytes_in_line, &is_valid);
     if(error) return error;
     if(is_valid) {
         *comment_type = COMMENT_TYPE_CROSS;
@@ -564,7 +564,6 @@ _parse_legacy_file_comment_type(char *line, int bytes_in_line, enum CommentType 
 
     return S_OK;
 }
-
 
 Err
 _parse_legacy_file_comment_comment_reply_core_one_line_comment_reply(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, enum LegacyFileStatus *status)
