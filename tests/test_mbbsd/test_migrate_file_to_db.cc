@@ -22,7 +22,8 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(1780, legacy_file_info.main_content_len);
 
-    char buf[MAX_BUF_SIZE] = {};
+    char *buf = malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
 
     int fd = open("data_test/original_msg.1.txt", O_RDONLY);
     read(fd, buf, legacy_file_info.main_content_len);
@@ -30,6 +31,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
 
     //free
     close(fd);
+    free(buf);
 }
 
 
@@ -41,7 +43,8 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_2) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(1780, legacy_file_info.main_content_len);
 
-    char buf[MAX_BUF_SIZE] = {};
+    char *buf = malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
 
     int fd = open("data_test/original_msg.2.txt", O_RDONLY);
     read(fd, buf, legacy_file_info.main_content_len);
@@ -49,6 +52,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_2) {
 
     //free
     close(fd);
+    free(buf);
 }
 
 /**********
