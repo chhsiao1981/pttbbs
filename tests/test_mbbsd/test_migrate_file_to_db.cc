@@ -105,7 +105,7 @@ TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_arrow) {
 TEST(migrate_file_to_db, is_comment_line_cross) {
     // bbs.c line: 2255 cross_post()
     char line[MAX_BUF_SIZE] = {};
-    sprintf(line, "%s " ANSI_COLOR(1;32) "%s" ANSI_COLOR(0;32) COMMENT_CROSS_PREFIX "%s" ANSI_RESET "%*s%s\n", "poster001", COMMENT_CROSS_HIDDEN_BOARD, 80, "", "02/31");
+    sprintf(line, "%s " ANSI_COLOR(1;32) "%s" ANSI_COLOR(0;32) COMMENT_CROSS_PREFIX "%s" ANSI_RESET "%*s%s\n", COMMENT_TYPE_ATTR[COMMENT_TYPE_CROSS], "poster001", COMMENT_CROSS_HIDDEN_BOARD, 80, "", "02/31");
 
     /*
     bool is_valid = false;
