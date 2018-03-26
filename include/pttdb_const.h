@@ -11,7 +11,7 @@ extern "C" {
 #define LEN_COMMENT_HEADER 15
     
 #define COMMENT_CROSS_PREFIX ":轉錄至"
-#define LEN_CROSS_FORWARD_PREFIX 7
+#define LEN_COMMENT_CROSS_PREFIX 7
 #define COMMENT_CROSS_HIDDEN_BOARD "某隱形看板"
 
 #define LEN_STR_POST 5
