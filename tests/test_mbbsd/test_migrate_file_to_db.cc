@@ -147,7 +147,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
 
     int fd = open("data_test/original_msg.1.txt", O_RDONLY);
     read(fd, buf, legacy_file_info.main_content_len);
-    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+    fprintf(stderr, "test_migrate_file_to_db._parse_legacy_file_main_info_1: migrate_file_to_buf: %s\n", buf);
 
     //free
     close(fd);
@@ -167,7 +167,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_2) {
 
     int fd = open("data_test/original_msg.2.txt", O_RDONLY);
     read(fd, buf, legacy_file_info.main_content_len);
-    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+    fprintf(stderr, "test_migrate_file_to_db.parse_legacy_file_main_info_2: migrate_file_to_buf: %s\n", buf);
 
     //free
     close(fd);
@@ -180,14 +180,14 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_3) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.3.txt", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+    EXPECT_EQ(6505, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
 
     int fd = open("data_test/original_msg.3.txt", O_RDONLY);
     read(fd, buf, legacy_file_info.main_content_len);
-    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+    fprintf(stderr, "test_migrate_file_to_db.parse_legacy_file_main_info_3: migrate_file_to_buf: %s\n", buf);
 
     //free
     close(fd);
@@ -200,14 +200,14 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_4) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.4.txt", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+    EXPECT_EQ(1309, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
 
     int fd = open("data_test/original_msg.4.txt", O_RDONLY);
     read(fd, buf, legacy_file_info.main_content_len);
-    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+    fprintf(stderr, "test_migrate_file_to_db.parse_legacy_file_main_info_4: migrate_file_to_buf: %s\n", buf);
 
     //free
     close(fd);
@@ -220,14 +220,14 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_5) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.5.txt", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+    EXPECT_EQ(655, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
 
     int fd = open("data_test/original_msg.5.txt", O_RDONLY);
     read(fd, buf, legacy_file_info.main_content_len);
-    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+    fprintf(stderr, "test_migrate_file_to_db.parse_legacy_file_main_info_5: migrate_file_to_buf: %s\n", buf);
 
     //free
     close(fd);
@@ -247,7 +247,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_6) {
 
     int fd = open("data_test/original_msg.6.txt", O_RDONLY);
     read(fd, buf, legacy_file_info.main_content_len);
-    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+    fprintf(stderr, "test_migrate_file_to_db.parse_legacy_file_main_info_6: migrate_file_to_buf: %s\n", buf);
 
     //free
     close(fd);
@@ -268,7 +268,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_7) {
 
     int fd = open("data_test/original_msg.7.txt", O_RDONLY);
     read(fd, buf, legacy_file_info.main_content_len);
-    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+    fprintf(stderr, "test_migrate_file_to_db.parse_legacy_file_main_info_7: migrate_file_to_buf: %s\n", buf);
 
     //free
     close(fd);
@@ -288,7 +288,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_8) {
 
     int fd = open("data_test/original_msg.8.txt", O_RDONLY);
     read(fd, buf, legacy_file_info.main_content_len);
-    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+    fprintf(stderr, "test_migrate_file_to_db.parse_legacy_file_main_info_8: migrate_file_to_buf: %s\n", buf);
 
     //free
     close(fd);
