@@ -308,7 +308,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_9) {
 
     int fd = open("data_test/original_msg.9.txt", O_RDONLY);
     read(fd, buf, legacy_file_info.main_content_len);
-    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+    fprintf(stderr, "test_migrate_file_to_db.parse_legacy_file_main_info_9: migrate_file_to_buf: %s\n", buf);
 
     //free
     close(fd);
@@ -328,7 +328,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_10) {
 
     int fd = open("data_test/original_msg.10.txt", O_RDONLY);
     read(fd, buf, legacy_file_info.main_content_len);
-    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+    fprintf(stderr, "test_migrate_file_to_Db.parse_legacy_file_main_info_10.migrate_file_to_buf: %s\n", buf);
 
     //free
     close(fd);
