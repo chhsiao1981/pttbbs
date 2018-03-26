@@ -10,7 +10,7 @@ extern "C" {
 
 #define LEN_COMMENT_HEADER 15
     
-#define COMMENT_FORAWRD_PREFIX ":轉錄至看板 "
+#define COMMENT_FORWARD_PREFIX ":轉錄至看板 "
 #define LEN_COMMENT_FORWARD_PREFIX 12
 
 #define LEN_STR_POST 5

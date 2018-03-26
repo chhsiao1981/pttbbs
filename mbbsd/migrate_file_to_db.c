@@ -631,6 +631,11 @@ _is_comment_line_forward(char *line, int bytes_in_line, bool *is_valid)
         return S_OK;
     }
 
+    if(!strncmp(p_line, COMMENT_FORWARR_PREFIX, LEN_COMMENT_FORWARD_PREFIX)) {
+        *is_valid = false;
+        return S_OK;
+    }
+
     *is_valid = true;
     return S_OK;
 }
