@@ -163,7 +163,7 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_1) {
     EXPECT_EQ(1780, legacy_file_info.main_content_len);
 
     int n_comment_comment_reply = 0;
-    Err error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.1.txt", legacy_file_info.main_content_len, &n_comment_comment_reply);
+    error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.1.txt", legacy_file_info.main_content_len, &n_comment_comment_reply);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(-1, n_comment_comment_reply);
 
