@@ -72,6 +72,26 @@ TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_good) {
     EXPECT_EQ(true, is_valid);
 }
 
+TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_bad) {
+    char line[MAX_BUF_SIZE];
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_BAD], COMMENT_TYPE_ATTR[COMMENT_TYPE_BAD], "poster001", 80, "test-msg", "02/31");
+
+    bool is_valid = false;
+    Err error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_BAD);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_valid);
+}
+
+TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_arrow) {
+    char line[MAX_BUF_SIZE];
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_ARROW], COMMENT_TYPE_ATTR[COMMENT_TYPE_ARROW], "poster001", 80, "test-msg", "02/31");
+
+    bool is_valid = false;
+    Err error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_ARROW);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_valid);
+}
+
 /**********
  * MAIN
  */
