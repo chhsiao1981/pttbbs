@@ -662,7 +662,7 @@ _is_comment_line_cross(char *line, int bytes_in_line, bool *is_valid)
         return S_OK;
     }
 
-    fprintf(stderr, "migrate_file_to_db._is_comment_line_cross: p_line: %s\n", p_line);
+    //fprintf(stderr, "migrate_file_to_db._is_comment_line_cross: p_line: %s\n", p_line);
     if(strncmp(p_line, COMMENT_CROSS_PREFIX, LEN_COMMENT_CROSS_PREFIX)) {
         *is_valid = false;
         return S_OK;
