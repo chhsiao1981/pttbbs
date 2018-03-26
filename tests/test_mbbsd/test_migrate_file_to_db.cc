@@ -20,7 +20,16 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.1.txt", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(50, legacy_file_info.main_content_len);
+    EXPECT_EQ(1658, legacy_file_info.main_content_len);
+
+    char buf[MAX_BUF_SIZE] = {};
+
+    int fd = open(fpath, O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
 }
 
 
