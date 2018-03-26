@@ -33,6 +33,24 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
 }
 
 
+TEST(migrate_file_to_db, parse_legacy_file_main_info_2) {
+
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.2.txt", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1780, legacy_file_info.main_content_len);
+
+    char buf[MAX_BUF_SIZE] = {};
+
+    int fd = open("data_test/original_msg.2.txt", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+}
+
 /**********
  * MAIN
  */
