@@ -10,15 +10,16 @@ extern "C" {
 
 #define LEN_COMMENT_HEADER 15
     
-#define COMMENT_FORWARD_PREFIX ":ËΩâÈåÑËá≥ÁúãÊùø "
-#define LEN_COMMENT_FORWARD_PREFIX 12
+#define COMMENT_CROSS_PREFIX ":¬‡ø˝¶‹"
+#define LEN_CROSS_FORWARD_PREFIX 7
+#define COMMENT_CROSS_HIDDEN_BOARD "¨Y¡ÙßŒ¨›™O"
 
 #define LEN_STR_POST 5
 
-#define TITLE_PREFIX "Ê®ôÈ°å:"
+#define TITLE_PREFIX "º–√D:"
 #define LEN_TITLE_PREFIX 5
 
-#define TIME_PREFIX "ÊôÇÈñì:"
+#define TIME_PREFIX "Æ…∂°:"
 #define LEN_TIME_PREFIX 5
 #define LEN_DAY_IN_WEEK_STRING 3
 #define LEN_TIME_STRING 24
@@ -29,10 +30,10 @@ extern "C" {
 #define LEN_AID_INFIX 1
 #define LEN_AID_TIMESTAMP 10
 
-#define LEGACY_ORIGIN_IP "‚óÜ From:"
+#define LEGACY_ORIGIN_IP "°ª From:"
 #define LEN_LEGACY_ORIGIN_IP 8
 
-#define ORIGIN_PREFIX "‚Äª Áôº‰ø°Á´ô:"
+#define ORIGIN_PREFIX "°∞ µo´HØ∏:"
 #define LEN_ORIGIN_PREFIX 10
 
 #define MIN_CREATE_TIMESTAMP 810000000

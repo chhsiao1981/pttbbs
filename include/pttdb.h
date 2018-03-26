@@ -66,7 +66,7 @@ enum ReadCommentsOpType {
 
 extern const enum Karma KARMA_BY_COMMENT_TYPE[COMMENT_TYPE_N_TYPE];
 extern const char *COMMENT_TYPE_ATTR[COMMENT_TYPE_N_TYPE];
-extern const char *BIG5_COMMENT_TYPE_ATTR[COMMENT_TYPE_N_TYPE];
+extern const char *COMMENT_TYPE_ATTR_UTF8[COMMENT_TYPE_N_TYPE];
 extern const char *COMMENT_TYPE_ATTR2[COMMENT_TYPE_N_TYPE];
 
 /**********

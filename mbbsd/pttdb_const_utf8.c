@@ -9,5 +9,3 @@ const char *COMMENT_TYPE_ATTR_UTF8[] = {
     "",
     "※",
 };
-
-const char *FORAWRD_PREFIX_UTF8 = ":轉錄至看板 "
