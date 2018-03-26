@@ -124,6 +124,56 @@ TEST(migrate_file_to_db, is_comment_line_cross_invalid) {
     EXPECT_EQ(false, is_valid);
 }
 
+TEST(migrate_file_to_db, is_comment_line_invalid) {
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "testtest\r\n");
+
+    bool is_valid = false;
+    Err error = _is_comment_line(line, MAX_BUF_SIZE, &is_valid);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_valid);
+}
+
+TEST(migrate_file_to_db, is_comment_line_good) {
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "02/31");
+
+    bool is_valid = false;
+    Err error = _is_comment_line(line, MAX_BUF_SIZE, &is_valid);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_valid);
+}
+
+TEST(migrate_file_to_db, is_comment_line_bad) {
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_BAD], COMMENT_TYPE_ATTR[COMMENT_TYPE_BAD], "poster001", 80, "test-msg", "02/31");
+
+    bool is_valid = false;
+    Err error = _is_comment_line(line, MAX_BUF_SIZE, &is_valid);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_valid);
+}
+
+TEST(migrate_file_to_db, is_comment_line_arrow) {
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_ARROW], COMMENT_TYPE_ATTR[COMMENT_TYPE_ARROW], "poster001", 80, "test-msg", "02/31");
+
+    bool is_valid = false;
+    Err error = _is_comment_line(line, MAX_BUF_SIZE, &is_valid);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_valid);
+}
+
+TEST(migrate_file_to_db, is_comment_line_cross2) {
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s " ANSI_COLOR(1;32) "%s" ANSI_COLOR(0;32) COMMENT_CROSS_PREFIX "%s" ANSI_RESET "%*s%s\n", COMMENT_TYPE_ATTR[COMMENT_TYPE_CROSS], "poster001", COMMENT_CROSS_HIDDEN_BOARD, 80, "", "02/31");
+
+    bool is_valid = false;
+    Err error = _is_comment_line(line, MAX_BUF_SIZE, &is_valid);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_valid);
+}
+
 /**********
  * MAIN
  */
