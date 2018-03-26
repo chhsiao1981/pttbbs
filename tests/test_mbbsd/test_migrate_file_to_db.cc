@@ -113,6 +113,17 @@ TEST(migrate_file_to_db, is_comment_line_cross) {
     EXPECT_EQ(true, is_valid);
 }
 
+TEST(migrate_file_to_db, is_comment_line_cross_invalid) {
+    // bbs.c line: 2255 cross_post()
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_ARROW], COMMENT_TYPE_ATTR[COMMENT_TYPE_ARROW], "poster001", 80, "test-msg", "02/31");
+
+    bool is_valid = false;
+    Err error = _is_comment_line_cross(line, MAX_BUF_SIZE, &is_valid);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_valid);
+}
+
 /**********
  * MAIN
  */
