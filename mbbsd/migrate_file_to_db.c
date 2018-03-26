@@ -580,7 +580,7 @@ _is_comment_line(char *line, int bytes_in_line, bool *is_valid)
     if(error_code) return error_code;
     if(*is_valid) return S_OK;
 
-    error_code = _is_comment_line_forward(line, bytes_in_line, is_valid);
+    error_code = _is_comment_line_cross(line, bytes_in_line, is_valid);
     if(error_code) return error_code;
     if(*is_valid) return S_OK;
 
@@ -611,9 +611,9 @@ _is_comment_line_good_bad_arrow(char *line, int bytes_in_line, bool *is_valid, e
 }
 
 Err
-_is_comment_line_forward(char *line, int bytes_in_line, bool *is_valid)
+_is_comment_line_cross(char *line, int bytes_in_line, bool *is_valid)
 {
-    if(strncmp(line, COMMENT_TYPE_ATTR[COMMENT_TYPE_FORWARD], 2)) {
+    if(strncmp(line, COMMENT_TYPE_ATTR[COMMENT_TYPE_CROSS], 2)) {
         *is_valid = false;
         return S_OK;
     }
@@ -627,13 +627,13 @@ _is_comment_line_forward(char *line, int bytes_in_line, bool *is_valid)
         return S_OK;
     }
 
-    if(bytes_in_line < LEN_COMMENT_FORWARD_PREFIX) {
+    if(bytes_in_line < LEN_COMMENT_CROSS_PREFIX) {
         *is_valid = false;
         return S_OK;
     }
 
-    fprintf(stderr, "migrate_file_to_db._is_comment_line_forward: p_line: %s\n", p_line);
-    if(strncmp(p_line, COMMENT_FORWARD_PREFIX, LEN_COMMENT_FORWARD_PREFIX)) {
+    fprintf(stderr, "migrate_file_to_db._is_comment_line_cross: p_line: %s\n", p_line);
+    if(strncmp(p_line, COMMENT_CROSS_PREFIX, LEN_COMMENT_CROSS_PREFIX)) {
         *is_valid = false;
         return S_OK;
     }

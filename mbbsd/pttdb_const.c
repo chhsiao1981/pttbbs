@@ -5,7 +5,7 @@ const enum Karma KARMA_BY_COMMENT_TYPE[] = {
     KARMA_BAD,
     KARMA_ARROW,
     0,
-    0,                   // forward
+    0,                   // cross
     0,                   // other
 };
 

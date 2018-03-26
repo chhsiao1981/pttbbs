@@ -32,8 +32,8 @@ enum CommentType {
     COMMENT_TYPE_ARROW,
     COMMENT_TYPE_SIZE,
 
-    COMMENT_TYPE_FORWARD,                       // hack for forward
-    COMMENT_TYPE_OTHER,                         // hack for other
+    COMMENT_TYPE_CROSS,                       // hack for cross
+    COMMENT_TYPE_OTHER,                       // hack for other
 
     COMMENT_TYPE_N_TYPE,
     COMMENT_TYPE_MAX     = COMMENT_TYPE_SIZE - 1,

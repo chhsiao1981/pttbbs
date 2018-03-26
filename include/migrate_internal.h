@@ -53,7 +53,7 @@ Err _parse_legacy_file_comment_type(char *line, int bytes_in_line, enum CommentT
 // is-comment-line
 Err _is_comment_line(char *line, int bytes_in_line, bool *is_valid);
 Err _is_comment_line_good_bad_arrow(char *line, int bytes_in_line, bool *is_valid, enum CommentType comment_type);
-Err _is_comment_line_forward(char *line, int bytes_in_line, bool *is_valid);
+Err _is_comment_line_cross(char *line, int bytes_in_line, bool *is_valid);
 
 // migrate db to file
 Err _migrate_main_content_to_file(MainHeader *main_header, FILE *fp);

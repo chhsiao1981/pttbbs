@@ -62,8 +62,18 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_2) {
     free(buf);
 }
 
+TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_invalid) {
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "testtest\r\n");
+
+    bool is_valid = false;
+    Err error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_GOOD);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_valid);
+}
+
 TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_good) {
-    char line[MAX_BUF_SIZE];
+    char line[MAX_BUF_SIZE] = {};
     sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "02/31");
 
     bool is_valid = false;
@@ -73,7 +83,7 @@ TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_good) {
 }
 
 TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_bad) {
-    char line[MAX_BUF_SIZE];
+    char line[MAX_BUF_SIZE] = {};
     sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_BAD], COMMENT_TYPE_ATTR[COMMENT_TYPE_BAD], "poster001", 80, "test-msg", "02/31");
 
     bool is_valid = false;
@@ -83,13 +93,19 @@ TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_bad) {
 }
 
 TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_arrow) {
-    char line[MAX_BUF_SIZE];
+    char line[MAX_BUF_SIZE] = {};
     sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_ARROW], COMMENT_TYPE_ATTR[COMMENT_TYPE_ARROW], "poster001", 80, "test-msg", "02/31");
 
     bool is_valid = false;
     Err error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_ARROW);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(true, is_valid);
+}
+
+TEST(migrate_file_to_db, is_comment_line_forward) {
+    // bbs.c line: 2255 cross_post()
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s " ANSI_COLOR(1;32) "%s" ANSI_COLOR(0;32) "")
 }
 
 /**********
