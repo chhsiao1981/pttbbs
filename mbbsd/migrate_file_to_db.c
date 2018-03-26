@@ -531,6 +531,37 @@ _parse_legacy_file_comment_poster(char *line, int bytes_in_line, char *poster)
 Err
 _parse_legacy_file_comment_type(char *line, int bytes_in_line, enum CommentType *comment_type)
 {
+    Err error = S_OK;
+
+    bool is_valid = false;
+    error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_GOOD);
+    if(error) return error;
+    if(is_valid) {
+        *comment_type = COMMENT_TYPE_GOOD;
+        return S_OK;
+    }
+
+    error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_BAD);
+    if(error) return error;
+    if(is_valid) {
+        *comment_type = COMMENT_TYPE_BAD;
+        return S_OK;
+    }
+
+    error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_ARROW);
+    if(error) return error;
+    if(is_valid) {
+        *comment_type = COMMENT_TYPE_ARROW;
+        return S_OK;
+    }
+
+    error = _is_comment_line_cross(line, MAX_BUF_SIZE, &is_valid);
+    if(error) return error;
+    if(is_valid) {
+        *comment_type = COMMENT_TYPE_CROSS;
+        return S_OK;
+    }
+
     return S_OK;
 }
 
