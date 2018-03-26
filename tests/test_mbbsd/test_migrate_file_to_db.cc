@@ -22,46 +22,6 @@ TEST(migrate_file_to_db, parse_create_milli_timestamp_from_filename) {
     EXPECT_EQ(1510537375000, create_milli_timestamp);
 }
 
-TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
-
-    LegacyFileInfo legacy_file_info = {};
-
-    Err error = _parse_legacy_file_main_info("data_test/original_msg.1.txt", &legacy_file_info);
-    EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(1780, legacy_file_info.main_content_len);
-
-    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
-    bzero(buf, legacy_file_info.main_content_len + 1);
-
-    int fd = open("data_test/original_msg.1.txt", O_RDONLY);
-    read(fd, buf, legacy_file_info.main_content_len);
-    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
-
-    //free
-    close(fd);
-    free(buf);
-}
-
-TEST(migrate_file_to_db, parse_legacy_file_main_info_2) {
-
-    LegacyFileInfo legacy_file_info = {};
-
-    Err error = _parse_legacy_file_main_info("data_test/original_msg.2.txt", &legacy_file_info);
-    EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(109270, legacy_file_info.main_content_len);
-
-    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
-    bzero(buf, legacy_file_info.main_content_len + 1);
-
-    int fd = open("data_test/original_msg.2.txt", O_RDONLY);
-    read(fd, buf, legacy_file_info.main_content_len);
-    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
-
-    //free
-    close(fd);
-    free(buf);
-}
-
 TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_invalid) {
     char line[MAX_BUF_SIZE] = {};
     sprintf(line, "testtest\r\n");
@@ -173,6 +133,208 @@ TEST(migrate_file_to_db, is_comment_line_cross2) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(true, is_valid);
 }
+
+TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
+    // M.1510537375.A.8B4
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.1.txt", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1780, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.1.txt", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_main_info_2) {
+    // M.1500464247.A.6AA
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.2.txt", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.2.txt", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_main_info_3) {
+    // M.1503755396.A.49D
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.3.txt", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.3.txt", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_main_info_4) {
+    // M.1511576360.A.A15
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.4.txt", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.4.txt", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_main_info_5) {
+    // M.997843374.A
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.5.txt", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.5.txt", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_main_info_6) {
+    // M.997841455.A
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.6.txt", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.6.txt", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_main_info_7) {
+    // M.997841455.A
+
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.7.txt", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.7.txt", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_main_info_8) {
+    // M.1041489119.A.C28
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.8.txt", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.8.txt", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_main_info_9) {
+    // M.1119222611.A.7A9
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.9.txt", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.9.txt", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_main_info_10) {
+    // M.1.A.5CF
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.10.txt", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(109270, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.10.txt", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
 
 /**********
  * MAIN
