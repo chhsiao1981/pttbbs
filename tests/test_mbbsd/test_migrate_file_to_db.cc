@@ -14,6 +14,14 @@ TEST(migrate_file_to_db, parse_create_milli_timestamp_from_web_link) {
     EXPECT_EQ(1510537375000, create_milli_timestamp);
 }
 
+TEST(migrate_file_to_db, parse_create_milli_timestamp_from_filename) {
+    char filename[] = "M.1510537375.A.8B4";
+    time64_t create_milli_timestamp = 0;
+    Err error =  _parse_create_milli_timestamp_from_filename(filename, &create_milli_timestamp);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1510537375000, create_milli_timestamp);
+}
+
 TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
 
     LegacyFileInfo legacy_file_info = {};
@@ -33,15 +41,6 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
     close(fd);
     free(buf);
 }
-
-TEST(migrate_file_to_db, parse_create_milli_timestamp_from_filename) {
-    char filename[] = "M.1510537375.A.8B4";
-    time64_t create_milli_timestamp = 0;
-    Err error =  _parse_create_milli_timestamp_from_filename(filename, &create_milli_timestamp);
-    EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(1510537375000, create_milli_timestamp);
-}
-
 
 TEST(migrate_file_to_db, parse_legacy_file_main_info_2) {
 
