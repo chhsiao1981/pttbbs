@@ -14,7 +14,6 @@ TEST(migrate_file_to_db, parse_create_milli_timestamp_from_web_link) {
     EXPECT_EQ(1510537375000, create_milli_timestamp);
 }
 
-/*
 TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
 
     LegacyFileInfo legacy_file_info = {};
@@ -23,7 +22,6 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(50, legacy_file_info.main_content_len);
 }
-*/
 
 
 /**********
