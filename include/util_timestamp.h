@@ -2,9 +2,14 @@
 #ifndef UTIL_TIMESTAMP_H
 #define UTIL_TIMESTAMP_H
 
+#include "ptterr.h"
+#include "pttdb_uuid.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define MAX_BUF_TIMESTAMP_SIZE 100
 
 Err milli_timestamp_to_year(time64_t milli_timestamp, int *year);
 
