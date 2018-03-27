@@ -192,7 +192,7 @@ TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_reset)
     sprintf(line, "%s%s%s%s%s\r\n", COMMENT_TYPE_ATTR[COMMENT_TYPE_RESET], "poster001", COMMENT_RESET_INFIX, "02/27/2018 10:30:45", COMMENT_RESET_POSTFIX);
 
     time64_t create_milli_timestamp = 0;
-    Err error = _parse_legacy_file_comment_create_milli_timestamp_reset(line, MAX_BUF_SIZE, &create_milli_timestamp);
+    Err error = _parse_legacy_file_comment_create_milli_timestamp_reset(line, MAX_BUF_SIZE, 1519698643000, &create_milli_timestamp);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(1519698645000, create_milli_timestamp);    
 }
