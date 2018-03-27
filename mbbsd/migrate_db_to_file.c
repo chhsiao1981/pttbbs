@@ -34,6 +34,9 @@ migrate_db_to_file(UUID main_id, const char *fpath)
         error_code = _migrate_comment_comment_reply_by_main_to_file(main_header.the_id, fp);
     }
 
+    // hack for last empty line.
+    fprintf(fp, "\r\n");
+
     // free
     fclose(fp);
     fp = NULL;
