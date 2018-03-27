@@ -589,6 +589,8 @@ _parse_legacy_file_comment_poster_good_bad_arrow(char *line, int bytes_in_line, 
     if(len_poster < 0) return S_ERR;
 
     memcpy(poster, p_line, len_poster);
+
+    return S_OK;
 }
 
 Err
