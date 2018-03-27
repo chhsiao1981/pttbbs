@@ -45,7 +45,7 @@ datetime_to_timestamp(int year, int mm, int dd, int HH, int MM, int SS, int tz, 
     char *ret = strptime(buf, "%Y-%m-%d %H:%M:%S", &datetime);
     if(!ret) return S_ERR;
 
-    time_t tmp_timestamp = mktime(&datetime) - tz * 3600;
+    time_t tmp_timestamp = mktime(&datetime);
     *timestamp = (time64_t) tmp_timestamp;
 
     return S_OK;
