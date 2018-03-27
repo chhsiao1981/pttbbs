@@ -956,6 +956,8 @@ _is_comment_line_reset(char *line, int bytes_in_line, bool *is_valid)
     }
     p_line++;
 
+    fprintf(stderr, "migrate_file_to_db._is_comment_line_reset: to dd: p_line: %s\n", p_line);
+
     // dd
     int dd = atoi(p_line);
     if(dd < 1 || dd > 31) {
