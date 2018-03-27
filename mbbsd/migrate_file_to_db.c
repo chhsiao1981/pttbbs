@@ -575,13 +575,13 @@ _parse_legacy_file_comment_create_milli_timestamp(char *line, int bytes_in_line,
     */
 
     // the rest (good / bad / arrow / cross)
-    error_code = _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow(line, bytes_in_line, current_create_milli_timestamp, create_milli_timestamp);
+    error_code = _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(line, bytes_in_line, current_create_milli_timestamp, create_milli_timestamp);
 
     return error_code;
 }
 
 Err
-_parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp)
+_parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp)
 {
     Err error_code = S_OK;
 

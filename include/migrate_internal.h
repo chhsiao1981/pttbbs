@@ -47,6 +47,9 @@ Err _parse_legacy_file_comment_comment_reply_core_last_line(int bytes_in_line, c
 
 
 Err _parse_legacy_file_comment_create_milli_timestamp(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp);
+Err
+_parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp);
+
 Err _parse_legacy_file_comment_poster(char *line, int bytes_in_line, char *poster);
 Err _parse_legacy_file_comment_poster_cross(char *line, int bytes_in_line, char *poster);
 Err _parse_legacy_file_comment_poster_good_bad_arrow(char *line, int bytes_in_line, char *poster);
