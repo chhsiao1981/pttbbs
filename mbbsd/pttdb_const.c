@@ -16,7 +16,7 @@ const char *COMMENT_TYPE_ATTR[] = {
     "¡÷",
     "",
     "¡°",                 // cross
-    "",                  // reset
+    "¡°",                 // reset
     "",                  // remove
 };
 

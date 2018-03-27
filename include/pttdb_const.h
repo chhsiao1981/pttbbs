@@ -20,6 +20,11 @@ extern "C" {
 #define LEN_COMMENT_CROSS_PREFIX 7
 #define COMMENT_CROSS_HIDDEN_BOARD "某隱形看板"
 
+#define LEN_COMMENT_RESET_INFIX 4
+#define COMMENT_RESET_INFIX " 於 "
+#define LEN_COMMENT_RESET_POSTFIX 13
+#define COMMENT_RESET_POSTFIX " 將推薦值歸零"    
+
 #define LEN_STR_POST 5
 
 #define TITLE_PREFIX "標題:"

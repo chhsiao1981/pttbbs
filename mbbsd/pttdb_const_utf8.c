@@ -7,6 +7,6 @@ const char *COMMENT_TYPE_ATTR_UTF8[] = {
     "→",
     "",                   
     "※",                      // cross
-    "",                       // reset
+    "※",                       // reset
     "",                       // remove
 };

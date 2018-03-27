@@ -689,11 +689,20 @@ _parse_legacy_file_comment_poster(char *line, int bytes_in_line, char *poster)
 
     // comment-line-cross
     bool is_valid = false;
-     error_code = _is_comment_line_cross(line, bytes_in_line, &is_valid);
+    error_code = _is_comment_line_cross(line, bytes_in_line, &is_valid);
     if(error_code) return error_code;
 
     if(is_valid) {
        error_code = _parse_legacy_file_comment_poster_cross(line, bytes_in_line, poster);
+       return error_code;
+    }
+
+    // comment-line-reset
+    error_code = _is_comment_line_reset(line, bytes_in_line, &is_valid);
+    if(error_code) return error_code;
+
+    if(is_valid) {
+       error_code = _parse_legacy_file_comment_poster_reset(line, bytes_in_line, poster);
        return error_code;
     }
 
@@ -710,6 +719,20 @@ _parse_legacy_file_comment_poster_cross(char *line, int bytes_in_line, char *pos
     char *p_line2 = p_line;
     for(int i = LEN_COMMENT_CROSS_HEADER; *p_line2 && *p_line2 != ':' && i < bytes_in_line; i++, p_line2++);
     int len_poster = p_line2 - p_line - LEN_COMMENT_CROSS_PREFIX_COLOR;
+    if(len_poster < 0) return S_ERR;
+
+    memcpy(poster, p_line, len_poster);
+
+    return S_OK;
+}
+
+Err
+_parse_legacy_file_comment_poster_reset(char *line, int bytes_in_line, char *poster)
+{
+    char *p_line = line + 2;
+    char *p_line2 = p_line;
+    for(int i = 2; *p_line2 && *p_line2 != ' ' && i < bytes_in_line; i++, p_line2++);
+    int len_poster = p_line2 - p_line;
     if(len_poster < 0) return S_ERR;
 
     memcpy(poster, p_line, len_poster);
@@ -765,6 +788,14 @@ _parse_legacy_file_comment_type(char *line, int bytes_in_line, enum CommentType 
         return S_OK;
     }
 
+
+    error = _is_comment_line_reset(line, bytes_in_line, &is_valid);
+    if(error) return error;
+    if(is_valid) {
+        *comment_type = COMMENT_TYPE_RESET;
+        return S_OK;
+    }
+
     return S_OK;
 }
 
@@ -814,6 +845,10 @@ _is_comment_line(char *line, int bytes_in_line, bool *is_valid)
     if(*is_valid) return S_OK;
 
     error_code = _is_comment_line_cross(line, bytes_in_line, is_valid);
+    if(error_code) return error_code;
+    if(*is_valid) return S_OK;
+
+    error_code = _is_comment_line_reset(line, bytes_in_line, is_valid);
     if(error_code) return error_code;
     if(*is_valid) return S_OK;
 
@@ -873,6 +908,125 @@ _is_comment_line_cross(char *line, int bytes_in_line, bool *is_valid)
 
     *is_valid = true;
     return S_OK;
+}
+
+Err
+_is_comment_line_reset(char *line, int bytes_in_line, bool *is_valid)
+{
+    if(strncmp(line, COMMENT_TYPE_ATTR[COMMENT_TYPE_CROSS], 2)) {
+        *is_valid = false;
+        return S_OK;
+    }
+
+    char *p_line = line = 2;
+    while(*p_line && *p_line != '\r' && *p_line != '\n' && *p_line != ' ') p_line++;
+    bytes_in_line -= p_line - line;
+
+    if(*p_line != ' ') {
+        *is_valid = false;
+        return S_OK;
+    }
+
+    // infix
+    if(bytes_in_line < LEN_COMMENT_RESET_INFIX) {
+        *is_valid = false;
+        return S_OK;
+    }
+
+    if(strncmp(p_line, COMMENT_RESET_INFIX, LEN_COMMENT_RESET_INFIX)) {
+        *is_valid = false;
+        return S_OK;
+    }
+
+    p_line += LEN_COMMENT_RESET_INFIX;
+
+    // mm
+    int mm = atoi(p_line);
+    if(mm < 1 || mm > 12) {
+        *is_valid = false;
+        return S_OK;
+    }
+    p_line += 2;
+
+    if(*p_line != '/') {
+        *is_valid = false;
+        return S_OK;
+    }
+    p_line++;
+
+    // dd
+    int dd = atoi(p_line);
+    if(dd < 1 || dd > 31) {
+        *is_valid = false;
+        return S_OK;
+    }
+    p_line += 2;
+
+    if(*p_line != '/') {
+        *is_valid = false;
+        return S_OK;
+    }
+    p_line++;
+
+    // yyyy
+    int yyyy = atoi(p_line);
+    if(yyyy < 1990) {
+        *is_valid = false;
+        return S_OK;
+    }
+    p_line += 4;
+
+    if(*p_line != ' ') {
+        *is_valid = false;
+        return S_OK;
+    }
+
+    // HH
+    int HH = atoi(p_line);
+    if(HH < 0 || HH > 23) {
+        *is_valid = false;
+        return S_OK;
+    }
+    p_line += 2;
+
+    if(*p_line != ':') {
+        *is_valid = false;
+        return S_OK;
+    }
+    p_line++;
+
+    // MM
+    int MM = atoi(p_line);
+    if(MM < 0 || MM > 59) {
+        *is_valid = false;
+        return S_OK;
+    }
+    p_line += 2;
+
+    if(*p_line != ':') {
+        *is_valid = false;
+        return S_OK;
+    }
+    p_line++;
+
+    // SS
+    int SS = atoi(p_line);
+    if(SS < 0 || SS > 59) {
+        *is_valid = false;
+        return S_OK;
+    }
+    p_line += 2;
+
+    if(*p_line != ' ') {
+        *is_valid = false;
+        return S_OK;
+    }
+
+    // postfix
+    if(strncmp(p_line, COMMENT_RESET_POSTFIX, LEN_COMMENT_RESET_POSTFIX)) {
+        *is_valid = false;
+        return S_OK;
+    }
 }
 
 Err

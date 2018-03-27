@@ -8,10 +8,13 @@ extern "C" {
 
 #define COMMENT_CROSS_PREFIX_UTF8 ":轉錄至"
 #define COMMENT_CROSS_HIDDEN_BOARD_UTF8 "某隱形看板"
+
+#define COMMENT_RESET_INFIX " 於 "
+#define COMMENT_RESET_POSTFIX " 將推薦值歸零"    
+
 #define TITLE_PREFIX_UTF8 "標題:"
 #define TIME_PREFIX_UTF8 "時間:"
 #define ORIGIN_PREFIX_UTF8 "※ 發信站:"
-
 
 #ifdef __cplusplus
 }
