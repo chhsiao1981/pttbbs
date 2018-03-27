@@ -986,6 +986,7 @@ _is_comment_line_reset(char *line, int bytes_in_line, bool *is_valid)
         *is_valid = false;
         return S_OK;
     }
+    p_line++;
 
     fprintf(stderr, "migrate_file_to_db._is_comment_line_reset: to HH: p_line: %s\n", p_line);
 
