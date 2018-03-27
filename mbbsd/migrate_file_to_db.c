@@ -390,7 +390,7 @@ _parse_legacy_file_n_comment_comment_reply_core_one_line(char *line, int bytes_i
         (*n_comment_comment_reply)++;
     }
 
-    fprintf(stderr, "migrate_file_to_db._parse_legacy_file_n_comment_comment_reply_core_one_line: line: %s e: %d is_comment_line: %d n_comment_comment_reply: %d\n", line, error_code, is_comment_line, *n_comment_comment_reply);
+    fprintf(stderr, "migrate_file_to_db._parse_legacy_file_n_comment_comment_reply_core_one_line: bytes_in_line: %d line: %s e: %d is_comment_line: %d n_comment_comment_reply: %d\n", bytes_in_line, line, error_code, is_comment_line, *n_comment_comment_reply);
 
     return S_OK;
 }
