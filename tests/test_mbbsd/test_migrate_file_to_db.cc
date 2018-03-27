@@ -137,7 +137,7 @@ TEST(migrate_file_to_db, is_comment_line_cross2) {
 TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line) {
 
     char line[MAX_BUF_SIZE] = {};
-    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "02/27 03:03");
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\r\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "02/27 03:03");
 
     int mm = 0;
     int dd = 0;
