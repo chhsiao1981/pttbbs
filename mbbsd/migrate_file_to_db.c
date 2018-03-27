@@ -593,8 +593,6 @@ _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(char *lin
     error_code = milli_timestamp_to_timestamp(current_create_milli_timestamp, &current_create_timestamp);
     if(error_code) return error_code;
 
-    time64_t tmp_milli_timestamp = 0;
-
     int mm = 0;
     int dd = 0;
     int HH = 0;
@@ -602,7 +600,7 @@ _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(char *lin
     error_code = _parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(line, bytes_in_line, &mm, &dd, &HH, &MM);
     if(error_code) return error_code;
 
-    time64_t tmp_timestamp;
+    time64_t tmp_timestamp = 0;
     error_code = datetime_to_timestamp(year, mm, dd, HH, MM, 0, &tmp_timestamp);
     if(error_code) return error_code;
 
