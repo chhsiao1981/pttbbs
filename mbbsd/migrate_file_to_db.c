@@ -582,9 +582,9 @@ _parse_legacy_file_comment_poster_cross(char *line, int bytes_in_line, char *pos
 Err
 _parse_legacy_file_comment_poster_good_bad_arrow(char *line, int bytes_in_line, char *poster)
 {
-    char *p_line = line + LEN_COMMENT_HEADER + LEN_COMMENT_POSTER_PREFIX_COLOR;
+    char *p_line = line + LEN_COMMENT_HEADER;
     char *p_line2 = p_line;
-    for(int i = LEN_COMMENT_HEADER + LEN_COMMENT_POSTER_PREFIX_COLOR; *p_line2 && *p_line2 != ':' && i < bytes_in_line; i++, p_line2++);
+    for(int i = LEN_COMMENT_HEADER; *p_line2 && *p_line2 != ':' && i < bytes_in_line; i++, p_line2++);
     int len_poster = p_line2 - p_line - LEN_COMMENT_PREFIX_COLOR;
     if(len_poster < 0) return S_ERR;
 
