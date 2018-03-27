@@ -970,6 +970,8 @@ _is_comment_line_reset(char *line, int bytes_in_line, bool *is_valid)
     }
     p_line++;
 
+    fprintf(stderr, "migrate_file_to_db._is_comment_line_reset: to yyyy: p_line: %s\n", p_line);
+
     // yyyy
     int yyyy = atoi(p_line);
     if(yyyy < 1990) {
@@ -982,6 +984,8 @@ _is_comment_line_reset(char *line, int bytes_in_line, bool *is_valid)
         *is_valid = false;
         return S_OK;
     }
+
+    fprintf(stderr, "migrate_file_to_db._is_comment_line_reset: to HH: p_line: %s\n", p_line);
 
     // HH
     int HH = atoi(p_line);
