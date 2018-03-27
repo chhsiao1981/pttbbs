@@ -281,6 +281,7 @@ _parse_legacy_file_main_info_core_one_line_main_content(char *line, int bytes_in
 
     // set main-content-len
     legacy_file_info->main_content_len += bytes_in_line;
+    fprintf(stderr, "migrate_file_to_db._parse_legacy_file_main_info_core_one_line_main_content: line: %s bytes_in_line: %d main_content_len: %d\n", line, bytes_in_line, legacy_file_info->main_content_len);
 
     return S_OK;
 }
