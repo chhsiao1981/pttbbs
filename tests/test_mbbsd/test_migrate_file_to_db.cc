@@ -224,6 +224,18 @@ TEST(migrate_file_to_db, parse_legacy_file_comment_poster_cross) {
     EXPECT_STREQ("poster001", poster);    
 }
 
+TEST(migrate_file_to_db, parse_legacy_file_comment_poster_reset) {
+
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s%s%s%s%s\r\n", COMMENT_TYPE_ATTR[COMMENT_TYPE_RESET], "poster001", COMMENT_RESET_INFIX, "02/27/2018 10:30:45", COMMENT_RESET_POSTFIX);
+
+    char poster[IDLEN + 1] = {};
+    Err error = _parse_legacy_file_comment_poster_reset(line, MAX_BUF_SIZE, poster);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_STREQ("poster001", poster);    
+}
+
+
 TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
     // M.1510537375.A.8B4
     LegacyFileInfo legacy_file_info = {};
