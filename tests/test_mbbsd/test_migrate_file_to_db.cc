@@ -186,6 +186,18 @@ TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_good_b
     EXPECT_EQ(1520315640001, create_milli_timestamp); // 2018-03-06 13:54:00.001 (CST)
 }
 
+TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_reset) {
+
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s%s%s%s%s\r\n", COMMENT_TYPE_ATTR[COMMENT_TYPE_RESET], "poster001", COMMENT_RESET_INFIX, "02/27/2018 10:30:45", COMMENT_RESET_POSTFIX);
+
+    time64_t create_milli_timestamp = 0;
+    Err error = _parse_legacy_file_comment_create_milli_timestamp_reset(line, MAX_BUF_SIZE, &create_milli_timestamp);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1519698645000, create_milli_timestamp);    
+}
+
+
 TEST(migrate_file_to_db, parse_legacy_file_comment_poster_good_bad_arrow_good) {
     char line[MAX_BUF_SIZE] = {};
     sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "02/31");

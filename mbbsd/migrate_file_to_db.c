@@ -630,7 +630,7 @@ _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(char *lin
     error_code = datetime_to_timestamp(year, mm, dd, HH, MM, 0, TIMEZONE_TAIPEI, &tmp_timestamp);
     if(error_code) return error_code;
 
-    fprintf(stderr, "migrate_file_to_db._parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross: tmp_timestamp: %d\n", tmp_timestamp);
+    fprintf(stderr, "migrate_file_to_db._parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross: tmp_timestamp: %ld\n", tmp_timestamp);
 
     if(tmp_timestamp > current_create_timestamp) {
         *create_milli_timestamp = tmp_timestamp * 1000;
