@@ -134,7 +134,17 @@ TEST(migrate_file_to_db, is_comment_line_cross2) {
     EXPECT_EQ(true, is_valid);
 }
 
-TEST(migrate_file_to_db, parse_legacy_file_comment_poter_cross) {
+TEST(migrate_file_to_db, parse_legacy_file_comment_poster_good) {
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "02/31");
+
+    char poster[IDLEN + 1] = {};
+    Err error = _parse_legacy_file_comment_poster_good_bad_arrow(line, MAX_BUF_SIZE, poster);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_STREQ("poster001", poster);    
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_comment_poster_cross) {
     char line[MAX_BUF_SIZE] = {};
     sprintf(line, "%s " ANSI_COLOR(1;32) "%s" ANSI_COLOR(0;32) COMMENT_CROSS_PREFIX "%s" ANSI_RESET "%*s%s\n", COMMENT_TYPE_ATTR[COMMENT_TYPE_CROSS], "poster001", COMMENT_CROSS_HIDDEN_BOARD, 80, "", "02/31");
 
