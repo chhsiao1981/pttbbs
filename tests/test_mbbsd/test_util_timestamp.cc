@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "util_timestamp.h"
 
-TEST(util_teimstamp, milli_timestamp_to_year) {
+TEST(util_timestamp, milli_timestamp_to_year) {
     int year = 0;
     Err error = milli_timestamp_to_year(1522169909000, &year);
     EXPECT_EQ(S_OK, error);
