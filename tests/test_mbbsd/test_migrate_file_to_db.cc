@@ -142,7 +142,7 @@ TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_good_b
 
     int bytes_in_line = strlen(line);
     time64_t create_milli_timestamp = 0;
-    Err error = _parse_legacy_file_comment_create_milli_tiestamp_good_bad_arrow_cross(line, bytes_in_line, current_create_milli_timestamp, &create_milli_timestamp);
+    Err error = _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(line, bytes_in_line, current_create_milli_timestamp, &create_milli_timestamp);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(1551236580, create_milli_timestamp);
 }
