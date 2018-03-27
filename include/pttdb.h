@@ -32,8 +32,9 @@ enum CommentType {
     COMMENT_TYPE_ARROW,
     COMMENT_TYPE_SIZE,
 
-    COMMENT_TYPE_CROSS,                       // hack for cross
-    COMMENT_TYPE_OTHER,                       // hack for other
+    COMMENT_TYPE_CROSS,                       // hack for cross-post
+    COMMENT_TYPE_RESET,                       // hack for reset-karma
+    COMMENT_TYPE_REMOVE,                      // hack for remove-comment
 
     COMMENT_TYPE_N_TYPE,
     COMMENT_TYPE_MAX     = COMMENT_TYPE_SIZE - 1,

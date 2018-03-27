@@ -6,7 +6,8 @@ const enum Karma KARMA_BY_COMMENT_TYPE[] = {
     KARMA_ARROW,
     0,
     0,                   // cross
-    0,                   // other
+    0,                   // reset
+    0,                   // remove
 };
 
 const char *COMMENT_TYPE_ATTR[] = {
@@ -14,8 +15,9 @@ const char *COMMENT_TYPE_ATTR[] = {
     "¼N",
     "¡÷",
     "",
-    "¡°",
-    "",
+    "¡°",                 // cross
+    "",                  // reset
+    "",                  // remove
 };
 
 const char *COMMENT_TYPE_ATTR2[] = {
@@ -23,6 +25,7 @@ const char *COMMENT_TYPE_ATTR2[] = {
     ANSI_COLOR(1;31),
     ANSI_COLOR(1;31),
     "",
-    "",
-    "",
+    "",                  // cross
+    "",                  // reset
+    "",                  // remove
 };
