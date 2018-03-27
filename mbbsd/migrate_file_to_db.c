@@ -595,6 +595,10 @@ _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(char *lin
 
     time64_t tmp_milli_timestamp = 0;
 
+    int mm = 0;
+    int dd = 0;
+    int HH = 0;
+    int MM = 0;
     error_code = _parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(line, bytes_in_line, &mm, &dd, &HH, &MM);
     if(error_code) return error_code;
 
@@ -615,6 +619,66 @@ _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(char *lin
     if(error_code) return error_code;
 
     *create_milli_timestamp = tmp_timestamp * 1000;
+    return S_OK;
+}
+
+/**
+ * @brief [brief description]
+ * @details in format mm/dd HH:MM\r\n in the end of the line
+ * 
+ * @param line [description]
+ * @param bytes_in_line [description]
+ * @param mm [description]
+ * @param dd [description]
+ * @param HH [description]
+ * @param MM [description]
+ */
+Err
+_parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(char *line, int bytes_in_line, int *mm, int *dd, int *HH, int *MM)
+{
+    if(bytes_in_line < LEN_COMMENT_DATETIME_IN_LINE) return S_ERR;
+    char *p_line = line + bytes_in_line - LEN_COMMENT_DATETIME_IN_LINE;
+
+    // mm
+    int tmp_mm = atoi(p_line);
+    if(tmp_mm < 1 || tmp_mm > 12) return S_ERR;
+
+    // /
+    p_line += 2;
+    if(*p_line != '/') return S_ERR;
+
+    // dd
+    p_line++;
+    int tmp_dd = atoi(p_line);
+    if(tmp_dd < 1 || tmp_dd > 31) return S_ERR;
+
+    // [space]
+    p_line += 2;
+    if(*p_line != ' ') return S_ERR;
+
+    // HH
+    p_line++;
+    int tmp_HH = atoi(p_line);
+    if(tmp_HH < 0 || tmp_HH > 23) return S_ERR;
+
+    // :
+    p_line += 2;
+    if(*p_line != ':') return S_ERR;
+
+    // MM
+    p_line++;
+    int tmp_MM = atoi(p_line);
+    if(tmp_MM < 0 || tmp_MM > 59) return S_ERR;
+
+    // \r\n
+    p_line += 2;
+    if(*p_line != '\r' || *(p_line + 1) != '\n') return S_ERR;
+
+    *mm = tmp_mm;
+    *dd = tmp_dd;
+    *HH = tmp_HH;
+    *MM = tmp_MM;
+
     return S_OK;
 }
 

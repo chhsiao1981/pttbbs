@@ -46,10 +46,13 @@ Err _parse_legacy_file_comment_comment_reply_core_one_line_comment_reply(char *l
 Err _parse_legacy_file_comment_comment_reply_core_last_line(int bytes_in_line, char *line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LegacyFileStatus *status);
 
 
+// comment-create-milli-timestamp
 Err _parse_legacy_file_comment_create_milli_timestamp(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp);
 Err
 _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp);
+Err _parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(char *line, int bytes_in_line, int *mm, int *dd, int *HH, int *MM);
 
+// comment-poster
 Err _parse_legacy_file_comment_poster(char *line, int bytes_in_line, char *poster);
 Err _parse_legacy_file_comment_poster_cross(char *line, int bytes_in_line, char *poster);
 Err _parse_legacy_file_comment_poster_good_bad_arrow(char *line, int bytes_in_line, char *poster);
