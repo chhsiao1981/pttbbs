@@ -918,7 +918,7 @@ _is_comment_line_reset(char *line, int bytes_in_line, bool *is_valid)
         return S_OK;
     }
 
-    char *p_line = line = 2;
+    char *p_line = line + 2;
     while(*p_line && *p_line != '\r' && *p_line != '\n' && *p_line != ' ') p_line++;
     bytes_in_line -= p_line - line;
 

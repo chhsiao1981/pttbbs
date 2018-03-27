@@ -55,14 +55,16 @@ Err _parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(cha
 // comment-poster
 Err _parse_legacy_file_comment_poster(char *line, int bytes_in_line, char *poster);
 Err _parse_legacy_file_comment_poster_cross(char *line, int bytes_in_line, char *poster);
+Err _parse_legacy_file_comment_poster_reset(char *line, int bytes_in_line, char *poster);
 Err _parse_legacy_file_comment_poster_good_bad_arrow(char *line, int bytes_in_line, char *poster);
 
+// parse comment-type
 Err _parse_legacy_file_comment_type(char *line, int bytes_in_line, enum CommentType *comment_type);
 
-// is-comment-line
 Err _is_comment_line(char *line, int bytes_in_line, bool *is_valid);
 Err _is_comment_line_good_bad_arrow(char *line, int bytes_in_line, bool *is_valid, enum CommentType comment_type);
 Err _is_comment_line_cross(char *line, int bytes_in_line, bool *is_valid);
+Err _is_comment_line_reset(char *line, int bytes_in_line, bool *is_valid);
 
 // migrate db to file
 Err _migrate_main_content_to_file(MainHeader *main_header, FILE *fp);
