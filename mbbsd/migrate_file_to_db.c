@@ -336,7 +336,7 @@ _parse_legacy_file_n_comment_comment_reply(const char *fpath, int main_content_l
 
         tmp_n_comment_comment_reply += each_n_comment_comment_reply;
     }
-    if(!error_code && bytes_in_line) {
+    if(!error_code && bytes_in_line && (bytes_in_line != 2 || strncmp("\r\n", line, 2))) {
         error_code = _parse_legacy_file_n_comment_comment_reply_last_line(bytes_in_line, line, &each_n_comment_comment_reply);
     }
     if(!error_code && bytes_in_line) {
