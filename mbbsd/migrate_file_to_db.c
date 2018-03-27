@@ -189,7 +189,8 @@ _parse_legacy_file_main_info(const char *fpath, LegacyFileInfo *legacy_file_info
 
         if(status == LEGACY_FILE_STATUS_COMMENT) break;
     }
-    if(!error_code && bytes_in_line && (bytes_in_line != 2 || strncmp(line, "\r\n", 2)) && status != LEGACY_FILE_STATUS_COMMENT) {
+    fprintf(stderr, "migrate_file_to_db._parse_legacy_file_main_info: after while: e: %d status: %d bytes_in_line: %d line: %s\n", error_code, status, bytes_in_line, line);
+    if(!error_code && bytes_in_line && (bytes_in_line != 2 || strncmp(line, "\r\n", 2)) && status != LEGACY_FILE_STATUS_COMMENT) {        
         error_code = _parse_legacy_file_main_info_last_line(bytes_in_line, line, legacy_file_info, &status);
     }
 
