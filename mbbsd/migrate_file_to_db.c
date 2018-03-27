@@ -547,7 +547,48 @@ _parse_legacy_file_comment_create_milli_timestamp(char *line, int bytes_in_line,
 Err
 _parse_legacy_file_comment_poster(char *line, int bytes_in_line, char *poster)
 {
+    Err error_code = S_OK;
+
+    // comment-line-cross
+    bool is_valid = false;
+     error_code = _is_comment_line_cross(line, bytes_in_line, &is_valid);
+    if(error_code) return error_code;
+
+    if(is_valid) {
+       error_code = _parse_legacy_file_comment_poster_cross(line, bytes_in_line, poster);
+       return error_code;
+    }
+
+    // the rest (good / bad / arrow)
+    error_code = _parse_legacy_file_comment_poster_good_bad_arrow(line, bytes_in_line, poster);
+
+    return error_code;
+}
+
+Err
+_parse_legacy_file_comment_poster_cross(char *line, int bytes_in_line, char *poster)
+{
+    char *p_line = line + LEN_COMMENT_CROSS_HEADER;
+    char *p_line2 = p_line;
+    for(int i = LEN_COMMENT_CROSS_HEADER; *p_line2 && *p_line2 != ':' && i < bytes_in_line; i++, p_line2++);
+    int len_poster = p_line2 - p_line - LEN_COMMENT_CROSS_PREFIX_COLOR;
+    if(len_poster < 0) return S_ERR;
+
+    memcpy(poster, p_line, len_poster);
+
     return S_OK;
+}
+
+Err
+_parse_legacy_file_comment_poster_good_bad_arrow(char *line, int bytes_in_line, char *poster)
+{
+    char *p_line = line + LEN_COMMENT_HEADER + LEN_COMMENT_POSTER_PREFIX_COLOR;
+    char *p_line2 = p_line;
+    for(int i = LEN_COMMENT_HEADER + LEN_COMMENT_POSTER_PREFIX_COLOR; *p_line2 && *p_line2 != ':' && i < bytes_in_line; i++, p_line2++);
+    int len_poster = p_line2 - p_line - LEN_COMMENT_PREFIX_COLOR;
+    if(len_poster < 0) return S_ERR;
+
+    memcpy(poster, p_line, len_poster);
 }
 
 Err
