@@ -7,6 +7,8 @@ milli_timestamp_to_year(time64_t milli_timestamp, int *year)
     time64_t timestamp = 0;
 
     Err error_code = milli_timestamp_to_timestamp(milli_timestamp, &timestamp);
+    if(error_code) return error_code;
+    
     localtime_r(&timestamp, &tmp_tm);
     *year = tmp_tm.tm_year + 1900;
     return S_OK;
@@ -16,6 +18,8 @@ Err
 milli_timestamp_to_timestamp(time64_t milli_timestamp, time64_t *timestamp)
 {
     *timestamp = milli_timestamp / 1000;
+
+    return S_OK;
 }
 
 Err
