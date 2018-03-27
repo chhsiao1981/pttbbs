@@ -284,7 +284,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_5) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.5.txt", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(655, legacy_file_info.main_content_len);
+    EXPECT_EQ(653, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -304,7 +304,7 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_5) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.5.txt", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(655, legacy_file_info.main_content_len);
+    EXPECT_EQ(653, legacy_file_info.main_content_len);
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.5.txt", legacy_file_info.main_content_len, &n_comment_comment_reply);
@@ -357,7 +357,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_7) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.7.txt", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(781, legacy_file_info.main_content_len);
+    EXPECT_EQ(779, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -378,7 +378,7 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_7) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.7.txt", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(781, legacy_file_info.main_content_len);
+    EXPECT_EQ(779, legacy_file_info.main_content_len);
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.7.txt", legacy_file_info.main_content_len, &n_comment_comment_reply);
