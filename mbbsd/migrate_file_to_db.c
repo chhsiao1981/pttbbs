@@ -590,6 +590,7 @@ _parse_legacy_file_comment_create_milli_timestamp_reset(char *line, int bytes_in
 
     struct tm the_tm;
     char *ret = strptime(p_line, "%m/%d/%Y %H:%M:%S", &the_tm);
+    if(ret == NULL) return S_ERR;
 
     time64_t timestamp = mktime(&the_tm);
     time64_t tmp_milli_timestamp = timestamp * 1000;
