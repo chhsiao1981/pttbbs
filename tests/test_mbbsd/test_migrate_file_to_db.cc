@@ -168,7 +168,7 @@ TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_get_da
 }
 
 TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross_good) {
-    time64_t current_create_milli_timestamp = 1520315640000; // 2018-03-06 05:54:00
+    time64_t current_create_milli_timestamp = 1520315640000; // 2018-03-05 23:54:00
 
     char line[MAX_BUF_SIZE] = {};
     sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\r\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "02/27 03:03");
@@ -177,9 +177,9 @@ TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_good_b
     time64_t create_milli_timestamp = 0;
     Err error = _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(line, bytes_in_line, current_create_milli_timestamp, &create_milli_timestamp);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(1551236580000, create_milli_timestamp); // 2019-02-27 03:03
+    EXPECT_EQ(1551207780000, create_milli_timestamp); // 2019-02-27 03:03
 
-    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\r\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "03/06 05:54");
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\r\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "03/05 23:54");
 
     error = _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(line, bytes_in_line, current_create_milli_timestamp, &create_milli_timestamp);
     EXPECT_EQ(S_OK, error);
@@ -560,7 +560,7 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_9) {
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.9.txt", legacy_file_info.main_content_len, &n_comment_comment_reply);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(25642, n_comment_comment_reply);
+    EXPECT_EQ(25649, n_comment_comment_reply);
 
     //free
 }
