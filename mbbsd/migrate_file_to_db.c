@@ -640,7 +640,7 @@ _parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(char *l
 
     // mm
     int tmp_mm = atoi(p_line);
-    fprintf(stderr, "migrate_file_to_db._parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line: after mm: p_line: %s tmp_mm: %d\n");
+    fprintf(stderr, "migrate_file_to_db._parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line: after mm: p_line: %s tmp_mm: %d\n", p_line, tmp_mm);
     if(tmp_mm < 1 || tmp_mm > 12) return S_ERR;
 
     // /
