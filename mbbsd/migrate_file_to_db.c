@@ -330,12 +330,15 @@ _parse_legacy_file_n_comment_comment_reply(const char *fpath, int main_content_l
 
     int fd = open(fpath, O_RDONLY);
     lseek(fd, main_content_len, SEEK_SET);
-    while((bytes = read(fd, buf, MAX_BUF_SIZE)) > 0) {
+    while((bytes = read(fd, buf, MAX_BUF_SIZE)) > 0) {        
         error_code = _parse_legacy_file_n_comment_comment_reply_core(buf, bytes, line, &bytes_in_line, &each_n_comment_comment_reply);
         if(error_code) break;
 
-        tmp_n_comment_comment_reply += each_n_comment_comment_reply;
+        tmp_n_comment_comment_reply += each_n_comment_comment_reply;        
     }
+
+    fprintf(stderr, "migrate_file_to_db._parse_legacy_file_n_comment_comment_reply: after while: e: %d bytes_in_line: %d tmp_n_comment_reply: %d\n", error_code, bytes_in_line, tmp_n_comment_reply);
+
     if(!error_code && bytes_in_line) {
         error_code = _parse_legacy_file_n_comment_comment_reply_last_line(bytes_in_line, line, &each_n_comment_comment_reply);
         fprintf(stderr, "migrate_file_to_db._parse_legacy_file_n_comment_comment_reply after last line: e: %d bytes_in_line: %d each_n_comment_comment_reply: %d\n", error_code, bytes_in_line, each_n_comment_comment_reply);
