@@ -17,15 +17,15 @@ TEST(util_timestamp, milli_timestamp_to_timestamp) {
 
 TEST(util_timestamp, datetime_to_timestamp) {
     time64_t timestamp = 0;
-    Err error = datetime_to_timestamp(2018, 1, 1, 0, 0, 0, &timestamp);
+    Err error = datetime_to_timestamp(2018, 1, 1, 0, 0, 0, TIMEZONE_TAIPEI, &timestamp);
 
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(1514764800, timestamp);
+    EXPECT_EQ(1514736000, timestamp);
 
-    error = datetime_to_timestamp(2017, 5, 3, 13, 49, 38, &timestamp);
+    error = datetime_to_timestamp(2017, 5, 3, 13, 49, 38, TIMEZONE_TAIPEI, &timestamp);
 
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(1493819378, timestamp);
+    EXPECT_EQ(1493790578, timestamp);
 }
 
 /**********
