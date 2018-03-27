@@ -563,22 +563,39 @@ _parse_legacy_file_comment_create_milli_timestamp(char *line, int bytes_in_line,
     Err error_code = S_OK;
 
     // comment-line-reset
-    /*
     bool is_valid = false;
-     error_code = _is_comment_line_cross(line, bytes_in_line, &is_valid);
+    error_code = _is_comment_line_reset(line, bytes_in_line, &is_valid);
     if(error_code) return error_code;
 
     if(is_valid) {
-       error_code = _parse_legacy_file_comment_create_milli_timestamp_cross(line, bytes_in_line, current_create_milli_timestamp, create_milli_timestamp);
+       error_code = _parse_legacy_file_comment_create_milli_timestamp_reset(line, bytes_in_line, current_create_milli_timestamp, create_milli_timestamp);
        return error_code;
     }
-    */
 
     // the rest (good / bad / arrow / cross)
     error_code = _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(line, bytes_in_line, current_create_milli_timestamp, create_milli_timestamp);
 
     return error_code;
 }
+
+Err
+_parse_legacy_file_comment_create_milli_timestamp_reset(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp)
+{
+    Err error_code = S_OK;
+    char *p_line = line;
+
+    // to COMMENT_RESET_INFIX
+    while(*p_line && *p_line != ' '; p_line++);
+    p_line += LEN_COMMENT_RESET_INFIX;
+    // datetime
+    char *ret = strptime(p_line, "%m/%d/%Y %H:%M:%S", &tm);
+
+    time64_t timestamp = mktime(tm);
+    *create_milli_timestamp = timestamp * 1000;
+
+    return S_OK;
+}
+
 
 Err
 _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp)

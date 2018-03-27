@@ -51,6 +51,7 @@ Err _parse_legacy_file_comment_create_milli_timestamp(char *line, int bytes_in_l
 Err
 _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp);
 Err _parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(char *line, int bytes_in_line, int *mm, int *dd, int *HH, int *MM);
+Err _parse_legacy_file_comment_create_milli_timestamp_reset(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp);
 
 // comment-poster
 Err _parse_legacy_file_comment_poster(char *line, int bytes_in_line, char *poster);
