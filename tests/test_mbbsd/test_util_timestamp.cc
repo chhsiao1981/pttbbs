@@ -3,6 +3,7 @@
 
 TEST(util_timestamp, milli_timestamp_to_year) {
     int year = 0;
+    // 2018-03-28 00:58:29
     Err error = milli_timestamp_to_year(1522169909000, &year);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(year, 2018);
