@@ -449,7 +449,7 @@ _parse_legacy_file_comment_comment_reply_core(const char *fpath, LegacyFileInfo 
 
     // hack for check for empty last line
     if(bytes <= 0 && legacy_file_info->comment_info[comment_idx].comment_reply_len >= 2) {
-        legacy_file_info->comment_info[comment_info].comment_reply_len -= 2;
+        legacy_file_info->comment_info[comment_idx].comment_reply_len -= 2;
     }
 
     // free
