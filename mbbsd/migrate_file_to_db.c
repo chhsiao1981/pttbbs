@@ -913,7 +913,7 @@ _is_comment_line_cross(char *line, int bytes_in_line, bool *is_valid)
 Err
 _is_comment_line_reset(char *line, int bytes_in_line, bool *is_valid)
 {
-    if(strncmp(line, COMMENT_TYPE_ATTR[COMMENT_TYPE_CROSS], 2)) {
+    if(strncmp(line, COMMENT_TYPE_ATTR[COMMENT_TYPE_RESET], 2)) {
         *is_valid = false;
         return S_OK;
     }
@@ -927,6 +927,7 @@ _is_comment_line_reset(char *line, int bytes_in_line, bool *is_valid)
         return S_OK;
     }
 
+    fprintf(stderr, "migrate_file_to_db._is_comment_line_reset: to infix: p_line: %s\n", p_line);
     // infix
     if(bytes_in_line < LEN_COMMENT_RESET_INFIX) {
         *is_valid = false;
@@ -940,6 +941,7 @@ _is_comment_line_reset(char *line, int bytes_in_line, bool *is_valid)
 
     p_line += LEN_COMMENT_RESET_INFIX;
 
+    fprintf(stderr, "migrate_file_to_db._is_comment_line_reset: to mm: p_line: %s\n", p_line);
     // mm
     int mm = atoi(p_line);
     if(mm < 1 || mm > 12) {
