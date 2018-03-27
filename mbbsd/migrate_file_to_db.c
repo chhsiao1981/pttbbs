@@ -340,8 +340,8 @@ _parse_legacy_file_n_comment_comment_reply(const char *fpath, int main_content_l
 
     fprintf(stderr, "migrate_file_to_db._parse_legacy_file_n_comment_comment_reply: after while: e: %d bytes_in_line: %d tmp_n_comment_reply: %d\n", error_code, bytes_in_line, tmp_n_comment_comment_reply);
 
+    each_n_comment_comment_reply = 0;
     if(!error_code && bytes_in_line) {
-        each_n_comment_comment_reply = 0;
         error_code = _parse_legacy_file_n_comment_comment_reply_last_line(bytes_in_line, line, &each_n_comment_comment_reply);
         fprintf(stderr, "migrate_file_to_db._parse_legacy_file_n_comment_comment_reply after last line: e: %d bytes_in_line: %d each_n_comment_comment_reply: %d\n", error_code, bytes_in_line, each_n_comment_comment_reply);
     }
