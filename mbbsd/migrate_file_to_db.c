@@ -330,7 +330,8 @@ _parse_legacy_file_n_comment_comment_reply(const char *fpath, int main_content_l
 
     int fd = open(fpath, O_RDONLY);
     lseek(fd, main_content_len, SEEK_SET);
-    while((bytes = read(fd, buf, MAX_BUF_SIZE)) > 0) {        
+    while((bytes = read(fd, buf, MAX_BUF_SIZE)) > 0) {
+        each_n_comment_comment_reply = 0;
         error_code = _parse_legacy_file_n_comment_comment_reply_core(buf, bytes, line, &bytes_in_line, &each_n_comment_comment_reply);
         if(error_code) break;
 
