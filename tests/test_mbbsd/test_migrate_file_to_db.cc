@@ -481,8 +481,8 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_10) {
     free(buf);
 }
 
-TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_9) {
-    // M.1119222611.A.7A9
+TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_10) {
+    // M.1.A.5CF
     LegacyFileInfo legacy_file_info = {};
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.10.txt", &legacy_file_info);
