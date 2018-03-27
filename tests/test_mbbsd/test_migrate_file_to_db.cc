@@ -449,12 +449,12 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_9) {
     // M.1119222611.A.7A9
     LegacyFileInfo legacy_file_info = {};
 
-    Err error = _parse_legacy_file_main_info("data_test/original_msg.7.txt", &legacy_file_info);
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.9.txt", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(1031, legacy_file_info.main_content_len);
 
     int n_comment_comment_reply = 0;
-    error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.7.txt", legacy_file_info.main_content_len, &n_comment_comment_reply);
+    error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.9.txt", legacy_file_info.main_content_len, &n_comment_comment_reply);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(0, n_comment_comment_reply);
 
