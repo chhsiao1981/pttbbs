@@ -179,7 +179,7 @@ TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_good_b
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(1551207780000, create_milli_timestamp); // 2019-02-27 03:03 (CST)
 
-    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\r\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "03/05 23:54");
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\r\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "03/06 13:54");
 
     error = _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(line, bytes_in_line, current_create_milli_timestamp, &create_milli_timestamp);
     EXPECT_EQ(S_OK, error);
