@@ -593,9 +593,9 @@ _parse_legacy_file_comment_create_milli_timestamp_reset(char *line, int bytes_in
 
     time64_t timestamp = mktime(&the_tm);
     time64_t tmp_milli_timestamp = timestamp * 1000;
-    if(tmp_mill_timestamp < current_create_timestamp) return S_ERR;
+    if(tmp_milli_timestamp < current_create_timestamp) return S_ERR;
 
-    *create_milli_timestamp = tmp_mill_timestamp;
+    *create_milli_timestamp = tmp_milli_timestamp;
 
     return S_OK;
 }
