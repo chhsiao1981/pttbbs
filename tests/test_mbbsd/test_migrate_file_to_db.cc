@@ -195,6 +195,10 @@ TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_reset)
     Err error = _parse_legacy_file_comment_create_milli_timestamp_reset(line, MAX_BUF_SIZE, 1519698643000, &create_milli_timestamp);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(1519698645000, create_milli_timestamp);    
+
+    error = _parse_legacy_file_comment_create_milli_timestamp_reset(line, MAX_BUF_SIZE, 1519698646000, &create_milli_timestamp);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1519698645000, create_milli_timestamp);    
 }
 
 
