@@ -9,7 +9,6 @@
 extern "C" {
 #endif
 
-#define _XOPEN_SOURCE
 #include <time.h>
 
 #define TIMEZONE_TAIPEI 8
