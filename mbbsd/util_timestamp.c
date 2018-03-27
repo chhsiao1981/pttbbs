@@ -4,7 +4,7 @@ Err
 milli_timestamp_to_year(time64_t milli_timestamp, int *year)
 {
     struct tm tmp_tm = {};
-    localtime_r(&milli_timestamp, tmp_tm);
+    localtime_r(&milli_timestamp, &tmp_tm);
     *year = tmp_tm.tm_year + 1900;
     return S_OK;
 }
