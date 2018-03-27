@@ -538,9 +538,83 @@ _parse_legacy_file_comment_comment_reply_core_one_line_comment(char *line, int b
     return S_OK;
 }
 
+/**
+ * @brief 
+ * @details The purpose here is construct the milli-timestamp that is:
+ *          1. the same date in line.
+ *          2. larger than current_create_milli_timestamp
+ *          
+ *          method:
+ *          1. get the date from line.
+ *          2. get the year from current_create_milli_timestamp.
+ *          3. try to construct milli_timestamp.
+ *          4. if new milli_timestamp is larger than current_create_milli_timestamp:
+ *             year += 1
+ *             reconstruct milli_timestamp
+ * 
+ * @param line [description]
+ * @param bytes_in_line [description]
+ * @param current_create_milli_timestamp [description]
+ * @param create_milli_timestamp [description]
+ */
 Err
 _parse_legacy_file_comment_create_milli_timestamp(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp)
 {
+    Err error_code = S_OK;
+
+    // comment-line-reset
+    /*
+    bool is_valid = false;
+     error_code = _is_comment_line_cross(line, bytes_in_line, &is_valid);
+    if(error_code) return error_code;
+
+    if(is_valid) {
+       error_code = _parse_legacy_file_comment_create_milli_timestamp_cross(line, bytes_in_line, current_create_milli_timestamp, create_milli_timestamp);
+       return error_code;
+    }
+    */
+
+    // the rest (good / bad / arrow / cross)
+    error_code = _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow(line, bytes_in_line, current_create_milli_timestamp, create_milli_timestamp);
+
+    return error_code;
+}
+
+Err
+_parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp)
+{
+    Err error_code = S_OK;
+
+    int year = 0;
+    time64_t current_create_timestamp = 0;
+    error_code = milli_timestamp_to_year(current_create_milli_timestamp, &year);
+    if(error_code) return error_code;
+
+    error_code = milli_timestamp_to_timestamp(current_create_milli_timestamp, &current_create_timestamp);
+    if(error_code) return error_code;
+
+    time64_t tmp_milli_timestamp = 0;
+
+    error_code = _parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(line, bytes_in_line, &mm, &dd, &HH, &MM);
+    if(error_code) return error_code;
+
+    error_code = datetime_to_timestamp(year, mm, dd, HH, MM, 0, &tmp_timestamp);
+    if(error_code) return error_code;
+
+    if(tmp_timestamp > current_create_timestamp) {
+        *create_milli_timestamp = tmp_timestamp * 1000;
+        return S_OK;
+    }
+
+    if(tmp_timestamp == current_create_timestamp) {
+        *create_milli_timestamp = current_create_milli_timestamp + 1;
+        return S_OK;
+    }
+
+    error_code = datetime_to_timestamp(year + 1, mm, dd, HH, MM, 0, &tmp_timestamp);
+    if(error_code) return error_code;
+
+    *create_milli_timestamp = tmp_timestamp * 1000;
     return S_OK;
 }
 

@@ -5,6 +5,7 @@
 #include "ptterr.h"
 #include "pttstruct.h"
 #include "pttdb.h"
+#include "util_timestamp.h"
 
 #ifdef __cplusplus
 extern "C" {
