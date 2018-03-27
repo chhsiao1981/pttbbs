@@ -585,14 +585,14 @@ _parse_legacy_file_comment_create_milli_timestamp_reset(char *line, int bytes_in
     char *p_line = line;
 
     // to COMMENT_RESET_INFIX
-    while(*p_line && *p_line != ' ') p_line++;
+    for(int i = 0; i < bytes_in_line && *p_line && *p_line != ''; i++, p_line++);        
     p_line += LEN_COMMENT_RESET_INFIX;
     // datetime
 
     struct tm the_tm;
     char *ret = strptime(p_line, "%m/%d/%Y %H:%M:%S", &the_tm);
 
-    time64_t timestamp = mktime(the_tm);
+    time64_t timestamp = mktime(&the_tm);
     *create_milli_timestamp = timestamp * 1000;
 
     return S_OK;
