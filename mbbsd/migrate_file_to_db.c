@@ -581,7 +581,6 @@ _parse_legacy_file_comment_create_milli_timestamp(char *line, int bytes_in_line,
 Err
 _parse_legacy_file_comment_create_milli_timestamp_reset(char *line, int bytes_in_line, time64_t current_create_milli_timestamp, time64_t *create_milli_timestamp)
 {
-    Err error_code = S_OK;
     char *p_line = line;
 
     // to COMMENT_RESET_INFIX
@@ -593,7 +592,10 @@ _parse_legacy_file_comment_create_milli_timestamp_reset(char *line, int bytes_in
     char *ret = strptime(p_line, "%m/%d/%Y %H:%M:%S", &the_tm);
 
     time64_t timestamp = mktime(&the_tm);
-    *create_milli_timestamp = timestamp * 1000;
+    time64_t tmp_milli_timestamp = timestamp * 1000;
+    if(tmp_mill_timestamp < current_create_timestamp) return S_ERR;
+
+    *create_milli_timestamp = tmp_mill_timestamp;
 
     return S_OK;
 }
