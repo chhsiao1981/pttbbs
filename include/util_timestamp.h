@@ -9,6 +9,7 @@
 extern "C" {
 #endif
 
+#define _XOPEN_SOURCE
 #include <time.h>
 
 #define MAX_BUF_TIMESTAMP_SIZE 100

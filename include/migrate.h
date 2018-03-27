@@ -6,7 +6,6 @@
 #include "pttstruct.h"
 #include "pttdb.h"
 #include "util_timestamp.h"
-#include <time.h>
 
 #ifdef __cplusplus
 extern "C" {
