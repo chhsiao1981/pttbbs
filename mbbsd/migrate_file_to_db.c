@@ -195,7 +195,7 @@ _parse_legacy_file_main_info(const char *fpath, LegacyFileInfo *legacy_file_info
         error_code = _parse_legacy_file_main_info_last_line(bytes_in_line, line, legacy_file_info, &status);
     }
 
-    // hack for check for empty last line
+    // hack for check for empty last line (assuming empty in the end)
     if(bytes <= 0 && legacy_file_info->main_content_len >= 2) {
         legacy_file_info->main_content_len -= 2;
     }
@@ -445,7 +445,7 @@ _parse_legacy_file_comment_comment_reply_core(const char *fpath, LegacyFileInfo 
         error_code = _parse_legacy_file_comment_comment_reply_core_last_line(bytes_in_line, line, legacy_file_info, &comment_idx, &current_create_milli_timestamp, &status);
     }
 
-    // hack for check for empty last line
+    // hack for check for empty last line (assuming empty line in the end)
     if(bytes <= 0 && legacy_file_info->comment_info[comment_idx].comment_reply_len >= 2) {
         legacy_file_info->comment_info[comment_idx].comment_reply_len -= 2;
     }
