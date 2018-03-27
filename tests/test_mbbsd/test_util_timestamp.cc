@@ -8,6 +8,26 @@ TEST(util_teimstamp, milli_timestamp_to_year) {
     EXPECT_EQ(year, 2018);
 }
 
+TEST(util_timestamp, milli_timestamp_to_timestamp) {
+    time64_t timestamp = 0;
+    Err error = milli_timestamp_to_timestamp(1522169909123, &timestamp);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1522169909, timestamp);
+}
+
+TEST(util_timestamp, datetime_to_timestamp) {
+    time64_t timestamp = 0;
+    Err error = datetime_to_timestamp(2018, 1, 1, 0, 0, 0, &timestamp);
+
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1514764800, timestamp);
+
+    error = datetime_to_timestamp(2017, 5, 3, 13, 49, 38, &timestamp);
+
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1493819378, timestamp);
+}
+
 /**********
  * MAIN
  */
