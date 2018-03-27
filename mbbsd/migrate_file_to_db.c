@@ -1027,6 +1027,9 @@ _is_comment_line_reset(char *line, int bytes_in_line, bool *is_valid)
         *is_valid = false;
         return S_OK;
     }
+
+    *is_valid = true;
+    return S_OK;
 }
 
 Err

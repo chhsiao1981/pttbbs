@@ -84,6 +84,17 @@ TEST(migrate_file_to_db, is_comment_line_cross_invalid) {
     EXPECT_EQ(false, is_valid);
 }
 
+TEST(migrate_file_to_db, is_comment_line_reset) {
+    // bbs.c line: 2255 cross_post()
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s%s%s%s%s\r\n", COMMENT_TYPE_ATTR[COMMENT_TYPE_RESET], "poster001", COMMENT_RESET_INFIX, "02/27/2018 10:30:45", COMMENT_RESET_POSTFIX);
+
+    bool is_valid = false;
+    Err error = _is_comment_line_reset(line, MAX_BUF_SIZE, &is_valid);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_valid);
+}
+
 TEST(migrate_file_to_db, is_comment_line_invalid) {
     char line[MAX_BUF_SIZE] = {};
     sprintf(line, "testtest\r\n");
