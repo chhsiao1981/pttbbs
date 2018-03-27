@@ -1011,6 +1011,8 @@ _is_comment_line_reset(char *line, int bytes_in_line, bool *is_valid)
     }
     p_line++;
 
+    fprintf(stderr, "migrate_file_to_db._is_comment_line_reset: to SS: p_line: %s\n", p_line);
+
     // SS
     int SS = atoi(p_line);
     if(SS < 0 || SS > 59) {
@@ -1024,6 +1026,7 @@ _is_comment_line_reset(char *line, int bytes_in_line, bool *is_valid)
         return S_OK;
     }
 
+    fprintf(stderr, "migrate_file_to_db._is_comment_line_reset: to postfix: p_line: %s\n", p_line);
     // postfix
     if(strncmp(p_line, COMMENT_RESET_POSTFIX, LEN_COMMENT_RESET_POSTFIX)) {
         *is_valid = false;
