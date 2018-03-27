@@ -602,6 +602,7 @@ _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(char *lin
     error_code = _parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(line, bytes_in_line, &mm, &dd, &HH, &MM);
     if(error_code) return error_code;
 
+    int tmp_timestamp;
     error_code = datetime_to_timestamp(year, mm, dd, HH, MM, 0, &tmp_timestamp);
     if(error_code) return error_code;
 
