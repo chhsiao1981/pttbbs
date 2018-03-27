@@ -9,6 +9,8 @@
 extern "C" {
 #endif
 
+#include <time.h>
+
 #define MAX_BUF_TIMESTAMP_SIZE 100
 
 Err milli_timestamp_to_year(time64_t milli_timestamp, int *year);
