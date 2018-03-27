@@ -585,7 +585,7 @@ _parse_legacy_file_comment_create_milli_timestamp_reset(char *line, int bytes_in
     char *p_line = line;
 
     // to COMMENT_RESET_INFIX
-    while(*p_line && *p_line != ' '; p_line++);
+    while(*p_line && *p_line != ' ') p_line++;
     p_line += LEN_COMMENT_RESET_INFIX;
     // datetime
     char *ret = strptime(p_line, "%m/%d/%Y %H:%M:%S", &tm);
