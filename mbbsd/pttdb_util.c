@@ -36,10 +36,11 @@ get_line_from_buf(char *buf, int offset_buf, int buf_size, char *p_line, int off
     int iter_bytes = (buf_size - offset_buf <= max_new_lines) ? (buf_size - offset_buf) : max_new_lines;
     int end_bytes = iter_bytes + offset_buf;
     for (int i = 0; i < iter_bytes; i++) {
+        fprintf(stderr, "pttdb_util.get_line_from_buf: (%d/%d) p_buf: %d\n", i, iter_bytes, *p_buf);
         if (*p_buf == '\n') {
             *p_line = '\n';
             *bytes_in_new_line = i + 1;
-
+ 
             return S_OK;
         }
 
