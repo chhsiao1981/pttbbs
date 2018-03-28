@@ -34,9 +34,6 @@ migrate_db_to_file(UUID main_id, const char *fpath)
         error_code = _migrate_comment_comment_reply_by_main_to_file(main_header.the_id, fp);
     }
 
-    // hack for last empty line.
-    fprintf(fp, "\r\n");
-
     // free
     fclose(fp);
     fp = NULL;
@@ -151,14 +148,14 @@ _migrate_comment_comment_reply_by_main_to_file_core(bson_t **b_comments, int n_c
 
     bson_t **p_b_comments = b_comments;
     for(; n_comment > 0; p_b_comments += n_read_comment, n_comment -= n_read_comment, bzero(buf, len)) {
-        fprintf(stderr, "migrate_db_to_file._migrate_comment_comment_reply_by_main_to_file_core: to dynamic_read: n_comment: %d\n", n_comment);
+        //fprintf(stderr, "migrate_db_to_file._migrate_comment_comment_reply_by_main_to_file_core: to dynamic_read: n_comment: %d\n", n_comment);
         error_code = dynamic_read_b_comment_comment_reply_by_ids_to_buf(p_b_comments, n_comment, buf, MAX_BUF_SIZE, &n_read_comment, &n_comment_reply, &len);
-        fprintf(stderr, "migrate_db_to_file._migrate_comment_comment_reply_by_main_to_file_core: after dynamic_read: e: %d n_read_comment: %d n_comment_reply: %d\n", error_code, n_read_comment, n_comment_reply);
+        //fprintf(stderr, "migrate_db_to_file._migrate_comment_comment_reply_by_main_to_file_core: after dynamic_read: e: %d n_read_comment: %d n_comment_reply: %d\n", error_code, n_read_comment, n_comment_reply);
         if(error_code == S_ERR_BUFFER_LEN) error_code = S_OK;
         if(error_code) break;
 
         buf[len] = 0;
-        fprintf(stderr, "migrate_db_to_file._migrate_comment_comment_reply_by_main_to_file_core: buf: %s\n", buf);
+        //fprintf(stderr, "migrate_db_to_file._migrate_comment_comment_reply_by_main_to_file_core: buf: %s\n", buf);
         ret = fprintf(fp, "%s", buf);
 
         if(ret < 0) {
@@ -167,6 +164,6 @@ _migrate_comment_comment_reply_by_main_to_file_core(bson_t **b_comments, int n_c
         }        
     }
 
-    fprintf(stderr, "migrate_db_to_file._migrate_comment_comment_reply_by_main_to_file_core: final: e: %d\n", error_code);
+    //fprintf(stderr, "migrate_db_to_file._migrate_comment_comment_reply_by_main_to_file_core: final: e: %d\n", error_code);
     return error_code;
 }
