@@ -29,7 +29,7 @@ TEST(pttdb_uuid, gen_uuid) {
     time64_t milli_timestamp;
     time64_t milli_timestamp2;
 
-    gen_uuid(uuid);
+    gen_uuid(uuid, 0);
     uuid_to_milli_timestamp(uuid, &milli_timestamp);
 
     EXPECT_GE(milli_timestamp, START_MILLI_TIMESTAMP);
@@ -38,7 +38,7 @@ TEST(pttdb_uuid, gen_uuid) {
     //b64_pton((char *)uuid, _uuid, _UUIDLEN);
     EXPECT_EQ(0x60, uuid[6] & 0xf0);
 
-    gen_uuid(uuid2);
+    gen_uuid(uuid2, 0);
     uuid_to_milli_timestamp(uuid2, &milli_timestamp2);
 
     EXPECT_NE(0, strncmp((char *)uuid, (char *)uuid2, UUIDLEN));
@@ -60,7 +60,7 @@ TEST(pttdb_uuid, gen_uuid_with_db) {
 
     _DB_FORCE_DROP_COLLECTION(MONGO_TEST);
 
-    gen_uuid_with_db(MONGO_TEST, uuid);
+    gen_uuid_with_db(MONGO_TEST, uuid, 0);
     uuid_to_milli_timestamp(uuid, &milli_timestamp);
 
     EXPECT_GE(milli_timestamp, START_MILLI_TIMESTAMP);
@@ -69,7 +69,7 @@ TEST(pttdb_uuid, gen_uuid_with_db) {
     //b64_pton((char *)uuid, _uuid, _UUIDLEN);
     EXPECT_EQ(0x60, uuid[6] & 0xf0);
 
-    gen_uuid_with_db(MONGO_TEST, uuid2);
+    gen_uuid_with_db(MONGO_TEST, uuid2, 0);
     uuid_to_milli_timestamp(uuid2, &milli_timestamp2);
 
     EXPECT_GE(milli_timestamp2, START_MILLI_TIMESTAMP);
@@ -135,7 +135,7 @@ TEST(pttdb_uuid, uuid_to_milli_timestamp) {
     UUID uuid;
     time64_t milli_timestamp;
 
-    gen_uuid(uuid);
+    gen_uuid(uuid, 0);
     uuid_to_milli_timestamp(uuid, &milli_timestamp);
 
     fprintf(stderr, "test_pttdb_misc.uuid_to_milli_timestamp: milli_timestamp: %ld\n", milli_timestamp);
