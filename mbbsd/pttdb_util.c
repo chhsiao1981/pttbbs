@@ -5,7 +5,7 @@
  **********/
 
 /**
- * @brief Try to get a line (ending with \r\n) from buffer.
+ * @brief Try to get a line (ending with \n) from buffer.
  * @details [long description]
  *
  * @param p_buf Starting point of the buffer.
@@ -17,37 +17,28 @@
  * @return Error
  */
 Err
-get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offset_line, int *bytes_in_new_line)
+get_line_from_buf(char *buf, int offset_buf, int buf_size, char *p_line, int offset_line, int line_size, int *bytes_in_new_line)
 {
 
     // check the end of buf
-    if (offset_buf >= bytes) {
+    if (offset_buf >= buf_size) {
         *bytes_in_new_line = 0;
 
         return S_ERR;
     }
 
     // init p_buf offset
-    p_buf += offset_buf;
+    char *p_buf = buf + offset_buf;
     p_line += offset_line;
 
-    // check bytes in line and in buf.
-    if (offset_line && p_line[-1] == '\r' && p_buf[0] == '\n') {
-        *p_line = '\n';
-        *bytes_in_new_line = 1;
-
-        return S_OK;
-    }
-
-    // check \r\n in buf.
-    int max_new_lines = MAX_BUF_SIZE - offset_line;
-    int iter_bytes = (bytes - offset_buf <= max_new_lines) ? (bytes - offset_buf) : max_new_lines;
+    // check \n in buf.
+    int max_new_lines = line_size - offset_line;
+    int iter_bytes = (buf_size - offset_buf <= max_new_lines) ? (bytes - offset_buf) : max_new_lines;
     int end_bytes = iter_bytes + offset_buf;
-    for (int i = offset_buf; i < end_bytes - 1; i++) {
-        if (*p_buf == '\r' && *(p_buf + 1) == '\n') {
-            *p_line = '\r';
-            *(p_line + 1) = '\n';
-            *bytes_in_new_line = i - offset_buf + 1 + 1;
+    for (int i = 0; i < iter_bytes; i++) {
+        if (*p_buf == '\n') {
+            *p_line = '\n';
+            *bytes_in_new_line = i + 1;
 
             return S_OK;
         }
@@ -56,11 +47,10 @@ get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offs
     }
 
     // last char
-    *p_line++ = *p_buf++;
     *bytes_in_new_line = end_bytes - offset_buf;
 
     // XXX special case for all block as a continuous string. Although it's not end yet, it forms a block.
-    if(*bytes_in_new_line == max_new_lines) return S_OK;
+    if(*bytes_in_new_line == line_size) return S_OK;
 
     return S_ERR;
 }
@@ -71,7 +61,7 @@ pttdb_count_lines(char *content, int len, int *n_line)
     int tmp_n_line = 0;
     char *p_content = content;
     for(int i = 0; i < len - 1; i++, p_content++) {
-        if(*p_content == '\r' && *(p_content + 1) == '\n') {
+        if(*p_content == '\n') {
             tmp_n_line++;
         }
     }
