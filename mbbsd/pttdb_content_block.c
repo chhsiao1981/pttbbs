@@ -616,7 +616,7 @@ _split_contents_core_one_line(char *line, int bytes_in_line, UUID ref_id, UUID c
     content_block->len_block += bytes_in_line;
 
     // 1 more line
-    if (line[bytes_in_line - 2] == '\r' && line[bytes_in_line - 1] == '\n') {
+    if (line[bytes_in_line - 1] == '\n') {
         (*n_line)++;
         content_block->n_line++;
     }

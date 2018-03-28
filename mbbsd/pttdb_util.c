@@ -35,9 +35,9 @@ get_line_from_buf(char *buf, int offset_buf, int buf_size, char *p_line, int off
     int max_new_lines = line_size - offset_line;
     int iter_bytes = (buf_size - offset_buf <= max_new_lines) ? (buf_size - offset_buf) : max_new_lines;
 
-    fprintf(stderr, "pttdb_util.get_line_from_buf: buf_size: %d offset_buf: %d max_new_lines: %d iter_bytes: %d\n", buf_size, offset_buf, max_new_lines, iter_bytes);
+    //fprintf(stderr, "pttdb_util.get_line_from_buf: buf_size: %d offset_buf: %d max_new_lines: %d iter_bytes: %d\n", buf_size, offset_buf, max_new_lines, iter_bytes);
     for (int i = 0; i < iter_bytes; i++) {
-        fprintf(stderr, "pttdb_util.get_line_from_buf: (%d/%d) p_buf: %d\n", i, iter_bytes, *p_buf);
+        //fprintf(stderr, "pttdb_util.get_line_from_buf: (%d/%d) p_buf: %d\n", i, iter_bytes, *p_buf);
         if (*p_buf == '\n') {
             *p_line = '\n';
             *bytes_in_new_line = i + 1;
@@ -103,7 +103,7 @@ form_rand_list(int n, int **p_rand_list) {
         pos = available_pos[idx];
         rand_list[pos] = i;
 
-        fprintf(stderr, "pttdb_misc.form_rand_list: (%d/%d): idx: %d pos: %d n_available_pos: %d\n", i, n, idx, pos, n_available_pos);        
+        //fprintf(stderr, "pttdb_misc.form_rand_list: (%d/%d): idx: %d pos: %d n_available_pos: %d\n", i, n, idx, pos, n_available_pos);        
 
         // swap with last one
         tmp = pos;
@@ -111,7 +111,7 @@ form_rand_list(int n, int **p_rand_list) {
         available_pos[n_available_pos - 1] = tmp;
     }
 
-    fprintf(stderr, "pttdb_misc.form_rand_list: to safe_free\n");
+    //fprintf(stderr, "pttdb_misc.form_rand_list: to safe_free\n");
 
     safe_free((void **)&available_pos);
 
