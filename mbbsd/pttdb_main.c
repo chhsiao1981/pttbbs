@@ -376,7 +376,7 @@ update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int f
     error_code = get_milli_timestamp(&update_milli_timestamp);
     if (error_code) return error_code;
 
-    error_code = gen_content_uuid_with_db(MONGO_MAIN_CONTENT, content_id);
+    error_code = gen_content_uuid_with_db(MONGO_MAIN_CONTENT, content_id, update_milli_timestamp);
     if (error_code) return error_code;
 
     // main-contents
