@@ -11,7 +11,7 @@ TEST(pttdb_dict_bson_by_uu, add_to_dict_bson_by_uu) {
     Err error = init_dict_bson_by_uu(&dict_bson_by_uu, 100);
 
     UUID uuid = {};
-    gen_uuid(uuid);
+    gen_uuid(uuid, 0);
 
     bson_t *b = BCON_NEW(
         "the_id", BCON_BINARY(uuid, UUIDLEN),
