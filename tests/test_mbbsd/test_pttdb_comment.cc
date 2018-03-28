@@ -185,7 +185,7 @@ TEST(pttdb_comment, get_comment_info_by_main) {
     UUID comment_id;
     UUID comment_id2;
 
-    gen_uuid(main_id);
+    gen_uuid(main_id, 0);
 
     Err error = S_OK;
     error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id, 0);
@@ -208,7 +208,7 @@ TEST(pttdb_comment, get_comment_count_by_main) {
     UUID comment_id;
     UUID comment_id2;
 
-    gen_uuid(main_id);
+    gen_uuid(main_id, 0);
 
     Err error = S_OK;
     error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id, 0);
@@ -530,13 +530,13 @@ TEST(pttdb_comment, read_comments_by_main)
     Err error = S_OK;
     UUID main_id = {};
     UUID comment_id = {};
-    gen_uuid(main_id);
+    gen_uuid(main_id, 0);
 
     char poster[IDLEN + 1] = {};
     int n_comment = 100;
     for(int i = 0; i < n_comment; i++) {
         sprintf(poster, "poster%03d", i);
-        error = create_comment(main_id, poster, (char *)"10.1.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
+        error = create_comment(main_id, poster, (char *)"10.1.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id, 0);
         EXPECT_EQ(S_OK, error);
     }
 
@@ -567,13 +567,13 @@ TEST(pttdb_comment, read_comments_by_main2)
     Err error = S_OK;
     UUID main_id = {};
     UUID comment_id = {};
-    gen_uuid(main_id);
+    gen_uuid(main_id, 0);
 
     char poster[IDLEN + 1] = {};
     int n_comment = 100;
     for(int i = 0; i < n_comment; i++) {
         sprintf(poster, "poster%03d", i);
-        error = create_comment(main_id, poster, (char *)"10.1.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
+        error = create_comment(main_id, poster, (char *)"10.1.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id, 0);
         EXPECT_EQ(S_OK, error);
     }
 
@@ -612,11 +612,11 @@ TEST(pttdb_comment, read_comments_by_main3)
     Err error = S_OK;
     UUID main_id = {};
     UUID comment_id = {};
-    gen_uuid(main_id);
+    gen_uuid(main_id, 0);
 
     int n_comment = 100;
     for(int i = 0; i < n_comment; i++) {
-        error = create_comment(main_id, (char *)"poster", (char *)"10.1.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
+        error = create_comment(main_id, (char *)"poster", (char *)"10.1.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id, 0);
         usleep(1000);
         EXPECT_EQ(S_OK, error);
     }
