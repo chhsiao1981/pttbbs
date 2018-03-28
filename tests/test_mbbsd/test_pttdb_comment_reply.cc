@@ -20,13 +20,13 @@ TEST(pttdb_comment_reply, create_comment_reply) {
     UUID comment_reply_id = {};
     UUID tmp_comment_reply_id = {};
 
-    gen_uuid(main_id);
+    gen_uuid(main_id, 0);
 
     // create comment
-    Err error_code = create_comment(main_id, (char *)"poster0", (char *)"10.1.1.1", 10, (char *)"testtest\r\n", COMMENT_TYPE_GOOD, comment_id);
+    Err error_code = create_comment(main_id, (char *)"poster0", (char *)"10.1.1.1", 10, (char *)"testtest\r\n", COMMENT_TYPE_GOOD, comment_id, 0);
     EXPECT_EQ(S_OK, error_code);
 
-    error_code = create_comment_reply(main_id, comment_id, poster, ip, len, content, comment_reply_id);
+    error_code = create_comment_reply(main_id, comment_id, poster, ip, len, content, comment_reply_id, 0);
     EXPECT_EQ(S_OK, error_code);
 
     CommentReply comment_reply = {};
@@ -80,10 +80,10 @@ TEST(pttdb_comment_reply, delete_comment_reply) {
     UUID comment_reply_id;
     UUID comment_id;    
 
-    gen_uuid(main_id);
-    gen_uuid(comment_id);
+    gen_uuid(main_id, 0);
+    gen_uuid(comment_id, 0);
 
-    Err error = create_comment_reply(main_id, comment_id, poster, ip, len, content, comment_reply_id);
+    Err error = create_comment_reply(main_id, comment_id, poster, ip, len, content, comment_reply_id, 0);
     EXPECT_EQ(S_OK, error);
 
     char del_updater[IDLEN + 1] = "del_updater";
@@ -129,14 +129,14 @@ TEST(pttdb_comment_reply, get_comment_reply_info_by_main) {
     UUID comment_id = {};
     UUID comment_id2 = {};
 
-    gen_uuid(main_id);
-    gen_uuid(comment_id);
-    gen_uuid(comment_id2);
+    gen_uuid(main_id, 0);
+    gen_uuid(comment_id, 0);
+    gen_uuid(comment_id2, 0);
 
     Err error = S_OK;
-    error = create_comment_reply(main_id, comment_id, (char *)"poster1", (char *)"10.3.1.4", 24, (char *)"test1test1\r\ntest3test3\r\n", comment_reply_id);
+    error = create_comment_reply(main_id, comment_id, (char *)"poster1", (char *)"10.3.1.4", 24, (char *)"test1test1\r\ntest3test3\r\n", comment_reply_id, 0);
     EXPECT_EQ(S_OK, error);
-    error = create_comment_reply(main_id, comment_id2, (char *)"poster1", (char *)"10.3.1.4", 12, (char *)"test2test2\r\n", comment_reply_id2);
+    error = create_comment_reply(main_id, comment_id2, (char *)"poster1", (char *)"10.3.1.4", 12, (char *)"test2test2\r\n", comment_reply_id2, 0);
     EXPECT_EQ(S_OK, error);
 
     int n_total_comments = 0;
@@ -157,9 +157,9 @@ TEST(pttdb_comment_reply, serialize_comment_reply_bson) {
     init_comment_reply_buf(&comment_reply2);
 
     comment_reply.version = 2;
-    gen_uuid(comment_reply.the_id);
+    gen_uuid(comment_reply.the_id, 0);
     memcpy(comment_reply.comment_id, comment_reply.the_id, UUIDLEN);
-    gen_uuid(comment_reply.main_id);
+    gen_uuid(comment_reply.main_id, 0);
     comment_reply.status = LIVE_STATUS_ALIVE;
 
     strcpy(comment_reply.status_updater, "updater1");
@@ -219,7 +219,7 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
     UUID main_id = {};
     UUID comment_id = {};
     UUID comment_reply_id = {};
-    gen_uuid(main_id);
+    gen_uuid(main_id, 0);
 
     Comment comment = {};
     init_comment_buf(&comment);
@@ -253,7 +253,7 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
     char *p_buf = NULL;
 
     for(int i = 85; i < 100; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -276,12 +276,12 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
             p_buf += 10;
         }
 
-        error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, buf, comment_reply_id);
+        error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, buf, comment_reply_id, 0);
         EXPECT_EQ(S_OK, error);
     }
 
     for(int i = 15; i < 85; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -304,13 +304,13 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
             p_buf += 10;
         }
 
-        error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, buf, comment_reply_id);
+        error = create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, buf, comment_reply_id, 0);
         EXPECT_EQ(S_OK, error);
     }
 
     int the_i = 0;
     for(int i = 0; i < 15; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -335,7 +335,7 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
             p_buf += 10;
         }
 
-        create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, buf, comment_reply_id);
+        create_comment_reply(main_id, comment_id, (char *)"reply001", (char *)"10.1.1.5", i * 10, buf, comment_reply_id, 0);
         EXPECT_EQ(S_OK, error);
     }
 
@@ -353,7 +353,7 @@ TEST(pttdb_comment_reply, read_comment_replys_by_query_to_bsons) {
 
     // insert more comments
     for(int i = 100; i < 102; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
