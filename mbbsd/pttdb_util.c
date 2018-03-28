@@ -52,7 +52,7 @@ get_line_from_buf(char *buf, int offset_buf, int buf_size, char *p_line, int off
     *bytes_in_new_line = iter_bytes;
 
     // XXX special case for all block as a continuous string. Although it's not end yet, it forms a block.
-    if(*bytes_in_new_line == line_size) return S_OK;
+    if(offset_line + *bytes_in_new_line == line_size) return S_OK;
 
     return S_ERR;
 }

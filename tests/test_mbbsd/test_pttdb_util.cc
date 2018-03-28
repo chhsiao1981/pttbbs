@@ -120,9 +120,9 @@ TEST(pttdb_util, get_line_from_buf_n_only) {
     strcpy(buf, "A\n0123456789");
 
     Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, MAX_LINE_SIZE, &bytes_in_new_line);
-    EXPECT_EQ(S_ERR, error);
-    EXPECT_EQ(13, bytes_in_new_line);
-    EXPECT_STREQ("A\n0123456789", line);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(2, bytes_in_new_line);
+    EXPECT_STREQ("A\n", line);
 }
 
 TEST(pttdb_util, get_line_from_buf_line_with_max_buf_size) {
