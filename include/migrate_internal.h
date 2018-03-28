@@ -69,7 +69,7 @@ Err _is_comment_line_cross(char *line, int bytes_in_line, bool *is_valid);
 Err _is_comment_line_reset(char *line, int bytes_in_line, bool *is_valid);
 
 // trim last empty line
-Err _parse_legacy_file_trim_last_empty_line(const char *fpatth, int *len);
+Err _parse_legacy_file_trim_last_empty_line(const char *fpath, int *len);
 
 // migrate db to file
 Err _migrate_main_content_to_file(MainHeader *main_header, FILE *fp);

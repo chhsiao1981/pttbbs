@@ -202,14 +202,14 @@ _parse_legacy_file_main_info(const char *fpath, LegacyFileInfo *legacy_file_info
 
     // hack for check for empty last line (assuming empty in the end)    
     if(bytes <= 0 && legacy_file_info->main_content_len) {
-        error_code = _parse_legacy_file_trim_last_empty_line(fpath, legacy_file_info->main_content_len);
+        error_code = _parse_legacy_file_trim_last_empty_line(fpath, &legacy_file_info->main_content_len);
     }
 
     return error_code;
 }
 
 Err
-_parse_legacy_file_trim_last_empty_line(const char *fpatth, int *len) {
+_parse_legacy_file_trim_last_empty_line(const char *fpath, int *len) {
     char buf[MAX_LINE_SIZE] = {};
 
     int fd = open(fpath, O_RDONLY);
@@ -218,11 +218,11 @@ _parse_legacy_file_trim_last_empty_line(const char *fpatth, int *len) {
     int bytes = read(fd, buf, MAX_BUF_SIZE);
 
     // check \n\n
-    if(bytes >= 2 && buf[bytes - 2] && '\n' && buf[bytes - 1] == '\n') {
+    if(bytes >= 2 && buf[bytes - 2] == '\n' && buf[bytes - 1] == '\n') {
         *len -= 1;
     }
     // check \n\r\n
-    else if(bytes >= 3 && buf[bytes - 3] && '\n' && buf[bytes - 2] == '\r' && buf[bytes - 1] == '\n') {
+    else if(bytes >= 3 && *len >= 2 && buf[bytes - 3] == '\n' && buf[bytes - 2] == '\r' && buf[bytes - 1] == '\n') {
         *len -= 2;
     }
 
