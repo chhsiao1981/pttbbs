@@ -17,7 +17,7 @@ Err
 split_contents(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block) {
     Err error_code = S_OK;
     int bytes_in_line = 0;
-    char line[MAX_BUF_SIZE] = {};
+    char line[MAX_LINE_SIZE] = {};
 
     ContentBlock content_block = {};
 
@@ -27,7 +27,7 @@ split_contents(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBI
     (*n_block)++;
 
     if (!error_code) {
-        error_code = _split_contents_core(buf, bytes, ref_id, content_id, mongo_db_id, n_line, n_block, line, &bytes_in_line, &content_block);
+        error_code = _split_contents_core(buf, bytes, ref_id, content_id, mongo_db_id, n_line, n_block, line, MAX_LINE_SIZE, &bytes_in_line, &content_block);
     }
 
     if (!error_code) {
@@ -43,7 +43,7 @@ Err
 split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block) {
     Err error_code = S_OK;
     char buf[MAX_BUF_SIZE] = {};
-    char line[MAX_BUF_SIZE] = {};
+    char line[MAX_LINE_SIZE] = {};
     int bytes = 0;
     int buf_size = 0;
     int bytes_in_line = 0;
@@ -56,7 +56,7 @@ split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, en
 
     if (!error_code) {
         while ((buf_size = len < MAX_BUF_SIZE ? len : MAX_BUF_SIZE) && (bytes = read(fd_content, buf, buf_size)) > 0) {
-            error_code = _split_contents_core(buf, bytes, ref_id, content_id, mongo_db_id, n_line, n_block, line, &bytes_in_line, &content_block);
+            error_code = _split_contents_core(buf, bytes, ref_id, content_id, mongo_db_id, n_line, n_block, line, MAX_LINE_SIZE, &bytes_in_line, &content_block);
             if (error_code) break;
 
             len -= bytes;
@@ -571,13 +571,13 @@ _ensure_b_content_blocks_block_ids(bson_t **b_content_blocks, int start_block_id
  * @param is_deal_wtih_last_line_block [description]
  */
 Err
-_split_contents_core(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block, char *line, int *bytes_in_line, ContentBlock *content_block)
+_split_contents_core(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block, char *line, int line_size, int *bytes_in_line, ContentBlock *content_block)
 {
     Err error_code;
 
     int bytes_in_new_line = 0;
     for (int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
-        error_code = get_line_from_buf(buf, offset_buf, bytes, line, *bytes_in_line, &bytes_in_new_line);
+        error_code = get_line_from_buf(buf, offset_buf, bytes, line, line_size, *bytes_in_line, &bytes_in_new_line);
         *bytes_in_line += bytes_in_new_line;
         // unable to get more lines from buf
         if (error_code) break;

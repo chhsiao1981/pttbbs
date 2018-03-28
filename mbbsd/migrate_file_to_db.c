@@ -180,13 +180,13 @@ _parse_legacy_file_main_info(const char *fpath, LegacyFileInfo *legacy_file_info
     int bytes = 0;
     char buf[MAX_BUF_SIZE] = {};
     int bytes_in_line = 0;
-    char line[MAX_BUF_SIZE] = {};
+    char line[MAX_LINE_SIZE] = {};
 
     int fd = open(fpath, O_RDONLY);
 
     enum LegacyFileStatus status = LEGACY_FILE_STATUS_MAIN_CONTENT;
     while((bytes = read(fd, buf, MAX_BUF_SIZE)) > 0) {
-        error_code = _parse_legacy_file_main_info_core(buf, bytes, line, &bytes_in_line, legacy_file_info, &status);
+        error_code = _parse_legacy_file_main_info_core(buf, bytes, line, MAX_LINE_SIZE, &bytes_in_line, legacy_file_info, &status);
         if(error_code) break;        
 
         if(status == LEGACY_FILE_STATUS_COMMENT) break;
@@ -209,12 +209,12 @@ _parse_legacy_file_main_info(const char *fpath, LegacyFileInfo *legacy_file_info
 }
 
 Err
-_parse_legacy_file_main_info_core(char *buf, int bytes, char *line, int *bytes_in_line, LegacyFileInfo *legacy_file_info, enum LegacyFileStatus *status)
+_parse_legacy_file_main_info_core(char *buf, int bytes, char *line, int line_size, int *bytes_in_line, LegacyFileInfo *legacy_file_info, enum LegacyFileStatus *status)
 {
     Err error_code = S_OK;
     int bytes_in_new_line = 0;
     for(int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
-        error_code = get_line_from_buf(buf, offset_buf, bytes, line, *bytes_in_line, &bytes_in_new_line);
+        error_code = get_line_from_buf(buf, offset_buf, bytes, line, line_size, *bytes_in_line, &bytes_in_new_line);
         *bytes_in_line += bytes_in_new_line;
         if(error_code) {
             error_code = S_OK;
@@ -341,13 +341,13 @@ _parse_legacy_file_n_comment_comment_reply(const char *fpath, int main_content_l
     int bytes = 0;
     char buf[MAX_BUF_SIZE] = {};
     int bytes_in_line = 0;
-    char line[MAX_BUF_SIZE] = {};
+    char line[MAX_LINE_SIZE] = {};
 
     int fd = open(fpath, O_RDONLY);
     lseek(fd, main_content_len, SEEK_SET);
     while((bytes = read(fd, buf, MAX_BUF_SIZE)) > 0) {
         each_n_comment_comment_reply = 0;
-        error_code = _parse_legacy_file_n_comment_comment_reply_core(buf, bytes, line, &bytes_in_line, &each_n_comment_comment_reply);
+        error_code = _parse_legacy_file_n_comment_comment_reply_core(buf, bytes, line, MAX_LINE_SIZE, &bytes_in_line, &each_n_comment_comment_reply);
         if(error_code) break;
 
         tmp_n_comment_comment_reply += each_n_comment_comment_reply;        
@@ -374,12 +374,12 @@ _parse_legacy_file_n_comment_comment_reply(const char *fpath, int main_content_l
 
 
 Err
-_parse_legacy_file_n_comment_comment_reply_core(char *buf, int bytes, char *line, int *bytes_in_line, int *n_comment_comment_reply)
+_parse_legacy_file_n_comment_comment_reply_core(char *buf, int bytes, char *line, int line_size, int *bytes_in_line, int *n_comment_comment_reply)
 {
     Err error_code = S_OK;
     int bytes_in_new_line = 0;
     for(int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
-        error_code = get_line_from_buf(buf, offset_buf, bytes, line, *bytes_in_line, &bytes_in_new_line);
+        error_code = get_line_from_buf(buf, offset_buf, bytes, line, line_size, *bytes_in_line, &bytes_in_new_line);
         *bytes_in_line += bytes_in_new_line;
         if(error_code) {
             error_code = S_OK;
@@ -439,7 +439,7 @@ _parse_legacy_file_comment_comment_reply_core(const char *fpath, LegacyFileInfo 
     int bytes = 0;
     char buf[MAX_BUF_SIZE] = {};
     int bytes_in_line = 0;
-    char line[MAX_BUF_SIZE] = {};
+    char line[MAX_LINE_SIZE] = {};
 
     int fd = open(fpath, O_RDONLY);
     lseek(fd, legacy_file_info->main_content_len, SEEK_SET);
@@ -449,7 +449,7 @@ _parse_legacy_file_comment_comment_reply_core(const char *fpath, LegacyFileInfo 
 
     time64_t current_create_milli_timestamp = legacy_file_info->create_milli_timestamp;
     while((bytes = read(fd, buf, MAX_BUF_SIZE)) > 0) {
-        error_code = _parse_legacy_file_comment_comment_reply_core_core(buf, bytes, line, &bytes_in_line, legacy_file_info, &comment_idx, &current_create_milli_timestamp, &status);
+        error_code = _parse_legacy_file_comment_comment_reply_core_core(buf, bytes, line, MAX_LINE_SIZE, &bytes_in_line, legacy_file_info, &comment_idx, &current_create_milli_timestamp, &status);
         if(error_code) break;
     }
 
@@ -469,12 +469,12 @@ _parse_legacy_file_comment_comment_reply_core(const char *fpath, LegacyFileInfo 
 }
 
 Err
-_parse_legacy_file_comment_comment_reply_core_core(char *buf, int bytes, char *line, int *bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LegacyFileStatus *status)
+_parse_legacy_file_comment_comment_reply_core_core(char *buf, int bytes, char *line, int line_size, int *bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LegacyFileStatus *status)
 {
     Err error_code = S_OK;
     int bytes_in_new_line = 0;
     for(int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
-        error_code = get_line_from_buf(buf, offset_buf, bytes, line, *bytes_in_line, &bytes_in_new_line);
+        error_code = get_line_from_buf(buf, offset_buf, bytes, line, line_size, *bytes_in_line, &bytes_in_new_line);
         *bytes_in_line += bytes_in_new_line;
         if(error_code) {
             error_code = S_OK;
