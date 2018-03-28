@@ -839,7 +839,7 @@ TEST(pttdb_content_block, read_content_blocks_to_bsons)
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
     // create-main-from-fd
-    Err error_code = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    Err error_code = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id, 0);
     EXPECT_EQ(S_OK, error_code);
 
     close(fd);
