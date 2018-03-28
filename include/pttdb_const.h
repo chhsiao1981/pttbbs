@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-#define LEN_COMMENT_HEADER 15
+#define LEN_COMMENT_HEADER 11
 #define LEN_COMMENT_PREFIX_COLOR 8
 
 #define LEN_COMMENT_DATETIME_IN_LINE 13

@@ -197,9 +197,9 @@ _parse_legacy_file_main_info(const char *fpath, LegacyFileInfo *legacy_file_info
         error_code = _parse_legacy_file_main_info_last_line(bytes_in_line, line, legacy_file_info, &status);
     }
 
-    // hack for check for empty last line (assuming empty in the end)
-    if(bytes <= 0 && legacy_file_info->main_content_len >= 2) {
-        legacy_file_info->main_content_len -= 2;
+    // hack for check for empty last line (assuming empty in the end)    
+    if(bytes <= 0 && legacy_file_info->main_content_len) {
+        error_code = _parse_legacy_file_trim_last_empty_line(fd, legacy_file_info->main_content_len);
     }
 
     // free
@@ -458,8 +458,8 @@ _parse_legacy_file_comment_comment_reply_core(const char *fpath, LegacyFileInfo 
     }
 
     // hack for check for empty last line (assuming empty line in the end)
-    if(bytes <= 0 && legacy_file_info->comment_info[comment_idx].comment_reply_len >= 2) {
-        legacy_file_info->comment_info[comment_idx].comment_reply_len -= 2;
+    if(bytes <= 0 && legacy_file_info->comment_info[comment_idx].comment_reply_len) {
+        error_code = _parse_legacy_file_trim_last_empty_line(fd, &legacy_file_info->comment_info[comment_idx].comment_reply_len);
     }
 
     // free
@@ -681,7 +681,11 @@ Err
 _parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(char *line, int bytes_in_line, int *mm, int *dd, int *HH, int *MM)
 {
     if(bytes_in_line < LEN_COMMENT_DATETIME_IN_LINE) return S_ERR;
-    char *p_line = line + bytes_in_line - LEN_COMMENT_DATETIME_IN_LINE;
+    char *p_line = line + bytes_in_line - 1;
+    int p_line_pos = bytes_in_line - 1;
+    for(; p_line_pos >= 0 && (*p_line == '\r' || *p_line == '\n'); p_line_pos--, p_line--);
+    if(p_line_pos < LEN_COMMENT_DATETIME_IN_LINE) return S_ERR;
+    *p_line - LEN_COMMENT_DATETIME_IN_LINE;
 
     // mm
     int tmp_mm = atoi(p_line);
@@ -950,7 +954,7 @@ _is_comment_line_cross(char *line, int bytes_in_line, bool *is_valid)
     }
 
     char *p_line = line + 3;
-    while(*p_line && *p_line != '\r' && *p_line != ':') p_line++;
+    while(*p_line && *p_line != '\r' && *p_line != '\n' && *p_line != ':') p_line++;
     bytes_in_line -= p_line - line;
 
     if(*p_line != ':') {
