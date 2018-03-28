@@ -40,7 +40,7 @@ extern "C" {
 
 #define MAX_BUF_SIZE 8192
 
-Err get_line_from_buf(char *p_buf, int offset_buf, int bytes, char *p_line, int offset_line, int *bytes_in_new_line);
+Err get_line_from_buf(char *p_buf, int offset_buf, int buf_size, char *p_line, int offset_line, int line_size, int *bytes_in_new_line);
 Err pttdb_count_lines(char *content, int len, int *n_line);
 
 Err safe_free(void **a);
