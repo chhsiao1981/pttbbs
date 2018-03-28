@@ -6,12 +6,6 @@
 #include "pttstruct.h"
 #include "pttdb.h"
 #include "util_timestamp.h"
-#ifndef __USE_XOPEN
-#define __USE_XOPEN
-#endif
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE
-#endif
 #ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE
 #endif
