@@ -214,7 +214,7 @@ _parse_legacy_file_main_info_core(char *buf, int bytes, char *line, int line_siz
     Err error_code = S_OK;
     int bytes_in_new_line = 0;
     for(int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
-        error_code = get_line_from_buf(buf, offset_buf, bytes, line, line_size, *bytes_in_line, &bytes_in_new_line);
+        error_code = get_line_from_buf(buf, offset_buf, bytes, line, *bytes_in_line, line_size, &bytes_in_new_line);
         *bytes_in_line += bytes_in_new_line;
         if(error_code) {
             error_code = S_OK;
@@ -379,7 +379,7 @@ _parse_legacy_file_n_comment_comment_reply_core(char *buf, int bytes, char *line
     Err error_code = S_OK;
     int bytes_in_new_line = 0;
     for(int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
-        error_code = get_line_from_buf(buf, offset_buf, bytes, line, line_size, *bytes_in_line, &bytes_in_new_line);
+        error_code = get_line_from_buf(buf, offset_buf, bytes, line, *bytes_in_line, line_size, &bytes_in_new_line);
         *bytes_in_line += bytes_in_new_line;
         if(error_code) {
             error_code = S_OK;
@@ -474,7 +474,7 @@ _parse_legacy_file_comment_comment_reply_core_core(char *buf, int bytes, char *l
     Err error_code = S_OK;
     int bytes_in_new_line = 0;
     for(int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
-        error_code = get_line_from_buf(buf, offset_buf, bytes, line, line_size, *bytes_in_line, &bytes_in_new_line);
+        error_code = get_line_from_buf(buf, offset_buf, bytes, line, *bytes_in_line, line_size, &bytes_in_new_line);
         *bytes_in_line += bytes_in_new_line;
         if(error_code) {
             error_code = S_OK;

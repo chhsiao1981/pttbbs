@@ -14,7 +14,7 @@ TEST(pttdb_util, get_line_from_buf) {
 
     strcpy(buf, "0123456789\r\nABCDEFGHIJ\r\n");
 
-    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, MAX_LINE_SIZE, offset_line, &bytes_in_new_line);
+    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, MAX_LINE_SIZE, &bytes_in_new_line);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(12, bytes_in_new_line);
     EXPECT_STREQ("0123456789\r\n", line);
@@ -31,7 +31,7 @@ TEST(pttdb_util, get_line_from_buf_with_offset_buf) {
 
     strcpy(buf, "0123456789\r\nABCDEFGHIJ\r\n");
 
-    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, MAX_LINE_SIZE, offset_line, &bytes_in_new_line);
+    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, MAX_LINE_SIZE, &bytes_in_new_line);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(12, bytes_in_new_line);
     EXPECT_STREQ("ABCDEFGHIJ\r\n", line);
@@ -50,7 +50,7 @@ TEST(pttdb_util, get_line_from_buf_with_line_offset) {
     line[0] = '!';
     line[1] = '@';
 
-    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, MAX_LINE_SIZE, offset_line, &bytes_in_new_line);
+    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, MAX_LINE_SIZE, &bytes_in_new_line);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(12, bytes_in_new_line);
     EXPECT_STREQ("!@0123456789\r\n", line);
@@ -67,7 +67,7 @@ TEST(pttdb_util, get_line_from_buf_not_end) {
 
     strcpy(buf, "0123456789");
 
-    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, MAX_LINE_SIZE, offset_line, &bytes_in_new_line);
+    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, MAX_LINE_SIZE, &bytes_in_new_line);
     EXPECT_EQ(S_ERR, error);
     EXPECT_EQ(10, bytes_in_new_line);
     EXPECT_STREQ("0123456789", line);
@@ -84,7 +84,7 @@ TEST(pttdb_util, get_line_from_buf_offset_buf_not_end) {
 
     strcpy(buf, "A\r\n0123456789");
 
-    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, MAX_LINE_SIZE, offset_line, &bytes_in_new_line);
+    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, MAX_LINE_SIZE, &bytes_in_new_line);
     EXPECT_EQ(S_ERR, error);
     EXPECT_EQ(10, bytes_in_new_line);
     EXPECT_STREQ("0123456789", line);
@@ -101,7 +101,7 @@ TEST(pttdb_util, get_line_from_buf_r_only) {
 
     strcpy(buf, "A\r0123456789");
 
-    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, MAX_LINE_SIZE, offset_line, &bytes_in_new_line);
+    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, MAX_LINE_SIZE, &bytes_in_new_line);
     EXPECT_EQ(S_ERR, error);
     EXPECT_EQ(13, bytes_in_new_line);
     EXPECT_STREQ("A\r0123456789", line);
@@ -118,7 +118,7 @@ TEST(pttdb_util, get_line_from_buf_n_only) {
 
     strcpy(buf, "A\n0123456789");
 
-    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, MAX_LINE_SIZE, offset_line, &bytes_in_new_line);
+    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, MAX_LINE_SIZE, &bytes_in_new_line);
     EXPECT_EQ(S_ERR, error);
     EXPECT_EQ(13, bytes_in_new_line);
     EXPECT_STREQ("A\n0123456789", line);
@@ -136,7 +136,7 @@ TEST(pttdb_util, get_line_from_buf_line_with_max_buf_size) {
 
     for(int i = 0; i < MAX_BUF_SIZE - 10; i++) line[i] = 'A';
 
-    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, MAX_LINE_SIZE, offset_line, &bytes_in_new_line);
+    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, MAX_LINE_SIZE, &bytes_in_new_line);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(10, bytes_in_new_line);
     EXPECT_EQ(0, strncmp("0123456789", line + MAX_BUF_SIZE - 10, 10));
@@ -154,7 +154,7 @@ TEST(pttdb_util, get_line_from_buf_partial_line_break) {
     strcpy(buf, "\n0123456789\r\n");
     strcpy(line, "!\r");
 
-    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, MAX_LINE_SIZE, offset_line, &bytes_in_new_line);
+    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, MAX_LINE_SIZE, &bytes_in_new_line);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(1, bytes_in_new_line);
     EXPECT_STREQ("!\r\n", line);
@@ -171,7 +171,7 @@ TEST(pttdb_util, get_line_from_buf_end_of_buf) {
 
     strcpy(buf, "0123456789\r\n");
 
-    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, MAX_LINE_SIZE, offset_line, &bytes_in_new_line);
+    Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, MAX_LINE_SIZE, &bytes_in_new_line);
     EXPECT_EQ(S_ERR, error);
     EXPECT_EQ(0, bytes_in_new_line);
 }

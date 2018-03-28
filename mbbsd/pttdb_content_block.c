@@ -577,7 +577,7 @@ _split_contents_core(char *buf, int bytes, UUID ref_id, UUID content_id, enum Mo
 
     int bytes_in_new_line = 0;
     for (int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
-        error_code = get_line_from_buf(buf, offset_buf, bytes, line, line_size, *bytes_in_line, &bytes_in_new_line);
+        error_code = get_line_from_buf(buf, offset_buf, bytes, line, *bytes_in_line, line_size, &bytes_in_new_line);
         *bytes_in_line += bytes_in_new_line;
         // unable to get more lines from buf
         if (error_code) break;
