@@ -12,8 +12,8 @@ TEST(pttdb_content_block, save_content_block) {
 
     UUID ref_id;
     UUID content_id;
-    gen_uuid(ref_id);
-    gen_uuid(content_id);
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
 
     ContentBlock content_block = {};
     ContentBlock content_block2 = {};
@@ -55,8 +55,8 @@ TEST(pttdb_content_block, read_content_block_forgot_init) {
 
     UUID ref_id;
     UUID content_id;
-    gen_uuid(ref_id);
-    gen_uuid(content_id);
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
 
     ContentBlock content_block = {};
     ContentBlock content_block2 = {};
@@ -92,8 +92,8 @@ TEST(pttdb_content_block, reset_content_block) {
 
     UUID ref_id;
     UUID content_id;
-    gen_uuid(ref_id);
-    gen_uuid(content_id);
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
 
     error = reset_content_block(&content_block, ref_id, content_id, 3);
     EXPECT_EQ(S_OK, error);
@@ -114,8 +114,8 @@ TEST(pttdb_content_block, init_content_block_with_buf_block) {
 
     UUID ref_id;
     UUID content_id;
-    gen_uuid(ref_id);
-    gen_uuid(content_id);
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
 
     error = init_content_block_with_buf_block(&content_block, ref_id, content_id, 3);
     EXPECT_EQ(S_OK, error);
@@ -137,8 +137,8 @@ TEST(pttdb_content_block, associate_content_block) {
 
     UUID ref_id;
     UUID content_id;
-    gen_uuid(ref_id);
-    gen_uuid(content_id);
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
 
     error = reset_content_block(&content_block, ref_id, content_id, 3);
     EXPECT_EQ(S_OK, error);
@@ -167,8 +167,8 @@ TEST(pttdb_content_block, serialize_content_block_bson) {
     init_content_block_buf_block(&content_block2);
 
     // initialize
-    gen_uuid(content_block.the_id);
-    gen_uuid(content_block.ref_id);
+    gen_uuid(content_block.the_id, 0);
+    gen_uuid(content_block.ref_id, 0);
     content_block.block_id = 53;
     content_block.n_line = 1;
     char str[] = "test123\r\n";
@@ -208,8 +208,8 @@ TEST(pttdb_content_block, dynamic_read_content_blocks)
     UUID content_id;
     UUID ref_id;
 
-    gen_uuid(content_id);
-    gen_uuid(ref_id);
+    gen_uuid(content_id, 0);
+    gen_uuid(ref_id, 0);
     for (int i = 0; i < 10; i++) {
         b[i] = BCON_NEW(
                    "the_id", BCON_BINARY(content_id, UUIDLEN),
@@ -257,8 +257,8 @@ TEST(pttdb_content_block, dynamic_read_content_blocks2)
     UUID content_id;
     UUID ref_id;
 
-    gen_uuid(content_id);
-    gen_uuid(ref_id);
+    gen_uuid(content_id, 0);
+    gen_uuid(ref_id, 0);
     for (int i = 0; i < 10; i++) {
         b[i] = BCON_NEW(
                    "the_id", BCON_BINARY(content_id, UUIDLEN),
@@ -306,8 +306,8 @@ TEST(pttdb_content_block, read_content_blocks)
     UUID content_id;
     UUID ref_id;
 
-    gen_uuid(content_id);
-    gen_uuid(ref_id);
+    gen_uuid(content_id, 0);
+    gen_uuid(ref_id, 0);
     for (int i = 0; i < 10; i++) {
         b[i] = BCON_NEW(
                    "the_id", BCON_BINARY(content_id, UUIDLEN),
@@ -355,8 +355,8 @@ TEST(pttdb_content_block, read_content_blocks_get_b_content_blocks)
     UUID content_id;
     UUID ref_id;
 
-    gen_uuid(content_id);
-    gen_uuid(ref_id);
+    gen_uuid(content_id, 0);
+    gen_uuid(ref_id, 0);
     for (int i = 0; i < 10; i++) {
         b[i] = BCON_NEW(
                    "the_id", BCON_BINARY(content_id, UUIDLEN),
@@ -471,8 +471,8 @@ TEST(pttdb_content_block, split_contents_core)
 
     UUID ref_id;
     UUID content_id;
-    gen_uuid(ref_id);
-    gen_uuid(content_id);
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
 
     int n_block = 0;
     init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
@@ -508,8 +508,8 @@ TEST(pttdb_content_block, split_contents_core2)
 
     UUID ref_id;
     UUID content_id;
-    gen_uuid(ref_id);
-    gen_uuid(content_id);
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
 
     int n_block = 0;
     init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
@@ -549,8 +549,8 @@ TEST(pttdb_content_block, split_contents_core3)
 
     UUID ref_id;
     UUID content_id;
-    gen_uuid(ref_id);
-    gen_uuid(content_id);
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
 
     int n_block = 0;
     init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
@@ -623,8 +623,8 @@ TEST(pttdb_content_block, split_contents_core4)
 
     UUID ref_id;
     UUID content_id;
-    gen_uuid(ref_id);
-    gen_uuid(content_id);
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
 
     int n_block = 0;
     init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
@@ -689,8 +689,8 @@ TEST(pttdb_content_block, split_contents_core_one_line)
 
     UUID ref_id;
     UUID content_id;
-    gen_uuid(ref_id);
-    gen_uuid(content_id);
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
 
     init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
     n_block++;
@@ -723,8 +723,8 @@ TEST(pttdb_content_block, split_contents_core_one_line2_reaching_max_line)
 
     UUID ref_id;
     UUID content_id;
-    gen_uuid(ref_id);
-    gen_uuid(content_id);
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
 
     init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
     n_block++;
@@ -774,8 +774,8 @@ TEST(pttdb_content_block, split_contents_deal_with_last_line_block)
     ContentBlock content_block = {};
     UUID the_id;
     UUID ref_id;
-    gen_uuid(the_id);
-    gen_uuid(ref_id);
+    gen_uuid(the_id, 0);
+    gen_uuid(ref_id, 0);
     init_content_block_with_buf_block(&content_block, ref_id, the_id, 0);
     EXPECT_EQ(MAX_BUF_SIZE, content_block.max_buf_len);
 
