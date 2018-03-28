@@ -90,7 +90,7 @@ TEST(migrate_db_to_file, migrate_db_to_file) {
 
         sprintf(replier, "reply%03d", i);
         sprintf(reply_buf, "replyreply%03d\r\n", i);
-        error = create_comment_reply(main_id, comment_id, replier, (char *)"10.1.1.5", strlen(reply_buf), reply_buf, comment_reply_id);
+        error = create_comment_reply(main_id, comment_id, replier, (char *)"10.1.1.5", strlen(reply_buf), reply_buf, comment_reply_id, 0);
 
         bson_safe_destroy(&comment_bson);
         bson_safe_destroy(&comment_id_bson);
