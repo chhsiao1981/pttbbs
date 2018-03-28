@@ -69,7 +69,7 @@ migrate_file_to_db(const char *fpath, char *poster, char *board, char *title, ch
     UUID content_id = {};
 
     if(!error_code) {
-        error_code = create_main_from_fd(legacy_file_info.aid, legacy_file_info.board, legacy_file_info.title, legacy_file_info.poster, legacy_file_info.ip, legacy_file_info.origin, legacy_file_info.web_link, legacy_file_info.main_content_len, fd, main_id, content_id);
+        error_code = create_main_from_fd(legacy_file_info.aid, legacy_file_info.board, legacy_file_info.title, legacy_file_info.poster, legacy_file_info.ip, legacy_file_info.origin, legacy_file_info.web_link, legacy_file_info.main_content_len, fd, main_id, content_id, legacy_file_info.create_milli_timestamp);
     }
 
     UUID comment_id = {};
@@ -87,7 +87,8 @@ migrate_file_to_db(const char *fpath, char *poster, char *board, char *title, ch
                 legacy_file_info.comment_info[i].comment_len,
                 buf,
                 legacy_file_info.comment_info[i].comment_type,
-                comment_id
+                comment_id,
+                legacy_file_info.comment_info[i].comment_create_milli_timestamp
                 );
             if(error_code) break;
 
@@ -102,7 +103,8 @@ migrate_file_to_db(const char *fpath, char *poster, char *board, char *title, ch
                 legacy_file_info.comment_info[i].comment_reply_ip,
                 legacy_file_info.comment_info[i].comment_reply_len,
                 buf,
-                comment_reply_id
+                comment_reply_id,
+                legacy_file_info.comment_info[i].comment_reply_create_milli_timestamp
                 );
             if(error_code) break;
         }
