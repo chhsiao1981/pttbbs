@@ -18,8 +18,8 @@ TEST(pttdb_comment, create_comment) {
     UUID comment_id;
     UUID tmp_comment_id;
 
-    gen_uuid(main_id);
-    Err error_code = create_comment(main_id, poster, ip, len, content, comment_type, comment_id);
+    gen_uuid(main_id, 0);
+    Err error_code = create_comment(main_id, poster, ip, len, content, comment_type, comment_id, 0);
     EXPECT_EQ(S_OK, error_code);
 
     Comment comment = {};
@@ -71,8 +71,8 @@ TEST(pttdb_comment, delete_comment) {
 
     UUID comment_id;
 
-    gen_uuid(main_id);
-    Err error = create_comment(main_id, poster, ip, len, content, comment_type, comment_id);
+    gen_uuid(main_id, 0);
+    Err error = create_comment(main_id, poster, ip, len, content, comment_type, comment_id, 0);
     EXPECT_EQ(S_OK, error);
 
     char del_updater[IDLEN + 1] = "del_updater";
@@ -119,9 +119,9 @@ TEST(pttdb_comment, serialize_comment_bson) {
     init_comment_buf(&comment2);
 
     comment.version = 2;
-    gen_uuid(comment.the_id);
-    gen_uuid(comment.main_id);
-    gen_uuid(comment.comment_reply_id);
+    gen_uuid(comment.the_id, 0);
+    gen_uuid(comment.main_id, 0);
+    gen_uuid(comment.comment_reply_id, 0);
     comment.n_comment_reply_line = 10;
     comment.status = LIVE_STATUS_ALIVE;
 
@@ -188,9 +188,9 @@ TEST(pttdb_comment, get_comment_info_by_main) {
     gen_uuid(main_id);
 
     Err error = S_OK;
-    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
+    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id, 0);
     EXPECT_EQ(S_OK, error);
-    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test2test2", COMMENT_TYPE_GOOD, comment_id2);
+    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test2test2", COMMENT_TYPE_GOOD, comment_id2, 0);
     EXPECT_EQ(S_OK, error);
 
     int n_total_comments = 0;
@@ -211,9 +211,9 @@ TEST(pttdb_comment, get_comment_count_by_main) {
     gen_uuid(main_id);
 
     Err error = S_OK;
-    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
+    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id, 0);
     EXPECT_EQ(S_OK, error);
-    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test2test2", COMMENT_TYPE_GOOD, comment_id2);
+    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test2test2", COMMENT_TYPE_GOOD, comment_id2, 0);
     EXPECT_EQ(S_OK, error);
 
     int n_total_comments = 0;
