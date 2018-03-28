@@ -331,7 +331,7 @@ TEST(pttdb_main, create_main_from_fd_test3_read_main_content) {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
-    int fd = open("data_test/test1.txt", O_RDONLY);
+    int fd = open("data_test/test3.txt", O_RDONLY);
 
     aidu_t aid = 12345;
     char board[IDLEN + 1] = {};
@@ -401,7 +401,7 @@ TEST(pttdb_main, create_main_from_fd_test3_read_main_content) {
     init_content_block_buf_block(&content_block1);
 
     char *str_content = (char *)malloc(len);
-    fd = open("data_test/test1.txt", O_RDONLY);
+    fd = open("data_test/test3.txt", O_RDONLY);
     read(fd, str_content, len);
     close(fd);
 
