@@ -479,9 +479,9 @@ TEST(pttdb_content_block, split_contents_core)
     n_block++;
 
     int n_line = 0;
-    char line[MAX_BUF_SIZE];
+    char line[MAX_LINE_SIZE];
     int bytes_in_line = 0;
-    Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, &bytes_in_line, &content_block);
+    Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, MAX_LINE_SIZE, &bytes_in_line, &content_block);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(1000, n_line);
     EXPECT_EQ(4, n_block);
@@ -516,9 +516,9 @@ TEST(pttdb_content_block, split_contents_core2)
     n_block++;
 
     int n_line = 0;
-    char line[MAX_BUF_SIZE];
+    char line[MAX_LINE_SIZE];
     int bytes_in_line = 0;
-    Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, &bytes_in_line, &content_block);
+    Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, MAX_LINE_SIZE, &bytes_in_line, &content_block);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_line);
     EXPECT_EQ(2, n_block);
@@ -557,9 +557,9 @@ TEST(pttdb_content_block, split_contents_core3)
     n_block++;
 
     int n_line = 0;
-    char line[MAX_BUF_SIZE];
+    char line[MAX_LINE_SIZE];
     int bytes_in_line = 0;
-    Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, &bytes_in_line, &content_block);
+    Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, MAX_LINE_SIZE, &bytes_in_line, &content_block);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(2, n_line);
     EXPECT_EQ(4, n_block);
@@ -631,9 +631,9 @@ TEST(pttdb_content_block, split_contents_core4)
     n_block++;
 
     int n_line = 0;
-    char line[MAX_BUF_SIZE];
+    char line[MAX_LINE_SIZE];
     int bytes_in_line = 0;
-    Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, &bytes_in_line, &content_block);
+    Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, MAX_LINE_SIZE, &bytes_in_line, &content_block);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(1, n_line);
     EXPECT_EQ(3, n_block);
