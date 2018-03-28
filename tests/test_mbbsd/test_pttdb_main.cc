@@ -327,6 +327,170 @@ TEST(pttdb_main, create_main_from_fd_test2) {
     close(fd);
 }
 
+TEST(pttdb_main, create_main_from_fd_test3_read_main_content) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    int fd = open("data_test/test1.txt", O_RDONLY);
+
+    aidu_t aid = 12345;
+    char board[IDLEN + 1] = {};
+    char title[TTLEN + 1] = {};
+    char poster[IDLEN + 1] = {};
+    char ip[IPV4LEN + 1] = {};
+    char origin[MAX_ORIGIN_LEN + 1] = {};
+    char web_link[MAX_WEB_LINK_LEN + 1] = {};
+    int len = 10010;
+    UUID main_id;
+    UUID content_id;
+
+    strcpy(board, "test_board");
+    strcpy(title, "test_title");
+    strcpy(poster, "test_poster");
+    strcpy(ip, "test_ip");
+    strcpy(origin, "ptt.cc");
+    strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
+
+    // create-main-from-fd
+    Err error_code = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id, 0);
+    EXPECT_EQ(S_OK, error_code);
+
+    close(fd);
+
+    char *disp_uuid = NULL;
+    disp_uuid = display_uuid(main_id);
+    fprintf(stderr, "test_pttdb_main.create_main_from_fd: after create_main_from_fd: main_id: %s\n", disp_uuid);
+    safe_free((void **)&disp_uuid);
+
+    // read main-header
+    MainHeader main_header = {};
+    error_code = read_main_header(main_id, &main_header);
+    EXPECT_EQ(S_OK, error_code);
+    EXPECT_EQ(0, strncmp((char *)main_id, (char *)main_header.the_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)main_header.content_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)main_header.update_content_id, UUIDLEN));
+    EXPECT_EQ(aid, main_header.aid);
+    EXPECT_EQ(LIVE_STATUS_ALIVE, main_header.status);
+
+    EXPECT_STREQ(poster, main_header.status_updater);
+    EXPECT_STREQ(ip, main_header.status_update_ip);
+
+    EXPECT_STREQ(board, main_header.board);
+    EXPECT_STREQ(title, main_header.title);
+    EXPECT_STREQ(poster, main_header.poster);
+    EXPECT_STREQ(ip, main_header.ip);
+    EXPECT_STREQ(poster, main_header.updater);
+    EXPECT_STREQ(ip, main_header.update_ip);
+
+    EXPECT_STREQ(origin, main_header.origin);
+    EXPECT_STREQ(web_link, main_header.web_link);
+
+    EXPECT_EQ(0, main_header.reset_karma);
+
+    EXPECT_EQ(len, main_header.len_total);
+    EXPECT_EQ(2, main_header.n_total_block);
+    EXPECT_EQ(10, main_header.n_total_line);
+
+    fprintf(stderr, "test_pttdb_main.create_main_from_fd: to read content_block\n");
+
+    // read content-block
+    ContentBlock content_block0 = {};
+    ContentBlock content_block1 = {};
+
+    init_content_block_buf_block(&content_block0);
+    init_content_block_buf_block(&content_block1);
+
+    char *str_content = (char *)malloc(len);
+    fd = open("data_test/test1.txt", O_RDONLY);
+    read(fd, str_content, len);
+    close(fd);
+
+    error_code = read_content_block(main_header.content_id, 0, MONGO_MAIN_CONTENT, &content_block0);
+    EXPECT_EQ(S_OK, error_code);
+
+    error_code = read_content_block(main_header.content_id, 1, MONGO_MAIN_CONTENT, &content_block1);
+    EXPECT_EQ(S_OK, error_code);
+
+    fprintf(stderr, "test_pttdb_main.create_main_from_fd: to do comparison\n");
+
+    EXPECT_EQ(len, content_block0.len_block + content_block1.len_block);
+    EXPECT_EQ(main_header.n_total_line, content_block0.n_line + content_block1.n_line);
+    EXPECT_EQ(0, strncmp((char *)content_block0.buf_block, str_content, content_block0.len_block));
+    EXPECT_EQ(0, strncmp((char *)content_block1.buf_block, str_content + content_block0.len_block, content_block1.len_block));
+
+    // free
+    destroy_content_block(&content_block0);
+    destroy_content_block(&content_block1);
+    free(str_content);
+}
+
+
+TEST(pttdb_main, create_main_from_fd_test3) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    int fd = open("data_test/test3.txt", O_RDONLY);
+
+    aidu_t aid = 12345;
+    char board[IDLEN + 1] = {};
+    char title[TTLEN + 1] = {};
+    char poster[IDLEN + 1] = {};
+    char ip[IPV4LEN + 1] = {};
+    char origin[MAX_ORIGIN_LEN + 1] = {};
+    char web_link[MAX_WEB_LINK_LEN + 1] = {};
+    int len = 10010;
+    UUID main_id;
+    UUID content_id;
+
+    char tmp_main_id[UUIDLEN + 1] = {};
+
+    strcpy(board, "test_board");
+    strcpy(title, "test_title");
+    strcpy(poster, "test_poster");
+    strcpy(ip, "test_ip");
+    strcpy(origin, "ptt.cc");
+    strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
+
+    // create main from fd
+    Err error_code = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id, 0);
+    EXPECT_EQ(S_OK, error_code);
+
+    strncpy((char *)tmp_main_id, (char *)main_id, UUIDLEN);
+    fprintf(stderr, "test_pttdb_main.create_main_from_fd: after create_main_from_fd: main_id: %s\n", tmp_main_id);
+
+    // read main-header
+    MainHeader main_header = {};
+
+    error_code = read_main_header(main_id, &main_header);
+    EXPECT_EQ(S_OK, error_code);
+    EXPECT_EQ(0, strncmp((char *)main_id, (char *)main_header.the_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)main_header.content_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)main_header.update_content_id, UUIDLEN));
+    EXPECT_EQ(aid, main_header.aid);
+    EXPECT_EQ(LIVE_STATUS_ALIVE, main_header.status);
+
+    EXPECT_STREQ(poster, main_header.status_updater);
+    EXPECT_STREQ(ip, main_header.status_update_ip);
+
+    EXPECT_STREQ(board, main_header.board);
+    EXPECT_STREQ(title, main_header.title);
+    EXPECT_STREQ(poster, main_header.poster);
+    EXPECT_STREQ(ip, main_header.ip);
+    EXPECT_STREQ(poster, main_header.updater);
+    EXPECT_STREQ(ip, main_header.update_ip);
+
+    EXPECT_STREQ(origin, main_header.origin);
+    EXPECT_STREQ(web_link, main_header.web_link);
+
+    EXPECT_EQ(0, main_header.reset_karma);
+
+    EXPECT_EQ(len, main_header.len_total);
+    EXPECT_EQ(2, main_header.n_total_block);
+    EXPECT_EQ(10, main_header.n_total_line);
+
+    close(fd);
+}
+
 TEST(pttdb_main, create_main_from_fd_test1_full_read_main_content) {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
@@ -1176,6 +1340,16 @@ void MyEnvironment::SetUp() {
         fprintf(f, "%c", 64 + (i % 26));
     }
     fclose(f);
+
+    FILE *f = fopen("data_test/test3.txt", "w");
+    for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < 1000; i++) {
+            fprintf(f, "%c", 64 + (i % 26));
+        }
+        fprintf(f, "\n");
+    }
+    fclose(f);
+
 }
 
 void MyEnvironment::TearDown() {
