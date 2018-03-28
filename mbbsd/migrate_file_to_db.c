@@ -197,15 +197,38 @@ _parse_legacy_file_main_info(const char *fpath, LegacyFileInfo *legacy_file_info
         error_code = _parse_legacy_file_main_info_last_line(bytes_in_line, line, legacy_file_info, &status);
     }
 
-    // hack for check for empty last line (assuming empty in the end)    
-    if(bytes <= 0 && legacy_file_info->main_content_len) {
-        error_code = _parse_legacy_file_trim_last_empty_line(fd, legacy_file_info->main_content_len);
-    }
-
     // free
     close(fd);
 
+    // hack for check for empty last line (assuming empty in the end)    
+    if(bytes <= 0 && legacy_file_info->main_content_len) {
+        error_code = _parse_legacy_file_trim_last_empty_line(fpath, legacy_file_info->main_content_len);
+    }
+
     return error_code;
+}
+
+Err
+_parse_legacy_file_trim_last_empty_line(const char *fpatth, int *len) {
+    char buf[MAX_LINE_SIZE] = {};
+
+    int fd = open(fpath, O_RDONLY);
+
+    lseek(fd, SEEK_END, -MAX_BUF_SIZE + 1);
+    int bytes = read(fd, buf, MAX_BUF_SIZE);
+
+    // check \n\n
+    if(bytes >= 2 && buf[bytes - 2] && '\n' && buf[bytes - 1] == '\n') {
+        *len -= 1;
+    }
+    // check \n\r\n
+    else if(bytes >= 3 && buf[bytes - 3] && '\n' && buf[bytes - 2] == '\r' && buf[bytes - 1] == '\n') {
+        *len -= 2;
+    }
+
+    close(fd);
+
+    return S_OK;
 }
 
 Err
@@ -457,13 +480,13 @@ _parse_legacy_file_comment_comment_reply_core(const char *fpath, LegacyFileInfo 
         error_code = _parse_legacy_file_comment_comment_reply_core_last_line(bytes_in_line, line, legacy_file_info, &comment_idx, &current_create_milli_timestamp, &status);
     }
 
-    // hack for check for empty last line (assuming empty line in the end)
-    if(bytes <= 0 && legacy_file_info->comment_info[comment_idx].comment_reply_len) {
-        error_code = _parse_legacy_file_trim_last_empty_line(fd, &legacy_file_info->comment_info[comment_idx].comment_reply_len);
-    }
-
     // free
     close(fd);
+
+    // hack for check for empty last line (assuming empty line in the end)
+    if(bytes <= 0 && legacy_file_info->comment_info[comment_idx].comment_reply_len) {
+        error_code = _parse_legacy_file_trim_last_empty_line(fpath, &legacy_file_info->comment_info[comment_idx].comment_reply_len);
+    }
 
     return error_code;    
 }
