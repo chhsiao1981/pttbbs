@@ -57,7 +57,7 @@ TEST(pttdb, n_line_post) {
 
     int n_line;
     error = n_line_post(main_id, &n_line);
-    EXPECT_EQ(S_OK, error)    ;
+    EXPECT_EQ(S_OK, error);
     EXPECT_EQ(15, n_line);
 }
 

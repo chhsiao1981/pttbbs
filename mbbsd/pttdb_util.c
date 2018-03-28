@@ -62,7 +62,7 @@ pttdb_count_lines(char *content, int len, int *n_line)
 {
     int tmp_n_line = 0;
     char *p_content = content;
-    for(int i = 0; i < len - 1; i++, p_content++) {
+    for(int i = 0; i < len; i++, p_content++) {
         if(*p_content == '\n') {
             tmp_n_line++;
         }
