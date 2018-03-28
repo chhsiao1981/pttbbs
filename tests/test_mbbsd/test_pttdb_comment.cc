@@ -648,7 +648,7 @@ TEST(pttdb_comment, read_comments_by_main4)
     Err error = S_OK;
     UUID main_id = {};
     UUID comment_id = {};
-    gen_uuid(main_id);
+    gen_uuid(main_id, 0);
 
     Comment comment = {};
     init_comment_buf(&comment);
@@ -678,7 +678,7 @@ TEST(pttdb_comment, read_comments_by_main4)
 
     int n_comment = 100;
     for(int i = 0; i < 15; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -694,7 +694,7 @@ TEST(pttdb_comment, read_comments_by_main4)
     }
 
     for(int i = 15; i < n_comment; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -743,7 +743,7 @@ TEST(pttdb_comment, read_comments_by_main5_GT)
     Err error = S_OK;
     UUID main_id = {};
     UUID comment_id = {};
-    gen_uuid(main_id);
+    gen_uuid(main_id, 0);
 
     Comment comment = {};
     init_comment_buf(&comment);
@@ -773,7 +773,7 @@ TEST(pttdb_comment, read_comments_by_main5_GT)
 
     int n_comment = 100;
     for(int i = 0; i < 15; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -789,7 +789,7 @@ TEST(pttdb_comment, read_comments_by_main5_GT)
     }
 
     for(int i = 15; i < n_comment; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -855,7 +855,7 @@ TEST(pttdb_comment, read_comments_by_main5_GTE)
     Err error = S_OK;
     UUID main_id = {};
     UUID comment_id = {};
-    gen_uuid(main_id);
+    gen_uuid(main_id, 0);
 
     Comment comment = {};
     init_comment_buf(&comment);
@@ -885,7 +885,7 @@ TEST(pttdb_comment, read_comments_by_main5_GTE)
 
     int n_comment = 100;
     for(int i = 0; i < 15; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -901,7 +901,7 @@ TEST(pttdb_comment, read_comments_by_main5_GTE)
     }
 
     for(int i = 15; i < n_comment; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -970,7 +970,7 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
     Err error = S_OK;
     UUID main_id = {};
     UUID comment_id = {};
-    gen_uuid(main_id);
+    gen_uuid(main_id, 0);
 
     Comment comment = {};
     init_comment_buf(&comment);
@@ -1000,7 +1000,7 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
 
     int n_comment = 100;
     for(int i = 0; i < 15; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -1016,7 +1016,7 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
     }
 
     for(int i = 15; i < 85; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -1035,7 +1035,7 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
     }
 
     for(int i = 85; i < 100; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -1106,7 +1106,7 @@ TEST(pttdb_comment, read_comments_by_main5_LTE)
     Err error = S_OK;
     UUID main_id = {};
     UUID comment_id = {};
-    gen_uuid(main_id);
+    gen_uuid(main_id, 0 );
 
     Comment comment = {};
     init_comment_buf(&comment);
@@ -1136,7 +1136,7 @@ TEST(pttdb_comment, read_comments_by_main5_LTE)
 
     int n_comment = 100;
     for(int i = 0; i < 15; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -1152,7 +1152,7 @@ TEST(pttdb_comment, read_comments_by_main5_LTE)
     }
 
     for(int i = 15; i < 85; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -1171,7 +1171,7 @@ TEST(pttdb_comment, read_comments_by_main5_LTE)
     }
 
     for(int i = 85; i < 100; i++) {
-        gen_uuid(comment_id);
+        gen_uuid(comment_id, 0);
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
@@ -1261,7 +1261,7 @@ TEST(pttdb_comment, get_newest_comment) {
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
     // create-main-from-fd
-    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id, 0);
     EXPECT_EQ(S_OK, error);
 
 
@@ -1271,9 +1271,9 @@ TEST(pttdb_comment, get_newest_comment) {
     UUID comment_id = {};
     UUID comment_id2 = {};
 
-    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
+    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id, 0);
     EXPECT_EQ(S_OK, error);
-    error = create_comment(main_id, (char *)"poster2", (char *)"10.3.1.4", 10, (char *)"test2test2", COMMENT_TYPE_GOOD, comment_id2);
+    error = create_comment(main_id, (char *)"poster2", (char *)"10.3.1.4", 10, (char *)"test2test2", COMMENT_TYPE_GOOD, comment_id2, 0);
 
 
     UUID newest_comment_id = {};
