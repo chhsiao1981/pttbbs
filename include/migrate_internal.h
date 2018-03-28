@@ -62,6 +62,8 @@ Err _parse_legacy_file_comment_poster_good_bad_arrow(char *line, int bytes_in_li
 // parse comment-type
 Err _parse_legacy_file_comment_type(char *line, int bytes_in_line, enum CommentType *comment_type);
 
+Err _parse_legacy_file_is_line_edit(char *line, int bytes_in_line, bool *is_valid);
+
 Err _is_comment_line(char *line, int bytes_in_line, bool *is_valid);
 Err _is_comment_line_good_bad_arrow(char *line, int bytes_in_line, bool *is_valid, enum CommentType comment_type);
 Err _is_comment_line_cross(char *line, int bytes_in_line, bool *is_valid);

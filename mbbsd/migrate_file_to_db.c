@@ -247,6 +247,11 @@ _parse_legacy_file_main_info_core_one_line(char *line, int bytes_in_line, Legacy
 {
     Err error_code = S_OK;
 
+    // XXX special treat for edit
+    bool is_line_edit;
+    error_code = _parse_legacy_file_is_line_edit(line, bytes_in_line, &is_line_edit);
+    if(is_line_edit) return S_OK;
+
     // XXX special treat for comment-line
     bool is_comment_line;
     error_code = _is_comment_line(line, bytes_in_line, &is_comment_line);
@@ -395,6 +400,11 @@ Err
 _parse_legacy_file_n_comment_comment_reply_core_one_line(char *line, int bytes_in_line, int *n_comment_comment_reply)
 {
     Err error_code = S_OK;
+    // XXX special treat for edit
+    bool is_line_edit;
+    error_code = _parse_legacy_file_is_line_edit(line, bytes_in_line, &is_line_edit);
+    if(is_line_edit) return S_OK;
+
     bool is_comment_line = false;
 
     error_code = _is_comment_line(line, bytes_in_line, &is_comment_line);
@@ -485,6 +495,10 @@ Err
 _parse_legacy_file_comment_comment_reply_core_one_line(char *line, int bytes_in_line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LegacyFileStatus *status)
 {
     Err error_code = S_OK;
+    // XXX special treat for edit
+    bool is_line_edit;
+    error_code = _parse_legacy_file_is_line_edit(line, bytes_in_line, &is_line_edit);
+    if(is_line_edit) return S_OK;
 
     // hack for state-transition in comment-reply -> comment
     switch(*status) {
@@ -851,6 +865,24 @@ Err
 _parse_legacy_file_comment_comment_reply_core_last_line(int bytes_in_line, char *line, LegacyFileInfo *legacy_file_info, int *comment_idx, time64_t *current_create_milli_timestamp, enum LegacyFileStatus *status)
 {
     return _parse_legacy_file_comment_comment_reply_core_one_line(line, bytes_in_line, legacy_file_info, comment_idx, current_create_milli_timestamp, status);
+}
+
+/*****
+ * Is Line Edit
+ *****/
+
+Err
+_parse_legacy_file_is_line_edit(char *line, int bytes_in_line, bool *is_valid)
+{
+    if(bytes_in_line < LEN_LINE_EDIT_PREFIX) return S_ERR;
+
+    if(strncmp(line, LINE_EDIT_PREFIX, LEN_LINE_EDIT_PREFIX)) {
+        *is_valid = false;
+        return S_OK;
+    }
+
+    *is_valid = true;
+    return S_OK;
 }
 
 /*****

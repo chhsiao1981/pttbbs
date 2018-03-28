@@ -62,6 +62,16 @@ TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_arrow) {
     EXPECT_EQ(true, is_valid);
 }
 
+TEST(migrate_file_to_db, parse_legacy_file_is_line_edit) {
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s%s (%s), %s\n", LINE_EDIT_PREFIX, "poster001", "127.0.0.1", "02/27/2018 03:34:34");
+
+    bool is_valid = false;
+    Err error = _parse_legacy_file_is_line_edit(line, MAX_BUF_SIZE, &is_valid);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_valid);
+}
+
 TEST(migrate_file_to_db, is_comment_line_cross) {
     // bbs.c line: 2255 cross_post()
     char line[MAX_BUF_SIZE] = {};

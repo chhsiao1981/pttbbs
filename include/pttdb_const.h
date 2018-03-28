@@ -25,6 +25,9 @@ extern "C" {
 #define LEN_COMMENT_RESET_POSTFIX 13
 #define COMMENT_RESET_POSTFIX " 將推薦值歸零"    
 
+#define LEN_LINE_EDIT_PREFIX 9
+#define LINE_EDIT_PREFIX "※ 編輯: "
+
 #define LEN_STR_POST 5
 
 #define TITLE_PREFIX "標題:"
