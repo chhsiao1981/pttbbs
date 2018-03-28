@@ -2358,7 +2358,7 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_some_comment_re
 
         comment.create_milli_timestamp = create_milli_timestamp + 85;
         comment.update_milli_timestamp = create_milli_timestamp + 85;
-        gen_uuid(comment.comment_reply_id);
+        gen_uuid(comment.comment_reply_id, 0);
         comment.n_comment_reply_line = 1;
 
         error = _serialize_comment_bson(&comment, &comment_bson);
@@ -2585,7 +2585,7 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf) {
         error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
 
         sprintf(replier, "reply%03d", i);
-        error = create_comment_reply(main_id, comment_id, replier, (char *)"10.1.1.5", 12, (char *)"replyreply\r\n", comment_reply_id);
+        error = create_comment_reply(main_id, comment_id, replier, (char *)"10.1.1.5", 12, (char *)"replyreply\r\n", comment_reply_id, 0);
 
         bson_safe_destroy(&comment_bson);
         bson_safe_destroy(&comment_id_bson);
@@ -2783,7 +2783,7 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_large_con
         error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
 
         sprintf(replier, "reply%03d", i);
-        error = create_comment_reply(main_id, comment_id, replier, (char *)"10.1.1.5", 12, (char *)"replyreply\r\n", comment_reply_id);
+        error = create_comment_reply(main_id, comment_id, replier, (char *)"10.1.1.5", 12, (char *)"replyreply\r\n", comment_reply_id, 0);
 
         bson_safe_destroy(&comment_bson);
         bson_safe_destroy(&comment_id_bson);
