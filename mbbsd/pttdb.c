@@ -32,6 +32,8 @@ n_line_post(UUID main_id, int *n_line) {
 
     *n_line = the_line_main + the_line_comments + the_line_comment_reply;
 
+    fprintf(stderr, "pttdb.n_line_post: the_line_main: %d the_line_comments: %d the_line_comment_reply: %d\n", the_line_main, the_line_comments, the_line_comment_reply);
+
     return S_OK;
 }
 
