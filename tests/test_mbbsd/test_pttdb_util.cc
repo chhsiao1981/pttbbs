@@ -181,10 +181,6 @@ TEST(pttdb_util, form_rand_list) {
     Err error = form_rand_list(100, &rand_list);
     EXPECT_EQ(S_OK, error);
 
-    for(int i = 0; i < 100; i++) {
-        fprintf(stderr, "test_pttdb_misc.form_rand_list: (%d/%d): %d\n", i, 100, rand_list[i]);
-    }
-
     int sum = 0;
     for(int i = 0; i < 100; i++) {
         sum += rand_list[i];
