@@ -33,9 +33,9 @@ Err get_milli_timestamp(time64_t *milli_timestamp);
 /**********
  * UUID
  **********/
-Err gen_uuid(UUID uuid);
-Err gen_uuid_with_db(int collection, UUID uuid);
-Err gen_content_uuid_with_db(int collection, UUID uuid);
+Err gen_uuid(UUID uuid, time64_t milli_timestamp);
+Err gen_uuid_with_db(int collection, UUID uuid, time64_t milli_timestamp);
+Err gen_content_uuid_with_db(int collection, UUID uuid, time64_t milli_timestamp);
 
 Err uuid_to_milli_timestamp(UUID uuid, time64_t *milli_timestamp);
 

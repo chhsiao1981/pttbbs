@@ -2,21 +2,22 @@
 #include "pttdb_internal.h"
 
 Err
-create_comment_reply(UUID main_id, UUID comment_id, char *poster, char *ip, int len, char *content, UUID comment_reply_id)
+create_comment_reply(UUID main_id, UUID comment_id, char *poster, char *ip, int len, char *content, UUID comment_reply_id, time64_t create_milli_timestamp)
 {
     Err error_code = S_OK;
-
-    time64_t create_milli_timestamp;
 
     // use associate to associate content directly
     CommentReply comment_reply = {};
     associate_comment_reply(&comment_reply, content, len);
     comment_reply.len = len;
 
-    error_code = get_milli_timestamp(&create_milli_timestamp);
-    if (error_code) return error_code;
+    if(!create_milli_timestamp) {
+        error_code = get_milli_timestamp(&create_milli_timestamp);
+        if (error_code) return error_code;
+    }
 
-    gen_uuid(comment_reply_id);
+    error_code = gen_uuid_with_db(MONGO_COMMENT_REPLY, comment_reply_id, create_milli_timestamp);
+    if(error_code) return error_code;
 
     // comment_reply
     memcpy(comment_reply.the_id, comment_reply_id, sizeof(UUID));

@@ -43,11 +43,10 @@ get_milli_timestamp(time64_t *milli_timestamp)
  * @param uuid [description]
  */
 Err
-gen_uuid(UUID uuid)
+gen_uuid(UUID uuid, time64_t milli_timestamp)
 {
     Err error_code;
 
-    time64_t milli_timestamp;
     time64_t *p_milli_timestamp;
 
     // RAND_MAX is 2147483647
@@ -63,8 +62,10 @@ gen_uuid(UUID uuid)
     // _UUID _uuid;
 
     // last 8 chars as milli-timestamp, but only the last 6 chars will be used. little-endian
-    error_code = get_milli_timestamp(&milli_timestamp);
-    if (error_code) return error_code;
+    if(!milli_timestamp) {
+        error_code = get_milli_timestamp(&milli_timestamp);
+        if (error_code) return error_code;
+    }
 
     milli_timestamp <<= 16;
     p_char = (unsigned char *)&milli_timestamp;
@@ -102,13 +103,13 @@ gen_uuid(UUID uuid)
  * @return Err
  */
 Err
-gen_uuid_with_db(int collection, UUID uuid)
+gen_uuid_with_db(int collection, UUID uuid, time64_t milli_timestamp)
 {
     Err error_code = S_OK;
     bson_t *uuid_bson = NULL;
 
     for (int i = 0; i < N_GEN_UUID_WITH_DB; i++) {
-        error_code = gen_uuid(uuid);
+        error_code = gen_uuid(uuid, milli_timestamp);
 
         if(!error_code) {
             error_code = _serialize_uuid_bson(uuid, &uuid_bson);
@@ -135,13 +136,13 @@ gen_uuid_with_db(int collection, UUID uuid)
  * @return Err
  */
 Err
-gen_content_uuid_with_db(int collection, UUID uuid)
+gen_content_uuid_with_db(int collection, UUID uuid, time64_t milli_timestamp)
 {
     Err error_code = S_OK;
     bson_t *uuid_bson = NULL;
 
     for (int i = 0; i < N_GEN_UUID_WITH_DB; i++) {
-        error_code = gen_uuid(uuid);
+        error_code = gen_uuid(uuid, milli_timestamp);
 
         if(!error_code) {
             error_code = _serialize_content_uuid_bson(uuid, 0, &uuid_bson);

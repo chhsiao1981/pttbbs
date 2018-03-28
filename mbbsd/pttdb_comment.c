@@ -20,21 +20,21 @@ char *_read_comments_op_type[] = {
  * @param comment_id [description]
  */
 Err
-create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enum CommentType comment_type, UUID comment_id)
+create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enum CommentType comment_type, UUID comment_id, time64_t create_milli_timestamp)
 {
     Err error_code = S_OK;
-
-    time64_t create_milli_timestamp;
 
     // use associate to associate content directly
     Comment comment = {};
     associate_comment(&comment, content, len);
     comment.len = len;
 
-    error_code = get_milli_timestamp(&create_milli_timestamp);
-    if (error_code) return error_code;
+    if(!create_milli_timestamp) {
+        error_code = get_milli_timestamp(&create_milli_timestamp);
+        if (error_code) return error_code;
+    }
 
-    error_code = gen_uuid_with_db(MONGO_COMMENT, comment_id);
+    error_code = gen_uuid_with_db(MONGO_COMMENT, comment_id, create_milli_timestamp);
     if (error_code) return error_code;
 
     // comment

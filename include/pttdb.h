@@ -261,7 +261,7 @@ Err destroy_file_info(FileInfo *file_info);
 /**********
  * Main
  **********/
-Err create_main_from_fd(aidu_t aid, char *board, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id, UUID content_id);
+Err create_main_from_fd(aidu_t aid, char *board, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id, UUID content_id, time64_t create_milli_timestamp);
 
 Err len_main(UUID main_id, int *len);
 Err len_main_by_aid(aidu_t aid, int *len);
@@ -312,7 +312,7 @@ Err read_content_blocks_to_bsons(UUID content_id, bson_t *fields, int max_n_cont
  * Comments
  **********/
 
-Err create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enum CommentType comment_type, UUID comment_id);
+Err create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enum CommentType comment_type, UUID comment_id, time64_t create_milli_timestamp);
 
 Err read_comment(UUID comment_id, Comment *comment);
 
@@ -352,7 +352,7 @@ Err dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int 
  * CommentReply
  **********/
 
-Err create_comment_reply(UUID main_id, UUID comment_id, char *poster, char *ip, int len, char *content, UUID comment_reply_id);
+Err create_comment_reply(UUID main_id, UUID comment_id, char *poster, char *ip, int len, char *content, UUID comment_reply_id, time64_t create_milli_timestamp);
 
 Err read_comment_reply(UUID comment_reply_id, CommentReply *comment_reply);
 

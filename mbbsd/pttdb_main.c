@@ -17,24 +17,24 @@
  * @return Err
  */
 Err
-create_main_from_fd(aidu_t aid, char *board, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id, UUID content_id)
+create_main_from_fd(aidu_t aid, char *board, char *title, char *poster, char *ip, char *origin, char *web_link, int len, int fd_content, UUID main_id, UUID content_id, time64_t create_milli_timestamp)
 {
 
     Err error_code = S_OK;
     int n_line = 0;
     int n_block = 0;
 
-    time64_t create_milli_timestamp;
-
     MainHeader main_header = {};
 
-    error_code = get_milli_timestamp(&create_milli_timestamp);
+    if(!create_milli_timestamp) {
+        error_code = get_milli_timestamp(&create_milli_timestamp);
+        if (error_code) return error_code;
+    }
+
+    error_code = gen_uuid_with_db(MONGO_MAIN, main_id, create_milli_timestamp);
     if (error_code) return error_code;
 
-    error_code = gen_uuid_with_db(MONGO_MAIN, main_id);
-    if (error_code) return error_code;
-
-    error_code = gen_content_uuid_with_db(MONGO_MAIN_CONTENT, content_id);
+    error_code = gen_content_uuid_with_db(MONGO_MAIN_CONTENT, content_id, create_milli_timestamp);
     if (error_code) return error_code;
 
     // main_header
