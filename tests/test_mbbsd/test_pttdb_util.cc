@@ -12,6 +12,7 @@ TEST(pttdb_util, get_line_from_buf) {
     int bytes_in_new_line = 0;
     bzero(line, sizeof(line));
 
+    fprintf(stderr, "test_pttdb_util.get_line_from_buf: start\n")
     strcpy(buf, "0123456789\r\nABCDEFGHIJ\r\n");
 
     Err error = get_line_from_buf(buf, offset_buf, len_buf, line, offset_line, MAX_LINE_SIZE, &bytes_in_new_line);
