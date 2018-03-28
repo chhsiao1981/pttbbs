@@ -496,9 +496,9 @@ TEST(pttdb_main, len_main) {
 
     MainHeader main_header = {};
 
-    gen_uuid(main_header.the_id);
-    gen_uuid(main_header.content_id);
-    gen_uuid(main_header.update_content_id);
+    gen_uuid(main_header.the_id, 0);
+    gen_uuid(main_header.content_id, 0);
+    gen_uuid(main_header.update_content_id, 0);
     main_header.aid = 12345;
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
@@ -540,9 +540,9 @@ TEST(pttdb_main, len_main_by_aid) {
 
     MainHeader main_header = {};
 
-    gen_uuid(main_header.the_id);
-    gen_uuid(main_header.content_id);
-    gen_uuid(main_header.update_content_id);
+    gen_uuid(main_header.the_id, 0);
+    gen_uuid(main_header.content_id, 0);
+    gen_uuid(main_header.update_content_id, 0);
     main_header.aid = 12345;
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
@@ -584,9 +584,9 @@ TEST(pttdb_main, n_line_main) {
 
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
 
-    gen_uuid(main_header.the_id);
-    gen_uuid(main_header.content_id);
-    gen_uuid(main_header.update_content_id);
+    gen_uuid(main_header.the_id, 0);
+    gen_uuid(main_header.content_id, 0);
+    gen_uuid(main_header.update_content_id, 0);
     main_header.aid = 12345;
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
@@ -628,9 +628,9 @@ TEST(pttdb_main, n_line_main_by_aid) {
 
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
 
-    gen_uuid(main_header.the_id);
-    gen_uuid(main_header.content_id);
-    gen_uuid(main_header.update_content_id);
+    gen_uuid(main_header.the_id, 0);
+    gen_uuid(main_header.content_id, 0);
+    gen_uuid(main_header.update_content_id, 0);
     main_header.aid = 12345;
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
@@ -673,9 +673,9 @@ TEST(pttdb_main, read_main_header) {
 
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
 
-    gen_uuid(main_header.the_id);
-    gen_uuid(main_header.content_id);
-    gen_uuid(main_header.update_content_id);
+    gen_uuid(main_header.the_id, 0);
+    gen_uuid(main_header.content_id, 0);
+    gen_uuid(main_header.update_content_id, 0);
     main_header.aid = 12345;
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
@@ -741,9 +741,9 @@ TEST(pttdb_main, read_main_header_by_aid) {
     MainHeader main_header = {};
     MainHeader main_header2 = {};
 
-    gen_uuid(main_header.the_id);
-    gen_uuid(main_header.content_id);
-    gen_uuid(main_header.update_content_id);
+    gen_uuid(main_header.the_id, 0);
+    gen_uuid(main_header.content_id, 0);
+    gen_uuid(main_header.update_content_id, 0);
     main_header.aid = 12345;
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
@@ -807,9 +807,9 @@ TEST(pttdb_main, delete_main) {
 
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
 
-    gen_uuid(main_header.the_id);
-    gen_uuid(main_header.content_id);
-    gen_uuid(main_header.update_content_id);
+    gen_uuid(main_header.the_id, 0);
+    gen_uuid(main_header.content_id, 0);
+    gen_uuid(main_header.update_content_id, 0);
     main_header.aid = 12345;
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
@@ -883,9 +883,9 @@ TEST(pttdb_main, delete_main_by_aid) {
 
     MainHeader main_header = {};
 
-    gen_uuid(main_header.the_id);
-    gen_uuid(main_header.content_id);
-    gen_uuid(main_header.update_content_id);
+    gen_uuid(main_header.the_id, 0);
+    gen_uuid(main_header.content_id, 0);
+    gen_uuid(main_header.update_content_id, 0);
     main_header.aid = 12345;
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
@@ -956,9 +956,9 @@ TEST(pttdb_main, serialize_main_bson) {
     MainHeader main_header2 = {};
 
     main_header.version = 2;
-    gen_uuid(main_header.the_id);
-    gen_uuid(main_header.content_id);
-    gen_uuid(main_header.update_content_id);
+    gen_uuid(main_header.the_id, 0);
+    gen_uuid(main_header.content_id, 0);
+    gen_uuid(main_header.update_content_id, 0);
     main_header.aid = 12345;
     main_header.status = LIVE_STATUS_ALIVE;
     strcpy(main_header.status_updater, "updater1");
