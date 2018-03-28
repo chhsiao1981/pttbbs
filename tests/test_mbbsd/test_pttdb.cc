@@ -32,7 +32,7 @@ TEST(pttdb, n_line_post) {
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
     // create-main-from-fd
-    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id, 0);
     EXPECT_EQ(S_OK, error);
 
 
@@ -42,17 +42,17 @@ TEST(pttdb, n_line_post) {
     UUID comment_id = {};
     UUID comment_id2 = {};
 
-    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id);
+    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id, 0);
     EXPECT_EQ(S_OK, error);
-    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test2test2", COMMENT_TYPE_GOOD, comment_id2);
+    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test2test2", COMMENT_TYPE_GOOD, comment_id2, 0);
 
     // comment-reply
     UUID comment_reply_id = {};
     UUID comment_reply_id2 = {};
 
-    error = create_comment_reply(main_id, comment_id, (char *)"poster1", (char *)"10.3.1.4", 24, (char *)"test1test1\r\ntest3test3\r\n", comment_reply_id);
+    error = create_comment_reply(main_id, comment_id, (char *)"poster1", (char *)"10.3.1.4", 24, (char *)"test1test1\r\ntest3test3\r\n", comment_reply_id, 0);
     EXPECT_EQ(S_OK, error);
-    error = create_comment_reply(main_id, comment_id2, (char *)"poster1", (char *)"10.3.1.4", 12, (char *)"test2test2\r\n", comment_reply_id2);
+    error = create_comment_reply(main_id, comment_id2, (char *)"poster1", (char *)"10.3.1.4", 12, (char *)"test2test2\r\n", comment_reply_id2, 0);
     EXPECT_EQ(S_OK, error);
 
     int n_line;
@@ -87,7 +87,7 @@ TEST(pttdb, get_file_info_by_main_get_main_info) {
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
     // create-main-from-fd
-    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id, 0);
     EXPECT_EQ(S_OK, error);
 
     close(fd);
@@ -135,7 +135,7 @@ TEST(pttdb, get_file_info_by_main_get_content_block_info) {
     strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
 
     // create-main-from-fd
-    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id);
+    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id, 0);
     EXPECT_EQ(S_OK, error);
 
     close(fd);
