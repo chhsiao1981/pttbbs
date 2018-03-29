@@ -710,8 +710,8 @@ _parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(char *l
     int p_line_pos = bytes_in_line - 1;
     for(; p_line_pos >= 0 && (*p_line == '\r' || *p_line == '\n'); p_line_pos--, p_line--);
     if(p_line_pos < LEN_COMMENT_DATETIME_IN_LINE) return S_ERR;
-    p_line -= LEN_COMMENT_DATETIME_IN_LINE;
-    p_line_pos -= LEN_COMMENT_DATETIME_IN_LINE;
+    p_line -= (LEN_COMMENT_DATETIME_IN_LINE - 1);
+    p_line_pos -= (LEN_COMMENT_DATETIME_IN_LINE - 1);
 
     // mm
     int tmp_mm = atoi(p_line);
