@@ -2,20 +2,22 @@
 #ifndef MIGRATE_H
 #define MIGRATE_H
 
-#include "ptterr.h"
-#include "pttstruct.h"
-#include "pttdb.h"
-#include "util_timestamp.h"
-#ifndef _XOPEN_SOURCE
-#define _XOPEN_SOURCE
-#endif
 #ifndef __USE_XOPEN
 #define __USE_XOPEN
 #endif
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
+
+#ifndef _XOPEN_SOURCE
+#define _XOPEN_SOURCE
+#endif
 #include <time.h>
+
+#include "ptterr.h"
+#include "pttstruct.h"
+#include "pttdb.h"
+#include "util_timestamp.h"
 
 #ifdef __cplusplus
 extern "C" {
