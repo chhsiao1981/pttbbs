@@ -48,6 +48,49 @@ TEST(pttdb_content_block, save_content_block) {
     destroy_content_block(&content_block2);
 }
 
+TEST(pttdb_content_block, save_content_block_n_only) {
+    Err error;
+
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
+
+    ContentBlock content_block = {};
+    ContentBlock content_block2 = {};
+
+    // init content-block
+    error = reset_content_block(&content_block, ref_id, content_id, 3);
+    EXPECT_EQ(S_OK, error);
+
+    char buf[] = "test_buf\ntest2";
+    int len_buf = strlen(buf);
+    associate_content_block(&content_block, buf, len_buf);
+    content_block.len_block = len_buf;
+    content_block.n_line = 1;
+
+    // init content-block2
+    error = init_content_block_buf_block(&content_block2);
+    EXPECT_EQ(S_OK, error);
+
+    // save
+    error = save_content_block(&content_block, MONGO_MAIN_CONTENT);
+    EXPECT_EQ(S_OK, error);
+
+    error = read_content_block(content_id, 3, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_OK, error);
+
+    EXPECT_EQ(0, strncmp(content_block2.buf_block, buf, len_buf));
+    EXPECT_EQ(MAX_BUF_SIZE, content_block2.max_buf_len);
+    EXPECT_EQ(len_buf, content_block2.len_block);
+    EXPECT_EQ(1, content_block2.n_line);
+
+    dissociate_content_block(&content_block);
+    destroy_content_block(&content_block2);
+}
+
 TEST(pttdb_content_block, read_content_block_forgot_init) {
     Err error;
 
@@ -493,6 +536,43 @@ TEST(pttdb_content_block, split_contents_core)
     destroy_content_block(&content_block);
 }
 
+TEST(pttdb_content_block, split_contents_core_n_only)
+{
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    ContentBlock content_block = {};
+    char buf[MAX_BUF_SIZE * 2] = {};
+    char *p_buf = buf;
+    for (int i = 0; i < 1000; i++) {
+        sprintf(p_buf, "test456789\n");
+        p_buf += 11;
+    }
+    int bytes = strlen(buf);
+
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
+
+    int n_block = 0;
+    init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
+    n_block++;
+
+    int n_line = 0;
+    char line[MAX_LINE_SIZE];
+    int bytes_in_line = 0;
+    Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, MAX_LINE_SIZE, &bytes_in_line, &content_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1000, n_line);
+    EXPECT_EQ(4, n_block);
+    EXPECT_EQ(0, bytes_in_line);
+    EXPECT_EQ(232, content_block.n_line);
+    EXPECT_STREQ(buf + 8448, content_block.buf_block);
+    EXPECT_EQ(2552, content_block.len_block);
+
+    destroy_content_block(&content_block);
+}
+
 TEST(pttdb_content_block, split_contents_core2)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
@@ -526,6 +606,43 @@ TEST(pttdb_content_block, split_contents_core2)
     EXPECT_EQ(20, content_block.n_line);
     EXPECT_STREQ(buf + 8160, content_block.buf_block);
     EXPECT_EQ(2040, content_block.len_block);
+
+    destroy_content_block(&content_block);
+}
+
+TEST(pttdb_content_block, split_contents_core2_n_only)
+{
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    ContentBlock content_block = {};
+    char buf[MAX_BUF_SIZE * 2] = {};
+    char *p_buf = buf;
+    for (int i = 0; i < 100; i++) {
+        sprintf(p_buf, "test456789test456789test456789test456789test456789test456789test456789test456789test456789test456789\n");
+        p_buf += 101;
+    }
+    int bytes = strlen(buf);
+
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
+
+    int n_block = 0;
+    init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
+    n_block++;
+
+    int n_line = 0;
+    char line[MAX_LINE_SIZE];
+    int bytes_in_line = 0;
+    Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, MAX_LINE_SIZE, &bytes_in_line, &content_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(100, n_line);
+    EXPECT_EQ(2, n_block);
+    EXPECT_EQ(0, bytes_in_line);
+    EXPECT_EQ(20, content_block.n_line);
+    EXPECT_STREQ(buf + 8080, content_block.buf_block);
+    EXPECT_EQ(2020, content_block.len_block);
 
     destroy_content_block(&content_block);
 }
@@ -597,6 +714,81 @@ TEST(pttdb_content_block, split_contents_core3)
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(8192, content_block2.len_block);
     EXPECT_EQ(0, strncmp(buf + 102 + 8192, content_block2.buf_block, 8192));
+    EXPECT_EQ(0, content_block2.n_line);
+    error = reset_content_block_buf_block(&content_block2);
+    EXPECT_EQ(S_OK, error);
+
+    destroy_content_block(&content_block2);
+    destroy_content_block(&content_block);
+}
+
+TEST(pttdb_content_block, split_contents_core3_n_only)
+{
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    ContentBlock content_block = {};
+    char buf[MAX_BUF_SIZE * 4] = {};
+    char *p_buf = buf;
+    sprintf(p_buf, "test456789test456789test456789test456789test456789test456789test456789test456789test456789test456789\n");
+    p_buf += 101;
+
+    for (int i = 0; i < 200; i++) {
+        sprintf(p_buf, "test456789test456789test456789test456789test456789test456789test456789test456789test456789test456789");
+        p_buf += 100;
+    }
+    sprintf(p_buf, "\n");
+    int bytes = strlen(buf);
+
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
+
+    int n_block = 0;
+    init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
+    n_block++;
+
+    int n_line = 0;
+    char line[MAX_LINE_SIZE];
+    int bytes_in_line = 0;
+    Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, MAX_LINE_SIZE, &bytes_in_line, &content_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(2, n_line);
+    EXPECT_EQ(4, n_block);
+
+    // the rest 3617-block in the current block.
+    EXPECT_EQ(0, bytes_in_line);
+    EXPECT_EQ(1, content_block.n_line);
+    EXPECT_STREQ(buf + 101 + 8192 * 2, content_block.buf_block);
+    EXPECT_EQ(3617, content_block.len_block);
+    EXPECT_EQ(3, content_block.block_id);
+
+    ContentBlock content_block2 = {};
+    init_content_block_buf_block(&content_block2);
+
+    // only the 1st line get into the block-0.
+    error = read_content_block(content_id, 0, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(101, content_block2.len_block);
+    EXPECT_EQ(0, strncmp(buf, content_block2.buf_block, 101));
+    EXPECT_EQ(1, content_block2.n_line);
+    error = reset_content_block_buf_block(&content_block2);
+    EXPECT_EQ(S_OK, error);
+
+    // the 1st 8192-block in the block-1
+    error = read_content_block(content_id, 1, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(8192, content_block2.len_block);
+    EXPECT_EQ(0, strncmp(buf + 101, content_block2.buf_block, 8192));
+    EXPECT_EQ(0, content_block2.n_line);
+    error = reset_content_block_buf_block(&content_block2);
+    EXPECT_EQ(S_OK, error);
+
+    // the 2nd 8192-block in the block-2
+    error = read_content_block(content_id, 2, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(8192, content_block2.len_block);
+    EXPECT_EQ(0, strncmp(buf + 101 + 8192, content_block2.buf_block, 8192));
     EXPECT_EQ(0, content_block2.n_line);
     error = reset_content_block_buf_block(&content_block2);
     EXPECT_EQ(S_OK, error);
@@ -677,6 +869,78 @@ TEST(pttdb_content_block, split_contents_core4)
     destroy_content_block(&content_block);
 }
 
+TEST(pttdb_content_block, split_contents_core4_n_only)
+{
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    ContentBlock content_block = {};
+    char buf[MAX_BUF_SIZE * 4] = {};
+    char *p_buf = buf;
+    sprintf(p_buf, "test456789test456789test456789test456789test456789test456789test456789test456789test456789test456789\n");
+    p_buf += 101;
+
+    for (int i = 0; i < 200; i++) {
+        sprintf(p_buf, "test456789test456789test456789test456789test456789test456789test456789test456789test456789test456789");
+        p_buf += 100;
+    }
+    int bytes = strlen(buf);
+
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
+
+    int n_block = 0;
+    init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
+    n_block++;
+
+    int n_line = 0;
+    char line[MAX_LINE_SIZE];
+    int bytes_in_line = 0;
+    Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, MAX_LINE_SIZE, &bytes_in_line, &content_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1, n_line);
+    EXPECT_EQ(3, n_block);
+
+    // the rest 3616-block in the line.
+    EXPECT_EQ(3616, bytes_in_line);
+    EXPECT_STREQ(buf + 101 + 8192 * 2, line);
+
+    // the 2nd 8192-block in the content_block.
+    EXPECT_EQ(0, content_block.n_line);
+    EXPECT_EQ(8192, content_block.len_block);
+    EXPECT_EQ(2, content_block.block_id);
+    EXPECT_EQ(0, strncmp(buf + 101 + 8192, content_block.buf_block, content_block.len_block));
+
+    ContentBlock content_block2 = {};
+    init_content_block_buf_block(&content_block2);
+
+    // only the 1st line get into the block-0.
+    error = read_content_block(content_id, 0, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(101, content_block2.len_block);
+    EXPECT_EQ(0, strncmp(buf, content_block2.buf_block, 101));
+    EXPECT_EQ(1, content_block2.n_line);
+    error = reset_content_block_buf_block(&content_block2);
+    EXPECT_EQ(S_OK, error);
+
+    // the 1st 8192-block in the block-1
+    error = read_content_block(content_id, 1, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(8192, content_block2.len_block);
+    EXPECT_EQ(0, strncmp(buf + 101, content_block2.buf_block, 8192));
+    EXPECT_EQ(0, content_block2.n_line);
+    error = reset_content_block_buf_block(&content_block2);
+    EXPECT_EQ(S_OK, error);
+
+    // the 2nd 8192-block not in the db yet.
+    error = read_content_block(content_id, 2, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_ERR_NOT_EXISTS, error);
+
+    destroy_content_block(&content_block2);
+    destroy_content_block(&content_block);
+}
+
 TEST(pttdb_content_block, split_contents_core_one_line)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
@@ -711,6 +975,41 @@ TEST(pttdb_content_block, split_contents_core_one_line)
     destroy_content_block(&content_block);
 }
 
+TEST(pttdb_content_block, split_contents_core_one_line_n_only)
+{
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    ContentBlock content_block = {};
+    char line[] = "testtesttesttest\n";
+    int bytes_in_line = strlen(line);
+    int n_line = 100;
+    int n_block = 0;
+
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
+
+    init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
+    n_block++;
+
+    Err error = _split_contents_core_one_line(line, bytes_in_line, ref_id, content_id, MONGO_MAIN_CONTENT, &content_block, &n_line, &n_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1, n_block);
+    EXPECT_EQ(101, n_line);
+
+    EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block.ref_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_block.the_id, UUIDLEN));
+    EXPECT_EQ(0, content_block.block_id);
+    EXPECT_EQ(bytes_in_line, content_block.len_block);
+    EXPECT_STREQ(line, content_block.buf_block);
+    EXPECT_EQ(1, content_block.n_line);
+    EXPECT_EQ(MAX_BUF_SIZE, content_block.max_buf_len);
+
+    destroy_content_block(&content_block);
+}
+
+
 TEST(pttdb_content_block, split_contents_core_one_line2_reaching_max_line)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
@@ -733,6 +1032,62 @@ TEST(pttdb_content_block, split_contents_core_one_line2_reaching_max_line)
     char *p_char = content_block.buf_block;
     for (int i = 0; i < MAX_BUF_LINES; i++) {
         sprintf(p_char, "test1\r\n");
+        p_char += strlen(p_char);
+    }
+    content_block.len_block = strlen(content_block.buf_block);
+    content_block.n_line = MAX_BUF_LINES;
+    strcpy(origin_line, content_block.buf_block);
+
+    Err error = _split_contents_core_one_line(line, bytes_in_line, ref_id, content_id, MONGO_MAIN_CONTENT, &content_block, &n_line, &n_block);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(2, n_block);
+    EXPECT_EQ(MAX_BUF_LINES + 1, n_line);
+
+    EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block.ref_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_block.the_id, UUIDLEN));
+    EXPECT_EQ(1, content_block.block_id);
+    EXPECT_EQ(bytes_in_line, content_block.len_block);
+    EXPECT_STREQ(line, content_block.buf_block);
+    EXPECT_EQ(1, content_block.n_line);
+    EXPECT_EQ(MAX_BUF_SIZE, content_block.max_buf_len);
+
+    ContentBlock content_block2 = {};
+    init_content_block_buf_block(&content_block2);
+
+    error = read_content_block(content_id, 0, MONGO_MAIN_CONTENT, &content_block2);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_block2.ref_id, UUIDLEN));
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_block2.the_id, UUIDLEN));
+    EXPECT_EQ(0, content_block2.block_id);
+    EXPECT_EQ(strlen(origin_line), content_block2.len_block);
+    EXPECT_STREQ(origin_line, content_block2.buf_block);
+
+    destroy_content_block(&content_block2);
+    destroy_content_block(&content_block);
+}
+
+TEST(pttdb_content_block, split_contents_core_one_line2_reaching_max_line_n_only)
+{
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+    ContentBlock content_block = {};
+    char line[] = "testtesttesttest\n";
+    int bytes_in_line = strlen(line);
+    int n_line = MAX_BUF_LINES;
+    int n_block = 0;
+
+    UUID ref_id;
+    UUID content_id;
+    gen_uuid(ref_id, 0);
+    gen_uuid(content_id, 0);
+
+    init_content_block_with_buf_block(&content_block, ref_id, content_id, n_block);
+    n_block++;
+
+    char origin_line[MAX_BUF_SIZE] = {};
+    char *p_char = content_block.buf_block;
+    for (int i = 0; i < MAX_BUF_LINES; i++) {
+        sprintf(p_char, "test1\n");
         p_char += strlen(p_char);
     }
     content_block.len_block = strlen(content_block.buf_block);
