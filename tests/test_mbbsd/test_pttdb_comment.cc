@@ -2904,7 +2904,7 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_n_only) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_read_comment);
     EXPECT_EQ(15, n_read_comment_reply);
-    EXPECT_EQ(1180, len_buf);
+    EXPECT_EQ(1165, len_buf);
 
     char expected_result_buf[] = "test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\n";
 
@@ -3304,9 +3304,9 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_large_con
     int len_buf = 0;
     error = dynamic_read_b_comment_comment_reply_by_ids_to_buf(b_comments, n_comment, result_buf, MAX_BUF_SIZE, &n_read_comment, &n_read_comment_reply, &len_buf);
     EXPECT_EQ(S_ERR_BUFFER_LEN, error);
-    EXPECT_EQ(72, n_read_comment);
+    EXPECT_EQ(73, n_read_comment);
     EXPECT_EQ(0, n_read_comment_reply);
-    EXPECT_EQ(8136, len_buf);
+    EXPECT_EQ(8176, len_buf);
 
     // free
     safe_free_b_list(&b_comments, n_comment);
