@@ -692,7 +692,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_5_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.5.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(653, legacy_file_info.main_content_len);
+    EXPECT_EQ(630, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -712,7 +712,7 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_5_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.5.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(653, legacy_file_info.main_content_len);
+    EXPECT_EQ(630, legacy_file_info.main_content_len);
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.5.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
@@ -764,7 +764,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_6_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.6.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(779, legacy_file_info.main_content_len);
+    EXPECT_EQ(755, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -784,7 +784,7 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_6_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.6.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(779, legacy_file_info.main_content_len);
+    EXPECT_EQ(755, legacy_file_info.main_content_len);
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.6.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
@@ -839,7 +839,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_7_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.7.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(779, legacy_file_info.main_content_len);
+    EXPECT_EQ(755, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -860,7 +860,7 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_7_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.7.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(779, legacy_file_info.main_content_len);
+    EXPECT_EQ(755, legacy_file_info.main_content_len);
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.7.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
@@ -913,7 +913,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_8_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.8.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(1993, legacy_file_info.main_content_len);
+    EXPECT_EQ(1938, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -934,7 +934,7 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_8_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.8.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(1993, legacy_file_info.main_content_len);
+    EXPECT_EQ(1938, legacy_file_info.main_content_len);
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.8.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
@@ -986,7 +986,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_9_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.9.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(1031, legacy_file_info.main_content_len);
+    EXPECT_EQ(1002, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -1006,7 +1006,7 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_9_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.9.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(1031, legacy_file_info.main_content_len);
+    EXPECT_EQ(1002, legacy_file_info.main_content_len);
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.9.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
@@ -1058,7 +1058,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_10_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.10.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(2789, legacy_file_info.main_content_len);
+    EXPECT_EQ(2718, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -1078,7 +1078,7 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_10_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.10.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(2789, legacy_file_info.main_content_len);
+    EXPECT_EQ(2718, legacy_file_info.main_content_len);
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.10.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
