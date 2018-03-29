@@ -703,6 +703,8 @@ _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(char *lin
 Err
 _parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(char *line, int bytes_in_line, int *mm, int *dd, int *HH, int *MM)
 {
+    fprintf(stderr, "migrate_file_to_db._parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line: start: line: %s\n", line);
+
     if(bytes_in_line < LEN_COMMENT_DATETIME_IN_LINE) return S_ERR;
     char *p_line = line + bytes_in_line - 1;
     int p_line_pos = bytes_in_line - 1;

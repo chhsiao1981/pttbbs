@@ -44,7 +44,7 @@ TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_invalid_n_only) {
 
 TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_good) {
     char line[MAX_BUF_SIZE] = {};
-    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "02/31");
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "02/31 03:31");
 
     bool is_valid = false;
     Err error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_GOOD);
@@ -54,7 +54,7 @@ TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_good) {
 
 TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_bad) {
     char line[MAX_BUF_SIZE] = {};
-    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_BAD], COMMENT_TYPE_ATTR[COMMENT_TYPE_BAD], "poster001", 80, "test-msg", "02/31");
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_BAD], COMMENT_TYPE_ATTR[COMMENT_TYPE_BAD], "poster001", 80, "test-msg", "02/31 03:31");
 
     bool is_valid = false;
     Err error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_BAD);
@@ -64,7 +64,7 @@ TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_bad) {
 
 TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_arrow) {
     char line[MAX_BUF_SIZE] = {};
-    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_ARROW], COMMENT_TYPE_ATTR[COMMENT_TYPE_ARROW], "poster001", 80, "test-msg", "02/31");
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_ARROW], COMMENT_TYPE_ATTR[COMMENT_TYPE_ARROW], "poster001", 80, "test-msg", "02/31 03:31");
 
     bool is_valid = false;
     Err error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_ARROW);
@@ -85,7 +85,7 @@ TEST(migrate_file_to_db, parse_legacy_file_is_line_edit) {
 TEST(migrate_file_to_db, is_comment_line_cross) {
     // bbs.c line: 2255 cross_post()
     char line[MAX_BUF_SIZE] = {};
-    sprintf(line, "%s " ANSI_COLOR(1;32) "%s" ANSI_COLOR(0;32) COMMENT_CROSS_PREFIX "%s" ANSI_RESET "%*s%s\n", COMMENT_TYPE_ATTR[COMMENT_TYPE_CROSS], "poster001", COMMENT_CROSS_HIDDEN_BOARD, 80, "", "02/31");
+    sprintf(line, "%s " ANSI_COLOR(1;32) "%s" ANSI_COLOR(0;32) COMMENT_CROSS_PREFIX "%s" ANSI_RESET "%*s%s\n", COMMENT_TYPE_ATTR[COMMENT_TYPE_CROSS], "poster001", COMMENT_CROSS_HIDDEN_BOARD, 80, "", "02/31 03:31");
 
     bool is_valid = false;
     Err error = _is_comment_line_cross(line, MAX_BUF_SIZE, &is_valid);
@@ -96,7 +96,7 @@ TEST(migrate_file_to_db, is_comment_line_cross) {
 TEST(migrate_file_to_db, is_comment_line_cross_invalid) {
     // bbs.c line: 2255 cross_post()
     char line[MAX_BUF_SIZE] = {};
-    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_ARROW], COMMENT_TYPE_ATTR[COMMENT_TYPE_ARROW], "poster001", 80, "test-msg", "02/31");
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_ARROW], COMMENT_TYPE_ATTR[COMMENT_TYPE_ARROW], "poster001", 80, "test-msg", "02/31 03:31");
 
     bool is_valid = false;
     Err error = _is_comment_line_cross(line, MAX_BUF_SIZE, &is_valid);
