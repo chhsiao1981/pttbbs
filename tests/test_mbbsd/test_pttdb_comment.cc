@@ -3210,7 +3210,7 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_large_con
         memcpy(comment.the_id, comment_id, sizeof(UUID));
         sprintf(comment.poster, "poster%03d", i);
 
-        sprintf(comment.buf, "testtest0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789%03d\r\n", i);
+        sprintf(comment.buf, "testtest0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789%03d\n", i);
         comment.len = strlen(comment.buf);
 
         comment.create_milli_timestamp = create_milli_timestamp;
