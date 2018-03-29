@@ -640,9 +640,9 @@ TEST(pttdb_content_block, split_contents_core2_n_only)
     EXPECT_EQ(100, n_line);
     EXPECT_EQ(2, n_block);
     EXPECT_EQ(0, bytes_in_line);
-    EXPECT_EQ(20, content_block.n_line);
-    EXPECT_STREQ(buf + 8080, content_block.buf_block);
-    EXPECT_EQ(2020, content_block.len_block);
+    EXPECT_EQ(19, content_block.n_line);
+    EXPECT_STREQ(buf + 8181, content_block.buf_block);
+    EXPECT_EQ(1919, content_block.len_block);
 
     destroy_content_block(&content_block);
 }
