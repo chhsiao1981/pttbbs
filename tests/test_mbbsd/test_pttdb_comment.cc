@@ -2725,6 +2725,200 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf) {
     destroy_comment(&comment);
 }
 
+TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_n_only) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+
+    Err error = S_OK;
+    UUID main_id = {};
+    UUID comment_id = {};
+    gen_uuid(main_id, 0);
+
+    Comment comment = {};
+    init_comment_buf(&comment);
+    // comment
+    memcpy(comment.main_id, main_id, sizeof(UUID));
+    comment.status = LIVE_STATUS_ALIVE;
+    strcpy(comment.status_updater, "poster000");
+    strcpy(comment.status_update_ip, "10.1.1.4");
+
+    time64_t create_milli_timestamp = 1514764800000; //2018-01-01 08:00:00 CST
+
+    comment.comment_type = COMMENT_TYPE_GOOD;
+    comment.karma = KARMA_BY_COMMENT_TYPE[COMMENT_TYPE_GOOD];
+
+    strcpy(comment.poster, "poster001");
+    strcpy(comment.ip, "10.1.1.4");
+    comment.create_milli_timestamp = create_milli_timestamp;
+    strcpy(comment.updater, "poster000");
+    strcpy(comment.update_ip, "10.1.1.4");
+    comment.update_milli_timestamp = create_milli_timestamp;
+
+    strcpy(comment.buf, "test1test1");
+    comment.len = 10;
+
+    bson_t *comment_id_bson = NULL;
+    bson_t *comment_bson = NULL;
+
+    char replier[IDLEN + 1] = {};
+    int n_comment = 100;
+
+    UUID comment_reply_id = {};
+
+    for(int i = 85; i < 100; i++) {
+        gen_uuid(comment_id, 0);
+        memcpy(comment.the_id, comment_id, sizeof(UUID));
+        sprintf(comment.poster, "poster%03d", i);
+
+        comment.create_milli_timestamp = create_milli_timestamp + 85;
+        comment.update_milli_timestamp = create_milli_timestamp + 85;
+
+        error = _serialize_comment_bson(&comment, &comment_bson);
+        error = _serialize_uuid_bson(comment_id, &comment_id_bson);
+        
+        error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
+
+        sprintf(replier, "reply%03d", i);
+        error = create_comment_reply(main_id, comment_id, replier, (char *)"10.1.1.5", 11, (char *)"replyreply\n", comment_reply_id, 0);
+
+        bson_safe_destroy(&comment_bson);
+        bson_safe_destroy(&comment_id_bson);
+
+        EXPECT_EQ(S_OK, error);
+    }
+
+    for(int i = 15; i < 85; i++) {
+        gen_uuid(comment_id, 0);
+        memcpy(comment.the_id, comment_id, sizeof(UUID));
+        sprintf(comment.poster, "poster%03d", i);
+
+        comment.create_milli_timestamp = create_milli_timestamp + i;
+        comment.update_milli_timestamp = create_milli_timestamp + i;
+
+        error = _serialize_comment_bson(&comment, &comment_bson);
+        error = _serialize_uuid_bson(comment_id, &comment_id_bson);
+        
+        error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
+
+        bson_safe_destroy(&comment_bson);
+        bson_safe_destroy(&comment_id_bson);
+
+        EXPECT_EQ(S_OK, error);
+    }
+
+    for(int i = 0; i < 15; i++) {
+        gen_uuid(comment_id, 0);
+        memcpy(comment.the_id, comment_id, sizeof(UUID));
+        sprintf(comment.poster, "poster%03d", i);
+
+        comment.create_milli_timestamp = create_milli_timestamp;
+        comment.update_milli_timestamp = create_milli_timestamp;
+
+        error = _serialize_comment_bson(&comment, &comment_bson);
+        error = _serialize_uuid_bson(comment_id, &comment_id_bson);
+
+        error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
+
+        bson_safe_destroy(&comment_bson);
+        bson_safe_destroy(&comment_id_bson);
+
+        EXPECT_EQ(S_OK, error);
+    }
+
+    // get newest_comments
+
+    UUID newest_comment_id = {};
+    time64_t newest_create_milli_timestamp = 0;
+    char newest_poster[IDLEN + 1] = {};
+    int n_expected_comment = 0;
+    error = get_newest_comment(main_id, newest_comment_id, &newest_create_milli_timestamp, newest_poster, &n_expected_comment);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(100, n_expected_comment);
+    EXPECT_EQ(create_milli_timestamp + 85, newest_create_milli_timestamp);
+    EXPECT_STREQ((char *)"poster099", newest_poster);
+
+    // insert more comments
+    for(int i = 100; i < 102; i++) {
+        gen_uuid(comment_id, 0);
+        memcpy(comment.the_id, comment_id, sizeof(UUID));
+        sprintf(comment.poster, "poster%03d", i);
+
+        comment.create_milli_timestamp = create_milli_timestamp + 85;
+        comment.update_milli_timestamp = create_milli_timestamp + 85;
+
+        error = _serialize_comment_bson(&comment, &comment_bson);
+        error = _serialize_uuid_bson(comment_id, &comment_id_bson);
+        
+        error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
+
+        bson_safe_destroy(&comment_bson);
+        bson_safe_destroy(&comment_id_bson);
+
+        EXPECT_EQ(S_OK, error);
+    }
+
+    // read comments until newest to bsons
+    bson_t *fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "the_id", BCON_BOOL(true),
+        "comment_reply_id", BCON_BOOL(true),
+        "create_milli_timestamp", BCON_BOOL(true),
+        "poster", BCON_BOOL(true)
+        );
+
+    fprintf(stderr, "test_pttdb_comment.extract_b_comments_comment_reply_id_to_bsons_some_comment_reply_ids: to read_comments_until_newest_to_bsons\n");
+    bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_expected_comment);
+    n_comment = 0;
+    error = read_comments_until_newest_to_bsons(main_id, newest_create_milli_timestamp, newest_poster, fields, n_expected_comment, b_comments, &n_comment);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(100, n_comment);
+
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    char *str = NULL;
+    for(int i = 0; i < n_comment; i++) {
+        str = bson_as_canonical_extended_json(b_comments[i], NULL);
+        fprintf(stderr, "test_pttdb_comment.extract_b_comments_comment_reply_id_to_bsons_some_comment_reply_ids: (%d/%d) %s\n", i, n_comment, str);
+        bson_free(str);
+    }
+
+    time64_t result_create_milli_timestamp = 0;
+    char expected_poster[IDLEN + 1] = {};
+    char poster[IDLEN + 1] = {};
+    int len = 0;
+    for(int i = 0; i < 15; i++) {                
+        sprintf(expected_poster, "poster%03d", i);
+        error = bson_get_value_int64(b_comments[i], (char *)"create_milli_timestamp", (long *)&result_create_milli_timestamp);
+        EXPECT_EQ(S_OK, error);
+        error = bson_get_value_bin(b_comments[i], (char *)"poster", IDLEN, poster, &len);
+        EXPECT_EQ(S_OK, error);
+        EXPECT_EQ(create_milli_timestamp, result_create_milli_timestamp);
+        EXPECT_STREQ(expected_poster, poster);
+    }
+
+    // dynamic read b comment comment reply by ids to buf
+    char result_buf[MAX_BUF_SIZE] = {};
+    int n_read_comment = 0;
+    int n_read_comment_reply = 0;
+    int len_buf = 0;
+    error = dynamic_read_b_comment_comment_reply_by_ids_to_buf(b_comments, n_comment, result_buf, MAX_BUF_SIZE, &n_read_comment, &n_read_comment_reply, &len_buf);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(100, n_read_comment);
+    EXPECT_EQ(15, n_read_comment_reply);
+    EXPECT_EQ(1180, len_buf);
+
+    char expected_result_buf[] = "test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\ntest1test1replyreply\n";
+
+
+    fprintf(stderr, "test_pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: result_buf: %s\n", result_buf);
+    EXPECT_STREQ(expected_result_buf, result_buf);
+
+    // free
+    safe_free_b_list(&b_comments, n_comment);
+    bson_safe_destroy(&fields);
+
+    destroy_comment(&comment);
+}
+
 TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_large_content) {
     fprintf(stderr, "test_pttdb_comment.extract_b_comments_comment_reply_id_to_bsons_some_comment_reply_ids_large_content: start\n");
 
@@ -2800,6 +2994,204 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_large_con
         comment.update_milli_timestamp = create_milli_timestamp + i;
 
         sprintf(comment.buf, "testtest0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789%03d\r\n", i);
+        comment.len = strlen(comment.buf);
+
+        error = _serialize_comment_bson(&comment, &comment_bson);
+        error = _serialize_uuid_bson(comment_id, &comment_id_bson);
+        
+        error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
+
+        bson_safe_destroy(&comment_bson);
+        bson_safe_destroy(&comment_id_bson);
+
+        EXPECT_EQ(S_OK, error);
+    }
+
+    for(int i = 0; i < 15; i++) {
+        gen_uuid(comment_id, 0);
+        memcpy(comment.the_id, comment_id, sizeof(UUID));
+        sprintf(comment.poster, "poster%03d", i);
+
+        sprintf(comment.buf, "testtest0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789%03d\r\n", i);
+        comment.len = strlen(comment.buf);
+
+        comment.create_milli_timestamp = create_milli_timestamp;
+        comment.update_milli_timestamp = create_milli_timestamp;
+
+        error = _serialize_comment_bson(&comment, &comment_bson);
+        error = _serialize_uuid_bson(comment_id, &comment_id_bson);
+
+        error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
+
+        bson_safe_destroy(&comment_bson);
+        bson_safe_destroy(&comment_id_bson);
+
+        EXPECT_EQ(S_OK, error);
+    }
+
+    // get newest_comments
+
+    UUID newest_comment_id = {};
+    time64_t newest_create_milli_timestamp = 0;
+    char newest_poster[IDLEN + 1] = {};
+    int n_expected_comment = 0;
+    error = get_newest_comment(main_id, newest_comment_id, &newest_create_milli_timestamp, newest_poster, &n_expected_comment);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(100, n_expected_comment);
+    EXPECT_EQ(create_milli_timestamp + 85, newest_create_milli_timestamp);
+    EXPECT_STREQ((char *)"poster099", newest_poster);
+
+    // insert more comments
+    for(int i = 100; i < 102; i++) {
+        gen_uuid(comment_id, 0);
+        memcpy(comment.the_id, comment_id, sizeof(UUID));
+        sprintf(comment.poster, "poster%03d", i);
+
+        comment.create_milli_timestamp = create_milli_timestamp + 85;
+        comment.update_milli_timestamp = create_milli_timestamp + 85;
+
+        error = _serialize_comment_bson(&comment, &comment_bson);
+        error = _serialize_uuid_bson(comment_id, &comment_id_bson);
+        
+        error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
+
+        bson_safe_destroy(&comment_bson);
+        bson_safe_destroy(&comment_id_bson);
+
+        EXPECT_EQ(S_OK, error);
+    }
+
+    // read comments until newest to bsons
+    bson_t *fields = BCON_NEW(
+        "_id", BCON_BOOL(false),
+        "the_id", BCON_BOOL(true),
+        "comment_reply_id", BCON_BOOL(true),
+        "create_milli_timestamp", BCON_BOOL(true),
+        "poster", BCON_BOOL(true)
+        );
+
+    fprintf(stderr, "test_pttdb_comment.extract_b_comments_comment_reply_id_to_bsons_some_comment_reply_ids_large_content: to read_comments_until_newest_to_bsons\n");
+    bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_expected_comment);
+    n_comment = 0;
+    error = read_comments_until_newest_to_bsons(main_id, newest_create_milli_timestamp, newest_poster, fields, n_expected_comment, b_comments, &n_comment);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(100, n_comment);
+
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    char *str = NULL;
+    for(int i = 0; i < n_comment; i++) {
+        str = bson_as_canonical_extended_json(b_comments[i], NULL);
+        fprintf(stderr, "test_pttdb_comment.extract_b_comments_comment_reply_id_to_bsons_some_comment_reply_ids_large_content: (%d/%d) %s\n", i, n_comment, str);
+        bson_free(str);
+    }
+
+    time64_t result_create_milli_timestamp = 0;
+    char expected_poster[IDLEN + 1] = {};
+    char poster[IDLEN + 1] = {};
+    int len = 0;
+    for(int i = 0; i < 15; i++) {                
+        sprintf(expected_poster, "poster%03d", i);
+        error = bson_get_value_int64(b_comments[i], (char *)"create_milli_timestamp", (long *)&result_create_milli_timestamp);
+        EXPECT_EQ(S_OK, error);
+        error = bson_get_value_bin(b_comments[i], (char *)"poster", IDLEN, poster, &len);
+        EXPECT_EQ(S_OK, error);
+        EXPECT_EQ(create_milli_timestamp, result_create_milli_timestamp);
+        EXPECT_STREQ(expected_poster, poster);
+    }
+
+    // dynamic read b comment comment reply by ids to buf
+    char result_buf[MAX_BUF_SIZE] = {};
+    int n_read_comment = 0;
+    int n_read_comment_reply = 0;
+    int len_buf = 0;
+    error = dynamic_read_b_comment_comment_reply_by_ids_to_buf(b_comments, n_comment, result_buf, MAX_BUF_SIZE, &n_read_comment, &n_read_comment_reply, &len_buf);
+    EXPECT_EQ(S_ERR_BUFFER_LEN, error);
+    EXPECT_EQ(72, n_read_comment);
+    EXPECT_EQ(0, n_read_comment_reply);
+    EXPECT_EQ(8136, len_buf);
+
+    // free
+    safe_free_b_list(&b_comments, n_comment);
+    bson_safe_destroy(&fields);
+
+    destroy_comment(&comment);
+}
+
+TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_large_content_n_only) {
+    fprintf(stderr, "test_pttdb_comment.extract_b_comments_comment_reply_id_to_bsons_some_comment_reply_ids_large_content: start\n");
+
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+
+    fprintf(stderr, "test_pttdb_comment.extract_b_comments_comment_reply_id_to_bsons_some_comment_reply_ids_large_content: start2\n");
+
+    Err error = S_OK;
+    UUID main_id = {};
+    UUID comment_id = {};
+    gen_uuid(main_id, 0);
+
+    Comment comment = {};
+    init_comment_buf(&comment);
+    // comment
+    memcpy(comment.main_id, main_id, sizeof(UUID));
+    comment.status = LIVE_STATUS_ALIVE;
+    strcpy(comment.status_updater, "poster000");
+    strcpy(comment.status_update_ip, "10.1.1.4");
+
+    time64_t create_milli_timestamp = 1514764800000; //2018-01-01 08:00:00 CST
+
+    comment.comment_type = COMMENT_TYPE_GOOD;
+    comment.karma = KARMA_BY_COMMENT_TYPE[COMMENT_TYPE_GOOD];
+
+    strcpy(comment.poster, "poster001");
+    strcpy(comment.ip, "10.1.1.4");
+    comment.create_milli_timestamp = create_milli_timestamp;
+    strcpy(comment.updater, "poster000");
+    strcpy(comment.update_ip, "10.1.1.4");
+    comment.update_milli_timestamp = create_milli_timestamp;
+
+    bson_t *comment_id_bson = NULL;
+    bson_t *comment_bson = NULL;
+
+    char replier[IDLEN + 1] = {};
+    int n_comment = 100;
+
+    UUID comment_reply_id = {};
+
+    for(int i = 85; i < 100; i++) {
+        gen_uuid(comment_id, 0);
+        memcpy(comment.the_id, comment_id, sizeof(UUID));
+        sprintf(comment.poster, "poster%03d", i);
+
+        comment.create_milli_timestamp = create_milli_timestamp + 85;
+        comment.update_milli_timestamp = create_milli_timestamp + 85;
+
+        sprintf(comment.buf, "testtest0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789%03d\n", i);
+        comment.len = strlen(comment.buf);
+
+        error = _serialize_comment_bson(&comment, &comment_bson);
+        error = _serialize_uuid_bson(comment_id, &comment_id_bson);
+        
+        error = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, true);
+
+        sprintf(replier, "reply%03d", i);
+        error = create_comment_reply(main_id, comment_id, replier, (char *)"10.1.1.5", 11, (char *)"replyreply\n", comment_reply_id, 0);
+
+        bson_safe_destroy(&comment_bson);
+        bson_safe_destroy(&comment_id_bson);
+
+        EXPECT_EQ(S_OK, error);
+    }
+
+    for(int i = 15; i < 85; i++) {
+        gen_uuid(comment_id, 0);
+        memcpy(comment.the_id, comment_id, sizeof(UUID));
+        sprintf(comment.poster, "poster%03d", i);
+
+        comment.create_milli_timestamp = create_milli_timestamp + i;
+        comment.update_milli_timestamp = create_milli_timestamp + i;
+
+        sprintf(comment.buf, "testtest0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789%03d\n", i);
         comment.len = strlen(comment.buf);
 
         error = _serialize_comment_bson(&comment, &comment_bson);
