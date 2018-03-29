@@ -720,34 +720,41 @@ _parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(char *l
 
     // /
     p_line += 2;
+    p_line_pos += 2;
     if(*p_line != '/') return S_ERR;
 
     // dd
     p_line++;
+    p_line_pos++;
     int tmp_dd = atoi(p_line);
     if(tmp_dd < 1 || tmp_dd > 31) return S_ERR;
 
     // [space]
     p_line += 2;
+    p_line_pos += 2;
     if(*p_line != ' ') return S_ERR;
 
     // HH
     p_line++;
+    p_line_pos++;
     int tmp_HH = atoi(p_line);
     if(tmp_HH < 0 || tmp_HH > 23) return S_ERR;
 
     // :
     p_line += 2;
+    p_line_pos += 2;
     if(*p_line != ':') return S_ERR;
 
     // MM
     p_line++;
+    p_line_pos++;
     int tmp_MM = atoi(p_line);
     if(tmp_MM < 0 || tmp_MM > 59) return S_ERR;
 
     // \r\n
     p_line += 2;
-    if(!(*p_line == '\r' && *(p_line + 1) == '\n') && !(*p_line == '\n')) return S_ERR;
+    p_line_pos += 2;
+    if(!(p_line_pos == bytes_in_line - 2 && *p_line == '\r' && *(p_line + 1) == '\n') && !(p_line_pos == bytes_in_line - 1 && *p_line == '\n')) return S_ERR;
 
     *mm = tmp_mm;
     *dd = tmp_dd;
