@@ -327,11 +327,11 @@ TEST(pttdb_main, create_main_from_fd_test2) {
     close(fd);
 }
 
-TEST(pttdb_main, create_main_from_fd_test3_read_main_content) {
+TEST(pttdb_main, create_main_from_fd_test1_read_main_content_n_only) {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
-    int fd = open("data_test/test3.txt", O_RDONLY);
+    int fd = open("data_test/test1_n_only.txt", O_RDONLY);
 
     aidu_t aid = 12345;
     char board[IDLEN + 1] = {};
@@ -425,11 +425,11 @@ TEST(pttdb_main, create_main_from_fd_test3_read_main_content) {
 }
 
 
-TEST(pttdb_main, create_main_from_fd_test3) {
+TEST(pttdb_main, create_main_from_fd_test1_n_only) {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
-    int fd = open("data_test/test3.txt", O_RDONLY);
+    int fd = open("data_test/test1_n_only.txt", O_RDONLY);
 
     aidu_t aid = 12345;
     char board[IDLEN + 1] = {};
@@ -1341,7 +1341,7 @@ void MyEnvironment::SetUp() {
     }
     fclose(f);
 
-    f = fopen("data_test/test3.txt", "w");
+    f = fopen("data_test/test1_n_only.txt", "w");
     for (int j = 0; j < 10; j++) {
         for (int i = 0; i < 1000; i++) {
             fprintf(f, "%c", 64 + (i % 26));
