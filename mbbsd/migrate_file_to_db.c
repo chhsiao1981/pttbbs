@@ -747,7 +747,7 @@ _parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(char *l
 
     // \r\n
     p_line += 2;
-    if(*p_line != '\r' || *(p_line + 1) != '\n') return S_ERR;
+    if(!(*p_line == '\r' && *(p_line + 1) == '\n') && !(*p_line == '\n')) return S_ERR;
 
     *mm = tmp_mm;
     *dd = tmp_dd;
