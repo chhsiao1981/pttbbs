@@ -476,7 +476,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_2_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.2.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(109216, legacy_file_info.main_content_len);
+    EXPECT_EQ(107092, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -496,7 +496,7 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_2_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.2.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(109216, legacy_file_info.main_content_len);
+    EXPECT_EQ(107092, legacy_file_info.main_content_len);
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.2.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
@@ -548,7 +548,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_3_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.3.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(6447, legacy_file_info.main_content_len);
+    EXPECT_EQ(6375, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -568,7 +568,7 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_3_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.3.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(6447, legacy_file_info.main_content_len);
+    EXPECT_EQ(6375, legacy_file_info.main_content_len);
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.3.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
@@ -620,7 +620,7 @@ TEST(migrate_file_to_db, parse_legacy_file_main_info_4_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.4.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(1309, legacy_file_info.main_content_len);
+    EXPECT_EQ(1268, legacy_file_info.main_content_len);
 
     char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
     bzero(buf, legacy_file_info.main_content_len + 1);
@@ -640,7 +640,7 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_4_n_only) {
 
     Err error = _parse_legacy_file_main_info("data_test/original_msg.4.txt_n_only", &legacy_file_info);
     EXPECT_EQ(S_OK, error);
-    EXPECT_EQ(1309, legacy_file_info.main_content_len);
+    EXPECT_EQ(1268, legacy_file_info.main_content_len);
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.4.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
@@ -686,6 +686,42 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_5) {
     //free
 }
 
+TEST(migrate_file_to_db, parse_legacy_file_main_info_5_n_only) {
+    // M.997843374.A
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.5.txt_n_only", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(653, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.5.txt_n_only", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "test_migrate_file_to_db.parse_legacy_file_main_info_5: migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_5_n_only) {
+    // M.997843374.A
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.5.txt_n_only", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(653, legacy_file_info.main_content_len);
+
+    int n_comment_comment_reply = 0;
+    error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.5.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(0, n_comment_comment_reply);
+
+    //free
+}
+
 TEST(migrate_file_to_db, parse_legacy_file_main_info_6) {
     // M.997841455.A
     LegacyFileInfo legacy_file_info = {};
@@ -716,6 +752,42 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_6) {
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.6.txt", legacy_file_info.main_content_len, &n_comment_comment_reply);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1, n_comment_comment_reply);
+
+    //free
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_main_info_6_n_only) {
+    // M.997841455.A
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.6.txt_n_only", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(779, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.6.txt_n_only", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "test_migrate_file_to_db.parse_legacy_file_main_info_6: migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_6_n_only) {
+    // M.997841455.A
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.6.txt_n_only", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(779, legacy_file_info.main_content_len);
+
+    int n_comment_comment_reply = 0;
+    error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.6.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(1, n_comment_comment_reply);
 
@@ -760,6 +832,44 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_7) {
     //free
 }
 
+TEST(migrate_file_to_db, parse_legacy_file_main_info_7_n_only) {
+    // M.997841455.A
+
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.7.txt_n_only", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(779, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.7.txt_n_only", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "test_migrate_file_to_db.parse_legacy_file_main_info_7: migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_7_n_only) {
+    // M.997841455.A
+
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.7.txt_n_only", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(779, legacy_file_info.main_content_len);
+
+    int n_comment_comment_reply = 0;
+    error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.7.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(0, n_comment_comment_reply);
+
+    //free
+}
+
 TEST(migrate_file_to_db, parse_legacy_file_main_info_8) {
     // M.1041489119.A.C28
     LegacyFileInfo legacy_file_info = {};
@@ -791,6 +901,43 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_8) {
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.8.txt", legacy_file_info.main_content_len, &n_comment_comment_reply);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(77, n_comment_comment_reply);
+
+    //free
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_main_info_8_n_only) {
+    // M.1041489119.A.C28
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.8.txt_n_only", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1993, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.8.txt_n_only", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "test_migrate_file_to_db.parse_legacy_file_main_info_8: migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_8_n_only) {
+    // M.997841455.A
+
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.8.txt_n_only", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1993, legacy_file_info.main_content_len);
+
+    int n_comment_comment_reply = 0;
+    error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.8.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(77, n_comment_comment_reply);
 
@@ -833,6 +980,42 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_9) {
     //free
 }
 
+TEST(migrate_file_to_db, parse_legacy_file_main_info_9_n_only) {
+    // M.1119222611.A.7A9
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.9.txt_n_only", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1031, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.9.txt_n_only", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "test_migrate_file_to_db.parse_legacy_file_main_info_9: migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_9_n_only) {
+    // M.1119222611.A.7A9
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.9.txt_n_only", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1031, legacy_file_info.main_content_len);
+
+    int n_comment_comment_reply = 0;
+    error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.9.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(25649, n_comment_comment_reply);
+
+    //free
+}
+
 TEST(migrate_file_to_db, parse_legacy_file_main_info_10) {
     // M.1.A.5CF
     LegacyFileInfo legacy_file_info = {};
@@ -863,6 +1046,42 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_10) {
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.10.txt", legacy_file_info.main_content_len, &n_comment_comment_reply);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(44, n_comment_comment_reply);
+
+    //free
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_main_info_10_n_only) {
+    // M.1.A.5CF
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.10.txt_n_only", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(2789, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.10.txt_n_only", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "test_migrate_file_to_Db.parse_legacy_file_main_info_10.migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_10_n_only) {
+    // M.1.A.5CF
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.10.txt_n_only", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(2789, legacy_file_info.main_content_len);
+
+    int n_comment_comment_reply = 0;
+    error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.10.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(44, n_comment_comment_reply);
 
