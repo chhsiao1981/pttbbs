@@ -61,6 +61,62 @@ TEST(pttdb, n_line_post) {
     EXPECT_EQ(15, n_line);
 }
 
+TEST(pttdb, n_line_post_n_only) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+
+    int fd = open("data_test/test1_n_only.txt", O_RDONLY);
+
+    aidu_t aid = 12345;
+    char board[IDLEN + 1] = {};
+    char title[TTLEN + 1] = {};
+    char poster[IDLEN + 1] = {};
+    char ip[IPV4LEN + 1] = {};
+    char origin[MAX_ORIGIN_LEN + 1] = {};
+    char web_link[MAX_WEB_LINK_LEN + 1] = {};
+    int len = 10010;
+    UUID main_id = {};
+    UUID content_id = {};
+
+    strcpy(board, "test_board");
+    strcpy(title, "test_title");
+    strcpy(poster, "test_poster");
+    strcpy(ip, "test_ip");
+    strcpy(origin, "ptt.cc");
+    strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
+
+    // create-main-from-fd
+    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id, 0);
+    EXPECT_EQ(S_OK, error);
+
+
+    close(fd);
+
+    // create-comment
+    UUID comment_id = {};
+    UUID comment_id2 = {};
+
+    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test1test1", COMMENT_TYPE_GOOD, comment_id, 0);
+    EXPECT_EQ(S_OK, error);
+    error = create_comment(main_id, (char *)"poster1", (char *)"10.3.1.4", 10, (char *)"test2test2", COMMENT_TYPE_GOOD, comment_id2, 0);
+
+    // comment-reply
+    UUID comment_reply_id = {};
+    UUID comment_reply_id2 = {};
+
+    error = create_comment_reply(main_id, comment_id, (char *)"poster1", (char *)"10.3.1.4", 24, (char *)"test1test1\ntest3test3\n", comment_reply_id, 0);
+    EXPECT_EQ(S_OK, error);
+    error = create_comment_reply(main_id, comment_id2, (char *)"poster1", (char *)"10.3.1.4", 12, (char *)"test2test2\n", comment_reply_id2, 0);
+    EXPECT_EQ(S_OK, error);
+
+    int n_line;
+    error = n_line_post(main_id, &n_line);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(15, n_line);
+}
+
 TEST(pttdb, get_file_info_by_main_get_main_info) {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
@@ -76,6 +132,52 @@ TEST(pttdb, get_file_info_by_main_get_main_info) {
     char origin[MAX_ORIGIN_LEN + 1] = {};
     char web_link[MAX_WEB_LINK_LEN + 1] = {};
     int len = 10020;
+    UUID main_id = {};
+    UUID content_id = {};
+
+    strcpy(board, "test_board");
+    strcpy(title, "test_title");
+    strcpy(poster, "test_poster");
+    strcpy(ip, "test_ip");
+    strcpy(origin, "ptt.cc");
+    strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
+
+    // create-main-from-fd
+    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id, 0);
+    EXPECT_EQ(S_OK, error);
+
+    close(fd);
+
+    FileInfo file_info = {};
+
+    error = _get_file_info_by_main_get_main_info(main_id, &file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(0, strncmp((char *)main_id, (char *)file_info.main_id, UUIDLEN));
+    EXPECT_STREQ(poster, file_info.main_updater);
+    EXPECT_EQ(0, strncmp((char *)content_id, (char *)file_info.main_content_id, UUIDLEN));
+    EXPECT_EQ(10, file_info.n_main_line);
+    EXPECT_EQ(2, file_info.n_main_block);
+    EXPECT_EQ(0, file_info.n_comment);
+    EXPECT_EQ(NULL, file_info.content_block_info);
+
+    destroy_file_info(&file_info);
+}
+
+TEST(pttdb, get_file_info_by_main_get_main_info_n_only) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+
+
+    int fd = open("data_test/test3.txt", O_RDONLY);
+
+    aidu_t aid = 12345;
+    char board[IDLEN + 1] = {};
+    char title[TTLEN + 1] = {};
+    char poster[IDLEN + 1] = {};
+    char ip[IPV4LEN + 1] = {};
+    char origin[MAX_ORIGIN_LEN + 1] = {};
+    char web_link[MAX_WEB_LINK_LEN + 1] = {};
+    int len = 10010;
     UUID main_id = {};
     UUID content_id = {};
 
@@ -161,6 +263,60 @@ TEST(pttdb, get_file_info_by_main_get_content_block_info) {
     destroy_file_info(&file_info);
 }
 
+TEST(pttdb, get_file_info_by_main_get_content_block_info_n_only) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
+    _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+
+
+    int fd = open("data_test/test1_n_only.txt", O_RDONLY);
+
+    aidu_t aid = 12345;
+    char board[IDLEN + 1] = {};
+    char title[TTLEN + 1] = {};
+    char poster[IDLEN + 1] = {};
+    char ip[IPV4LEN + 1] = {};
+    char origin[MAX_ORIGIN_LEN + 1] = {};
+    char web_link[MAX_WEB_LINK_LEN + 1] = {};
+    int len = 10020;
+    UUID main_id = {};
+    UUID content_id = {};
+
+    strcpy(board, "test_board");
+    strcpy(title, "test_title");
+    strcpy(poster, "test_poster");
+    strcpy(ip, "test_ip");
+    strcpy(origin, "ptt.cc");
+    strcpy(web_link, "http://www.ptt.cc/bbs/alonglonglongboard/M.1234567890.ABCD.html");
+
+    // create-main-from-fd
+    Err error = create_main_from_fd(aid, board, title, poster, ip, origin, web_link, len, fd, main_id, content_id, 0);
+    EXPECT_EQ(S_OK, error);
+
+    close(fd);
+
+    FileInfo file_info = {};
+
+    // get file info by main get main-info
+    error = _get_file_info_by_main_get_main_info(main_id, &file_info);
+    EXPECT_EQ(S_OK, error);
+
+    // get file info by main get content block_info
+    error = _get_file_info_by_main_get_content_block_info(&file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(2, file_info.n_main_block);
+    EXPECT_EQ(0, file_info.n_comment);
+    EXPECT_NE(NULL, (long)file_info.content_block_info);
+
+    EXPECT_EQ(0, file_info.content_block_info[0].block_id);
+    EXPECT_EQ(8, file_info.content_block_info[0].n_line);
+    EXPECT_EQ(1, file_info.content_block_info[1].block_id);
+    EXPECT_EQ(2, file_info.content_block_info[1].n_line);
+
+    destroy_file_info(&file_info);
+}
+
 /**********
  * MAIN
  */
@@ -200,6 +356,15 @@ void MyEnvironment::SetUp() {
             fprintf(f, "%c", 64 + (i % 26));
         }
         fprintf(f, "\r\n");
+    }
+    fclose(f);    
+
+    f = fopen("data_test/test1_n_only.txt", "w");
+    for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < 1000; i++) {
+            fprintf(f, "%c", 64 + (i % 26));
+        }
+        fprintf(f, "\n");
     }
     fclose(f);    
 }
