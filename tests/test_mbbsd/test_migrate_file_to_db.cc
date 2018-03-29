@@ -32,6 +32,16 @@ TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_invalid) {
     EXPECT_EQ(false, is_valid);
 }
 
+TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_invalid_n_only) {
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "testtest\n");
+
+    bool is_valid = false;
+    Err error = _is_comment_line_good_bad_arrow(line, MAX_BUF_SIZE, &is_valid, COMMENT_TYPE_GOOD);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_valid);
+}
+
 TEST(migrate_file_to_db, is_comment_line_good_bad_arrow_good) {
     char line[MAX_BUF_SIZE] = {};
     sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "02/31");
@@ -107,9 +117,32 @@ TEST(migrate_file_to_db, is_comment_line_reset) {
     EXPECT_EQ(true, is_valid);
 }
 
+TEST(migrate_file_to_db, is_comment_line_reset_n_only) {
+    // bbs.c line: 2255 cross_post()
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s%s%s%s%s\n", COMMENT_TYPE_ATTR[COMMENT_TYPE_RESET], "poster001", COMMENT_RESET_INFIX, "02/27/2018 10:30:45", COMMENT_RESET_POSTFIX);
+
+    fprintf(stderr, "test_migrate_file_to_db.is_comment_line_reset: line: %s\n", line);
+
+    bool is_valid = false;
+    Err error = _is_comment_line_reset(line, MAX_BUF_SIZE, &is_valid);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_valid);
+}
+
 TEST(migrate_file_to_db, is_comment_line_invalid) {
     char line[MAX_BUF_SIZE] = {};
     sprintf(line, "testtest\r\n");
+
+    bool is_valid = false;
+    Err error = _is_comment_line(line, MAX_BUF_SIZE, &is_valid);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_valid);
+}
+
+TEST(migrate_file_to_db, is_comment_line_invalid_n_only) {
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "testtest\n");
 
     bool is_valid = false;
     Err error = _is_comment_line(line, MAX_BUF_SIZE, &is_valid);
@@ -177,6 +210,26 @@ TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_get_da
     EXPECT_EQ(3, MM);
 }
 
+TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line_n_only) {
+
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "02/27 03:03");
+
+    int mm = 0;
+    int dd = 0;
+    int HH = 0;
+    int MM = 0;
+
+    int bytes_in_line = strlen(line);
+
+    Err error = _parse_legacy_file_comment_create_milli_timestamp_get_datetime_from_line(line, bytes_in_line, &mm, &dd, &HH, &MM);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(2, mm);
+    EXPECT_EQ(27, dd);
+    EXPECT_EQ(3, HH);
+    EXPECT_EQ(3, MM);
+}
+
 TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross_good) {
     time64_t current_create_milli_timestamp = 1520315640000; // 2018-03-06 13:54:00 (CST)
 
@@ -190,6 +243,25 @@ TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_good_b
     EXPECT_EQ(1551207780000, create_milli_timestamp); // 2019-02-27 03:03 (CST)
 
     sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\r\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "03/06 13:54");
+
+    error = _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(line, bytes_in_line, current_create_milli_timestamp, &create_milli_timestamp);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1520315640001, create_milli_timestamp); // 2018-03-06 13:54:00.001 (CST)
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross_good_n_only) {
+    time64_t current_create_milli_timestamp = 1520315640000; // 2018-03-06 13:54:00 (CST)
+
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "02/27 03:03");
+
+    int bytes_in_line = strlen(line);
+    time64_t create_milli_timestamp = 0;
+    Err error = _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(line, bytes_in_line, current_create_milli_timestamp, &create_milli_timestamp);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1551207780000, create_milli_timestamp); // 2019-02-27 03:03 (CST)
+
+    sprintf(line, "%s%s " ANSI_COLOR(33) "%s" ANSI_RESET ANSI_COLOR(33) ":%-*s" ANSI_RESET "%s\n", COMMENT_TYPE_ATTR2[COMMENT_TYPE_GOOD], COMMENT_TYPE_ATTR[COMMENT_TYPE_GOOD], "poster001", 80, "test-msg", "03/06 13:54");
 
     error = _parse_legacy_file_comment_create_milli_timestamp_good_bad_arrow_cross(line, bytes_in_line, current_create_milli_timestamp, &create_milli_timestamp);
     EXPECT_EQ(S_OK, error);
@@ -212,6 +284,21 @@ TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_reset)
     EXPECT_EQ(0, create_milli_timestamp);    
 }
 
+TEST(migrate_file_to_db, parse_legacy_file_comment_create_milli_timestamp_reset_n_only) {
+
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s%s%s%s%s\n", COMMENT_TYPE_ATTR[COMMENT_TYPE_RESET], "poster001", COMMENT_RESET_INFIX, "02/27/2018 10:30:45", COMMENT_RESET_POSTFIX);
+
+    time64_t create_milli_timestamp = 0;
+    Err error = _parse_legacy_file_comment_create_milli_timestamp_reset(line, MAX_BUF_SIZE, 1519698643000, &create_milli_timestamp);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1519698645000, create_milli_timestamp);    
+
+    create_milli_timestamp = 0;
+    error = _parse_legacy_file_comment_create_milli_timestamp_reset(line, MAX_BUF_SIZE, 1519698646000, &create_milli_timestamp);
+    EXPECT_EQ(S_ERR, error);
+    EXPECT_EQ(0, create_milli_timestamp);    
+}
 
 TEST(migrate_file_to_db, parse_legacy_file_comment_poster_good_bad_arrow_good) {
     char line[MAX_BUF_SIZE] = {};
@@ -264,6 +351,16 @@ TEST(migrate_file_to_db, parse_legacy_file_comment_poster_reset) {
     EXPECT_STREQ("poster001", poster);    
 }
 
+TEST(migrate_file_to_db, parse_legacy_file_comment_poster_reset_n_only) {
+
+    char line[MAX_BUF_SIZE] = {};
+    sprintf(line, "%s%s%s%s%s\n", COMMENT_TYPE_ATTR[COMMENT_TYPE_RESET], "poster001", COMMENT_RESET_INFIX, "02/27/2018 10:30:45", COMMENT_RESET_POSTFIX);
+
+    char poster[IDLEN + 1] = {};
+    Err error = _parse_legacy_file_comment_poster_reset(line, MAX_BUF_SIZE, poster);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_STREQ("poster001", poster);    
+}
 
 TEST(migrate_file_to_db, parse_legacy_file_main_info_1) {
     // M.1510537375.A.8B4
@@ -295,6 +392,42 @@ TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_1) {
 
     int n_comment_comment_reply = 0;
     error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.1.txt", legacy_file_info.main_content_len, &n_comment_comment_reply);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(4, n_comment_comment_reply);
+
+    //free
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_main_info_1_n_only) {
+    // M.1510537375.A.8B4
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.1.txt_n_only", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1780, legacy_file_info.main_content_len);
+
+    char *buf = (char *)malloc(legacy_file_info.main_content_len + 1);
+    bzero(buf, legacy_file_info.main_content_len + 1);
+
+    int fd = open("data_test/original_msg.1.txt", O_RDONLY);
+    read(fd, buf, legacy_file_info.main_content_len);
+    fprintf(stderr, "test_migrate_file_to_db._parse_legacy_file_main_info_1: migrate_file_to_buf: %s\n", buf);
+
+    //free
+    close(fd);
+    free(buf);
+}
+
+TEST(migrate_file_to_db, parse_legacy_file_n_comment_comment_reply_1_n_only) {
+    // M.1510537375.A.8B4
+    LegacyFileInfo legacy_file_info = {};
+
+    Err error = _parse_legacy_file_main_info("data_test/original_msg.1.txt_n_only", &legacy_file_info);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(1780, legacy_file_info.main_content_len);
+
+    int n_comment_comment_reply = 0;
+    error = _parse_legacy_file_n_comment_comment_reply("data_test/original_msg.1.txt_n_only", legacy_file_info.main_content_len, &n_comment_comment_reply);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(4, n_comment_comment_reply);
 
