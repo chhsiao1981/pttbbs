@@ -2,9 +2,11 @@
 #include "bbs.h"
 
 TEST(bbs, is_file_owner) {
+    // init
     fileheader_t fhdr = {};
     userec_t usr = {};
 
+    // prepare data
     sprintf(fhdr.owner, "owner1");
     sprintf(usr.userid, "owner1");
     sprintf(fhdr.filename, "M.1234567890.A.ABC");
@@ -13,17 +15,24 @@ TEST(bbs, is_file_owner) {
     int ret = is_file_owner(&fhdr, &usr);
     
     EXPECT_EQ(1, ret);
+
+    // free
 }
 
 TEST(bbs, is_file_owner_ne_owner) {
+    // init
     fileheader_t fhdr = {};
     userec_t usr = {};
 
+    // prepare data
     sprintf(fhdr.owner, "owner1");
     sprintf(usr.userid, "owner2");
+
     int ret = is_file_owner(&fhdr, &usr);
-    
+
     EXPECT_EQ(0, ret);
+
+    // free
 }
 
 /**********
