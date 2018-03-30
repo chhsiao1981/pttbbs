@@ -13,7 +13,7 @@ TEST(bbs, is_file_owner) {
     usr.firstlogin = 1234567880;
 
     int ret = is_file_owner(&fhdr, &usr);
-    
+
     EXPECT_EQ(1, ret);
 
     // free
