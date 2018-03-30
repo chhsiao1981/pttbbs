@@ -6,7 +6,7 @@ do
     do
         if [ -x ${j} ]
             then
-            echo "${j}:"
+            echo -e "\e[33m${j}:\e[m"
             "${j}"
             ret="$?"
             if [ "${ret}" != "0" ]
