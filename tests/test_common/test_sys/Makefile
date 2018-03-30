@@ -71,6 +71,8 @@ ${fn}: ${fn}.o gtest.a ${MBBSD_OBJS}
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $> $(LDLIBS)
 .endfor
 
+all: $(TEST_PROGS)
+
 .else # GTEST_DIR
 
 all:
