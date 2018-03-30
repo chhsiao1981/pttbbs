@@ -1,12 +1,10 @@
 #include "gtest/gtest.h"
 
-TEST(sys_string, CHAR_LOWER) {
-    EXPECT_EQ('a', CHAR_LOWER('A'));
-    EXPECT_EQ('0', CHAR_LOWER('0'));
-    EXPECT_EQ('-', CHAR_LOWER('-'));
-    EXPECT_EQ('b', CHAR_LOWER('b'));
-    EXPECT_EQ('[', CHAR_LOWER('['));
-    EXPECT_EQ('{', CHAR_LOWER('{'));
+TEST(sys_string, str_lower) {
+    char t[256] = {};
+    char s[] = " !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLKMNPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+    str_lower(t, s);
+    EXPECT_STREQ(" !\"#$%%&'()*+,-./0123456789:;<=>?@abcdefghijklmnopqrstuvwxyz[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", t);
 }
 
 /**********
