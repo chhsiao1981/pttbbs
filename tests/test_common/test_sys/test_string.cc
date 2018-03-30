@@ -12,9 +12,9 @@ TEST(sys_string, str_lower) {
 }
 
 TEST(sys_string, str_starts_with) {
-    EXPECT_EQ(1, str_starts_with("abcd", "abc"))
-    EXPECT_EQ(0, str_starts_with("abcd", "acd"))
-    EXPECT_EQ(0, str_starts_with("abcd", "def"))
+    EXPECT_EQ(1, str_starts_with("abcd", "abc"));
+    EXPECT_EQ(0, str_starts_with("abcd", "acd"));
+    EXPECT_EQ(0, str_starts_with("abcd", "def"));
 }
 
 /**********
