@@ -12,7 +12,7 @@ for p in tests/test_common/test_sys tests/test_mbbsd
 do
     if [ -x "${p}/${test_name}" ]
         then
-        echo "${p}/${test_name}:"
+        echo -e "\e[33m${p}/${test_name}:\e[m"
         "${p}/${test_name}"
         echo ""
     fi
