@@ -67,8 +67,8 @@ gtest_main.a: gtest-all.o gtest_main.o
 	$(CXX) $(CXXFLAGS) -c $*.cc
 
 .for fn in ${TEST_PROGS}
-${fn}: gtest.a ${fn}.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(LDLIBS) $>
+${fn}: ${fn}.o gtest.a
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $> $(LDLIBS)
 .endfor
 
 all: $(TEST_PROGS)
