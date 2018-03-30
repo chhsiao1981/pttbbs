@@ -1,10 +1,6 @@
 #include "gtest/gtest.h"
-#include "fnv_hash.h"
 
-#include "ansi.h"
-#include "cmsys.h"
-
-TEST(sys/string, CHAR_LOWER) {
+TEST(sys_string, CHAR_LOWER) {
     EXPECT_EQ('a', CHAR_LOWER('A'));
     EXPECT_EQ('0', CHAR_LOWER('0'));
     EXPECT_EQ('-', CHAR_LOWER('-'));
