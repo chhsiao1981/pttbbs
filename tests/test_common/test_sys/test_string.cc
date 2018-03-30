@@ -1,5 +1,8 @@
 #include "gtest/gtest.h"
-#include "cmsys.h"
+
+extern "C" {
+    #include "cmsys.h"
+}
 
 TEST(sys_string, str_lower) {
     char t[256] = {};
