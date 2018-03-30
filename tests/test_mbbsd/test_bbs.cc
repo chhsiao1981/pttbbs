@@ -7,6 +7,20 @@ TEST(bbs, is_file_owner) {
 
     sprintf(fhdr.owner, "owner1");
     sprintf(usr.userid, "owner1");
+    sprintf(fhdr.filename, "M.1234567890.A.ABC");
+    usr.firstlogin = 1234567880;
+
+    int ret = is_file_owner(&fhdr, &usr);
+    
+    EXPECT_EQ(1, ret);
+}
+
+TEST(bbs, is_file_owner_ne_owner) {
+    fileheader_t fhdr = {};
+    userec_t usr = {};
+
+    sprintf(fhdr.owner, "owner1");
+    sprintf(usr.userid, "owner2");
     int ret = is_file_owner(&fhdr, &usr);
     
     EXPECT_EQ(0, ret);
