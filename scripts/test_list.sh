@@ -2,6 +2,7 @@
 
 for p in tests/test_common/test_sys tests/test_mbbsd
 do
+    echo "${p}:"
     for j in `ls ${p}/*`
     do
         if [ -x ${j} ]
@@ -10,4 +11,5 @@ do
             echo "${k}"
         fi
     done
+    echo ""
 done
