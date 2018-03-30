@@ -67,7 +67,7 @@ gtest_main.a: gtest-all.o gtest_main.o
 	$(CXX) $(CXXFLAGS) -c $*.cc
 
 .for fn in ${TEST_PROGS}
-${fn}: ${fn}.o gtest.a ${MBBSD_OBJS}
+${fn}: gtest.a ${fn}.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(LDLIBS) $>
 .endfor
 
