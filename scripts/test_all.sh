@@ -6,7 +6,7 @@ do
     do
         if [ -x ${j} ]
             then
-            echo "${k} ${j}:"
+            echo "${j}:"
             "${j}"
             ret="$?"
             if [ "${ret}" != "0" ]
