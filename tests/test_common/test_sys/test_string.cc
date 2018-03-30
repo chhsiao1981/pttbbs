@@ -6,7 +6,7 @@ extern "C" {
 
 TEST(sys_string, str_lower) {
     char t[256] = {};
-    char s[] = " !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLKMNPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+    char s[] = " !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
     str_lower(t, s);
     EXPECT_STREQ(" !\"#$%%&'()*+,-./0123456789:;<=>?@abcdefghijklmnopqrstuvwxyz[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", t);
 }
