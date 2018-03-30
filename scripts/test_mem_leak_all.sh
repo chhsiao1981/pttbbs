@@ -29,4 +29,4 @@ do
     done
 done
 
-echo -e "\e[42mAll Pass!\e[m"
+echo -e "\e[32mAll Pass!\e[m"
