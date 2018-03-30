@@ -117,7 +117,7 @@ MBBSD_OBJS+= ${MBBSD_DIR}/${obj}
 # test
 ##########
 
-TEST_PROGS=	test_dummy
+TEST_PROGS=	test_dummy test_bbs
 
 ##########
 # TARGETS
