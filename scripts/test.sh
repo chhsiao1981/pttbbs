@@ -14,5 +14,6 @@ do
         then
         echo "${p}/${test_name}:"
         "${p}/${test_name}"
+        echo ""
     fi
 done
