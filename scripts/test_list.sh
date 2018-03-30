@@ -1,10 +1,13 @@
 #!/bin/bash
 
-for j in `ls tests/test_mbbsd/*`
+for p in tests/test_common/test_sys tests/test_mbbsd
 do
-    if [ -x ${j} ]
-        then
-        k=`echo "${j}"|sed 's/.*\///g'`
-        echo "${k}"
-    fi
+    for j in `ls ${p}/*`
+    do
+        if [ -x ${j} ]
+            then
+            k=`echo "${j}"|sed 's/.*\///g'`
+            echo "${k}"
+        fi
+    done
 done

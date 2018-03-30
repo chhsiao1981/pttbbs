@@ -1,8 +1,8 @@
 #!/bin/bash
 
-for k in tests/test_common/test_sys tests/test_mbbsd
+for p in tests/test_common/test_sys tests/test_mbbsd
 do
-    for j in `ls ${k}/*`
+    for j in `ls ${p}/*`
     do
         if [ -x ${j} ]
             then

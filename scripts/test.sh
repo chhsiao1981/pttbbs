@@ -8,4 +8,10 @@ fi
 
 test_name=${BASH_ARGV[0]}
 
-tests/test_mbbsd/${test_name}
+for p in tests/test_common/test_sys tests/test_mbbsd
+do
+    if [ -x "${p}/${test_name}"]
+        then
+        "${p}/${test_name}"
+    fi
+done
