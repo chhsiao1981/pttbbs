@@ -35,6 +35,22 @@ TEST(bbs, is_file_owner_ne_owner) {
     // free
 }
 
+TEST(bbs, is_file_owner_unknown) {
+    // init
+    fileheader_t fhdr = {};
+    userec_t usr = {};
+
+    // prepare data
+    sprintf(fhdr.owner, "owner1");
+    sprintf(usr.userid, "owner1");
+
+    int ret = is_file_owner(&fhdr, &usr);
+
+    EXPECT_EQ(0, ret);
+
+    // free
+}
+
 /**********
  * MAIN
  */
