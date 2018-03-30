@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "bbs.h"
 
 TEST(bbs, is_file_owner) {
     fileheader_t fhdr = {};
