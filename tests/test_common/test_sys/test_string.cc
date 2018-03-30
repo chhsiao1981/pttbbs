@@ -11,6 +11,12 @@ TEST(sys_string, str_lower) {
     EXPECT_STREQ(" !\"#$%%&'()*+,-./0123456789:;<=>?@abcdefghijklmnopqrstuvwxyz[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", t);
 }
 
+TEST(sys_string, str_starts_with) {
+    EXPECT_EQ(1, str_starts_with("abcd", "abc"))
+    EXPECT_EQ(0, str_starts_with("abcd", "acd"))
+    EXPECT_EQ(0, str_starts_with("abcd", "def"))
+}
+
 /**********
  * MAIN
  */
