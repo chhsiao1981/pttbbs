@@ -17,6 +17,7 @@ typedef char Err;
 #define S_ERR_BUFFER_LEN -6         // 250
 #define S_ERR_INIT -7               // 249
 #define S_ERR_ABORT_BBS -8          // 248
+#define S_ERR_BUSY -9               // 247
 
 #ifdef __cplusplus
 }

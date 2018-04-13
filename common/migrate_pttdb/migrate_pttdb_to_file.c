@@ -111,6 +111,7 @@ _migrate_comment_comment_reply_by_main_to_file(UUID main_id, FILE *fp)
         "_id", BCON_BOOL(false),
         "the_id", BCON_BOOL(true),
         "comment_reply_id", BCON_BOOL(true),
+        "n_comment_reply_block", BCON_BOOL(true),
         "create_milli_timestamp", BCON_BOOL(true),
         "poster", BCON_BOOL(true)
         );
@@ -123,7 +124,7 @@ _migrate_comment_comment_reply_by_main_to_file(UUID main_id, FILE *fp)
     //fprintf(stderr, "migrate_pttdb_to_file._migrate_comment_coment_reply_by_main_to_file: after read comments until newest to bsons: create_milli_timestamp: %lu poster: %s n_comment: %d\n", create_milli_timestamp, poster, n_comment);
 
     if(!error_code) {
-        error_code = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+        error_code = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
     }
 
     /*

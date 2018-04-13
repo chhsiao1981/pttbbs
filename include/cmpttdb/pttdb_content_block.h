@@ -51,6 +51,8 @@ Err dynamic_read_content_blocks_by_ref(UUID ref_id, int max_n_block, int block_i
 
 Err read_content_blocks_to_bsons(UUID content_id, bson_t *fields, int max_n_content_block, enum MongoDBId mongo_db_id, bson_t **b_content_blocks, int *n_content_block);
 
+Err read_content_blocks_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_content_block, enum MongoDBId mongo_db_id, bson_t **b_content_blocks, int *n_content_block);
+
 Err serialize_content_block_bson(ContentBlock *content_block, bson_t **content_block_bson);
 Err deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *content_block);
 

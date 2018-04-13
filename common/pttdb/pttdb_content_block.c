@@ -492,6 +492,14 @@ read_content_blocks_to_bsons(UUID content_id, bson_t *fields, int max_n_content_
 }
 
 Err
+read_content_blocks_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_content_block, enum MongoDBId mongo_db_id, bson_t **b_content_blocks, int *n_content_block)
+{
+    Err error_code = db_find(mongo_db_id, query, fields, NULL, max_n_content_block, n_content_block, b_content_blocks);
+
+    return error_code;
+}
+
+Err
 _form_content_block_b_array_block_ids(int block_id, int max_n_block, bson_t **b)
 {
     Err error_code = S_OK;

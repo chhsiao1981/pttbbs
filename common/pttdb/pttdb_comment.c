@@ -280,7 +280,7 @@ read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poste
 }
 
 Err
-update_comment_reply_to_comment(UUID comment_id, UUID comment_reply_id, int n_comment_reply_line, int n_comment_reply_total_line)
+update_comment_reply_to_comment(UUID comment_id, UUID comment_reply_id, int n_comment_reply_line, int n_comment_reply_block, int n_comment_reply_total_line)
 {
     Err error_code = S_OK;
     bson_t *key = BCON_NEW(
@@ -290,6 +290,7 @@ update_comment_reply_to_comment(UUID comment_id, UUID comment_reply_id, int n_co
     bson_t *val = BCON_NEW(
         "comment_reply_id", BCON_BINARY(comment_reply_id, UUIDLEN),
         "n_comment_reply_line", BCON_INT32(n_comment_reply_line),
+        "n_comment_reply_block", BCON_INT32(n_comment_reply_block),
         "n_comment_reply_total_line", BCON_INT32(n_comment_reply_total_line)
         );
 
@@ -314,6 +315,7 @@ remove_comment_reply_from_comment(UUID comment_id, UUID comment_reply_id)
     bson_t *val = BCON_NEW(
         "comment_reply_id", BCON_BINARY(empty_id, UUIDLEN),
         "n_comment_reply_line", BCON_INT32(0),
+        "n_comment_reply_block", BCON_INT32(0),
         "n_comment_reply_total_line", BCON_INT32(0)
         );
 
@@ -466,7 +468,8 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
     bson_t **b_comment_replys = NULL;
     DictBsonByUU dict_comment_reply = {};
     int n_expected_comment_reply = 0;
-    int n_comment_reply = 0;
+    int n_expected_comment_reply_block = 0;
+    int n_comment_reply = 0;    
 
     // prepare query
     comment_fields = BCON_NEW(
@@ -526,7 +529,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
     //fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: to extract b_comments_comment_reply_id_to_bson: n_comment: %d\n", n_comment);
 
     if (!error_code) {
-        error_code = extract_b_comments_comment_reply_id_to_bsons(b_comments, n_comment, "$in", &q_b_comment_reply_ids, &n_expected_comment_reply);
+        error_code = extract_b_comments_comment_reply_id_to_bsons(b_comments, n_comment, "$in", &q_b_comment_reply_ids, &n_expected_comment_reply, &n_expected_comment_reply_block);
     }
 
     if (!error_code) {
@@ -603,6 +606,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_file(bson_t **b_comments, int n_c
     bson_t **b_comment_replys = NULL;
     DictBsonByUU dict_comment_reply = {};
     int n_expected_comment_reply = 0;
+    int n_expected_comment_reply_block = 0;
     int n_comment_reply = 0;
 
     // prepare query for comments
@@ -644,7 +648,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_file(bson_t **b_comments, int n_c
     }
 
     if (!error_code) {
-        error_code = extract_b_comments_comment_reply_id_to_bsons(b_comments, n_comment, "$in", &q_b_comment_reply_ids, &n_expected_comment_reply);
+        error_code = extract_b_comments_comment_reply_id_to_bsons(b_comments, n_comment, "$in", &q_b_comment_reply_ids, &n_expected_comment_reply, &n_expected_comment_reply_block);
     }
 
     //fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_file: n_expected_comment_reply: %d\n", n_expected_comment_reply);
@@ -758,7 +762,7 @@ extract_b_comments_comment_id_to_bsons(bson_t **b_comments, int n_comment, char 
 }
 
 Err
-extract_b_comments_comment_reply_id_to_bsons(bson_t **b_comments, int n_comment, char *result_key, bson_t **b_comment_reply_ids, int *n_comment_reply)
+extract_b_comments_comment_reply_id_to_bsons(bson_t **b_comments, int n_comment, char *result_key, bson_t **b_comment_reply_ids, int *n_comment_reply, int *n_comment_reply_block)
 {
     bson_t child;
     char buf[16];
@@ -775,6 +779,8 @@ extract_b_comments_comment_reply_id_to_bsons(bson_t **b_comments, int n_comment,
     int len = 0;
 
     int tmp_n_comment_reply = 0;
+    int each_n_comment_reply_block = 0;
+    int tmp_n_comment_reply_block = 0;
     bool status = true;
 
     BSON_APPEND_ARRAY_BEGIN(tmp_b, result_key, &child);
@@ -789,12 +795,18 @@ extract_b_comments_comment_reply_id_to_bsons(bson_t **b_comments, int n_comment,
         if (!status) {
             error_code = S_ERR;
             break;
-        }
+        }        
         tmp_n_comment_reply++;
+
+        error_code = bson_get_value_int32(*p_b_comments, "n_comment_reply_block", &each_n_comment_reply_block);
+        if(error_code) continue;
+
+        tmp_n_comment_reply_block += each_n_comment_reply_block;
     }
     bson_append_array_end(tmp_b, &child);
 
     *n_comment_reply = tmp_n_comment_reply;
+    *n_comment_reply_block = tmp_n_comment_reply_block;
 
     return error_code;
 }
@@ -1194,44 +1206,57 @@ _read_comments_get_b_comments_core(bson_t **b_comments, bson_t *key, bson_t *sor
 {
     Err error_code = db_find(mongo_db_id, key, NULL, sort, max_n_comment, n_comment, b_comments);
 
+    enum ReadCommentsOrderType order_type = (op_type == READ_COMMENTS_OP_TYPE_GT || op_type == READ_COMMENTS_OP_TYPE_GTE) ? READ_COMMENTS_ORDER_TYPE_ASC : READ_COMMENTS_ORDER_TYPE_DESC;
+
     int tmp_n_comment = *n_comment;
 
-    Err error_code_ensure_order = S_OK;
     if (!error_code) {
-        error_code_ensure_order = ensure_b_comments_order(b_comments, tmp_n_comment, op_type);
-    }
-
-    if (!error_code && error_code_ensure_order) {
-        error_code = sort_b_comments_order(b_comments, tmp_n_comment, op_type);
+        error_code = ensure_b_comments_order(b_comments, tmp_n_comment, order_type);
     }
 
     return error_code;
 }
 
 Err
-ensure_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type)
+ensure_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOrderType order_type)
 {
-    Err error_code = S_OK;
+    bool is_good_b_comments_order = false;
+    Err error_code = is_b_comments_order(b_comments, n_comment, order_type, &is_good_b_comments_order);
+    if(error_code) return error_code;
+
+    if(is_good_b_comments_order) return S_OK;
+
+    error_code = sort_b_comments_order(b_comments, n_comment, order_type);
+    if(error_code) return error_code;
+
+    return S_OK;
+}
+
+Err
+is_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOrderType order_type, bool *is_good_b_comments_order)
+{
     bson_t **p_b_comments = b_comments;
     bson_t **p_next_b_comments = b_comments + 1;
     int cmp = 0;
-    int (*_cmp)(const void *a, const void *b) = (op_type == READ_COMMENTS_OP_TYPE_LT || op_type == READ_COMMENTS_OP_TYPE_LTE) ? _cmp_b_comments_descending : _cmp_b_comments_ascending;
+    int (*_cmp)(const void *a, const void *b) = order_type == READ_COMMENTS_ORDER_TYPE_ASC ? _cmp_b_comments_ascending : _cmp_b_comments_descending;
 
+    bool tmp_is_good_b_comments_order = true;
     for (int i = 0; i < n_comment - 1; i++, p_b_comments++, p_next_b_comments++) {
         cmp = _cmp(p_b_comments, p_next_b_comments);
         if (cmp > 0) {
-            error_code = S_ERR;
+            tmp_is_good_b_comments_order = false;
             break;
         }
     }
+    *is_good_b_comments_order = tmp_is_good_b_comments_order;
 
-    return error_code;
+    return S_OK;
 }
 
 Err
-sort_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOpType op_type)
+sort_b_comments_order(bson_t **b_comments, int n_comment, enum ReadCommentsOrderType order_type)
 {
-    int (*_cmp)(const void *a, const void *b) = (op_type == READ_COMMENTS_OP_TYPE_LT || op_type == READ_COMMENTS_OP_TYPE_LTE) ? _cmp_b_comments_descending : _cmp_b_comments_ascending;
+    int (*_cmp)(const void *a, const void *b) = order_type == READ_COMMENTS_ORDER_TYPE_ASC ? _cmp_b_comments_ascending : _cmp_b_comments_descending;
 
     qsort(b_comments, n_comment, sizeof(bson_t *), _cmp);
 
@@ -1350,6 +1375,7 @@ serialize_comment_bson(Comment *comment, bson_t **comment_bson)
         "main_id", BCON_BINARY(comment->main_id, UUIDLEN),
         "comment_reply_id", BCON_BINARY(comment->comment_reply_id, UUIDLEN),
         "n_comment_reply_line", BCON_INT32(comment->n_comment_reply_line),
+        "n_comment_reply_block", BCON_INT32(comment->n_comment_reply_block),
         "n_comment_reply_total_line", BCON_INT32(comment->n_comment_reply_total_line),
         "status", BCON_INT32(comment->status),
         "status_updater", BCON_BINARY((unsigned char *)comment->status_updater, IDLEN),
@@ -1397,6 +1423,9 @@ deserialize_comment_bson(bson_t *comment_bson, Comment *comment)
     if (error_code) return error_code;
 
     error_code = bson_get_value_int32(comment_bson, "n_comment_reply_line", &comment->n_comment_reply_line);
+    if (error_code) return error_code;
+
+    error_code = bson_get_value_int32(comment_bson, "n_comment_reply_block", &comment->n_comment_reply_block);
     if (error_code) return error_code;
 
     error_code = bson_get_value_int32(comment_bson, "n_comment_reply_total_line", &comment->n_comment_reply_total_line);

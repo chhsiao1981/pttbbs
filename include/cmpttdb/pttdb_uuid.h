@@ -4,8 +4,8 @@
 
 #include <mongoc.h>
 #include "ptterr.h"
+#include "cmutil_time.h"
 #include "cmpttdb/pttdb_const.h"
-#include "cmpttdb/util_timestamp.h"
 
 #ifdef __cplusplus
 extern "C" {

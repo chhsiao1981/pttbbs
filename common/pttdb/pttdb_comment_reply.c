@@ -117,7 +117,7 @@ _create_comment_reply_core(UUID main_id, UUID comment_id, char *poster, char *ip
 
     // db-comment
     if (!error_code) {
-        error_code = update_comment_reply_to_comment(comment_id, comment_reply_id, comment_reply.n_line, comment_reply.n_total_line);
+        error_code = update_comment_reply_to_comment(comment_id, comment_reply_id, comment_reply.n_line, comment_reply.n_block, comment_reply.n_total_line);
     }
 
     // free

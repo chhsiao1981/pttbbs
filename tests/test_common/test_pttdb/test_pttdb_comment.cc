@@ -235,21 +235,58 @@ TEST(pttdb_comment, ensure_b_comments_order) {
             );    
     }
 
-    Err error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
-    EXPECT_EQ(S_ERR, error);
+    bool is_good_b_comments_order = false;
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
-    EXPECT_EQ(S_ERR, error);
+    // ASC
+    Err error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_good_b_comments_order);
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
-    EXPECT_EQ(S_ERR, error);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
+    EXPECT_EQ(S_OK, error);
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_good_b_comments_order);
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
-    EXPECT_EQ(S_ERR, error);
+    // DESC
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_good_b_comments_order);
+
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC);
+    EXPECT_EQ(S_OK, error);
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_good_b_comments_order);
 
     // free
     safe_free_b_list(&b_comments, n_comment);
 }
+
+TEST(pttdb_comment, is_b_comments_order2) {
+    int n_comment = 100;
+    bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
+
+    for(int i = 0; i < n_comment; i++) {
+        b_comments[i] = BCON_NEW(
+            "poster", BCON_BINARY((unsigned char *)"test_poster", 11),
+            "create_milli_timestamp", BCON_INT64(i)
+            );    
+    }
+
+    bool is_good_b_comments_order = false;
+    Err error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_good_b_comments_order);
+
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_good_b_comments_order);
+
+    // free
+    safe_free_b_list(&b_comments, n_comment);
+}
+
 
 TEST(pttdb_comment, ensure_b_comments_order2) {
     int n_comment = 100;
@@ -262,17 +299,11 @@ TEST(pttdb_comment, ensure_b_comments_order2) {
             );    
     }
 
-    Err error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    Err error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
     EXPECT_EQ(S_OK, error);
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC);
     EXPECT_EQ(S_OK, error);
-
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
-    EXPECT_EQ(S_ERR, error);
-
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
-    EXPECT_EQ(S_ERR, error);
 
     // free
     safe_free_b_list(&b_comments, n_comment);
@@ -289,17 +320,61 @@ TEST(pttdb_comment, ensure_b_comments_order3) {
             );    
     }
 
-    Err error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    Err error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC);
     EXPECT_EQ(S_OK, error);
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
     EXPECT_EQ(S_OK, error);
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
-    EXPECT_EQ(S_ERR, error);
+    // free
+    safe_free_b_list(&b_comments, n_comment);
+}
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
-    EXPECT_EQ(S_ERR, error);
+TEST(pttdb_comment, is_b_comments_order3) {
+    int n_comment = 100;
+    bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
+
+    for(int i = 0; i < n_comment; i++) {
+        b_comments[i] = BCON_NEW(
+                "poster", BCON_BINARY((unsigned char *)"test_poster", 11),
+                "create_milli_timestamp", BCON_INT64(100 - i)
+            );    
+    }
+
+    bool is_good_b_comments_order = false;
+    Err error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_good_b_comments_order);
+
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_good_b_comments_order);
+
+    // free
+    safe_free_b_list(&b_comments, n_comment);
+}
+
+TEST(pttdb_comment, is_b_comments_order4) {
+    int n_comment = 100;
+    bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
+
+    char poster[IDLEN + 1] = {};
+    for(int i = 0; i < n_comment; i++) {
+        sprintf(poster, "poster%03d", i);
+        b_comments[i] = BCON_NEW(
+                "poster", BCON_BINARY((unsigned char *)poster, IDLEN),
+                "create_milli_timestamp", BCON_INT64(100)
+            );    
+    }
+
+    bool is_good_b_comments_order = false;
+    Err error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_good_b_comments_order);
+
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_good_b_comments_order);
 
     // free
     safe_free_b_list(&b_comments, n_comment);
@@ -318,17 +393,11 @@ TEST(pttdb_comment, ensure_b_comments_order4) {
             );    
     }
 
-    Err error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    Err error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
     EXPECT_EQ(S_OK, error);
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC);
     EXPECT_EQ(S_OK, error);
-
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
-    EXPECT_EQ(S_ERR, error);
-
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
-    EXPECT_EQ(S_ERR, error);
 
     // free
     safe_free_b_list(&b_comments, n_comment);
@@ -347,17 +416,11 @@ TEST(pttdb_comment, ensure_b_comments_order5) {
             );    
     }
 
-    Err error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    Err error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC);
     EXPECT_EQ(S_OK, error);
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
+    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
     EXPECT_EQ(S_OK, error);
-
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
-    EXPECT_EQ(S_ERR, error);
-
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
-    EXPECT_EQ(S_ERR, error);
 
     // free
     safe_free_b_list(&b_comments, n_comment);
@@ -394,38 +457,39 @@ TEST(pttdb_comment, sort_b_comments_order) {
             );    
     }
 
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
     EXPECT_EQ(S_OK, error);
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    bool is_good_b_comments_order = false;
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_good_b_comments_order);
+
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_good_b_comments_order);
+
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC);
     EXPECT_EQ(S_OK, error);
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
-    EXPECT_EQ(S_ERR, error);
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_good_b_comments_order);
 
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_good_b_comments_order);
+
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
     EXPECT_EQ(S_OK, error);
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC, &is_good_b_comments_order);
     EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_good_b_comments_order);
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
-    EXPECT_EQ(S_ERR, error);
-
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC, &is_good_b_comments_order);
     EXPECT_EQ(S_OK, error);
-
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
-    EXPECT_EQ(S_OK, error);
-
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
-    EXPECT_EQ(S_ERR, error);
-
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
-    EXPECT_EQ(S_OK, error);
-
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
-    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_good_b_comments_order);
 
     // free
     safe_free_b_list(&b_comments, n_comment);
@@ -478,42 +542,50 @@ TEST(pttdb_comment, sort_b_comments_order2) {
 
     fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: to sort_b_comments_order: long: %lu long int: %lu long long int: %lu\n", sizeof(long), sizeof(long int), sizeof(long long int));
 
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
     EXPECT_EQ(S_OK, error);
 
     fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: after b_comments_order\n");
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    bool is_good_b_comments_order = false;
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC, &is_good_b_comments_order);
     EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_good_b_comments_order);
 
     fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: after ensure b comments order\n");
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
-    EXPECT_EQ(S_ERR, error);
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_good_b_comments_order);
 
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC);
     EXPECT_EQ(S_OK, error);
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LT);
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_good_b_comments_order);
+
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_good_b_comments_order);
+
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
     EXPECT_EQ(S_OK, error);
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
-    EXPECT_EQ(S_ERR, error);
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_good_b_comments_order);
 
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC, &is_good_b_comments_order);
+    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(false, is_good_b_comments_order);
+
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC);
     EXPECT_EQ(S_OK, error);
 
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GTE);
+    error = is_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_DESC, &is_good_b_comments_order);
     EXPECT_EQ(S_OK, error);
-
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
-    EXPECT_EQ(S_ERR, error);
-
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
-    EXPECT_EQ(S_OK, error);
-
-    error = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_LTE);
-    EXPECT_EQ(S_OK, error);
+    EXPECT_EQ(true, is_good_b_comments_order);
 
     fprintf(stderr, "test_pttdb_comment.sort_b_comments_order2: to safe_free_b_list\n");
 
@@ -1541,7 +1613,7 @@ TEST(pttdb_comment, read_comments_until_newest_to_bsons)
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
 
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
 
     char *str = NULL;
     for(int i = 0; i < 100; i++) {
@@ -1858,7 +1930,7 @@ TEST(pttdb_comment, extract_b_comments_comment_id_to_bsons_no_comment_reply_ids)
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
 
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
 
     time64_t result_create_milli_timestamp = 0;
     char expected_poster[IDLEN + 1] = {};
@@ -2048,7 +2120,7 @@ TEST(pttdb_comment, extract_b_comments_comment_id_to_bsons_no_comment_reply_ids2
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
 
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
 
     time64_t result_create_milli_timestamp = 0;
     char expected_poster[IDLEN + 1] = {};
@@ -2263,7 +2335,7 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_no_comment_repl
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
 
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
 
     time64_t result_create_milli_timestamp = 0;
     char expected_poster[IDLEN + 1] = {};
@@ -2281,8 +2353,9 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_no_comment_repl
 
     // extract_b_comments_comment_reply_id_to_bsons
     bson_t *b_comment_reply_ids = NULL;
-    int n_comment_reply;
-    error = extract_b_comments_comment_reply_id_to_bsons(b_comments, n_comment, (char *)"$in", &b_comment_reply_ids, &n_comment_reply);
+    int n_comment_reply = 0;
+    int n_comment_reply_block = 0;
+    error = extract_b_comments_comment_reply_id_to_bsons(b_comments, n_comment, (char *)"$in", &b_comment_reply_ids, &n_comment_reply, &n_comment_reply_block);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(0, n_comment_reply);
 
@@ -2450,6 +2523,7 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_some_comment_re
         "_id", BCON_BOOL(false),
         "the_id", BCON_BOOL(true),
         "comment_reply_id", BCON_BOOL(true),
+        "n_comment_reply_block", BCON_BOOL(true),
         "create_milli_timestamp", BCON_BOOL(true),
         "poster", BCON_BOOL(true)
         );
@@ -2461,7 +2535,7 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_some_comment_re
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
 
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
     char *str = NULL;
     for(int i = 0; i < n_comment; i++) {
         str = bson_as_canonical_extended_json(b_comments[i], NULL);
@@ -2485,8 +2559,9 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_some_comment_re
 
     // extract_b_comments_comment_reply_id_to_bsons
     bson_t *b_comment_reply_ids = NULL;
-    int n_comment_reply;
-    error = extract_b_comments_comment_reply_id_to_bsons(b_comments, n_comment, (char *)"$in", &b_comment_reply_ids, &n_comment_reply);
+    int n_comment_reply = 0;
+    int n_comment_reply_block = 0;
+    error = extract_b_comments_comment_reply_id_to_bsons(b_comments, n_comment, (char *)"$in", &b_comment_reply_ids, &n_comment_reply, &n_comment_reply_block);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(15, n_comment_reply);
 
@@ -2668,6 +2743,7 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf) {
         "_id", BCON_BOOL(false),
         "the_id", BCON_BOOL(true),
         "comment_reply_id", BCON_BOOL(true),
+        "n_comment_reply_block", BCON_BOOL(true),
         "create_milli_timestamp", BCON_BOOL(true),
         "poster", BCON_BOOL(true)
         );
@@ -2679,7 +2755,7 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
 
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
     char *str = NULL;
     for(int i = 0; i < n_comment; i++) {
         str = bson_as_canonical_extended_json(b_comments[i], NULL);
@@ -2862,6 +2938,7 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_n_only) {
         "_id", BCON_BOOL(false),
         "the_id", BCON_BOOL(true),
         "comment_reply_id", BCON_BOOL(true),
+        "n_comment_reply_block", BCON_BOOL(true),
         "create_milli_timestamp", BCON_BOOL(true),
         "poster", BCON_BOOL(true)
         );
@@ -2873,7 +2950,7 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_n_only) {
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
 
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
     char *str = NULL;
     for(int i = 0; i < n_comment; i++) {
         str = bson_as_canonical_extended_json(b_comments[i], NULL);
@@ -3066,6 +3143,7 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_large_con
         "_id", BCON_BOOL(false),
         "the_id", BCON_BOOL(true),
         "comment_reply_id", BCON_BOOL(true),
+        "n_comment_reply_block", BCON_BOOL(true),
         "create_milli_timestamp", BCON_BOOL(true),
         "poster", BCON_BOOL(true)
         );
@@ -3077,7 +3155,7 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_large_con
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
 
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
     char *str = NULL;
     for(int i = 0; i < n_comment; i++) {
         str = bson_as_canonical_extended_json(b_comments[i], NULL);
@@ -3264,6 +3342,7 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_large_con
         "_id", BCON_BOOL(false),
         "the_id", BCON_BOOL(true),
         "comment_reply_id", BCON_BOOL(true),
+        "n_comment_reply_block", BCON_BOOL(true),
         "create_milli_timestamp", BCON_BOOL(true),
         "poster", BCON_BOOL(true)
         );
@@ -3275,7 +3354,7 @@ TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf_large_con
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(100, n_comment);
 
-    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_OP_TYPE_GT);
+    error = sort_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
     char *str = NULL;
     for(int i = 0; i < n_comment; i++) {
         str = bson_as_canonical_extended_json(b_comments[i], NULL);

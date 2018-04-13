@@ -1,3 +1,3 @@
-SUBDIR:=	bbs osdep sys pttdb migrate_pttdb
+SUBDIR:=	bbs osdep sys util_time pttlib pttdb migrate_pttdb pttui
 
 .include <bsd.subdir.mk>

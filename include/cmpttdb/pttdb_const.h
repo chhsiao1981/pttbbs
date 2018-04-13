@@ -18,6 +18,19 @@ enum LiveStatus {
     LIVE_STATUS_DELETED,
 };
 
+enum StorageType {
+    PTTDB_STORAGE_TYPE_MONGO,
+    PTTDB_STORAGE_TYPE_FILE,
+    N_PTTDB_STORAGE_TYPE,
+};
+
+enum PttDBContentType {
+    PTTDB_CONTENT_TYPE_MAIN,
+    PTTDB_CONTENT_TYPE_COMMENT,
+    PTTDB_CONTENT_TYPE_COMMENT_REPLY,
+    N_PTTDB_CONTENT_TYPE,
+};
+
 #ifdef __cplusplus
 }
 #endif
