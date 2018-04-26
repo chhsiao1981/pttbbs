@@ -50,6 +50,8 @@ Err _vedit3_repl(int *money);
 // VEdit3 disp screen
 Err _vedit3_disp_screen(int start_line, int end_line);
 
+Err _vedit3_disp_line(int line, char *buf, int len);
+
 
 #ifdef __cplusplus
 }

@@ -31,7 +31,9 @@ char *_VEDIT3_LOADING_DOT1 = NULL;
 char *_VEDIT3_LOADING_DOT2 = NULL;
 
 char VEDIT3_EMPTY_LINE[] = "\n";
+int LEN_VEDIT3_EMPTY_LINE = 2;
 char VEDIT3_END_LINE[] = "~\n";
+int LEN_VEDIT3_END_LINE = 3;
 
 int
 vedit3_wrapper(const char *fpath, int saveheader, char title[TTLEN + 1], int flags, fileheader_t *fhdr, boardheader_t *bp)
@@ -352,12 +354,12 @@ _vedit3_disp_screen(int start_line, int end_line)
     if(!error_code) {
         for(; i <= end_line && p_buffer; i++, p_buffer = p_buffer->next) {
             if(!p_buffer->buf) {
-                error_code = _vedit3_disp_line(i, VEDIT3_EMPTY_LINE);
+                error_code = _vedit3_disp_line(i, VEDIT3_EMPTY_LINE, LEN_VEDIT3_EMPTY_LINE);
                 if(error_code) break;
 
                 continue;
             }
-            error_code = _vedit3_disp_line(i, p_buffer->buf);
+            error_code = _vedit3_disp_line(i, p_buffer->buf, p_buffer->len);
             if(error_code) break;
         }
     }
@@ -366,7 +368,7 @@ _vedit3_disp_screen(int start_line, int end_line)
 
     if(!error_code) {
         for(; i <= end_line; i++) {
-            error_code = _vedit3_disp_line(i, p_buffer->buf);
+            error_code = _vedit3_disp_line(i, VEDIT3_END_LINE, LEN_VEDIT3_END_LINE);
             if(error_code) break;
         }
     }
