@@ -8,7 +8,9 @@ VEdit3EditorStatus VEDIT3_EDITOR_STATUS = {
     false,               // is-phone
     false,               // is-raw
     0,                   // current-line
-    0                    // current-col
+    0,                   // current-col
+    0,                   // edit_margin
+    0                    // last-margin 
 };
 
 VEdit3State VEDIT3_STATE = {};
@@ -76,6 +78,11 @@ vedit3_wrapper(const char *fpath, int saveheader, char title[TTLEN + 1], int fla
 Err
 vedit3(UUID main_id, char *title, int edflags, int *money)
 {
+    STATINC(STAT_VEDIT);
+
+    Err error_code = _vedit3_init_user();
+    if(error_code) return error_code;
+
     // init
     Err error_code = _vedit3_init_editor(main_id);
     fprintf(stderr, "vedit3.vedit3: after init editor: e: %d\n", error_code);
@@ -88,6 +95,8 @@ vedit3(UUID main_id, char *title, int edflags, int *money)
     if(!error_code) {
         error_code = _vedit3_disp_screen(0, b_lines - 1);
     }
+
+    move(0, 0);
 
     if(!error_code) {
         error_code = _vedit3_repl(money);
@@ -131,6 +140,17 @@ _vedit3_init_editor(UUID main_id)
     error_code = _vedit3_wait_buffer_init();
 
     return error_code;
+}
+
+Err
+_vedit3_init_user()
+{
+
+    VEDIT3_EDITOR_STATUS.mode0 = currutmp->mode;
+    VEDIT3_EDITOR_STATUS.destuid0 = currutmp->destuid;
+
+    currutmp->mode = EDITING;
+    currutmp->destuid = currstat;    
 }
 
 Err
@@ -250,13 +270,65 @@ _vedit3_repl(int *money)
 
     fprintf(stderr, "vedit3._vedit3_repl: start\n");
 
+    /*
+    Err error_code = S_OK;
+    bool is_redraw_everything = false;    
+    bool is_end = false;
+
+    struct timespec req = {0, NS_DEFAULT_SLEEP_VEDIT3_REPL};
+    struct timespec rem = {};
+
+    int ret_sleep = 0;
+    while(true) {
+        // action
+        // check healthy
+        error_code = _vedit3_check_healthy(&is_redraw_everything);
+        if(error_code) break;
+
+        error_code = _vedit3_action_to_store(&is_end);
+        if(error_code) break;
+
+        error_code = _vedit3_store_to_render();
+        if(error_code) break;
+
+        if(is_end) break;
+
+
+        ret_sleep = nanosleep(&req, &rem);
+        if(ret_sleep) {
+            error_code = S_ERR_SLEEP;
+            break;
+        }
+    }
+    */
+
     struct timespec req = {10, 0};
     struct timespec rem = {};
 
-    nanosleep(&req, &rem);    
-    
-    return S_OK;
+    ret_sleep = nanosleep(&req, &rem);
+
+    return error_code;
 }
+
+Err
+_vedit3_store_to_render()
+{
+    // re-render based on line for now
+    VEdit3Buffer *p_buffer = VEDIT3_DISP_TOP_LINE_BUFFER;
+    int current_line = 0;
+    int *p_modified_line = VEDIT3_EDITOR_STATUS.modified_line;
+
+
+    for(current_line = 0; current_line < VEDIT3_EDITOR_STATUS.n_modified_line && p_buffer; current_line++, p_modified_line++, p_buffer = p_buffer->next) {
+        if(!(*p_modified_line)) continue;
+
+        mvouts(current_line, 0, p_buffer->buf);
+    }
+
+    refresh();
+}
+
+
 
 
 /*********

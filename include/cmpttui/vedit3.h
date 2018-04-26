@@ -30,6 +30,10 @@ typedef struct VEdit3EditorStatus {
     bool is_raw;
     int current_line;
     int current_col;
+    int edit_margin;
+    int last_margin;
+    int n_modified_line;
+    int *modified_line;
 } VEdit3EditorStatus; 
 
 extern VEdit3EditorStatus VEDIT3_EDITOR_STATUS;
