@@ -345,22 +345,20 @@ _vedit3_disp_screen(int start_line, int end_line)
     if(error_code) return error_code;
 
     VEdit3Buffer *p_buffer = VEDIT3_DISP_TOP_LINE_BUFFER;
-    fprintf(stderr, "vedit3._vedit3_disp_screen: VEDIT3_DISP_TOP_LINE_BUFFER: %lu\n", VEDIT3_DISP_TOP_LINE_BUFFER);
     int i = 0;
     for(i = 0; i < start_line && p_buffer; i++, p_buffer = p_buffer->next);
     if(i != start_line) error_code = S_ERR;
 
-    fprintf(stderr, "vedit3._vedit3_disp_screen: to for-loop: i: %d start_line: %d end_line: %d e: %d\n", i, start_line, end_line, error_code);
-
     if(!error_code) {
         for(; i <= end_line && p_buffer; i++, p_buffer = p_buffer->next) {
             if(!p_buffer->buf) {
-                fprintf(stderr, "vedit3._vedit3_disp_screen: (%d/%d): unable to get buf\n", i, end_line);
-                mvouts(i, 0, VEDIT3_EMPTY_LINE);
+                error_code = _vedit3_disp_line(i, VEDIT3_EMPTY_LINE);
+                if(error_code) break;
+
                 continue;
             }
-            fprintf(stderr, "vedit3._vedit3_disp_screen: (%d/%d): buf: %s\n", i, end_line, p_buffer->buf);
-            mvouts(i, 0, p_buffer->buf);
+            error_code = _vedit3_disp_line(i, p_buffer->buf);
+            if(error_code) break;
         }
     }
 
@@ -368,18 +366,37 @@ _vedit3_disp_screen(int start_line, int end_line)
 
     if(!error_code) {
         for(; i <= end_line; i++) {
-            fprintf(stderr, "vedit3._vedit3_disp_screen: (%d/%d): end\n", i, end_line);
-            mvouts(i, 0, VEDIT3_END_LINE);
+            error_code = _vedit3_disp_line(i, p_buffer->buf);
+            if(error_code) break;
         }
     }
 
-    refresh();
+    if(!error_code) {
+        refresh();
+    }
 
     // free
     Err error_code_lock = pttui_thread_lock_unlock(LOCK_VEDIT3_BUFFER_INFO);
     if(error_code_lock) error_code = S_ERR_ABORT_BBS;
 
     return error_code;
+}
+
+Err
+_vedit3_disp_line(int line, char *buf, int len)
+{
+    move(line, 0);
+    clrtoeol();
+    int attr = EOATTR_NORMAL;
+    if(VEDIT3_EDITOR_STATUS.is_ansi) {
+        outs(line, 0, buf);
+    }
+    else {
+        attr |= detect_attr(buf, len);
+        edit_outs_attr(buf + VEDIT3_EDITOR_STATUS.edit_margin, attr);
+    }
+
+    return S_OK;
 }
 
 

@@ -8,6 +8,7 @@
 #include "cmpttui/pttui_thread.h"
 #include "cmpttui/pttui_thread_lock.h"
 #include "cmpttui/ptt_screen.h"
+#include "proto_extra.h"
 
 #ifdef __cplusplus
 extern "C" {
