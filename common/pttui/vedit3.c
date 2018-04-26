@@ -84,7 +84,7 @@ vedit3(UUID main_id, char *title, int edflags, int *money)
     if(error_code) return error_code;
 
     // init
-    Err error_code = _vedit3_init_editor(main_id);
+    error_code = _vedit3_init_editor(main_id);
     fprintf(stderr, "vedit3.vedit3: after init editor: e: %d\n", error_code);
 
     // edit
@@ -307,7 +307,7 @@ _vedit3_repl(int *money)
     struct timespec req = {10, 0};
     struct timespec rem = {};
 
-    ret_sleep = nanosleep(&req, &rem);
+    int ret_sleep = nanosleep(&req, &rem);
 
     return error_code;
 }
