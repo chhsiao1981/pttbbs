@@ -97,6 +97,7 @@ vedit3(UUID main_id, char *title, int edflags, int *money)
     }
 
     move(0, 0);
+    refresh();
 
     if(!error_code) {
         error_code = _vedit3_repl(money);
