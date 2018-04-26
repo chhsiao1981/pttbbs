@@ -151,6 +151,8 @@ _vedit3_init_user()
 
     currutmp->mode = EDITING;
     currutmp->destuid = currstat;    
+
+    return S_OK;
 }
 
 Err
@@ -266,12 +268,12 @@ _vedit3_wait_buffer_thread_loop(enum PttUIThreadState expected_state)
 Err
 _vedit3_repl(int *money)
 {
+    Err error_code = S_OK;
     *money = 0;
 
     fprintf(stderr, "vedit3._vedit3_repl: start\n");
 
     /*
-    Err error_code = S_OK;
     bool is_redraw_everything = false;    
     bool is_end = false;
 

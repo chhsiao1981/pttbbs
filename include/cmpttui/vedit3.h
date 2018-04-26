@@ -34,6 +34,9 @@ typedef struct VEdit3EditorStatus {
     int last_margin;
     int n_modified_line;
     int *modified_line;
+
+    int mode0;
+    int destuid0;
 } VEdit3EditorStatus; 
 
 extern VEdit3EditorStatus VEDIT3_EDITOR_STATUS;

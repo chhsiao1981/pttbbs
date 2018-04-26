@@ -23,6 +23,7 @@ extern "C" {
 
 #define NS_DEFAULT_SLEEP_VEDIT3_REPL 10000000 // 10 ms
 
+Err _vedit3_init_user();
 Err _vedit3_init_editor(UUID main_id);
 Err _vedit3_init_file_info(UUID main_id);
 
