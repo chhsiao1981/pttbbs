@@ -22,6 +22,14 @@ extern "C" {
 
 #include "var.h"
 
+enum VEdit3Attr {
+    VEDIT3_ATTR_NORMAL   = 0x00,
+    VEDIT3_ATTR_SELECTED = 0x01, // selected (reverse)
+    VEDIT3_ATTR_MOVIECODE= 0x02, // pmore movie
+    VEDIT3_ATTR_BBSLUA   = 0x04, // BBS Lua (header)
+    VEDIT3_ATTR_COMMENT  = 0x08, // comment syntax
+};
+
 typedef struct VEdit3EditorStatus {
     bool is_insert;
     bool is_ansi;

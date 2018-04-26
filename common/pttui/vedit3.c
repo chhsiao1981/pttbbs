@@ -389,9 +389,9 @@ _vedit3_disp_line(int line, char *buf, int len)
 {
     move(line, 0);
     clrtoeol();
-    int attr = EOATTR_NORMAL;
+    int attr = (int)VEDIT3_ATTR_NORMAL;
     if(VEDIT3_EDITOR_STATUS.is_ansi) {
-        outs(line, 0, buf);
+        outs(buf);
     }
     else {
         attr |= detect_attr(buf, len);
