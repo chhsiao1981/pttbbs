@@ -10,7 +10,7 @@ VEdit3EditorStatus VEDIT3_EDITOR_STATUS = {
     0,                   // current-line
     0,                   // current-col
     0,                   // edit_margin
-    0                    // last-margin 
+    0                    // last-margin
 };
 
 VEdit3State VEDIT3_STATE = {};
@@ -83,31 +83,31 @@ vedit3(UUID main_id, char *title, int edflags, int *money)
     STATINC(STAT_VEDIT);
 
     Err error_code = _vedit3_init_user();
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     // init
     error_code = _vedit3_init_editor(main_id);
     fprintf(stderr, "vedit3.vedit3: after init editor: e: %d\n", error_code);
 
     // edit
-    if(!error_code) {
+    if (!error_code) {
         error_code = pttui_thread_set_expected_state(PTTUI_THREAD_STATE_EDIT);
     }
 
-    if(!error_code) {
+    if (!error_code) {
         error_code = _vedit3_disp_screen(0, b_lines - 1);
     }
 
     move(0, 0);
     refresh();
 
-    if(!error_code) {
+    if (!error_code) {
         error_code = _vedit3_repl(money);
     }
 
     // back to start
     Err error_code_set_expected_state = pttui_thread_set_expected_state(PTTUI_THREAD_STATE_START);
-    if(error_code_set_expected_state) error_code = S_ERR_ABORT_BBS;
+    if (error_code_set_expected_state) error_code = S_ERR_ABORT_BBS;
 
     Err error_code_sync = _vedit3_wait_buffer_thread_loop(PTTUI_THREAD_STATE_START);
     if (error_code_sync) error_code = S_ERR_ABORT_BBS;
@@ -153,7 +153,7 @@ _vedit3_init_user()
     VEDIT3_EDITOR_STATUS.destuid0 = currutmp->destuid;
 
     currutmp->mode = EDITING;
-    currutmp->destuid = currstat;    
+    currutmp->destuid = currstat;
 
     return S_OK;
 }
@@ -277,7 +277,7 @@ _vedit3_repl(int *money)
     fprintf(stderr, "vedit3._vedit3_repl: start\n");
 
     /*
-    bool is_redraw_everything = false;    
+    bool is_redraw_everything = false;
     bool is_end = false;
 
     struct timespec req = {0, NS_DEFAULT_SLEEP_VEDIT3_REPL};
@@ -324,8 +324,8 @@ _vedit3_store_to_render()
     int *p_modified_line = VEDIT3_EDITOR_STATUS.modified_line;
 
 
-    for(current_line = 0; current_line < VEDIT3_EDITOR_STATUS.n_modified_line && p_buffer; current_line++, p_modified_line++, p_buffer = p_buffer->next) {
-        if(!(*p_modified_line)) continue;
+    for (current_line = 0; current_line < VEDIT3_EDITOR_STATUS.n_modified_line && p_buffer; current_line++, p_modified_line++, p_buffer = p_buffer->next) {
+        if (!(*p_modified_line)) continue;
 
         mvouts(current_line, 0, p_buffer->buf);
     }
@@ -344,42 +344,42 @@ Err
 _vedit3_disp_screen(int start_line, int end_line)
 {
     Err error_code = pttui_thread_lock_rdlock(LOCK_VEDIT3_BUFFER_INFO);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     VEdit3Buffer *p_buffer = VEDIT3_DISP_TOP_LINE_BUFFER;
     int i = 0;
-    for(i = 0; i < start_line && p_buffer; i++, p_buffer = p_buffer->next);
-    if(i != start_line) error_code = S_ERR;
+    for (i = 0; i < start_line && p_buffer; i++, p_buffer = p_buffer->next);
+    if (i != start_line) error_code = S_ERR;
 
-    if(!error_code) {
-        for(; i <= end_line && p_buffer; i++, p_buffer = p_buffer->next) {
-            if(!p_buffer->buf) {
+    if (!error_code) {
+        for (; i <= end_line && p_buffer; i++, p_buffer = p_buffer->next) {
+            if (!p_buffer->buf) {
                 error_code = _vedit3_disp_line(i, VEDIT3_EMPTY_LINE, LEN_VEDIT3_EMPTY_LINE);
-                if(error_code) break;
+                if (error_code) break;
 
                 continue;
             }
             error_code = _vedit3_disp_line(i, p_buffer->buf, p_buffer->len);
-            if(error_code) break;
+            if (error_code) break;
         }
     }
 
     fprintf(stderr, "vedit3._vedit3_disp_screen: after for-loop: i: %d start_line: %d end_line: %d e: %d\n", i, start_line, end_line, error_code);
 
-    if(!error_code) {
-        for(; i <= end_line; i++) {
+    if (!error_code) {
+        for (; i <= end_line; i++) {
             error_code = _vedit3_disp_line(i, VEDIT3_END_LINE, LEN_VEDIT3_END_LINE);
-            if(error_code) break;
+            if (error_code) break;
         }
     }
 
-    if(!error_code) {
+    if (!error_code) {
         refresh();
     }
 
     // free
     Err error_code_lock = pttui_thread_lock_unlock(LOCK_VEDIT3_BUFFER_INFO);
-    if(error_code_lock) error_code = S_ERR_ABORT_BBS;
+    if (error_code_lock) error_code = S_ERR_ABORT_BBS;
 
     return error_code;
 }
@@ -394,19 +394,258 @@ _vedit3_disp_line(int line, char *buf, int len)
     int attr = (int)VEDIT3_ATTR_NORMAL;
     int detected_attr = 0;
 
-    if(VEDIT3_EDITOR_STATUS.is_ansi) {
+    if (VEDIT3_EDITOR_STATUS.is_ansi) {
         outs(buf);
     }
     else {
         error_code = _vedit3_detect_attr(buf, len, &detected_attr);
         attr |= detected_attr;
         outs(buf);
-        //edit_outs_attr(buf + VEDIT3_EDITOR_STATUS.edit_margin, attr);
+        _vedit3_edit_outs_attr_n(buf + VEDIT3_EDITOR_STATUS.edit_margin, strlen(buf + VEDIT3_EDITOR_STATUS.edit_margin), attr);
     }
 
     return S_OK;
 }
 
+
+Err
+_vedit3_edit_outs_attr_n(const char *text, int n, int attr)
+{
+    int    column = 0;
+    unsigned char inAnsi = 0;
+    unsigned char ch;
+    int doReset = 0;
+    const char *reset = ANSI_RESET;
+
+    // syntax attributes
+    char fComment = 0,
+         fSingleQuote = 0,
+         fDoubleQuote = 0,
+         fSquareQuote = 0,
+         fWord = 0;
+
+    // movie syntax rendering
+#ifdef ENABLE_PMORE_ASCII_MOVIE_SYNTAX
+    char movie_attrs[WRAPMARGIN + 10] = {0};
+    char *pmattr = movie_attrs, mattr = 0;
+#endif
+
+#ifdef COLORED_SELECTION
+    if ((attr & EOATTR_SELECTED) &&
+            (attr & ~EOATTR_SELECTED))
+    {
+        reset = ANSI_COLOR(0; 7; 36);
+        doReset = 1;
+        outs(reset);
+    }
+    else
+#endif // if not defined, color by  priority - selection first
+        if (attr & EOATTR_SELECTED)
+        {
+            reset = ANSI_COLOR(0; 7);
+            doReset = 1;
+            outs(reset);
+        }
+        else if (attr & EOATTR_MOVIECODE)
+        {
+            reset = ANSI_COLOR(0; 36);
+            doReset = 1;
+            outs(reset);
+#ifdef ENABLE_PMORE_ASCII_MOVIE_SYNTAX
+            syn_pmore_render((char*)text, n, movie_attrs);
+#endif
+        }
+        else if (attr & EOATTR_BBSLUA)
+        {
+            reset = ANSI_COLOR(0; 1; 31);
+            doReset = 1;
+            outs(reset);
+        }
+        else if (attr & EOATTR_COMMENT)
+        {
+            reset = ANSI_COLOR(0; 1; 34);
+            doReset = 1;
+            outs(reset);
+        }
+
+#ifdef DBCSAWARE
+    /* 0 = N/A, 1 = leading byte printed, 2 = ansi in middle */
+    unsigned char isDBCS = 0;
+#endif
+
+    while ((ch = *text++) && (++column < t_columns) && n-- > 0)
+    {
+#ifdef ENABLE_PMORE_ASCII_MOVIE_SYNTAX
+        mattr = *pmattr++;
+#endif
+
+        if (inAnsi == 1)
+        {
+            if (ch == ESC_CHR)
+                outc('*');
+            else
+            {
+                outc(ch);
+
+                if (!ANSI_IN_ESCAPE(ch))
+                {
+                    inAnsi = 0;
+                    outs(reset);
+                }
+            }
+
+        }
+        else if (ch == ESC_CHR)
+        {
+            inAnsi = 1;
+#ifdef DBCSAWARE
+            if (isDBCS == 1)
+            {
+                isDBCS = 2;
+                outs(ANSI_COLOR(1; 33) "?");
+                outs(reset);
+            }
+#endif
+            outs(ANSI_COLOR(1) "*");
+        }
+        else
+        {
+#ifdef DBCSAWARE
+            if (isDBCS == 1)
+                isDBCS = 0;
+            else if (isDBCS == 2)
+            {
+                /* ansi in middle. */
+                outs(ANSI_COLOR(0; 33) "?");
+                outs(reset);
+                isDBCS = 0;
+                continue;
+            }
+            else if (IS_BIG5_HI(ch))
+            {
+                isDBCS = 1;
+                // peak next char
+                if (n > 0 && *text == ESC_CHR)
+                    continue;
+            }
+#endif
+
+            // Lua Parser!
+            if (!attr && curr_buf->synparser && !fComment)
+            {
+                // syntax highlight!
+                if (fSquareQuote) {
+                    if (ch == ']' && n > 0 && *(text) == ']')
+                    {
+                        fSquareQuote = 0;
+                        doReset = 0;
+                        // directly print quotes
+                        outc(ch); outc(ch);
+                        text++, n--;
+                        outs(ANSI_RESET);
+                        continue;
+                    }
+                } else if (fSingleQuote) {
+                    if (ch == '\'')
+                    {
+                        fSingleQuote = 0;
+                        doReset = 0;
+                        // directly print quotes
+                        outc(ch);
+                        outs(ANSI_RESET);
+                        continue;
+                    }
+                } else if (fDoubleQuote) {
+                    if (ch == '"')
+                    {
+                        fDoubleQuote = 0;
+                        doReset = 0;
+                        // directly print quotes
+                        outc(ch);
+                        outs(ANSI_RESET);
+                        continue;
+                    }
+                } else if (ch == '-' && n > 0 && *(text) == '-') {
+                    fComment = 1;
+                    doReset = 1;
+                    outs(ANSI_COLOR(0; 1; 34));
+                } else if (ch == '[' && n > 0 && *(text) == '[') {
+                    fSquareQuote = 1;
+                    doReset = 1;
+                    fWord = 0;
+                    outs(ANSI_COLOR(1; 35));
+                } else if (ch == '\'' || ch == '"') {
+                    if (ch == '"')
+                        fDoubleQuote = 1;
+                    else
+                        fSingleQuote = 1;
+                    doReset = 1;
+                    fWord = 0;
+                    outs(ANSI_COLOR(1; 35));
+                } else {
+                    // normal words
+                    if (fWord)
+                    {
+                        // inside a word.
+                        if (--fWord <= 0) {
+                            fWord = 0;
+                            doReset = 0;
+                            outc(ch);
+                            outs(ANSI_RESET);
+                            continue;
+                        }
+                    } else if (isalnum(tolower(ch)) || ch == '#') {
+                        char attr[] = ANSI_COLOR(0; 1; 37);
+                        int x = synLuaKeyword(text - 1, n + 1, &fWord);
+                        if (fWord > 0)
+                            fWord --;
+                        if (x != 0)
+                        {
+                            // sorry, fixed string here.
+                            // 7 = *[0;1;3?
+                            if (x < 0) {  attr[4] = '0'; x = -x; }
+                            attr[7] = '0' + x;
+                            outs(attr);
+                            doReset = 1;
+                        }
+                        if (!fWord)
+                        {
+                            outc(ch);
+                            outs(ANSI_RESET);
+                            doReset = 0;
+                            continue;
+                        }
+                    }
+                }
+            }
+            outc(ch);
+
+#ifdef ENABLE_PMORE_ASCII_MOVIE_SYNTAX
+            // pmore Movie Parser!
+            if (attr & EOATTR_MOVIECODE)
+            {
+                // only render when attribute was changed.
+                if (mattr != *pmattr)
+                {
+                    if (*pmattr)
+                    {
+                        prints(ANSI_COLOR(1; 3 % d),
+                               8 - ((mattr - 1) % 7 + 1) );
+                    } else {
+                        outs(ANSI_RESET);
+                    }
+                }
+            }
+#endif // ENABLE_PMORE_ASCII_MOVIE_SYNTAX
+        }
+    }
+
+    // this must be ANSI_RESET, not "reset".
+    if (inAnsi || doReset)
+        outs(ANSI_RESET);
+
+    return S_OK;
+}
 
 /*********
  * VEdit3 Buffer
@@ -452,9 +691,9 @@ vedit3_init_disp_buffer()
     if (error_code) return error_code;
 
     if (!memcmp(expected_state.main_id, VEDIT3_FILE_INFO.main_id, UUIDLEN) &&
-        !memcmp(expected_state.main_id, VEDIT3_BUFFER_STATE.main_id, UUIDLEN)) return S_OK;
+            !memcmp(expected_state.main_id, VEDIT3_BUFFER_STATE.main_id, UUIDLEN)) return S_OK;
 
-    char *_uuid = display_uuid(expected_state.top_line_id);    
+    char *_uuid = display_uuid(expected_state.top_line_id);
     fprintf(stderr, "vedit3.vedit3_init_disp_buffer: to resync all vedit3 buffer info: e: %d state: (content_type: %d, block_offset: %d, line_offset: %d, comment_offset: %d, n_window_line: %d top_line_id: %s)\n", error_code, expected_state.top_line_content_type, expected_state.top_line_block_offset, expected_state.top_line_line_offset, expected_state.top_line_comment_offset, expected_state.n_window_line, _uuid);
     safe_free(&_uuid);
 
@@ -532,32 +771,32 @@ _vedit3_sync_disp_buffer(VEdit3State *expected_state)
  * VEdit3 Misc
  *********/
 /**
- * @brief 
+ * @brief
  * @details ref: edit_msg in edit.c
  */
 Err
 _vedit3_edit_msg()
-{    
+{
     char buf[MAX_TEXTLINE_SIZE] = {};
     int n = VEDIT3_EDITOR_STATUS.current_col;
 
     /*
-    if (VEDIT3_EDITOR_STATUS.is_ansi)    
+    if (VEDIT3_EDITOR_STATUS.is_ansi)
     //n = n2ansi(n, curr_buf->currline);
 
     if (VEDIT3_EDITOR_STATUS.is_phone) show_phone_mode_panel();
     */
 
     snprintf(buf, sizeof(buf),
-        FOOTER_VEDIT3_INFIX
-        FOOTER_VEDIT3_POSTFIX,
-        VEDIT3_EDITOR_STATUS.is_insert ? VEDIT3_PROMPT_INSERT : VEDIT3_PROMPT_REPLACE,
-        VEDIT3_EDITOR_STATUS.is_ansi ? 'A' : 'a',
-        VEDIT3_EDITOR_STATUS.is_indent ? 'I' : 'i',
-        VEDIT3_EDITOR_STATUS.is_phone ? 'P' : 'p',
-        VEDIT3_EDITOR_STATUS.is_raw ? 'R' : 'r',
-        VEDIT3_EDITOR_STATUS.current_line + 1,
-        n + 1);
+             FOOTER_VEDIT3_INFIX
+             FOOTER_VEDIT3_POSTFIX,
+             VEDIT3_EDITOR_STATUS.is_insert ? VEDIT3_PROMPT_INSERT : VEDIT3_PROMPT_REPLACE,
+             VEDIT3_EDITOR_STATUS.is_ansi ? 'A' : 'a',
+             VEDIT3_EDITOR_STATUS.is_indent ? 'I' : 'i',
+             VEDIT3_EDITOR_STATUS.is_phone ? 'P' : 'p',
+             VEDIT3_EDITOR_STATUS.is_raw ? 'R' : 'r',
+             VEDIT3_EDITOR_STATUS.current_line + 1,
+             n + 1);
 
     vs_footer(FOOTER_VEDIT3_PREFIX, buf);
 }
@@ -602,7 +841,7 @@ _vedit3_detect_attr(const char *ps, size_t len, int *p_attr)
 {
     int attr = 0;
 #ifdef PMORE_USE_ASCII_MOVIE
-    if (mf_movieFrameHeader((unsigned char*)ps, (unsigned char*)ps+len)) attr |= EOATTR_MOVIECODE;
+    if (mf_movieFrameHeader((unsigned char*)ps, (unsigned char*)ps + len)) attr |= EOATTR_MOVIECODE;
 #endif
 
 #ifdef USE_BBSLUA
@@ -612,9 +851,9 @@ _vedit3_detect_attr(const char *ps, size_t len, int *p_attr)
         if (!curr_buf->synparser)
         {
             curr_buf->synparser = 1;
-        // if you need indent, toggle by hotkey.
-        // enabling indent by default may cause trouble to copy pasters
-        // curr_buf->indent_mode = 1;
+            // if you need indent, toggle by hotkey.
+            // enabling indent by default may cause trouble to copy pasters
+            // curr_buf->indent_mode = 1;
         }
     }
 #endif

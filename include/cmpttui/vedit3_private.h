@@ -44,6 +44,8 @@ Err _vedit3_init_dots();
 Err _vedit3_loading();
 Err _vedit3_loading_rotate_dots();
 
+Err _vedit3_detect_attr(const char *ps, size_t len, int *p_attr);
+
 // VEdit3 repl
 Err _vedit3_repl(int *money);
 
@@ -51,6 +53,8 @@ Err _vedit3_repl(int *money);
 Err _vedit3_disp_screen(int start_line, int end_line);
 
 Err _vedit3_disp_line(int line, char *buf, int len);
+
+Err _vedit3_edit_outs_attr_n(char *text, int len, int attr);
 
 
 #ifdef __cplusplus
