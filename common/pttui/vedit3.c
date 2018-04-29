@@ -398,9 +398,9 @@ _vedit3_disp_line(int line, char *buf, int len)
         outs(buf);
     }
     else {
+        error_code = _vedit3_detect_attr(buf, len, &detected_attr);
+        attr |= detected_attr;
         outs(buf);
-        //error_code = _vedit3_detect_attr(buf, len, &detected_attr);
-        //attr |= detected_attr;
         //edit_outs_attr(buf + VEDIT3_EDITOR_STATUS.edit_margin, attr);
     }
 
