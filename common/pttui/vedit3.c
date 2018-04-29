@@ -387,15 +387,21 @@ _vedit3_disp_screen(int start_line, int end_line)
 Err
 _vedit3_disp_line(int line, char *buf, int len)
 {
+    Err error_code = S_OK;
+
     move(line, 0);
     clrtoeol();
     int attr = (int)VEDIT3_ATTR_NORMAL;
+    int detected_attr = 0;
+
     if(VEDIT3_EDITOR_STATUS.is_ansi) {
         outs(buf);
     }
     else {
-        attr |= detect_attr(buf, len);
-        edit_outs_attr(buf + VEDIT3_EDITOR_STATUS.edit_margin, attr);
+        outs(buf);
+        //error_code = _vedit3_detect_attr(buf, len, &detected_attr);
+        //attr |= detected_attr;
+        //edit_outs_attr(buf + VEDIT3_EDITOR_STATUS.edit_margin, attr);
     }
 
     return S_OK;
@@ -589,4 +595,28 @@ _vedit3_loading_rotate_dots()
     _VEDIT3_LOADING_DOT1 = tmp;
 
     return S_OK;
+}
+
+Err
+_vedit3_detect_attr(const char *ps, size_t len, int *p_attr)
+{
+    int attr = 0;
+#ifdef PMORE_USE_ASCII_MOVIE
+    if (mf_movieFrameHeader((unsigned char*)ps, (unsigned char*)ps+len)) attr |= EOATTR_MOVIECODE;
+#endif
+
+#ifdef USE_BBSLUA
+    if (bbslua_isHeader(ps, ps + len))
+    {
+        attr |= EOATTR_BBSLUA;
+        if (!curr_buf->synparser)
+        {
+            curr_buf->synparser = 1;
+        // if you need indent, toggle by hotkey.
+        // enabling indent by default may cause trouble to copy pasters
+        // curr_buf->indent_mode = 1;
+        }
+    }
+#endif
+    return attr;
 }
