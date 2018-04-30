@@ -94,12 +94,9 @@ vedit3(UUID main_id, char *title, int edflags, int *money)
         error_code = pttui_thread_set_expected_state(PTTUI_THREAD_STATE_EDIT);
     }
 
-    if (!error_code) {
-        error_code = _vedit3_disp_screen(0, b_lines - 1);
+    if(!error_code) {
+        error_code = _vedit3_repl_init();
     }
-
-    move(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_col);
-    refresh();
 
     // repl
     if (!error_code) {
@@ -277,6 +274,8 @@ _vedit3_repl(int *money)
 
     fprintf(stderr, "vedit3._vedit3_repl: start\n");
 
+    // repl init
+
     bool is_redraw_everything = false;
     bool is_end = false;
 
@@ -316,6 +315,31 @@ _vedit3_repl(int *money)
 }
 
 Err
+_vedit3_repl_init() {
+    Err error_code = S_OK;
+
+    // init editor-status
+    bzero(VEDIT3_EDITOR_STATUS, sizeof(VEDIT3_EDITOR_STATUS));
+
+    error_code = vedit3_lock_buffer_info();
+    VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_DISP_TOP_LINE_BUFFER;
+
+    // disp-screen
+    error_code = _vedit3_disp_screen(0, b_lines - 1);
+
+    if (!error_code) {
+        move(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_col);
+        refresh();
+    }
+
+    // free
+    Err error_code_lock = vedit3_unlock_buffer_info();
+    if (error_code_lock) error_code = S_ERR_ABORT_BBS;
+
+    return S_OK;
+}
+
+Err
 _vedit3_check_healthy()
 {
     return S_OK;
@@ -333,17 +357,29 @@ _vedit3_store_to_render()
  * VEdit3 disp screen
  *********/
 
+/**
+ * @brief refresh screen from start-line, add VEDIT3_END_LINE if end_line is not the end of the screen.
+ * @details refresh screen from start-tline.
+ *          add VEDIT3_END_LINE if end_line is not the end of the screen
+ * 
+ * @param start_line [description]
+ * @param end_line the end-of-line to refresh(included)
+ */
 Err
 _vedit3_disp_screen(int start_line, int end_line)
 {
-    Err error_code = pttui_thread_lock_rdlock(LOCK_VEDIT3_BUFFER_INFO);
+    Err error_code = vedit3_lock_buffer_info();
     if (error_code) return error_code;
 
+    // assuming VEDIT3_DISP_TOP_LINE_BUFFER is within expectation, with lock
     VEdit3Buffer *p_buffer = VEDIT3_DISP_TOP_LINE_BUFFER;
+
+    // iterate to the start line    
     int i = 0;
     for (i = 0; i < start_line && p_buffer; i++, p_buffer = p_buffer->next);
     if (i != start_line) error_code = S_ERR;
 
+    // disp between start_line and end_line (end-line included)
     if (!error_code) {
         for (; i <= end_line && p_buffer; i++, p_buffer = p_buffer->next) {
             if (!p_buffer->buf) {
@@ -359,6 +395,7 @@ _vedit3_disp_screen(int start_line, int end_line)
 
     fprintf(stderr, "vedit3._vedit3_disp_screen: after for-loop: i: %d start_line: %d end_line: %d e: %d\n", i, start_line, end_line, error_code);
 
+    // disp 
     if (!error_code) {
         for (; i <= end_line; i++) {
             error_code = _vedit3_disp_line(i, VEDIT3_END_LINE, LEN_VEDIT3_END_LINE);
@@ -370,8 +407,8 @@ _vedit3_disp_screen(int start_line, int end_line)
         refresh();
     }
 
-    // free
-    Err error_code_lock = pttui_thread_lock_unlock(LOCK_VEDIT3_BUFFER_INFO);
+    // free    
+    Err error_code_lock = vedit3_unlock_buffer_info();
     if (error_code_lock) error_code = S_ERR_ABORT_BBS;
 
     return error_code;
@@ -805,6 +842,42 @@ _vedit3_sync_disp_buffer(VEdit3State *expected_state)
 /*********
  * VEdit3 Misc
  *********/
+
+/**
+ * @brief [brief description]
+ * @details no need to worry much about repeated lock because:
+ *          1. it's read-lock, can be locked by vedit3-main multiple times
+ *          2. is-own-lock-buffer-info is just for the flag to ensure that vedit3-main owns the lock.
+ * 
+ * @param e [description]
+ */
+Err
+vedit3_lock_buffer_info()
+{
+    Err error_code = pttui_thread_lock_rdlock(LOCK_VEDIT3_BUFFER_INFO);
+    if(error_code) return error_code;
+        
+    VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info = true;    
+
+    return S_OK;
+}
+
+Err
+vedit3_unlock_buffer_info()
+{
+    pttui_thread_lock_wrlock *p_lock = NULL;
+
+    Err error_code = pttui_thread_lock_get_lock(LOCK_VEDIT3_BUFFER_INFO, &p_lock);
+
+    if(!error_code && p_lock->__data.__nr_readers == 1) {
+        VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info = false;
+    }
+
+    error_code = pttui_thread_lock_unlock(LOCK_VEDIT3_BUFFER_INFO);
+
+    return error_code;
+}
+
 /**
  * @brief
  * @details ref: edit_msg in edit.c

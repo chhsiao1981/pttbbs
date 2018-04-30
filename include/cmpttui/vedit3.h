@@ -57,8 +57,9 @@ typedef struct VEdit3EditorStatus {
     int current_col;
     int edit_margin;
     int last_margin;
-    int n_modified_line;
-    int *modified_line;
+    bool is_own_lock_buffer_info;
+
+    VEdit3Buffer *current_buffer;
 
     int mode0;
     int destuid0;
@@ -84,6 +85,9 @@ Err vedit3_init_disp_buffer();
 
 Err vedit3_disp_buffer();
 
+Err vedit3_lock_buffer_info();
+
+Err vedit3_unlock_buffer_info();
 
 #ifdef __cplusplus
 }

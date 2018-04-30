@@ -7,12 +7,12 @@ vedit3_action_to_store(bool *is_end)
     Err error_code = S_OK;
     int ch;
 
-    while(true) {   
+    while (true) {
         error_code = _vedit3_action_get_key(&ch);
-        if(error_code) break;
+        if (error_code) break;
 
         // ch as printable letter
-        if(ch < 0x100 && isprint2(ch)) {
+        if (ch < 0x100 && isprint2(ch)) {
             /*
             error_code = VEDIT3_EDITOR_STATUS.is_phone && (pstr = phone_char(char)) ? _vedit3_action_insert_dchar(pstr) : _vedit3_action_insert_char(ch);
             if(error_code) break;
@@ -23,7 +23,7 @@ vedit3_action_to_store(bool *is_end)
 
         // ch as ctrl
 
-        switch(ch) {
+        switch (ch) {
         case KEY_UP:
         case KEY_DOWN:
             break;
@@ -31,7 +31,7 @@ vedit3_action_to_store(bool *is_end)
             break;
         }
 
-        switch(ch) {
+        switch (ch) {
         case KEY_F10:
         case Ctrl('X'): // save and exit
             *is_end = true;
@@ -82,7 +82,7 @@ vedit3_action_to_store(bool *is_end)
             error_code = _vedit3_action_show_help();
             break;
 
-        case Ctrl('L'); // redraw        
+        case Ctrl('L'); // redraw
             break;
 
         case KEY_LEFT:
@@ -142,7 +142,7 @@ vedit3_action_to_store(bool *is_end)
             break;
         }
     }
-    if(error_code == S_ERR_NO_KEY) error_code = S_OK;
+    if (error_code == S_ERR_NO_KEY) error_code = S_OK;
 
     return error_code;
 }
@@ -152,7 +152,7 @@ Err
 _vedit3_action_get_key(int *ch)
 {
     int is_available = vkey_poll(0);
-    if(!is_available) return S_ERR_NO_KEY;
+    if (!is_available) return S_ERR_NO_KEY;
 
     int tmp = vkey();
     fprintf(stderr, "_vedit3_action_get_key: ch: %d\n", tmp);
@@ -160,4 +160,19 @@ _vedit3_action_get_key(int *ch)
     *ch = tmp;
 
     return S_OK;
+}
+
+/**
+ * @brief 
+ * @details ref: insert_char in edit.c
+ *          XXX Design decision: 1. Insert in the middle of the sentences.
+ *                               2. ignore DBCSAWARE, need to be taken care of in other place.
+ *          
+ * 
+ * @param ch [description]
+ */
+Err
+_vedit3_action_insert_char(int ch)
+{
+    return S_OK;    
 }
