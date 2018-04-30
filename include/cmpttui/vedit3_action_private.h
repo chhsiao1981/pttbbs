@@ -8,6 +8,8 @@
 extern "C" {
 #endif
 
+#include "vtkbd.h"
+
 Err _vedit3_action_get_key(int *ch);
 
 #ifdef __cplusplus
