@@ -384,6 +384,14 @@ _vedit3_disp_screen(int start_line, int end_line)
     return error_code;
 }
 
+/**
+ * @brief
+ * @details ref: the end of vedit2 in edit.c
+ * 
+ * @param line [description]
+ * @param buf [description]
+ * @param len [description]
+ */
 Err
 _vedit3_disp_line(int line, char *buf, int len)
 {
@@ -395,7 +403,7 @@ _vedit3_disp_line(int line, char *buf, int len)
     int detected_attr = 0;
 
     if (VEDIT3_EDITOR_STATUS.is_ansi) {
-        _vedit3_edit_ansi_outs_n(buf);
+        outs(buf);
     }
     else {
         error_code = _vedit3_detect_attr(buf, len, &detected_attr);
