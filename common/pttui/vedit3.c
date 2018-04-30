@@ -440,7 +440,7 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
     }
     else
 #endif // if not defined, color by  priority - selection first
-        if (attr & EOATTR_SELECTED)
+        if (attr & VEDIT3_ATTR_SELECTED)
         {
             reset = ANSI_COLOR(0; 7);
             doReset = 1;
@@ -530,8 +530,9 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
             }
 #endif
 
-            // Lua Parser!
-            if (!attr && curr_buf->synparser && !fComment)
+            // XXX Lua Parser!
+            //if (!attr && curr_buf->synparser && !fComment)
+            if (!attr && false && !fComment)
             {
                 // syntax highlight!
                 if (fSquareQuote) {

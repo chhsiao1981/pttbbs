@@ -54,7 +54,7 @@ Err _vedit3_disp_screen(int start_line, int end_line);
 
 Err _vedit3_disp_line(int line, char *buf, int len);
 
-Err _vedit3_edit_outs_attr_n(char *text, int len, int attr);
+Err _vedit3_edit_outs_attr_n(const char *text, int len, int attr);
 
 
 #ifdef __cplusplus
