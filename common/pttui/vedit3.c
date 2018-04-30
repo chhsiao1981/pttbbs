@@ -395,7 +395,7 @@ _vedit3_disp_line(int line, char *buf, int len)
     int detected_attr = 0;
 
     if (VEDIT3_EDITOR_STATUS.is_ansi) {
-        outs(buf);
+        _vedit3_edit_ansi_outs_n(buf);
     }
     else {
         error_code = _vedit3_detect_attr(buf, len, &detected_attr);
@@ -410,7 +410,7 @@ _vedit3_disp_line(int line, char *buf, int len)
 /**
  * @brief [brief description]
  * @details ref: edit_outs_attr_n in mbbsd/edit.c
- * 
+ *
  * @param text [description]
  * @param n [description]
  * @param attr [description]
@@ -655,6 +655,32 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
     return S_OK;
 }
 
+/**
+ * @brief
+ * @details ref: edit_ansi_outs_n in edit.c
+ * 
+ * @param str [description]
+ * @param n [description]
+ * @param attr [description]
+ */
+Err
+_vedit3_edit_ansi_outs_n(const char *str, int n, int attr GCC_UNUSED)
+{
+    char c;
+    while (n-- > 0 && (c = *str++)) {
+        if (c == ESC_CHR && *str == '*')
+        {
+            // ptt prints
+            /* Because moving within ptt_prints is too hard
+             * let's just display it as-is.
+             */
+            outc('*');
+        } else {
+            outc(c);
+        }
+    }
+}
+
 /*********
  * VEdit3 Buffer
  *********/
@@ -845,9 +871,9 @@ _vedit3_loading_rotate_dots()
 }
 
 /**
- * @brief 
+ * @brief
  * @details ref: detect_attr in edit.c
- * 
+ *
  * @param ps [description]
  * @param len [description]
  * @param p_attr [description]
