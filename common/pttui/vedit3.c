@@ -642,7 +642,7 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
                         }
                     } else if (isalnum(tolower(ch)) || ch == '#') {
                         char attr[] = ANSI_COLOR(0; 1; 37);
-                        int x = synLuaKeyword(text - 1, n + 1, &fWord);
+                        int x = _vedit3_syn_lua_keyword(text - 1, n + 1, &fWord);
                         if (fWord > 0)
                             fWord --;
                         if (x != 0)
@@ -974,4 +974,130 @@ _vedit3_detect_attr(const char *ps, size_t len, int *p_attr)
     }
 #endif
     return attr;
+}
+
+int _vedit3_syn_lua_keyword(const char *text, int n, char *wlen)
+{
+    int i = 0;
+    const char * const *tbl = NULL;
+    if (*text >= 'A' && *text <= 'Z')
+    {
+    // normal identifier
+    while (n-- > 0 && (isalnum(*text) || *text == '_'))
+    {
+        text++;
+        (*wlen) ++;
+    }
+    return 0;
+    }
+    if (*text >= '0' && *text <= '9')
+    {
+    // digits
+    while (n-- > 0 && (isdigit(*text) || *text == '.' || *text == 'x'))
+    {
+        text++;
+        (*wlen) ++;
+    }
+    return 5;
+    }
+    if (*text == '#')
+    {
+    text++;
+    (*wlen) ++;
+    // length of identifier
+    while (n-- > 0 && (isalnum(*text) || *text == '_'))
+    {
+        text++;
+        (*wlen) ++;
+    }
+    return -2;
+    }
+
+    // ignore non-identifiers
+    if (!(*text >= 'a' && *text <= 'z'))
+    return 0;
+
+    // 1st, try keywords
+    for (i = 0; luaKeywords[i] && *text >= *luaKeywords[i]; i++)
+    {
+    int l = strlen(luaKeywords[i]);
+    if (n < l)
+        continue;
+    if (isalnum(text[l]))
+        continue;
+    if (strncmp(text, luaKeywords[i], l) == 0)
+    {
+        *wlen = l;
+        return 3;
+    }
+    }
+    for (i = 0; luaDataKeywords[i] && *text >= *luaDataKeywords[i]; i++)
+    {
+    int l = strlen(luaDataKeywords[i]);
+    if (n < l)
+        continue;
+    if (isalnum(text[l]))
+        continue;
+    if (strncmp(text, luaDataKeywords[i], l) == 0)
+    {
+        *wlen = l;
+        return 2;
+    }
+    }
+    for (i = 0; luaFunctions[i] && *text >= *luaFunctions[i]; i++)
+    {
+    int l = strlen(luaFunctions[i]);
+    if (n < l)
+        continue;
+    if (isalnum(text[l]))
+        continue;
+    if (strncmp(text, luaFunctions[i], l) == 0)
+    {
+        *wlen = l;
+        return 6;
+    }
+    }
+    for (i = 0; luaLibs[i]; i++)
+    {
+    int l = strlen(luaLibs[i]);
+    if (n < l)
+        continue;
+    if (text[l] != '.' && text[l] != ':')
+        continue;
+    if (strncmp(text, luaLibs[i], l) == 0)
+    {
+        *wlen = l+1;
+        text += l; text ++;
+        n -= l; n--;
+        break;
+    }
+    }
+
+    tbl = luaLibAPI[i];
+    if (!tbl)
+    {
+    // calcualte wlen
+    while (n-- > 0 && (isalnum(*text) || *text == '_'))
+    {
+        text++;
+        (*wlen) ++;
+    }
+    return 0;
+    }
+
+    for (i = 0; tbl[i]; i++)
+    {
+    int l = strlen(tbl[i]);
+    if (n < l)
+        continue;
+    if (isalnum(text[l]))
+        continue;
+    if (strncmp(text, tbl[i], l) == 0)
+    {
+        *wlen += l;
+        return 6;
+    }
+    }
+    // luaLib. only
+    return -6;
 }

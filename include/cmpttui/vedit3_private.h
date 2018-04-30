@@ -46,6 +46,7 @@ Err _vedit3_loading();
 Err _vedit3_loading_rotate_dots();
 
 Err _vedit3_detect_attr(const char *ps, size_t len, int *p_attr);
+int _vedit3_syn_lua_keyword(const char *text, int n, char *wlen);
 
 // VEdit3 repl
 Err _vedit3_repl_init();
