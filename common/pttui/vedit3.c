@@ -316,6 +316,12 @@ _vedit3_repl(int *money)
 }
 
 Err
+_vedit3_check_healthy()
+{
+    return S_OK;
+}
+
+Err
 _vedit3_store_to_render()
 {
     move(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_col);

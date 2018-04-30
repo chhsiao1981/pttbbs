@@ -8,6 +8,7 @@
 #include "cmpttui/pttui_thread.h"
 #include "cmpttui/pttui_thread_lock.h"
 #include "cmpttui/ptt_screen.h"
+#include "cmpttui/vedit3_action.h"
 #include "proto_extra.h"
 
 #ifdef __cplusplus
@@ -48,6 +49,8 @@ Err _vedit3_detect_attr(const char *ps, size_t len, int *p_attr);
 
 // VEdit3 repl
 Err _vedit3_repl(int *money);
+Err _vedit3_check_healthy();
+Err _vedit3_store_to_render();
 
 // VEdit3 disp screen
 Err _vedit3_disp_screen(int start_line, int end_line);
