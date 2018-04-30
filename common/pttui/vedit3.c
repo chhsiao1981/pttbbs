@@ -400,7 +400,6 @@ _vedit3_disp_line(int line, char *buf, int len)
     else {
         error_code = _vedit3_detect_attr(buf, len, &detected_attr);
         attr |= detected_attr;
-        outs(buf);
         _vedit3_edit_outs_attr_n(buf + VEDIT3_EDITOR_STATUS.edit_margin, strlen(buf + VEDIT3_EDITOR_STATUS.edit_margin), attr);
     }
 
