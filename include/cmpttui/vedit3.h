@@ -22,6 +22,23 @@ extern "C" {
 
 #include "var.h"
 
+// XXX hack for DBCSAWARE in edit
+#ifndef IS_BIG5_HI
+#define IS_BIG5_HI(x) (0x81 <= (x) && (x) <= 0xfe)
+#endif    
+#ifndef IS_BIG5_LOS
+#define IS_BIG5_LOS(x) (0x40 <= (x) && (x) <= 0x7e)
+#endif    
+#ifndef IS_BIG5_LOE
+#define IS_BIG5_LOE(x) (0x80 <= (x) && (x) <= 0xfe)
+#endif    
+#ifndef IS_BIG5_LO
+#define IS_BIG5_LO(x) (IS_BIG5_LOS(x) || IS_BIG5_LOE(x))
+#endif
+#ifndef IS_BIG5    
+#define IS_BIG5(hi,lo) (IS_BIG5_HI(hi) && IS_BIG5_LO(lo))
+#endif
+
 enum VEdit3Attr {
     VEDIT3_ATTR_NORMAL   = 0x00,
     VEDIT3_ATTR_SELECTED = 0x01, // selected (reverse)
