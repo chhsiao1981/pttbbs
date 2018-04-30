@@ -13,8 +13,10 @@ vedit3_action_to_store(bool *is_end)
 
         // ch as printable letter
         if(ch < 0x100 && isprint2(ch)) {
+            /*
             error_code = VEDIT3_EDITOR_STATUS.is_phone && (pstr = phone_char(char)) ? _vedit3_action_insert_dchar(pstr) : _vedit3_action_insert_char(ch);
             if(error_code) break;
+            */
 
             continue;
         }
@@ -137,6 +139,8 @@ vedit3_action_to_store(bool *is_end)
             error_code = _vedit3_action_delete_end_of_line();
             break;
         */
+        default:
+            break;
         }
     }
     if(error_code == S_ERR_NO_KEY) error_code = S_OK;

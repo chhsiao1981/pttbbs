@@ -3,6 +3,7 @@
 #define VEDIT3_ACTION_H
 
 #include "ptterr.h"
+#include "cmpttdb.h"
 
 #ifdef __cplusplus
 extern "C" {
