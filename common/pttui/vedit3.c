@@ -431,8 +431,8 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
 #endif
 
 #ifdef COLORED_SELECTION
-    if ((attr & EOATTR_SELECTED) &&
-            (attr & ~EOATTR_SELECTED))
+    if ((attr & VEDIT3_ATTR_SELECTED) &&
+            (attr & ~VEDIT3_ATTR_SELECTED))
     {
         reset = ANSI_COLOR(0; 7; 36);
         doReset = 1;
@@ -446,7 +446,7 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
             doReset = 1;
             outs(reset);
         }
-        else if (attr & EOATTR_MOVIECODE)
+        else if (attr & VEDIT3_ATTR_MOVIECODE)
         {
             reset = ANSI_COLOR(0; 36);
             doReset = 1;
@@ -455,13 +455,13 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
             syn_pmore_render((char*)text, n, movie_attrs);
 #endif
         }
-        else if (attr & EOATTR_BBSLUA)
+        else if (attr & VEDIT3_ATTR_BBSLUA)
         {
             reset = ANSI_COLOR(0; 1; 31);
             doReset = 1;
             outs(reset);
         }
-        else if (attr & EOATTR_COMMENT)
+        else if (attr & VEDIT3_ATTR_COMMENT)
         {
             reset = ANSI_COLOR(0; 1; 34);
             doReset = 1;
@@ -622,7 +622,7 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
 
 #ifdef ENABLE_PMORE_ASCII_MOVIE_SYNTAX
             // pmore Movie Parser!
-            if (attr & EOATTR_MOVIECODE)
+            if (attr & VEDIT3_ATTR_MOVIECODE)
             {
                 // only render when attribute was changed.
                 if (mattr != *pmattr)
