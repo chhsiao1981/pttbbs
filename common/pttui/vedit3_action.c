@@ -30,10 +30,11 @@ vedit3_action_to_store(bool *is_end)
         }
 
         switch(ch) {
+        case 'q':
         case KEY_F10:
         case Ctrl('X'): // save and exit
+            *is_end = true;
             break;
-
         case KEY_F5:    // goto-line
             break;
 
@@ -56,6 +57,7 @@ vedit3_action_to_store(bool *is_end)
         case KEY_F3:
             break;
 
+        /*
         case Ctrl('U'): // insert-esc
             error_code = _vedit3_action_insert_char(ESC_CHR);
             break;
@@ -134,6 +136,7 @@ vedit3_action_to_store(bool *is_end)
         case Ctrl('K'):
             error_code = _vedit3_action_delete_end_of_line();
             break;
+        */
         }
     }
     if(error_code == S_ERR_NO_KEY) error_code = S_OK;

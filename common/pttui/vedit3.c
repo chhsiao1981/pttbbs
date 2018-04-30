@@ -98,9 +98,10 @@ vedit3(UUID main_id, char *title, int edflags, int *money)
         error_code = _vedit3_disp_screen(0, b_lines - 1);
     }
 
-    move(0, 0);
+    move(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_col);
     refresh();
 
+    // repl
     if (!error_code) {
         error_code = _vedit3_repl(money);
     }
@@ -276,7 +277,6 @@ _vedit3_repl(int *money)
 
     fprintf(stderr, "vedit3._vedit3_repl: start\n");
 
-    /*
     bool is_redraw_everything = false;
     bool is_end = false;
 
@@ -287,10 +287,10 @@ _vedit3_repl(int *money)
     while(true) {
         // action
         // check healthy
-        error_code = _vedit3_check_healthy(&is_redraw_everything);
+        error_code = _vedit3_check_healthy();
         if(error_code) break;
 
-        error_code = _vedit3_action_to_store(&is_end);
+        error_code = vedit3_action_to_store(&is_end);
         if(error_code) break;
 
         error_code = _vedit3_store_to_render();
@@ -298,19 +298,19 @@ _vedit3_repl(int *money)
 
         if(is_end) break;
 
-
         ret_sleep = nanosleep(&req, &rem);
         if(ret_sleep) {
             error_code = S_ERR_SLEEP;
             break;
         }
     }
-    */
 
+    /*
     struct timespec req = {10, 0};
     struct timespec rem = {};
 
     int ret_sleep = nanosleep(&req, &rem);
+    */
 
     return error_code;
 }
@@ -318,23 +318,10 @@ _vedit3_repl(int *money)
 Err
 _vedit3_store_to_render()
 {
-    // re-render based on line for now
-    VEdit3Buffer *p_buffer = VEDIT3_DISP_TOP_LINE_BUFFER;
-    int current_line = 0;
-    int *p_modified_line = VEDIT3_EDITOR_STATUS.modified_line;
-
-
-    for (current_line = 0; current_line < VEDIT3_EDITOR_STATUS.n_modified_line && p_buffer; current_line++, p_modified_line++, p_buffer = p_buffer->next) {
-        if (!(*p_modified_line)) continue;
-
-        mvouts(current_line, 0, p_buffer->buf);
-    }
-
+    move(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_col);
     refresh();
+    return S_OK;
 }
-
-
-
 
 /*********
  * VEdit3 disp screen
