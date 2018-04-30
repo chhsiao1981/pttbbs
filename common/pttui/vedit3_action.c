@@ -155,7 +155,7 @@ _vedit3_action_get_key(int *ch)
     int is_available = vkey_poll(0);
     if(!is_available) return S_ERR_NO_KEY;
 
-    int tmp = igetch();
+    int tmp = vkey();
     fprintf(stderr, "_vedit3_action_get_key: ch: %d\n", tmp);
 
     *ch = tmp;
