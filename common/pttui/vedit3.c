@@ -319,7 +319,7 @@ _vedit3_repl_init() {
     Err error_code = S_OK;
 
     // init editor-status
-    bzero(VEDIT3_EDITOR_STATUS, sizeof(VEDIT3_EDITOR_STATUS));
+    bzero(&VEDIT3_EDITOR_STATUS, sizeof(VEDIT3_EDITOR_STATUS));
 
     error_code = vedit3_lock_buffer_info();
     VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_DISP_TOP_LINE_BUFFER;
@@ -865,7 +865,7 @@ vedit3_lock_buffer_info()
 Err
 vedit3_unlock_buffer_info()
 {
-    pttui_thread_lock_wrlock *p_lock = NULL;
+    pthread_rwlock_t *p_lock = NULL;
 
     Err error_code = pttui_thread_lock_get_lock(LOCK_VEDIT3_BUFFER_INFO, &p_lock);
 

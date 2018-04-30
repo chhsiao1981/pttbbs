@@ -48,6 +48,7 @@ Err _vedit3_loading_rotate_dots();
 Err _vedit3_detect_attr(const char *ps, size_t len, int *p_attr);
 
 // VEdit3 repl
+Err _vedit3_repl_init();
 Err _vedit3_repl(int *money);
 Err _vedit3_check_healthy();
 Err _vedit3_store_to_render();
