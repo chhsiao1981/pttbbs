@@ -32,7 +32,6 @@ vedit3_action_to_store(bool *is_end)
         }
 
         switch(ch) {
-        case 'q':
         case KEY_F10:
         case Ctrl('X'): // save and exit
             *is_end = true;
