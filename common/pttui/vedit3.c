@@ -407,6 +407,14 @@ _vedit3_disp_line(int line, char *buf, int len)
 }
 
 
+/**
+ * @brief [brief description]
+ * @details ref: edit_outs_attr_n in mbbsd/edit.c
+ * 
+ * @param text [description]
+ * @param n [description]
+ * @param attr [description]
+ */
 Err
 _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
 {
@@ -836,6 +844,14 @@ _vedit3_loading_rotate_dots()
     return S_OK;
 }
 
+/**
+ * @brief 
+ * @details ref: detect_attr in edit.c
+ * 
+ * @param ps [description]
+ * @param len [description]
+ * @param p_attr [description]
+ */
 Err
 _vedit3_detect_attr(const char *ps, size_t len, int *p_attr)
 {
