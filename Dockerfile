@@ -46,11 +46,13 @@ COPY include /home/bbs/pttbbs/include
 
 COPY mbbsd /home/bbs/pttbbs/mbbsd
 
-COPY sample/pttbbs.conf /home/bbs/pttbbs/pttbbs.conf
+COPY pttbbs.conf /home/bbs/pttbbs/pttbbs.conf
 
 COPY pttbbs.mk /home/bbs/pttbbs/pttbbs.mk
 
 COPY pttbbs_cond.mk /home/bbs/pttbbs/pttbbs_cond.mk
+
+COPY pttbbs_mbbsd.mk /home/bbs/pttbbs/pttbbs_mbbsd.mk
 
 COPY trans /home/bbs/pttbbs/trans
 
