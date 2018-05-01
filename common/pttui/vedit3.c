@@ -894,6 +894,23 @@ vedit3_unlock_buffer_info()
     return error_code;
 }
 
+Err
+vedit3_wrlock_buffer_info()
+{
+    Err error_code = pttui_thread_lock_wrlock(LOCK_VEDIT3_BUFFER_INFO);
+    if(error_code) return error_code;
+        
+    return S_OK;
+}
+
+Err
+vedit3_wrunlock_buffer_info()
+{
+    Err error_code = pttui_thread_lock_unlock(LOCK_VEDIT3_BUFFER_INFO);
+
+    return error_code;
+}
+
 /**
  * @brief
  * @details ref: edit_msg in edit.c

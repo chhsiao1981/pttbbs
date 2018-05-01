@@ -167,18 +167,96 @@ _vedit3_action_get_key(int *ch)
 }
 
 /**
- * @brief 
+ * @brief
  * @details ref: insert_char in edit.c
  *          XXX Design decision: 1. Insert in the middle of the sentences.
  *                               2. ignore DBCSAWARE, need to be taken care of in other place.
- *          
- * 
+ *
+ *
  * @param ch [description]
  */
 Err
 _vedit3_action_insert_char(int ch)
 {
-    return S_OK;    
+    Err error_code = S_OK;
+
+    if (!VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info) return S_ERR_EDIT_LOCK;
+
+    VEdit3Buffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
+
+    bool is_wordwrap = true;
+
+    assert(VEDIT3_EDITOR_STATUS.current_col <= current_buffer->len);
+//#ifdef DEBUG
+    //assert(curr_buf->currline->mlength == WRAPMARGIN);
+//#endif
+
+    error_code = vedit3_wrlock_buffer_info();
+    if (error_code) return error_code;
+
+    // XXX remove block-cancel for now
+    // block_cancel();
+
+
+    if (VEDIT3_EDITOR_STATUS.current_col < current_buffer->len && !VEDIT3_EDITOR_STATUS.is_insert) {
+        current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col++] = ch;
+
+        /* Thor: ansi 編輯, 可以overwrite, 不蓋到 ansi code */
+        if (VEDIT3_EDITOR_STATUS.is_ansi && !error_code) {
+            error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, current_buffer->buf, &current_col_n2ansi);
+        }
+
+        if (VEDIT3_EDITOR_STATUS.is_ansi && !error_code) {
+            error_code = pttui_ansi2n(current_col_n2ansi, current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
+        }
+    }
+    else { // insert-mode
+#ifdef DEBUG
+        assert(p->len < p->mlength);
+#endif
+        error_code = _vedit3_action_raw_shift_right(current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col, current_buffer->len - VEDIT3_EDITOR_STATUS.current_col + 1);
+
+        current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col++] = ch;
+        ++(current_buffer->len);
+    }
+
+
+    char *s = NULL;
+    if (current_buffer->len >= WRAPMARGIN && !error_code) {
+    // find the last non-space word, pointing to the 0th char
+        s = current_buffer->buf + current_buffer->len - 1;    
+        while (s != current_buffer->buf && *s == ' ') s--;
+        while (s != current_buffer->buf && *s != ' ') s--;
+        if (s == current_buffer) { // if only 1 word
+            is_wordwrap = false;
+            s = current_buffer->buf + (current_buffer->len - 2);
+        }
+    }
+
+    if(!current_buffer->len >= WRAPMARGIN && !error_code) {
+        error = vedit3_buffer_split(current_buffer, s - current_buffer->buf + 1, 0, &new_buffer);
+    }
+
+    if(!error_code && is_wordwrap && new_buffer && new_buffer->len >= 1) {
+        VEDIT3_EDITOR_STATUS.current_buffer = new_buffer;
+        current_buffer = new_buffer;
+
+        if(current_buffer->buf[current_buffer->len - 1] != ' ') {
+            current_buffer->buf[current_buffer->len] = ' ';
+            current_buffer->buf[current_buffer->len + 1] = '\0';
+            current_buffer->len++;
+        }
+    }
+
+    error_code_lock = vedit3_wrunlock_buffer_info();
+    if (error_code_lock) error_code = S_ERR_EDIT_LOCK;
+
+
+#ifdef DEBUG
+    assert(curr_buf->currline->mlength == WRAPMARGIN);
+#endif
+
+    return error_code;
 }
 
 

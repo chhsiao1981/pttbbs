@@ -20,6 +20,7 @@ typedef char Err;
 #define S_ERR_BUSY -9               // 247
 #define S_ERR_SLEEP -10             // 246
 #define S_ERR_NO_KEY -11            // 245
+#define S_ERR_EDIT_LOCK -12         // 244
 
 #ifdef __cplusplus
 }

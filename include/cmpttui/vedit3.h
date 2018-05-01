@@ -92,6 +92,10 @@ Err vedit3_lock_buffer_info();
 
 Err vedit3_unlock_buffer_info();
 
+Err vedit3_wrlock_buffer_info();
+
+Err vedit3_wrunlock_buffer_info();
+
 #ifdef __cplusplus
 }
 #endif

@@ -13,7 +13,7 @@ extern "C" {
 #include <pthread.h>
 #include <time.h>
 
-#define NS_DEFAULT_SLEEP_THREAD 10000 // 10 micro-ts
+#define NS_DEFAULT_SLEEP_THREAD 10000000 // 10 ms
 
 Err _pttui_thread_is_end(bool *is_end);
 
