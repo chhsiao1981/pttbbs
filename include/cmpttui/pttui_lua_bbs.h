@@ -6,6 +6,8 @@
 extern "C" {
 #endif
 
+#include <stdlib.h>
+
 extern const char * const luaKeywords[];
 extern const char * const luaDataKeywords[];
 extern const char * const luaFunctions[];
