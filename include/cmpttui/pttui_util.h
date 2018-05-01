@@ -9,7 +9,8 @@ extern "C" {
 #endif
 
 #include <ctype.h>
-
+#include "vtkbd.h"
+    
 Err pttui_raw_shift_right(char *s, int len);
 Err pttui_raw_shift_left(char *s, int len);
 Err pttui_ansi2n(int ansix, char *buf, int *nx);
