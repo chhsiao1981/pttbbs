@@ -198,10 +198,11 @@ _vedit3_action_insert_char(int ch)
     // block_cancel();
 
 
+    /*
     if (VEDIT3_EDITOR_STATUS.current_col < current_buffer->len && !VEDIT3_EDITOR_STATUS.is_insert) {
         current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col++] = ch;
 
-        /* Thor: ansi 編輯, 可以overwrite, 不蓋到 ansi code */
+        *//* Thor: ansi 編輯, 可以overwrite, 不蓋到 ansi code *//*
         if (VEDIT3_EDITOR_STATUS.is_ansi && !error_code) {
             error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, current_buffer->buf, &current_col_n2ansi);
         }
@@ -247,14 +248,15 @@ _vedit3_action_insert_char(int ch)
             current_buffer->len++;
         }
     }
+    */
 
     error_code_lock = vedit3_wrunlock_buffer_info();
     if (error_code_lock) error_code = S_ERR_EDIT_LOCK;
 
 
-#ifdef DEBUG
-    assert(curr_buf->currline->mlength == WRAPMARGIN);
-#endif
+//#ifdef DEBUG
+//    assert(curr_buf->currline->mlength == WRAPMARGIN);
+//#endif
 
     return error_code;
 }
