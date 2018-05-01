@@ -297,7 +297,3 @@ _vedit3_action_insert_char(int ch)
 
     return error_code;
 }
-
-static void
-raw_shift_left(char *s, int len)
-
