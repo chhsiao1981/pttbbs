@@ -7,10 +7,19 @@ VEdit3EditorStatus VEDIT3_EDITOR_STATUS = {
     false,               // is-indent
     false,               // is-phone
     false,               // is-raw
+
     0,                   // current-line
     0,                   // current-col
     0,                   // edit_margin
-    0                    // last-margin
+    0,                   // last-margin
+
+    false,               // is own lock buffer info
+    false,               // is redraw everything
+
+    NULL,                // current-buffer
+
+    0,                   // mode0
+    0                    // destuid0
 };
 
 VEdit3State VEDIT3_STATE = {};

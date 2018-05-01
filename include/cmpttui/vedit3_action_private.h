@@ -13,6 +13,7 @@ extern "C" {
 #include "vtkbd.h"
 
 Err _vedit3_action_get_key(int *ch);
+Err _vedit3_action_toggle_ansi();
 
 #ifdef __cplusplus
 }

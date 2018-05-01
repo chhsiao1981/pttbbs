@@ -53,11 +53,14 @@ typedef struct VEdit3EditorStatus {
     bool is_indent;
     bool is_phone;
     bool is_raw;
+
     int current_line;
     int current_col;
     int edit_margin;
     int last_margin;
+
     bool is_own_lock_buffer_info;
+    bool is_redraw_everything;
 
     VEdit3Buffer *current_buffer;
 

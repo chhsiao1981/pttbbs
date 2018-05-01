@@ -62,7 +62,11 @@ vedit3_action_to_store(bool *is_end)
         case Ctrl('U'): // insert-esc
             error_code = _vedit3_action_insert_char(ESC_CHR);
             break;
-
+        */
+        case Ctrl('V'): // toggle ansi-color
+            error_code = _vedit3_action_toggle_ansi();
+            break;
+        /*
         case Ctrl('I'): // insert-tab
             error_code = _vedit3_action_insert_tab();
             break;
@@ -175,4 +179,17 @@ Err
 _vedit3_action_insert_char(int ch)
 {
     return S_OK;    
+}
+
+
+Err
+_vedit3_action_toggle_ansi()
+{
+    VEDIT3_EDITOR_STATUS.is_ansi ^= 1;
+
+    // XXX block selection
+
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
+    return S_OK;
 }
