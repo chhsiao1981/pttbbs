@@ -4,6 +4,7 @@
 
 #include "ptterr.h"
 #include "cmpttui/vedit3.h"
+#include "cmpttui/pttui_util.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,9 +19,6 @@ Err _vedit3_action_toggle_ansi();
 Err _vedit3_action_t_users();
 
 Err _vedit3_action_get_key(int *ch);
-
-Err _vedit3_action_ansi2n(int ansix, char *buf, int *nx);
-Err _vedit3_action_n2ansi(int nx, char *buf, int *ansix);
 
 #ifdef __cplusplus
 }

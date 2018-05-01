@@ -19,6 +19,14 @@ destroy_vedit3_buffer_info(VEdit3BufferInfo *buffer_info)
 }
 
 Err
+vedit3_buffer_split(VEdit3Buffer *buffer, int offset, int indent, VEdit3Buffer *new_buffer)
+{
+    Err error_code = S_OK;
+    
+    return error_code;
+}
+
+Err
 sync_vedit3_buffer_info(VEdit3BufferInfo *buffer_info, VEdit3Buffer *current_buffer, VEdit3State *state, FileInfo *file_info, VEdit3Buffer **new_buffer)
 {
     Err error_code = S_OK;
