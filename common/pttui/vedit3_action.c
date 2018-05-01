@@ -250,7 +250,7 @@ _vedit3_action_insert_char(int ch)
     }
     */
 
-    error_code_lock = vedit3_wrunlock_buffer_info();
+    Err error_code_lock = vedit3_wrunlock_buffer_info();
     if (error_code_lock) error_code = S_ERR_EDIT_LOCK;
 
 
