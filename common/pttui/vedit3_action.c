@@ -151,6 +151,43 @@ vedit3_action_to_store(bool *is_end)
     return error_code;
 }
 
+/********************
+ * action-command
+ ********************/
+
+
+/********************
+ * action-util
+ ********************/
+/**
+ * @brief [brief description]
+ * @details refer: Ctrl('V') in vedit2 in edit.c
+ */
+Err
+_vedit3_action_toggle_ansi()
+{
+    VEDIT3_EDITOR_STATUS.is_ansi ^= 1;
+
+    // XXX block selection
+
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
+    return S_OK;
+}
+
+/**
+ * @brief [brief description]
+ * @details ref: KEY_F8 in vedit2 in edit.c
+ *
+ */
+Err
+_vedit3_action_t_users()
+{
+    t_users();
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
+    return S_OK;
+}
 
 Err
 _vedit3_action_get_key(int *ch)
@@ -198,17 +235,17 @@ _vedit3_action_insert_char(int ch)
     // block_cancel();
 
 
-    /*
+    int current_col_n2ansi = 0;
     if (VEDIT3_EDITOR_STATUS.current_col < current_buffer->len && !VEDIT3_EDITOR_STATUS.is_insert) {
         current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col++] = ch;
 
-        *//* Thor: ansi 編輯, 可以overwrite, 不蓋到 ansi code *//*
+        /* Thor: ansi 編輯, 可以overwrite, 不蓋到 ansi code */
         if (VEDIT3_EDITOR_STATUS.is_ansi && !error_code) {
-            error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, current_buffer->buf, &current_col_n2ansi);
+            error_code = _vedit3_action_n2ansi(VEDIT3_EDITOR_STATUS.current_col, current_buffer->buf, &current_col_n2ansi);
         }
 
         if (VEDIT3_EDITOR_STATUS.is_ansi && !error_code) {
-            error_code = pttui_ansi2n(current_col_n2ansi, current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
+            error_code = _vedit3_action_ansi2n(current_col_n2ansi, current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
         }
     }
     else { // insert-mode
@@ -224,8 +261,8 @@ _vedit3_action_insert_char(int ch)
 
     char *s = NULL;
     if (current_buffer->len >= WRAPMARGIN && !error_code) {
-    // find the last non-space word, pointing to the 0th char
-        s = current_buffer->buf + current_buffer->len - 1;    
+// find the last non-space word, pointing to the 0th char
+        s = current_buffer->buf + current_buffer->len - 1;
         while (s != current_buffer->buf && *s == ' ') s--;
         while (s != current_buffer->buf && *s != ' ') s--;
         if (s == current_buffer) { // if only 1 word
@@ -234,21 +271,20 @@ _vedit3_action_insert_char(int ch)
         }
     }
 
-    if(!current_buffer->len >= WRAPMARGIN && !error_code) {
+    if (!current_buffer->len >= WRAPMARGIN && !error_code) {
         error = vedit3_buffer_split(current_buffer, s - current_buffer->buf + 1, 0, &new_buffer);
     }
 
-    if(!error_code && is_wordwrap && new_buffer && new_buffer->len >= 1) {
+    if (!error_code && is_wordwrap && new_buffer && new_buffer->len >= 1) {
         VEDIT3_EDITOR_STATUS.current_buffer = new_buffer;
         current_buffer = new_buffer;
 
-        if(current_buffer->buf[current_buffer->len - 1] != ' ') {
+        if (current_buffer->buf[current_buffer->len - 1] != ' ') {
             current_buffer->buf[current_buffer->len] = ' ';
             current_buffer->buf[current_buffer->len + 1] = '\0';
             current_buffer->len++;
         }
     }
-    */
 
     Err error_code_lock = vedit3_wrunlock_buffer_info();
     if (error_code_lock) error_code = S_ERR_EDIT_LOCK;
@@ -261,24 +297,74 @@ _vedit3_action_insert_char(int ch)
     return error_code;
 }
 
-
+/**
+ * @brief [brief description]
+ * @details ref: ansi2n in edit.c
+ *
+ * @param ansix [description]
+ * @param buf [description]
+ * @param nx [description]
+ */
 Err
-_vedit3_action_toggle_ansi()
+_vedit3_action_ansi2n(int ansix, char *buf, int *nx)
 {
-    VEDIT3_EDITOR_STATUS.is_ansi ^= 1;
+    char *tmp = buf;
+    char ch;
 
-    // XXX block selection
+    while (*tmp) {
+        if (*tmp == KEY_ESC) {
+            // XXX tmp may be out of range
+            while ((ch = *tmp) && !isalpha((int)ch)) tmp++;
 
-    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+            if (ch) tmp++;
+
+            continue;
+        }
+
+        if (ansix <= 0) break;
+
+        tmp++;
+        ansix--;
+    }
+
+    *nx = tmp - buf;
 
     return S_OK;
 }
 
+/**
+ * @brief [brief description]
+ * @details n2ansi in edit.c
+ *
+ * @param nx [description]
+ * @param buf [description]
+ * @param ansix [description]
+ */
 Err
-_vedit3_action_t_users()
+_vedit3_action_n2ansi(int nx, char *buf, int *ansix)
 {
-    t_users();
-    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+    char *tmp = buf;
+    char *nxp = buf + nx;
+    char ch;
+
+    int tmp_ansix = 0;
+
+    while (*tmp) {
+        if (*tmp == KEY_ESC) {
+            while ((ch = *tmp) && !isalpha((int)ch)) tmp++;
+
+            if (ch) tmp++;
+
+            continue;
+        }
+
+        if (tmp >= nxp) break;
+
+        tmp++;
+        tmp_ansix++;
+    }
+
+    *ansix = tmp_ansix;
 
     return S_OK;
 }
