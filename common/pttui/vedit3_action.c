@@ -185,7 +185,6 @@ _vedit3_action_insert_char(int ch)
 Err
 _vedit3_action_toggle_ansi()
 {
-    fprintf(stderr, "vedit3_action._vedit3_action_toggle_ansi: start\n");
     VEDIT3_EDITOR_STATUS.is_ansi ^= 1;
 
     // XXX block selection
