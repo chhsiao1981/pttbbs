@@ -12,9 +12,11 @@ extern "C" {
 #include "config.h"
     
 #include "vtkbd.h"
+#include "proto.h"
 
 Err _vedit3_action_get_key(int *ch);
 Err _vedit3_action_toggle_ansi();
+Err _vedit3_action_t_users();
 
 #ifdef __cplusplus
 }

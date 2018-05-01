@@ -40,8 +40,8 @@ vedit3_action_to_store(bool *is_end)
             break;
 
         case KEY_F8:    // users
+            error_code = _vedit3_action_t_users();
             break;
-
         case Ctrl('W'):
             break;
 
@@ -269,6 +269,15 @@ _vedit3_action_toggle_ansi()
 
     // XXX block selection
 
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
+    return S_OK;
+}
+
+Err
+_vedit3_action_t_users()
+{
+    t_users();
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
     return S_OK;
