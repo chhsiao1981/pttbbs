@@ -363,8 +363,9 @@ _vedit3_store_to_render()
         error_code = _vedit3_disp_screen(0, b_lines - 1);
     }
 
-    Err error_code = _vedit3_edit_msg();
-    if (error_code) return error_code;
+    if(!error_code) {
+        error_code = _vedit3_edit_msg();
+    }
 
     move(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_col);
     refresh();
