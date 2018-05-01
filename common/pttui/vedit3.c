@@ -357,9 +357,16 @@ _vedit3_check_healthy()
 Err
 _vedit3_store_to_render()
 {
+    Err error_code = S_OK;
+    if(VEDIT3_EDITOR_STATUS.is_redraw_everything) {
+        VEDIT3_EDITOR_STATUS.is_redraw_everything = false;
+        error_code = _vedit3_disp_screen(0, b_lines - 1);
+    }
+
     move(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_col);
     refresh();
-    return S_OK;
+    
+    return error_code;
 }
 
 /*********
