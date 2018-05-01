@@ -17,6 +17,7 @@ extern const char * const luaToc[];
 extern const char * const luaBit[];
 extern const char * const luaStore[];
 extern const char * const luaLibs[];
+extern const char * const * const luaLibAPI[];
 
 #ifdef __cplusplus
 }

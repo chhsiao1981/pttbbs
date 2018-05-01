@@ -65,3 +65,8 @@ const char * const luaLibs[] = {
     "bbs", "bit", "math", "store", "string", "table", "toc",
     NULL
 };
+
+const char* const * const luaLibAPI[] = {
+    luaBbs, luaBit, luaMath, luaStore, luaString, luaTable, luaToc,
+    NULL
+};
