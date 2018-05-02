@@ -54,6 +54,8 @@ typedef struct VEdit3EditorStatus {
     bool is_phone;
     bool is_raw;
 
+    int phone_mode;
+
     int current_line;
     int current_col;
     int edit_margin;

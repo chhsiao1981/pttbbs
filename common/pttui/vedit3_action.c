@@ -31,6 +31,9 @@ vedit3_action_to_store(bool *is_end)
             break;
         }
 
+
+        // ctrl-command
+
         switch (ch) {
         case KEY_F10:
         case Ctrl('X'): // save and exit
@@ -296,4 +299,41 @@ _vedit3_action_insert_char(int ch)
 //#endif
 
     return error_code;
+}
+
+Err
+_vedit3_action_move_right()
+{
+    if(VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len) {
+        // TODO use function-map to replace if-else
+        if(VEDIT3_EDITOR_STATUS.is_ansi) {
+            error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
+            ansi_current_col++;
+            error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
+        }
+        else {
+            VEDIT3_EDITOR_STATUS.current_col++;
+        }
+
+        return S_OK;
+    }
+
+    bool is_eof = false;
+    error_code = pttui_is_eof(VEDIT3_EDITOR_STATUS.current_line, &VEDIT3_FILE_INFO, true, &is_eof);
+
+    if(error_code) return error_code;
+
+    if(is_eof) return S_OK;
+
+    error_code = _vedit3_action_move_next();
+
+    VEDIT3_EDITOR_STATUS.current_col = 0;
+
+    return error_code;
+}
+
+Err
+_vedit3_action_move_next()
+{
+    return S_OK;
 }

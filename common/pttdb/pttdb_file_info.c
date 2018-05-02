@@ -2,6 +2,25 @@
 #include "cmpttdb/pttdb_file_info_private.h"
 
 Err
+file_info_get_total_lines(FileInfo *file_info, bool is_full_comment_reply, int *total_lines)
+{
+    int n_total_comment_reply_line = 0;
+
+    CommentInfo *p_comments = file_info->comments;
+    for(int i = 0; p_comments && i < file_info->n_comment; i++, p_comments++) {
+        if(!p_comments->n_comment_reply_block) continue;
+
+        n_total_comment_reply_line += is_full_comment_reply ? 
+            p_comments->n_comment_reply_total_line : 
+            p_comments->comment_reply_blocks[0].n_line;
+    }
+
+    *total_lines = file_info->n_main_line + file_info->n_comment + n_total_comment_reply_line;
+
+    return S_OK;
+}
+
+Err
 construct_file_info(UUID main_id, FileInfo *file_info)
 {
     MainHeader main_header = {};

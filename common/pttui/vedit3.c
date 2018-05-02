@@ -103,7 +103,7 @@ vedit3(UUID main_id, char *title, int edflags, int *money)
         error_code = pttui_thread_set_expected_state(PTTUI_THREAD_STATE_EDIT);
     }
 
-    if(!error_code) {
+    if (!error_code) {
         error_code = _vedit3_repl_init();
     }
 
@@ -292,22 +292,22 @@ _vedit3_repl(int *money)
     struct timespec rem = {};
 
     int ret_sleep = 0;
-    while(true) {
+    while (true) {
         // action
         // check healthy
         error_code = _vedit3_check_healthy();
-        if(error_code) break;
+        if (error_code) break;
 
         error_code = vedit3_action_to_store(&is_end);
-        if(error_code) break;
+        if (error_code) break;
 
         error_code = _vedit3_store_to_render();
-        if(error_code) break;
+        if (error_code) break;
 
-        if(is_end) break;
+        if (is_end) break;
 
         ret_sleep = nanosleep(&req, &rem);
-        if(ret_sleep) {
+        if (ret_sleep) {
             error_code = S_ERR_SLEEP;
             break;
         }
@@ -358,7 +358,7 @@ Err
 _vedit3_store_to_render()
 {
     Err error_code = S_OK;
-    if(VEDIT3_EDITOR_STATUS.is_redraw_everything) {
+    if (VEDIT3_EDITOR_STATUS.is_redraw_everything) {
         VEDIT3_EDITOR_STATUS.is_redraw_everything = false;
         error_code = _vedit3_disp_screen(0, b_lines - 1);
     }
@@ -367,7 +367,7 @@ _vedit3_store_to_render()
 
     move(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_col);
     refresh();
-    
+
     return error_code;
 }
 
@@ -379,7 +379,7 @@ _vedit3_store_to_render()
  * @brief refresh screen from start-line, add VEDIT3_END_LINE if end_line is not the end of the screen.
  * @details refresh screen from start-tline.
  *          add VEDIT3_END_LINE if end_line is not the end of the screen
- * 
+ *
  * @param start_line [description]
  * @param end_line the end-of-line to refresh(included)
  */
@@ -392,7 +392,7 @@ _vedit3_disp_screen(int start_line, int end_line)
     // assuming VEDIT3_DISP_TOP_LINE_BUFFER is within expectation, with lock
     VEdit3Buffer *p_buffer = VEDIT3_DISP_TOP_LINE_BUFFER;
 
-    // iterate to the start line    
+    // iterate to the start line
     int i = 0;
     for (i = 0; i < start_line && p_buffer; i++, p_buffer = p_buffer->next);
     if (i != start_line) error_code = S_ERR;
@@ -413,7 +413,7 @@ _vedit3_disp_screen(int start_line, int end_line)
 
     fprintf(stderr, "vedit3._vedit3_disp_screen: after for-loop: i: %d start_line: %d end_line: %d e: %d\n", i, start_line, end_line, error_code);
 
-    // disp 
+    // disp
     if (!error_code) {
         for (; i <= end_line; i++) {
             error_code = _vedit3_disp_line(i, VEDIT3_END_LINE, LEN_VEDIT3_END_LINE);
@@ -425,7 +425,7 @@ _vedit3_disp_screen(int start_line, int end_line)
         refresh();
     }
 
-    // free    
+    // free
     Err error_code_lock = vedit3_unlock_buffer_info();
     if (error_code_lock) error_code = S_ERR_ABORT_BBS;
 
@@ -435,7 +435,7 @@ _vedit3_disp_screen(int start_line, int end_line)
 /**
  * @brief
  * @details ref: the end of vedit2 in edit.c
- * 
+ *
  * @param line [description]
  * @param buf [description]
  * @param len [description]
@@ -714,7 +714,7 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
 /**
  * @brief
  * @details ref: edit_ansi_outs_n in edit.c
- * 
+ *
  * @param str [description]
  * @param n [description]
  * @param attr [description]
@@ -866,16 +866,16 @@ _vedit3_sync_disp_buffer(VEdit3State *expected_state)
  * @details no need to worry much about repeated lock because:
  *          1. it's read-lock, can be locked by vedit3-main multiple times
  *          2. is-own-lock-buffer-info is just for the flag to ensure that vedit3-main owns the lock.
- * 
+ *
  * @param e [description]
  */
 Err
 vedit3_lock_buffer_info()
 {
     Err error_code = pttui_thread_lock_rdlock(LOCK_VEDIT3_BUFFER_INFO);
-    if(error_code) return error_code;
-        
-    VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info = true;    
+    if (error_code) return error_code;
+
+    VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info = true;
 
     return S_OK;
 }
@@ -887,7 +887,7 @@ vedit3_unlock_buffer_info()
 
     Err error_code = pttui_thread_lock_get_lock(LOCK_VEDIT3_BUFFER_INFO, &p_lock);
 
-    if(!error_code && p_lock->__data.__nr_readers == 1) {
+    if (!error_code && p_lock->__data.__nr_readers == 1) {
         VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info = false;
     }
 
@@ -900,8 +900,8 @@ Err
 vedit3_wrlock_buffer_info()
 {
     Err error_code = pttui_thread_lock_wrlock(LOCK_VEDIT3_BUFFER_INFO);
-    if(error_code) return error_code;
-        
+    if (error_code) return error_code;
+
     return S_OK;
 }
 
@@ -1019,121 +1019,121 @@ int _vedit3_syn_lua_keyword(const char *text, int n, char *wlen)
     const char * const *tbl = NULL;
     if (*text >= 'A' && *text <= 'Z')
     {
-    // normal identifier
-    while (n-- > 0 && (isalnum(*text) || *text == '_'))
-    {
-        text++;
-        (*wlen) ++;
-    }
-    return 0;
+        // normal identifier
+        while (n-- > 0 && (isalnum(*text) || *text == '_'))
+        {
+            text++;
+            (*wlen) ++;
+        }
+        return 0;
     }
     if (*text >= '0' && *text <= '9')
     {
-    // digits
-    while (n-- > 0 && (isdigit(*text) || *text == '.' || *text == 'x'))
-    {
-        text++;
-        (*wlen) ++;
-    }
-    return 5;
+        // digits
+        while (n-- > 0 && (isdigit(*text) || *text == '.' || *text == 'x'))
+        {
+            text++;
+            (*wlen) ++;
+        }
+        return 5;
     }
     if (*text == '#')
     {
-    text++;
-    (*wlen) ++;
-    // length of identifier
-    while (n-- > 0 && (isalnum(*text) || *text == '_'))
-    {
         text++;
         (*wlen) ++;
-    }
-    return -2;
+        // length of identifier
+        while (n-- > 0 && (isalnum(*text) || *text == '_'))
+        {
+            text++;
+            (*wlen) ++;
+        }
+        return -2;
     }
 
     // ignore non-identifiers
     if (!(*text >= 'a' && *text <= 'z'))
-    return 0;
+        return 0;
 
     // 1st, try keywords
     for (i = 0; luaKeywords[i] && *text >= *luaKeywords[i]; i++)
     {
-    int l = strlen(luaKeywords[i]);
-    if (n < l)
-        continue;
-    if (isalnum(text[l]))
-        continue;
-    if (strncmp(text, luaKeywords[i], l) == 0)
-    {
-        *wlen = l;
-        return 3;
-    }
+        int l = strlen(luaKeywords[i]);
+        if (n < l)
+            continue;
+        if (isalnum(text[l]))
+            continue;
+        if (strncmp(text, luaKeywords[i], l) == 0)
+        {
+            *wlen = l;
+            return 3;
+        }
     }
     for (i = 0; luaDataKeywords[i] && *text >= *luaDataKeywords[i]; i++)
     {
-    int l = strlen(luaDataKeywords[i]);
-    if (n < l)
-        continue;
-    if (isalnum(text[l]))
-        continue;
-    if (strncmp(text, luaDataKeywords[i], l) == 0)
-    {
-        *wlen = l;
-        return 2;
-    }
+        int l = strlen(luaDataKeywords[i]);
+        if (n < l)
+            continue;
+        if (isalnum(text[l]))
+            continue;
+        if (strncmp(text, luaDataKeywords[i], l) == 0)
+        {
+            *wlen = l;
+            return 2;
+        }
     }
     for (i = 0; luaFunctions[i] && *text >= *luaFunctions[i]; i++)
     {
-    int l = strlen(luaFunctions[i]);
-    if (n < l)
-        continue;
-    if (isalnum(text[l]))
-        continue;
-    if (strncmp(text, luaFunctions[i], l) == 0)
-    {
-        *wlen = l;
-        return 6;
-    }
+        int l = strlen(luaFunctions[i]);
+        if (n < l)
+            continue;
+        if (isalnum(text[l]))
+            continue;
+        if (strncmp(text, luaFunctions[i], l) == 0)
+        {
+            *wlen = l;
+            return 6;
+        }
     }
     for (i = 0; luaLibs[i]; i++)
     {
-    int l = strlen(luaLibs[i]);
-    if (n < l)
-        continue;
-    if (text[l] != '.' && text[l] != ':')
-        continue;
-    if (strncmp(text, luaLibs[i], l) == 0)
-    {
-        *wlen = l+1;
-        text += l; text ++;
-        n -= l; n--;
-        break;
-    }
+        int l = strlen(luaLibs[i]);
+        if (n < l)
+            continue;
+        if (text[l] != '.' && text[l] != ':')
+            continue;
+        if (strncmp(text, luaLibs[i], l) == 0)
+        {
+            *wlen = l + 1;
+            text += l; text ++;
+            n -= l; n--;
+            break;
+        }
     }
 
     tbl = luaLibAPI[i];
     if (!tbl)
     {
-    // calcualte wlen
-    while (n-- > 0 && (isalnum(*text) || *text == '_'))
-    {
-        text++;
-        (*wlen) ++;
-    }
-    return 0;
+        // calcualte wlen
+        while (n-- > 0 && (isalnum(*text) || *text == '_'))
+        {
+            text++;
+            (*wlen) ++;
+        }
+        return 0;
     }
 
     for (i = 0; tbl[i]; i++)
     {
-    int l = strlen(tbl[i]);
-    if (n < l)
-        continue;
-    if (isalnum(text[l]))
-        continue;
-    if (strncmp(text, tbl[i], l) == 0)
-    {
-        *wlen += l;
-        return 6;
-    }
+        int l = strlen(tbl[i]);
+        if (n < l)
+            continue;
+        if (isalnum(text[l]))
+            continue;
+        if (strncmp(text, tbl[i], l) == 0)
+        {
+            *wlen += l;
+            return 6;
+        }
     }
     // luaLib. only
     return -6;

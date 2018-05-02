@@ -49,6 +49,8 @@ typedef struct FileInfo {
 Err construct_file_info(UUID main_id, FileInfo *file_info);
 Err destroy_file_info(FileInfo *file_info);
 
+Err file_info_get_total_lines(FileInfo *file_info, bool is_full_comment_reply, int *total_lines);
+
 #ifdef __cplusplus
 }
 #endif
