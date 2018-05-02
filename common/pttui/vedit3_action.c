@@ -95,10 +95,12 @@ vedit3_action_to_store(bool *is_end)
         case KEY_LEFT:
             error_code = _vedit3_action_move_left();
             break;
+        */
 
         case KEY_RIGHT:
             error_code = _vedit3_action_move_right();
             break;
+        /*
         case KEY_UP:
             error_code = _vedit3_action_move_up();
             break;
