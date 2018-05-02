@@ -54,6 +54,7 @@ typedef struct VEdit3EditorStatus {
     int destuid0;
 } VEdit3EditorStatus; 
 
+extern VEdit3EditorStatus DEFAULT_VEDIT3_EDITOR_STATUS;
 extern VEdit3EditorStatus VEDIT3_EDITOR_STATUS;
 
 extern VEdit3State VEDIT3_STATE;

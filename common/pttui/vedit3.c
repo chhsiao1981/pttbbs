@@ -1,7 +1,7 @@
 #include "cmpttui/vedit3.h"
 #include "cmpttui/vedit3_private.h"
 
-VEdit3EditorStatus VEDIT3_EDITOR_STATUS = {
+VEdit3EditorStatus DEFAULT_VEDIT3_EDITOR_STATUS = {
     true,                // is-insert
     false,               // is-ansi
     false,               // is-indent
@@ -22,6 +22,8 @@ VEdit3EditorStatus VEDIT3_EDITOR_STATUS = {
     0,                   // mode0
     0                    // destuid0
 };
+
+VEdit3EditorStatus VEDIT3_EDITOR_STATUS = {};
 
 VEdit3State VEDIT3_STATE = {};
 VEdit3State VEDIT3_BUFFER_STATE = {};
@@ -328,7 +330,7 @@ _vedit3_repl_init() {
     Err error_code = S_OK;
 
     // init editor-status
-    bzero(&VEDIT3_EDITOR_STATUS, sizeof(VEDIT3_EDITOR_STATUS));
+    memcpy(&VEDIT3_EDITOR_STATUS, &DEFAULT_VEDIT3_EDITOR_STATUS, sizeof(VEdit3EditorStatus));
 
     error_code = vedit3_lock_buffer_info();
     VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_DISP_TOP_LINE_BUFFER;
