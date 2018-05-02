@@ -137,7 +137,7 @@ pttui_fix_cursor(char *str, int pos, enum PttUIFixCursorDir dir, int *new_pos)
     while (*str != '\0' && tmp_newpos < pos) {
         w = pttui_mchar_len((unsigned char *) str);
         str += w;
-        newpos += w;
+        tmp_newpos += w;
     }
     if (dir == PTTUI_FIX_CURSOR_DIR_LEFT && tmp_newpos > pos) tmp_newpos -= w;
 
