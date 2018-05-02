@@ -88,15 +88,14 @@ vedit3_action_to_store(bool *is_end)
         case Ctrl('Z'): // help
             error_code = _vedit3_action_show_help();
             break;
-
-        case Ctrl('L'); // redraw
-            break;
         */
 
+        case Ctrl('L'); // redraw
+            error_code = _vedit3_action_redraw();
+            break;
         case KEY_LEFT:
             error_code = _vedit3_action_move_left();
             break;
-
         case KEY_RIGHT:
             error_code = _vedit3_action_move_right();
             break;
@@ -403,5 +402,13 @@ _vedit3_action_move_next()
 Err
 _vedit3_action_move_previous()
 {
+    return S_OK;
+}
+
+Err
+_vedit3_action_redraw()
+{
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
     return S_OK;
 }

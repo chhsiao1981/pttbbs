@@ -24,6 +24,7 @@ Err _vedit3_action_move_left();
 Err _vedit3_action_move_right();
 Err _vedit3_action_move_next();
 Err _vedit3_action_move_previous();
+Err _vedit3_action_redraw();
 
 #ifdef __cplusplus
 }
