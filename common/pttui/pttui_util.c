@@ -7,7 +7,7 @@ pttui_is_eof(int line_no, FileInfo *file_info, bool is_full_comment_reply, bool 
     int expected_total_lines = 0;
 
     error_code = file_info_get_total_lines(file_info, is_full_comment_reply, &expected_total_lines);
-    if(error_code) return error_code;
+    if (error_code) return error_code;
 
     *is_eof = line_no >= expected_total_lines ? true : false;
 
@@ -101,6 +101,47 @@ pttui_n2ansi(int nx, char *buf, int *ansix)
     }
 
     *ansix = tmp_ansix;
+
+    return S_OK;
+}
+
+/**
+ * @brief [brief description]
+ * @details ref: mchar_len in edit.c
+ *          return int directly because of aligning with strlen
+ * 
+ * @param char [description]
+ * @return [description]
+ */
+int
+pttui_mchar_len(unsigned char *str)
+{
+  return ((str[0] != '\0' && str[1] != '\0' && IS_BIG5(str[0], str[1])) ?
+            2 :
+            1);
+}
+
+/**
+ * @brief [brief description]
+ * @details [long description]
+ * 
+ * @param str [description]
+ * @param pos [description]
+ * @param dir [description]
+ * @param new_pos [description]
+ */
+Err
+pttui_fix_cursor(char *str, enum PttUIFixCursorDir pos, int dir, int *new_pos)
+{
+    int tmp_newpos = 0, w = 0;
+    while (*str != '\0' && tmp_newpos < pos) {
+        w = pttui_mchar_len((unsigned char *) str);
+        str += w;
+        newpos += w;
+    }
+    if (dir == PTTUI_FIX_CURSOR_DIR_LEFT && tmp_newpos > pos) tmp_newpos -= w;
+
+    *new_pos = tmp_newpos;
 
     return S_OK;
 }

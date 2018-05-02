@@ -316,6 +316,9 @@ _vedit3_action_move_right()
             error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
             ansi_current_col++;
             error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
+
+
+            if(mbcs_mode) error_code = pttui_fix_cursor(VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_col, FC_RIGHT);
         }
         else {
             VEDIT3_EDITOR_STATUS.current_col++;

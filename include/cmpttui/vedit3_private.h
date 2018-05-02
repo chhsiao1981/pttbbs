@@ -10,6 +10,7 @@
 #include "cmpttui/ptt_screen.h"
 #include "cmpttui/vedit3_action.h"
 #include "cmpttui/pttui_lua_bbs.h"
+#include "cmpttui/pttui_util.h"
 #include "proto_extra.h"
 
 #ifdef __cplusplus

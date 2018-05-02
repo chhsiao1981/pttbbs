@@ -7,6 +7,7 @@ VEdit3EditorStatus VEDIT3_EDITOR_STATUS = {
     false,               // is-indent
     false,               // is-phone
     false,               // is-raw
+    true,                // is-mbcs
 
     0,                   // current-line
     0,                   // current-col
