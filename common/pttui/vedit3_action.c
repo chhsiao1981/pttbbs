@@ -90,7 +90,7 @@ vedit3_action_to_store(bool *is_end)
             break;
         */
 
-        case Ctrl('L'); // redraw
+        case Ctrl('L'): // redraw
             error_code = _vedit3_action_redraw();
             break;
         case KEY_LEFT:
