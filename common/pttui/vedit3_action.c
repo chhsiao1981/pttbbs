@@ -364,21 +364,21 @@ _vedit3_action_move_left()
         // TODO use function-map to replace if-else
         if(VEDIT3_EDITOR_STATUS.is_ansi) {
             error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
-            ansi_current_col++;
+            ansi_current_col--;
             error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
 
 
         }
         else {
-            VEDIT3_EDITOR_STATUS.current_col++;
+            VEDIT3_EDITOR_STATUS.current_col--;
         }
 
         if(VEDIT3_EDITOR_STATUS.is_mbcs) {
-            error_code = pttui_fix_cursor(VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_col, PTTUI_FIX_CURSOR_DIR_RIGHT, &mbcs_current_col);
+            error_code = pttui_fix_cursor(VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_col, PTTUI_FIX_CURSOR_DIR_LEFT, &mbcs_current_col);
             VEDIT3_EDITOR_STATUS.current_col = mbcs_current_col;
         }
 
-        fprintf(stderr, "vedit3_action._vedit3_action_move_right: within same line: orig_current_col: %d is_ansi: %d is_mbcs: %d new_current_col: %d\n", orig_current_col, VEDIT3_EDITOR_STATUS.is_ansi, VEDIT3_EDITOR_STATUS.is_mbcs, VEDIT3_EDITOR_STATUS.current_col);
+        fprintf(stderr, "vedit3_action._vedit3_action_move_left: within same line: orig_current_col: %d is_ansi: %d is_mbcs: %d new_current_col: %d\n", orig_current_col, VEDIT3_EDITOR_STATUS.is_ansi, VEDIT3_EDITOR_STATUS.is_mbcs, VEDIT3_EDITOR_STATUS.current_col);
 
         return S_OK;
     }
