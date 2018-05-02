@@ -91,11 +91,11 @@ vedit3_action_to_store(bool *is_end)
 
         case Ctrl('L'); // redraw
             break;
+        */
 
         case KEY_LEFT:
             error_code = _vedit3_action_move_left();
             break;
-        */
 
         case KEY_RIGHT:
             error_code = _vedit3_action_move_right();
@@ -354,6 +354,60 @@ _vedit3_action_move_right()
 
 Err
 _vedit3_action_move_next()
+{
+    return S_OK;
+}
+
+Err
+_vedit3_action_move_left()
+{
+    Err error_code = S_OK;
+    int ansi_current_col = 0;
+    int mbcs_current_col = 0;    
+    int orig_current_col = VEDIT3_EDITOR_STATUS.current_col;
+    // within the same line    
+    if(VEDIT3_EDITOR_STATUS.current_col) {
+        // TODO use function-map to replace if-else
+        if(VEDIT3_EDITOR_STATUS.is_ansi) {
+            error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
+            ansi_current_col++;
+            error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
+
+
+        }
+        else {
+            VEDIT3_EDITOR_STATUS.current_col++;
+        }
+
+        if(VEDIT3_EDITOR_STATUS.is_mbcs) {
+            error_code = pttui_fix_cursor(VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_col, PTTUI_FIX_CURSOR_DIR_RIGHT, &mbcs_current_col);
+            VEDIT3_EDITOR_STATUS.current_col = mbcs_current_col;
+        }
+
+        fprintf(stderr, "vedit3_action._vedit3_action_move_right: within same line: orig_current_col: %d is_ansi: %d is_mbcs: %d new_current_col: %d\n", orig_current_col, VEDIT3_EDITOR_STATUS.is_ansi, VEDIT3_EDITOR_STATUS.is_mbcs, VEDIT3_EDITOR_STATUS.current_col);
+
+        return S_OK;
+    }
+
+    // is beginning of file
+    if(VEDIT3_EDITOR_STATUS.current_line == 0 && VEDIT3_EDITOR_STATUS.current_col == 0) return S_OK;
+
+    // move to previous line
+    error_code = _vedit3_action_move_previous();
+
+    VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_buffer->len;
+
+    return error_code;
+}
+
+Err
+_vedit3_action_move_next()
+{
+    return S_OK;
+}
+
+Err
+_vedit3_action_move_previous()
 {
     return S_OK;
 }

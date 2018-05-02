@@ -20,8 +20,10 @@ Err _vedit3_action_t_users();
 
 Err _vedit3_action_get_key(int *ch);
 
+Err _vedit3_action_move_left();
 Err _vedit3_action_move_right();
 Err _vedit3_action_move_next();
+Err _vedit3_action_move_previous();
 
 #ifdef __cplusplus
 }
