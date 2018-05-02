@@ -1,4 +1,4 @@
-#include "pttui_const.h"
+#include "cmpttui/pttui_const.h"
 
 const char * const BIG5[13] = {
   "，；：、﹑。？！‧﹗（）〝〞‵′",
