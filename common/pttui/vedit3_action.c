@@ -114,6 +114,7 @@ vedit3_action_to_store(bool *is_end)
         case KEY_PGDN:
             error_code = _vedit3_action_move_pgdn();
             break;
+            */
         case KEY_END:
         case Ctrl('E'):
             error_code = _vedit3_action_move_end_line();
@@ -122,6 +123,7 @@ vedit3_action_to_store(bool *is_end)
         case Ctrl('A'):
             error_code = _vedit3_action_move_begin_line();
             break;
+            /*
         case Ctrl(']'):
             error_code = _vedit3_action_move_start_file();
             break;
@@ -402,6 +404,22 @@ _vedit3_action_move_next()
 Err
 _vedit3_action_move_previous()
 {
+    return S_OK;
+}
+
+Err
+_vedit3_action_move_end_line()
+{
+    VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_buffer->len;
+
+    return S_OK;
+}
+
+Err
+_vedit3_action_move_begin_line()
+{
+    VEDIT3_EDITOR_STATUS.current_col = 0;
+    
     return S_OK;
 }
 
