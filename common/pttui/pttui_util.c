@@ -131,7 +131,7 @@ pttui_mchar_len(unsigned char *str)
  * @param new_pos [description]
  */
 Err
-pttui_fix_cursor(char *str, enum PttUIFixCursorDir pos, int dir, int *new_pos)
+pttui_fix_cursor(char *str, int pos, enum PttUIFixCursorDir dir, int *new_pos)
 {
     int tmp_newpos = 0, w = 0;
     while (*str != '\0' && tmp_newpos < pos) {

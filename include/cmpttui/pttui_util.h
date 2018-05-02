@@ -48,7 +48,7 @@ Err pttui_is_eof(int line_no, FileInfo *file_info, bool is_full_comment_reply, b
 
 int pttui_mchar_len(unsigned char *str);
 
-Err pttui_fix_cursor(char *str, int pos, int dir, int *new_pos);
+Err pttui_fix_cursor(char *str, int pos, enum PttUIFixCursorDir dir, int *new_pos);
 
 
 #ifdef __cplusplus
