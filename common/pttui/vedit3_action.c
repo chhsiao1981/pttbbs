@@ -419,7 +419,7 @@ Err
 _vedit3_action_move_begin_line()
 {
     VEDIT3_EDITOR_STATUS.current_col = 0;
-    
+
     return S_OK;
 }
 

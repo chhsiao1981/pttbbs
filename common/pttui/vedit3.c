@@ -359,6 +359,7 @@ _vedit3_check_healthy()
 Err
 _vedit3_store_to_render()
 {
+    // XXX check why redraw-everything makes different len in comments
     Err error_code = S_OK;
     if (VEDIT3_EDITOR_STATUS.is_redraw_everything) {
         VEDIT3_EDITOR_STATUS.is_redraw_everything = false;
