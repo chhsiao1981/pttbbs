@@ -308,6 +308,7 @@ _vedit3_action_move_right()
 {
     Err error_code = S_OK;
     int ansi_current_col = 0;
+    int mbcs_current_col = 0;    
 
     // within the same line    
     if(VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len) {
@@ -318,12 +319,15 @@ _vedit3_action_move_right()
             error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
 
 
-            if(VEDIT3_EDITOR_STATUS.mbcs_mode) error_code = pttui_fix_cursor(VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_col, PTTUI_FIX_CURSOR_DIR_RIGHT);
         }
         else {
             VEDIT3_EDITOR_STATUS.current_col++;
         }
 
+        if(VEDIT3_EDITOR_STATUS.is_mbcs) {
+            error_code = pttui_fix_cursor(VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_col, PTTUI_FIX_CURSOR_DIR_RIGHT, &mbcs_current_col);
+            VEDIT3_EDITOR_STATUS.current_col = mbcs_current_col;
+        }
         return S_OK;
     }
 
