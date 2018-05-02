@@ -309,7 +309,7 @@ _vedit3_action_move_right()
     Err error_code = S_OK;
     int ansi_current_col = 0;
     int mbcs_current_col = 0;    
-
+    int orig_current_col = VEDIT3_EDITOR_STATUS.current_col;
     // within the same line    
     if(VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len) {
         // TODO use function-map to replace if-else
@@ -328,6 +328,9 @@ _vedit3_action_move_right()
             error_code = pttui_fix_cursor(VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_col, PTTUI_FIX_CURSOR_DIR_RIGHT, &mbcs_current_col);
             VEDIT3_EDITOR_STATUS.current_col = mbcs_current_col;
         }
+
+        fprintf(stderr, "vedit3_action._vedit3_action_move_right: within same line: orig_current_col: %d is_ansi: %d is_mbcs: %d new_current_col: %d\n", orig_current_col, VEDIT3_EDITOR_STATUS.is_ansi, VEDIT3_EDITOR_STATUS.is_mbcs, VEDIT3_EDITOR_STATUS.current_col);
+
         return S_OK;
     }
 
