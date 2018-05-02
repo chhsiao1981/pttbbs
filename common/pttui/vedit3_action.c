@@ -304,6 +304,10 @@ _vedit3_action_insert_char(int ch)
 Err
 _vedit3_action_move_right()
 {
+    Err error_code = S_OK;
+    int ansi_current_col = 0;
+
+    // within the same line    
     if(VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len) {
         // TODO use function-map to replace if-else
         if(VEDIT3_EDITOR_STATUS.is_ansi) {
@@ -318,6 +322,9 @@ _vedit3_action_move_right()
         return S_OK;
     }
 
+    // need to move to next line
+
+    // is end of file
     bool is_eof = false;
     error_code = pttui_is_eof(VEDIT3_EDITOR_STATUS.current_line, &VEDIT3_FILE_INFO, true, &is_eof);
 
@@ -325,6 +332,7 @@ _vedit3_action_move_right()
 
     if(is_eof) return S_OK;
 
+    // move to next line
     error_code = _vedit3_action_move_next();
 
     VEDIT3_EDITOR_STATUS.current_col = 0;

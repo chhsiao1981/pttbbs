@@ -132,13 +132,13 @@ pttui_phone_mode_switch(bool *is_phone, int *phone_mode)
  * @param ret [description]
  */
 Err
-pttui_phone_char(char c, int phone_mode, char *ret)
+pttui_phone_char(char c, int phone_mode, char **ret)
 {
-    char tmp_ret = 0;
+    char *tmp_ret = NULL;
     if (phone_mode > 0 && phone_mode < 20) {
         if (tolower(c) < 'a' ||
                 (tolower(c) - 'a') >= (int)strlen(BIG5[phone_mode - 1]) / 2) {
-            tmp_ret = 0;
+            tmp_ret = NULL;
         }
         else {
             tmp_ret = BIG5[phone_mode - 1] + (tolower(c) - 'a') * 2;
@@ -148,14 +148,14 @@ pttui_phone_char(char c, int phone_mode, char *ret)
         if (c == '.') c = '/';
 
         if (c < '/' || c > '9') {
-            tmp_ret = 0;
+            tmp_ret = NULL;
         }
         else {
             tmp_ret = table[phone_mode - 20] + (c - '/') * 2;
         }
     }
     else {
-        tmp_ret = 0;
+        tmp_ret = NULL;
     }
 
     *ret = tmp_ret;

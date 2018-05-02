@@ -285,7 +285,6 @@ _vedit3_repl(int *money)
 
     // repl init
 
-    bool is_redraw_everything = false;
     bool is_end = false;
 
     struct timespec req = {0, NS_DEFAULT_SLEEP_VEDIT3_REPL};
@@ -735,6 +734,8 @@ _vedit3_edit_ansi_outs_n(const char *str, int n, int attr GCC_UNUSED)
             outc(c);
         }
     }
+
+    return S_OK;
 }
 
 /*********
@@ -785,7 +786,7 @@ vedit3_init_disp_buffer()
 
     char *_uuid = display_uuid(expected_state.top_line_id);
     fprintf(stderr, "vedit3.vedit3_init_disp_buffer: to resync all vedit3 buffer info: e: %d state: (content_type: %d, block_offset: %d, line_offset: %d, comment_offset: %d, n_window_line: %d top_line_id: %s)\n", error_code, expected_state.top_line_content_type, expected_state.top_line_block_offset, expected_state.top_line_line_offset, expected_state.top_line_comment_offset, expected_state.n_window_line, _uuid);
-    safe_free(&_uuid);
+    safe_free((void **)&_uuid);
 
     error_code = resync_all_vedit3_buffer_info(&VEDIT3_BUFFER_INFO, &expected_state, &VEDIT3_FILE_INFO, &VEDIT3_DISP_TOP_LINE_BUFFER);
     fprintf(stderr, "vedit3.vedit3_init_disp_buffer: after resync all vedit3_buffer_info: e: %d\n", error_code);
