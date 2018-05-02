@@ -28,6 +28,7 @@ Err _vedit3_action_move_end_line();
 Err _vedit3_action_move_begin_line();
 
 Err _vedit3_action_redraw();
+Err _vedit3_action_show_help();
 
 
 #ifdef __cplusplus

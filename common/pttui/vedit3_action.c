@@ -84,12 +84,11 @@ vedit3_action_to_store(bool *is_end)
         case Ctrl('P'): // toogle-phone-mode
             error_code = _vedit3_action_toggle_phone_mode();
             break;
+        */
         case KEY_F1:
         case Ctrl('Z'): // help
             error_code = _vedit3_action_show_help();
             break;
-        */
-
         case Ctrl('L'): // redraw
             error_code = _vedit3_action_redraw();
             break;
@@ -425,7 +424,17 @@ _vedit3_action_move_begin_line()
 
 Err
 _vedit3_action_redraw()
+{    
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
+    return S_OK;
+}
+
+Err
+_vedit3_action_show_help()
 {
+    more("etc/ve.hlp", true);
+
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
     return S_OK;
