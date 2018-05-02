@@ -353,12 +353,6 @@ _vedit3_action_move_right()
 }
 
 Err
-_vedit3_action_move_next()
-{
-    return S_OK;
-}
-
-Err
 _vedit3_action_move_left()
 {
     Err error_code = S_OK;
