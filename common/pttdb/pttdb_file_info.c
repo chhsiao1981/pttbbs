@@ -353,3 +353,48 @@ destroy_file_info(FileInfo *file_info)
 
     return S_OK;
 }
+
+Err
+file_info_get_next_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset)
+{
+    Err error_code = S_OK;
+
+    Err (*p_func)(FileInfo *, UUID, enum PttDBContentType, int, int int, UUID, enum PttDBContentType *, int *, int *, int *) = NULL;
+
+    switch (orig_content_type) {
+    case PTTDB_CONTENT_TYPE_MAIN:
+        p_func = _file_info_get_next_line_main;
+        break;
+    case PTTDB_CONTENT_TYPE_COMMENT:
+        p_func = _file_info_get_next_line_comment;
+        break;
+    case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
+        p_func = _file_info_get_next_line_comment_reply;
+        break;
+    default:
+        break;
+    }
+    if(!p_func) return S_ERR;
+
+    error_code = p_func(file_info, orig_id, orig_content_type, orig_block_offset, orig_line_offset, orig_comment_offset, new_id, new_content_type, new_block_offset, new_line_offset, new_comment_offset);
+
+    return error_code;
+}
+
+Err
+_file_info_get_next_line_main(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset)
+{
+    return S_OK;
+}
+
+Err
+_file_info_get_next_line_comment(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset)
+{
+    return S_OK;
+}
+
+Err
+_file_info_get_next_line_comment_reply(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset)
+{
+    return S_OK;    
+}

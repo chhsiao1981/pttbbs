@@ -439,7 +439,7 @@ _vedit3_action_move_down_ensure_end_of_window()
         VEDIT3_EDITOR_STATUS.current_buffer->comment_offset != VEDIT3_STATE.end_line_comment_offset) return S_OK;
 
 
-
+    
 
     return S_OK;
 }
