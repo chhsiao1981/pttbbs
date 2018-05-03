@@ -37,7 +37,7 @@ vedit3_buffer_is_eof(VEdit3Buffer *buffer, FileInfo *file_info, bool *is_eof)
         buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT_REPLY &&
         file_info->comments[buffer->comment_offset].n_comment_reply_block &&
         buffer->block_offset == file_info->comments[buffer->comment_offset].n_comment_reply_block - 1 &&
-        buffer->line_offset == file_info->comments[buffer->comment_offset].comment_reply_block[buffer->block_offset].n_line - 1) {
+        buffer->line_offset == file_info->comments[buffer->comment_offset].comment_reply_blocks[buffer->block_offset].n_line - 1) {
         *is_eof = true;
     }
     else {
