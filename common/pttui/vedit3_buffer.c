@@ -542,6 +542,12 @@ _sync_vedit3_buffer_info_extend_next_buffer(VEdit3BufferInfo *buffer_info, VEdit
     error_code = _sync_vedit3_buffer_info_extend_next_buffer_no_buf(buffer_info, file_info, n_buffer);
     if (error_code) return error_code;
 
+    // XXX log
+    int total_i = 0;
+    VEdit3Buffer *p_buffer = start_buffer;
+    for(total_i = 0; p_buffer; total_i++, p_buffer = p_buffer->next);
+    fprintf(stderr, "vedit3_buffer._sync_vedit3_buffer_info_extend_next_buffer: n_buffer: %d total_i (from buffer_info->tail): %d\n", n_buffer, total_i);
+
     if (start_buffer->buf) start_buffer = start_buffer->next;
 
     error_code = _vedit3_buffer_info_to_resource_info(start_buffer, &resource_info);
