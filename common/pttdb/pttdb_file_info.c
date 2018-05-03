@@ -375,7 +375,7 @@ file_info_get_pre_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType 
 {
     Err error_code = S_OK;
 
-    Err (*p_func)(FileInfo *, UUID, enum PttDBContentType, int, int, int, enum StorageType, UUID, enum PttDBContentType *, int *, int *, int * enum StorageType *) = NULL;
+    Err (*p_func)(FileInfo *, UUID, enum PttDBContentType, int, int, int, enum StorageType, UUID, enum PttDBContentType *, int *, int *, int *, enum StorageType *) = NULL;
 
     switch (orig_content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
@@ -455,7 +455,7 @@ file_info_get_next_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType
 {
     Err error_code = S_OK;
 
-    Err (*p_func)(FileInfo *, UUID, enum PttDBContentType, int, int, int, enum StorageType, UUID, enum PttDBContentType *, int *, int *, int * enum StorageType *) = NULL;
+    Err (*p_func)(FileInfo *, UUID, enum PttDBContentType, int, int, int, enum StorageType, UUID, enum PttDBContentType *, int *, int *, int *, enum StorageType *) = NULL;
 
     switch (orig_content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
