@@ -390,7 +390,7 @@ file_info_get_pre_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType 
     default:
         break;
     }
-    if(!p_func) return S_ERR;
+    if (!p_func) return S_ERR;
 
     error_code = p_func(file_info, orig_id, orig_content_type, orig_block_offset, orig_line_offset, orig_comment_offset, new_id, new_content_type, new_block_offset, new_line_offset, new_comment_offset, new_storage_type);
 
@@ -400,12 +400,66 @@ file_info_get_pre_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType 
 Err
 _file_info_get_pre_line_main(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
 {
+    memcpy(new_id, orig_id, UUIDLEN);
+    *new_content_type = orig_content_type;
+    *new_comment_offset = 0;
+
+    ContentBlockInfo *p_content_block = file_info->main_blocks + orig_block_offset;
+
+    if (orig_line_offset) {
+        *new_block_offset = orig_block_offset;
+        *new_line_offset = orig_line_offset - 1;
+        *new_storage_type = p_content_block->storage_type;
+    }
+    else {
+        p_content_block--;
+
+        *new_block_offset = orig_block_offset - 1;
+        *new_line_offset = p_content_block->n_line - 1;
+        *new_storage_type = p_content_block->storage_type;
+    }
+
     return S_OK;
 }
 
 Err
 _file_info_get_pre_line_comment(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
 {
+    CommentInfo *p_comment = NULL;
+    ContentBlockInfo *p_comment_reply_block = NULL;
+    ContentBlockInfo *p_content_block = NULL;
+
+    if (orig_comment_offset == 0) {
+        memcpy(new_id, file_info->main_content_id, UUIDLEN);
+        *new_content_type = PTTDB_CONTENT_TYPE_MAIN;
+        *new_block_offset = file_info->n_main_block - 1;
+
+        p_content_block = file_info->main_blocks + *new_block_offset;
+
+        *new_line_offset = p_content_block->n_line - 1;
+        *newcomment_offset = 0;
+        *new_storage_type = p_content_block->storage_type;
+    }
+    else {
+        *new_comment_offset = orig_comment_offset - 1;
+        p_comment = file_info->comments + *new_comment_offset;
+
+        if (p_comment->n_comment_reply_total_line) {
+            memcpy(new_id, p_comment->comment_reply_id, UUIDLEN);
+            *new_content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;
+            *new_block_offset = p_comment->n_comment_reply_block - 1;
+            p_comment_reply_block = p_comment->comment_reply_blocks + *new_block_offset;
+            *new_line_offset = p_comment_reply_block->n_line - 1;
+            *new_storage_type = p_comment_reply_block->storage_type;
+        }
+        else {
+            memcpy(new_id, p_comment->comment_id, UUIDLEN);
+            *new_content_type = PTTDB_CONTENT_TYPE_COMMENT;
+            *new_block_offset = 0;
+            *new_line_offset = 0;
+            *new_storage_type = PTTDB_STORAGE_TYPE_MONGO;
+        }
+    }
 
     return S_OK;
 }
@@ -413,6 +467,35 @@ _file_info_get_pre_line_comment(FileInfo *file_info, UUID orig_id, enum PttDBCon
 Err
 _file_info_get_pre_line_comment_reply(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
 {
+    CommentInfo *p_comment = file_info->comments + orig_comment_offset;
+    ContentBlockInfo *p_comment_reply_block = p_comment->comment_reply_blocks + orig_block_offset;
+
+    *new_comment_offset = orig_comment_offset;
+    if (current_buffer->block_offset == 0 && current_buffer->line_offset == 0) {
+        memcpy(new_id, p_comment->comment_id, UUIDLEN);
+        *new_content_type = PTTDB_CONTENT_TYPE_COMMENT;
+        *new_block_offset = 0;
+        *new_line_offset = 0;
+        *new_storage_type = PTTDB_STORAGE_TYPE_MONGO;
+    }
+    else {
+        memcpy(new_id, orig_id, UUIDLEN);
+        *new_content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;
+
+        if (orig_line_offset != 0) {
+            *new_block_offset = orig_block_offset;
+            *new_line_offset = orig_line_offset - 1;
+            *new_storage_type = p_comment_reply_block->storage_type;
+        }
+        else {
+            p_comment_reply_block--;
+
+            *new_block_offset = orig_block_offset - 1;
+            *new_line_offset = p_comment_reply_block->n_line - 1;
+            *new_storage_type = p_comment_reply_block->storage_type;
+        }
+    }
+
     return S_OK;
 }
 
@@ -425,22 +508,20 @@ file_info_is_next_line(FileInfo *file_info, UUID the_id, enum PttDBContentType c
         line_offset == file_info->main_blocks[block_offset].n_line - 1) {
         *is_next_line = false;
     }
-    else if(
+    else if (
         file_info->n_comment &&
         comment_offset == file_info->n_comment - 1 &&
         content_type == PTTDB_CONTENT_TYPE_COMMENT &&
-        file_info->comments[comment_offset].n_comment_reply_block == 0
-        ) {
+        file_info->comments[comment_offset].n_comment_reply_block == 0) {
         *is_next_line = false;
     }
-    else if(
+    else if (
         file_info->n_comment &&
         comment_offset == file_info->n_comment - 1 &&
         content_type == PTTDB_CONTENT_TYPE_COMMENT_REPLY &&
         file_info->comments[comment_offset].n_comment_reply_block &&
         block_offset == file_info->comments[comment_offset].n_comment_reply_block - 1 &&
-        line_offset == file_info->comments[comment_offset].comment_reply_blocks[block_offset].n_line - 1
-        ) {
+        line_offset == file_info->comments[comment_offset].comment_reply_blocks[block_offset].n_line - 1) {
         *is_next_line = false;
     }
     else {
@@ -471,7 +552,7 @@ file_info_get_next_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType
     default:
         break;
     }
-    if(!p_func) return S_ERR;
+    if (!p_func) return S_ERR;
 
     error_code = p_func(file_info, orig_id, orig_content_type, orig_block_offset, orig_line_offset, orig_comment_offset, new_id, new_content_type, new_block_offset, new_line_offset, new_comment_offset, new_storage_type);
 
@@ -558,7 +639,7 @@ _file_info_get_next_line_comment_reply(FileInfo *file_info, UUID orig_id, enum P
 
     CommentInfo *p_comment = file_info->comments + orig_comment_offset;
     ContentBlockInfo *p_comment_reply_block = p_comment->comment_reply_blocks + orig_block_offset;
-    
+
     if (orig_line_offset != p_comment_reply_block->n_line - 1) {
         // within the same block
         memcpy(new_id, p_comment->comment_reply_id, UUIDLEN);
@@ -592,5 +673,5 @@ _file_info_get_next_line_comment_reply(FileInfo *file_info, UUID orig_id, enum P
 
         *new_storage_type = PTTDB_STORAGE_TYPE_MONGO;
     }
-    return S_OK;    
+    return S_OK;
 }
