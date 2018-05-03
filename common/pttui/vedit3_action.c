@@ -554,12 +554,12 @@ _vedit3_action_move_pgup()
     bool is_begin = false;
     int current_line = VEDIT3_EDITOR_STATUS.current_line;
     int current_col = VEDIT3_EDITOR_STATUS.current_col;
-    for(int i = 0; i < b_lines; i++) {
+    for(int i = 0; i < b_lines - 1; i++) {
+        error_code = _vedit3_action_move_up();
+        if(error_code) break;
         error_code = vedit3_buffer_is_begin_of_file(VEDIT3_EDITOR_STATUS.current_buffer, &VEDIT3_FILE_INFO, &is_begin);
         if(error_code) break;
         if(is_begin) break;
-        error_code = _vedit3_action_move_up();
-        if(error_code) break;
     }
     if(error_code) return error_code;
 
