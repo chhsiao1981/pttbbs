@@ -51,11 +51,13 @@ Err destroy_file_info(FileInfo *file_info);
 
 Err file_info_get_total_lines(FileInfo *file_info, bool is_full_comment_reply, int *total_lines);
 
-Err file_info_is_pre_line(FileInfo *file_info, UUID the_id, enum PttDBContentType content_type, int block_offset, int line_offset, int comment_offset, bool *is_next_line);
+Err
+file_info_is_pre_line(FileInfo *file_info GCC_UNUSED, enum PttDBContentType content_type, int block_offset, int line_offset, int comment_offset GCC_UNUSED, bool *is_pre_line);
 
 Err file_info_get_pre_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type);
 
-Err file_info_is_next_line(FileInfo *file_info, UUID the_id, enum PttDBContentType content_type, int block_offset, int line_offset, int comment_offset, bool *is_next_line);
+Err
+file_info_is_next_line(FileInfo *file_info, enum PttDBContentType content_type, int block_offset, int line_offset, int comment_offset, bool *is_next_line);
 
 Err file_info_get_next_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type);
 
