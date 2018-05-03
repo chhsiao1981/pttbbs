@@ -382,7 +382,7 @@ _vedit3_action_move_left()
     // move to previous line
     error_code = _vedit3_action_move_up();
 
-    VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_buffer->len;
+    VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
 
     return error_code;
 }
@@ -554,7 +554,7 @@ _vedit3_action_move_pgup()
     bool is_begin = false;
     int current_line = VEDIT3_EDITOR_STATUS.current_line;
     int current_col = VEDIT3_EDITOR_STATUS.current_col;
-    for(int i = 0; i < b_lines - 1; i++) {
+    for(int i = 0; i < b_lines; i++) {
         error_code = vedit3_buffer_is_begin_of_file(VEDIT3_EDITOR_STATUS.current_buffer, &VEDIT3_FILE_INFO, &is_begin);
         if(error_code) break;
         if(is_begin) break;
