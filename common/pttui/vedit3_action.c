@@ -421,6 +421,8 @@ _vedit3_action_move_down()
 
     VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len ? VEDIT3_EDITOR_STATUS.current_col : VEDIT3_EDITOR_STATUS.current_buffer->len;
 
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
     return error_code;
 }
 
