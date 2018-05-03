@@ -541,7 +541,6 @@ _sync_vedit3_buffer_info_extend_next_buffer(VEdit3BufferInfo *buffer_info, VEdit
     if (start_buffer && start_buffer->buf) {
         error_code = vedit3_buffer_is_eof(start_buffer, file_info, &is_eof);
         if (error_code) return error_code;
-
         if (is_eof) return S_OK;
     }
 
