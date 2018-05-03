@@ -849,7 +849,7 @@ vedit3_disp_buffer()
 
     // sync disp buffer to tmp_disp_buffer while checking the alignment of orig_expected_state and new_expected_state
     VEdit3Buffer *new_top_line_buffer = NULL;
-    error_code = sync_vedit3_buffer_info(VEDIT3_BUFFER_INFO, VEDIT3_DISP_TOP_LINE_BUFFER, &VEDIT3_STATE, &VEDIT3_FILE_INFO, &new_top_line_buffer);
+    error_code = sync_vedit3_buffer_info(&VEDIT3_BUFFER_INFO, VEDIT3_DISP_TOP_LINE_BUFFER, &VEDIT3_STATE, &VEDIT3_FILE_INFO, &new_top_line_buffer);
     if(error_code) return error_code;
 
     // XXX may result in race-condition. need to bind with buffer-info.
