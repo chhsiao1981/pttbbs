@@ -400,7 +400,7 @@ _vedit3_action_move_down()
     Err error_code = S_OK;
     // is end of file
     bool is_eof = false;
-    error_code = pttui_is_eof(VEDIT3_EDITOR_STATUS.current_line, &VEDIT3_FILE_INFO, true, &is_eof);
+    error_code = vedit3_buffer_is_eof(VEDIT3_EDITOR_STATUS.current_buffer, &VEDIT3_FILE_INFO, true, &is_eof);
     if (error_code) return error_code;
     if (is_eof) return S_OK;
 

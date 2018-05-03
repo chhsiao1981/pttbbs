@@ -19,6 +19,35 @@ destroy_vedit3_buffer_info(VEdit3BufferInfo *buffer_info)
 }
 
 Err
+vedit3_buffer_is_eof(VEdit3Buffer *buffer, FileInfo *file_info, bool *is_eof)
+{
+    if(!file_info->n_comment &&
+        buffer->block_offset == file_info->n_main_block - 1 &&
+        buffer->line_offset == file_info->main_blocks[buffer->block_offset].n_line - 1) {
+        *is_eof = true;
+    }
+    else if(file_info->n_comment &&
+        buffer->comment_offset == file_info->n_comment - 1 &&
+        buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT &&
+        file_info->comments[buffer->comment_offset].n_comment_reply_block == 0) {
+        *is_eof = true;
+    }
+    else if(file_info->n_comment &&
+        buffer->comment_offset == file_info->n_comment - 1 &&
+        buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT_REPLY &&
+        file_info->comments[buffer->comment_offset].n_comment_reply_block &&
+        buffer->block_offset == file_info->comments[buffer->comment_offset].n_comment_reply_block - 1 &&
+        buffer->line_offset == file_info->comments[buffer->comment_offset].comment_reply_block[buffer->block_offset].n_line - 1) {
+        *is_eof = true;
+    }
+    else {
+        *is_eof = false;
+    }
+
+    return S_OK;
+}
+
+Err
 vedit3_buffer_split(VEdit3Buffer *buffer, int offset, int indent, VEdit3Buffer *new_buffer)
 {
     Err error_code = S_OK;

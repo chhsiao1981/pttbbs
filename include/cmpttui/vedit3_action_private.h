@@ -5,6 +5,7 @@
 #include "ptterr.h"
 #include "cmpttui/vedit3.h"
 #include "cmpttui/pttui_util.h"
+#include "cmpttui/vedit3_buffer.h"
 
 #ifdef __cplusplus
 extern "C" {
