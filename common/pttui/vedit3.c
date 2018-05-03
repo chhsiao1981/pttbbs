@@ -256,6 +256,7 @@ vedit3_wait_buffer_state_sync(int n_iter) {
     struct timespec rem = {};
 
     int i = 0;
+    int ret_sleep = 0;
     Err error_code_get_current_state = S_OK;
     for(int i = 0; i < n_iter; i++){
         error_code_get_current_state = _vedit3_get_buffer_current_state(&current_state);
