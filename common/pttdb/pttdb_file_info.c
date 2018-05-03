@@ -392,7 +392,7 @@ file_info_get_pre_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType 
     }
     if(!p_func) return S_ERR;
 
-    error_code = p_func(file_info, orig_id, orig_content_type, orig_block_offset, orig_line_offset, orig_comment_offset, new_id, new_content_type, new_block_offset, new_line_offset, new_comment_offset);
+    error_code = p_func(file_info, orig_id, orig_content_type, orig_block_offset, orig_line_offset, orig_comment_offset, orig_storage_type, new_id, new_content_type, new_block_offset, new_line_offset, new_comment_offset, new_storage_type);
 
     return error_code;
 }
@@ -472,7 +472,7 @@ file_info_get_next_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType
     }
     if(!p_func) return S_ERR;
 
-    error_code = p_func(file_info, orig_id, orig_content_type, orig_block_offset, orig_line_offset, orig_comment_offset, new_id, new_content_type, new_block_offset, new_line_offset, new_comment_offset);
+    error_code = p_func(file_info, orig_id, orig_content_type, orig_block_offset, orig_line_offset, orig_comment_offset, orig_storage_type, new_id, new_content_type, new_block_offset, new_line_offset, new_comment_offset, new_storage_type);
 
     return error_code;
 }
