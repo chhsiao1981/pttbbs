@@ -454,7 +454,7 @@ _vedit3_action_move_down_ensure_end_of_window()
     error_code = vedit3_set_expected_state(main_id, new_content_type, new_id, new_block_offset, new_line_offset, new_comment_offset, n_window_line);
     if (error_code) return error_code;
 
-    fprintf(stder, "vedit3_action._vedit3_action_move_down_ensure_end_of_window: to wait buffer state sync\n");
+    fprintf(stderr, "vedit3_action._vedit3_action_move_down_ensure_end_of_window: to wait buffer state sync\n");
 
     error_code = vedit3_wait_buffer_state_sync(DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC);
     if (error_code) return error_code;
