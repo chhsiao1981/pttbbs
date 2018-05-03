@@ -119,7 +119,7 @@ vedit3(UUID main_id, char *title, int edflags, int *money)
     Err error_code_set_expected_state = pttui_thread_set_expected_state(PTTUI_THREAD_STATE_START);
     if (error_code_set_expected_state) error_code = S_ERR_ABORT_BBS;
 
-    Err error_code_sync = _vedit3_wait_buffer_thread_loop(PTTUI_THREAD_STATE_START);
+    Err error_code_sync = vedit3_wait_buffer_thread_loop(PTTUI_THREAD_STATE_START);
     if (error_code_sync) error_code = S_ERR_ABORT_BBS;
 
     return error_code;
@@ -150,7 +150,7 @@ _vedit3_init_editor(UUID main_id)
     fprintf(stderr, "vedit3._vedit3_init_editor: after pttui set expected state: e: %d\n", error_code);
     if (error_code) return error_code;
 
-    error_code = _vedit3_wait_buffer_init();
+    error_code = vedit3_wait_buffer_init();
 
     return error_code;
 }
@@ -217,7 +217,7 @@ vedit3_get_expected_state(VEdit3State *expected_state)
 }
 
 Err
-_vedit3_wait_buffer_init()
+vedit3_wait_buffer_init()
 {
     Err error_code = S_OK;
     int ret_sleep = 0;
@@ -237,7 +237,7 @@ _vedit3_wait_buffer_init()
 
         ret_sleep = nanosleep(&req, &rem);
         if (ret_sleep) {
-            error_code = S_ERR;
+            error_code = S_ERR_SLEEP;
             break;
         }
     }
@@ -246,9 +246,35 @@ _vedit3_wait_buffer_init()
     return error_code;
 }
 
+Err
+vedit3_wait_buffer_state_sync(int n_iter) {
+    Err error_code = S_OK;
+    VEDIT3_STATE current_state = {};
+
+    struct timespec req = {0, NS_DEFAULT_SLEEP_VEDIT3_WAIT_BUFFER_SYNC};
+    struct timespec rem = {};
+
+    int i = 0;
+    Err error_code_get_current_state = S_OK;
+    for(int i = 0; i < n_iter; i++){
+        error_code_get_current_state = _vedit3_get_buffer_current_state(&current_state);
+        if(error_code_get_current_state) continue;
+
+        if(!memcmp(current_state, VEDIT3_STATE, sizeof(VEdit3State))) break;
+
+        ret_sleep = nanosleep(&req, &rem);
+        if(ret_sleep) {
+            error_code = S_ERR_SLEEP;
+            break;
+        }
+    }
+
+    return error_code;
+}
+
 
 Err
-_vedit3_wait_buffer_thread_loop(enum PttUIThreadState expected_state)
+vedit3_wait_buffer_thread_loop(enum PttUIThreadState expected_state)
 {
     Err error_code = S_OK;
     int ret_sleep = 0;

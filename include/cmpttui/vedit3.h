@@ -22,6 +22,8 @@ extern "C" {
 
 #include "var.h"
 
+#define DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC 200
+
 enum VEdit3Attr {
     VEDIT3_ATTR_NORMAL   = 0x00,
     VEDIT3_ATTR_SELECTED = 0x01, // selected (reverse)
@@ -87,6 +89,14 @@ Err vedit3_wrunlock_buffer_info();
 Err vedit3_set_expected_state(UUID main_id, enum PttDBContentType top_line_content_type, UUID top_line_id, int top_line_block_offset, int top_line_line_offset, int top_line_comment_offset, int n_window_line);
 Err vedit3_get_expected_state(VEdit3State *expected_state);
 
+Err vedit3_wait_buffer_state_sync(int n_iter);
+
+// wait-buffer
+Err vedit3_wait_buffer_init();
+
+Err vedit3_wait_buffer_state_sync(int n_iter);
+
+Err vedit3_wait_buffer_thread_loop(enum PttUIThreadState expected_state);
 
 #ifdef __cplusplus
 }

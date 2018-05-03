@@ -22,6 +22,8 @@ extern "C" {
 #define N_ITER_VEDIT3_WAIT_BUFFER_INIT 50
 #define NS_DEFAULT_SLEEP_VEDIT3_WAIT_BUFFER_INIT 100000000 // 100 ms
 
+#define NS_DEFAULT_SLEEP_VEDIT3_WAIT_BUFFER_SYNC 10000000 // 10 ms
+
 #define N_ITER_VEDIT3_WAIT_BUFFER_THREAD_LOOP 100
 #define NS_DEFAULT_SLEEP_VEDIT3_WAIT_BUFFER_THREAD_LOOP 100000000 // 100 ms
 
@@ -30,10 +32,6 @@ extern "C" {
 Err _vedit3_init_user();
 Err _vedit3_init_editor(UUID main_id);
 Err _vedit3_init_file_info(UUID main_id);
-
-Err _vedit3_wait_buffer_init();
-
-Err _vedit3_wait_buffer_thread_loop(enum PttUIThreadState expected_state);
 
 Err _vedit3_set_buffer_current_state(VEdit3State *state);
 Err _vedit3_get_buffer_current_state(VEdit3State *state);
