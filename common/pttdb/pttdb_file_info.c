@@ -355,7 +355,7 @@ destroy_file_info(FileInfo *file_info)
 }
 
 Err
-file_info_is_pre_line(FileInfo *file_info, UUID the_id, enum PttDBContentType content_type, int block_offset, int line_offset, int comment_offset, bool *is_pre_line)
+file_info_is_pre_line(FileInfo * attr GCC_UNUSED, enum PttDBContentType content_type, int block_offset, int line_offset, int attr GCC_UNUSED, bool *is_pre_line)
 {
     if (content_type == PTTDB_CONTENT_TYPE_MAIN &&
         block_offset == 0 &&
@@ -500,7 +500,7 @@ _file_info_get_pre_line_comment_reply(FileInfo *file_info, UUID orig_id, enum Pt
 }
 
 Err
-file_info_is_next_line(FileInfo *file_info, UUID the_id, enum PttDBContentType content_type, int block_offset, int line_offset, int comment_offset, bool *is_next_line)
+file_info_is_next_line(FileInfo *file_info, enum PttDBContentType content_type, int block_offset, int line_offset, int comment_offset, bool *is_next_line)
 {
     if (file_info->n_comment == 0 &&
         content_type == PTTDB_CONTENT_TYPE_MAIN &&
@@ -634,7 +634,7 @@ _file_info_get_next_line_comment(FileInfo *file_info, UUID orig_id, enum PttDBCo
 }
 
 Err
-_file_info_get_next_line_comment_reply(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
+_file_info_get_next_line_comment_reply(FileInfo *file_info, UUID orig_id, enum PttDBContentType attr GCC_UNUSED, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
 {
 
     CommentInfo *p_comment = file_info->comments + orig_comment_offset;
