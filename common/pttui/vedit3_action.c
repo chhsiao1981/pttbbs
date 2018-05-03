@@ -436,7 +436,7 @@ _vedit3_action_move_down_ensure_end_of_window()
 
     UUID main_id = {};
     memcpy(main_id, VEDIT3_STATE.main_id, UUIDLEN);
-    int n_window_line = VEDIT3_STATUS.n_window_line;
+    int n_window_line = VEDIT3_STATE.n_window_line;
 
     UUID new_id = {};
     enum PttDBContentType new_content_type = PTTDB_CONTENT_TYPE_MAIN;
@@ -445,7 +445,7 @@ _vedit3_action_move_down_ensure_end_of_window()
     int new_comment_offset = 0;
     enum StorageType _dummy = PTTDB_STORAGE_TYPE_MONGO;
 
-    Err error_code = file_info_get_next_line(&VEDIT3_FILE_INFO, VEDIT3_STATE.top_line_id, VEDIT3_STATE.top_line_block_offset, VEDIT3_STATE.top_line_line_offset, VEDIT3_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
+    Err error_code = file_info_get_next_line(&VEDIT3_FILE_INFO, VEDIT3_STATE.top_line_id, VEDIT3_STATE.top_line_content_type, VEDIT3_STATE.top_line_block_offset, VEDIT3_STATE.top_line_line_offset, VEDIT3_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
     if(error_code) return error_code;
 
     error_code = vedit3_set_expected_state(main_id, new_content_type, new_id, new_block_offset, new_line_offset, new_comment_offset, n_window_line);
