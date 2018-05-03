@@ -11,11 +11,18 @@ extern "C" {
 
 typedef struct VEdit3State {
     UUID main_id;
+
     enum PttDBContentType top_line_content_type;
     UUID top_line_id;
     int top_line_block_offset;
     int top_line_line_offset;
     int top_line_comment_offset;
+
+    enum PttDBContentType end_line_content_type;
+    UUID end_line_id;
+    int end_line_block_offset;
+    int end_line_line_offset;
+    int end_line_comment_offset;
     int n_window_line;
 } VEdit3State;
 

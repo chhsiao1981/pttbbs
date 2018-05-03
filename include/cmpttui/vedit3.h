@@ -64,6 +64,7 @@ extern FileInfo VEDIT3_FILE_INFO;
 
 extern VEdit3BufferInfo VEDIT3_BUFFER_INFO;
 extern VEdit3Buffer *VEDIT3_DISP_TOP_LINE_BUFFER;
+extern VEdit3Buffer *VEDIT3_DISP_END_LINE_BUFFER; // included
 
 //extern VEdit3Buffer *VEDIT3_BUFFER_HEAD;
 

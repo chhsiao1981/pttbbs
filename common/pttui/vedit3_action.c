@@ -122,30 +122,30 @@ vedit3_action_to_store(bool *is_end)
         case Ctrl('A'):
             error_code = _vedit3_action_move_begin_line();
             break;
-            /*
+        /*
         case Ctrl(']'):
-            error_code = _vedit3_action_move_start_file();
-            break;
+        error_code = _vedit3_action_move_start_file();
+        break;
         case Ctrl('T'):
-            error_code = _vedit3_action_move_tail_file();
-            break;
+        error_code = _vedit3_action_move_tail_file();
+        break;
         case Ctrl('O'):
         case KEY_INS:
-            error_code = _vedit3_action_toggle_insert();
-            break;
+        error_code = _vedit3_action_toggle_insert();
+        break;
         case KEY_BS:
-            error_code = _vedit3_action_backspace();
-            break;
+        error_code = _vedit3_action_backspace();
+        break;
         case Ctrl('D'):
         case KEY_DEL:
-            error_code = _vedit3_action_delete_char();
-            break;
+        error_code = _vedit3_action_delete_char();
+        break;
         case Ctrl('Y'):
-            error_code = _vedit3_action_delete_line();
-            break;
+        error_code = _vedit3_action_delete_line();
+        break;
         case Ctrl('K'):
-            error_code = _vedit3_action_delete_end_of_line();
-            break;
+        error_code = _vedit3_action_delete_end_of_line();
+        break;
         */
         default:
             break;
@@ -308,12 +308,12 @@ _vedit3_action_move_right()
 {
     Err error_code = S_OK;
     int ansi_current_col = 0;
-    int mbcs_current_col = 0;    
+    int mbcs_current_col = 0;
     int orig_current_col = VEDIT3_EDITOR_STATUS.current_col;
-    // within the same line    
-    if(VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len) {
+    // within the same line
+    if (VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len) {
         // TODO use function-map to replace if-else
-        if(VEDIT3_EDITOR_STATUS.is_ansi) {
+        if (VEDIT3_EDITOR_STATUS.is_ansi) {
             error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
             ansi_current_col++;
             error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
@@ -324,7 +324,7 @@ _vedit3_action_move_right()
             VEDIT3_EDITOR_STATUS.current_col++;
         }
 
-        if(VEDIT3_EDITOR_STATUS.is_mbcs) {
+        if (VEDIT3_EDITOR_STATUS.is_mbcs) {
             error_code = pttui_fix_cursor(VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_col, PTTUI_FIX_CURSOR_DIR_RIGHT, &mbcs_current_col);
             VEDIT3_EDITOR_STATUS.current_col = mbcs_current_col;
         }
@@ -336,16 +336,8 @@ _vedit3_action_move_right()
 
     // need to move to next line
 
-    // is end of file
-    bool is_eof = false;
-    error_code = pttui_is_eof(VEDIT3_EDITOR_STATUS.current_line, &VEDIT3_FILE_INFO, true, &is_eof);
-
-    if(error_code) return error_code;
-
-    if(is_eof) return S_OK;
-
     // move to next line
-    error_code = _vedit3_action_move_next();
+    error_code = _vedit3_action_move_down();
 
     VEDIT3_EDITOR_STATUS.current_col = 0;
 
@@ -357,12 +349,12 @@ _vedit3_action_move_left()
 {
     Err error_code = S_OK;
     int ansi_current_col = 0;
-    int mbcs_current_col = 0;    
+    int mbcs_current_col = 0;
     int orig_current_col = VEDIT3_EDITOR_STATUS.current_col;
-    // within the same line    
-    if(VEDIT3_EDITOR_STATUS.current_col) {
+    // within the same line
+    if (VEDIT3_EDITOR_STATUS.current_col) {
         // TODO use function-map to replace if-else
-        if(VEDIT3_EDITOR_STATUS.is_ansi) {
+        if (VEDIT3_EDITOR_STATUS.is_ansi) {
             error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
             ansi_current_col--;
             error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
@@ -373,7 +365,7 @@ _vedit3_action_move_left()
             VEDIT3_EDITOR_STATUS.current_col--;
         }
 
-        if(VEDIT3_EDITOR_STATUS.is_mbcs) {
+        if (VEDIT3_EDITOR_STATUS.is_mbcs) {
             error_code = pttui_fix_cursor(VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_col, PTTUI_FIX_CURSOR_DIR_LEFT, &mbcs_current_col);
             VEDIT3_EDITOR_STATUS.current_col = mbcs_current_col;
         }
@@ -384,10 +376,10 @@ _vedit3_action_move_left()
     }
 
     // is beginning of file
-    if(VEDIT3_EDITOR_STATUS.current_line == 0 && VEDIT3_EDITOR_STATUS.current_col == 0) return S_OK;
+    if (VEDIT3_EDITOR_STATUS.current_line == 0 && VEDIT3_EDITOR_STATUS.current_col == 0) return S_OK;
 
     // move to previous line
-    error_code = _vedit3_action_move_previous();
+    error_code = _vedit3_action_move_up();
 
     VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_buffer->len;
 
@@ -395,14 +387,58 @@ _vedit3_action_move_left()
 }
 
 Err
-_vedit3_action_move_next()
+_vedit3_action_move_up()
 {
     return S_OK;
 }
 
 Err
-_vedit3_action_move_previous()
+_vedit3_action_move_down()
 {
+    Err error_code = S_OK;
+    // is end of file
+    bool is_eof = false;
+    error_code = pttui_is_eof(VEDIT3_EDITOR_STATUS.current_line, &VEDIT3_FILE_INFO, true, &is_eof);
+    if (error_code) return error_code;
+    if (is_eof) return S_OK;
+
+    // check end-of-window
+    error_code = _vedit3_action_move_down_ensure_end_of_window();
+    if (error_code) return error_code;
+
+    // move next
+    error_code = vedit3_lock_buffer_info();
+    if (error_code) return error_code;
+
+    if (VEDIT3_EDITOR_STATUS.current_buffer->next) VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_EDITOR_STATUS.current_buffer->next;
+
+    Err error_code_lock = vedit3_unlock_buffer_info();
+    if (error_code_lock) error_code = S_ERR_EDIT_LOCK;
+
+    VEDIT3_EDITOR_STATUS.current_line++;
+    VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len ? VEDIT3_EDITOR_STATUS.current_col : VEDIT3_EDITOR_STATUS.current_buffer->len;
+
+    return error_code;
+}
+
+/**
+ * @brief [brief description]
+ * @details given that current-buffer is not eof, want to check the end of window and do corresponding works to maintain the state
+ */
+Err
+_vedit3_action_move_down_ensure_end_of_window()
+{
+    // XXX assuming current-buffer <= end-line-buffer
+    // need to move down
+    if (VEDIT3_EDITOR_STATUS.current_buffer->content_type != VEDIT3_STATE.end_line_content_type ||
+        memcmp(VEDIT3_EDITOR_STATUS.current_buffer->the_id, VEDIT3_STATE.end_line_id ||
+        VEDIT3_EDITOR_STATUS.current_buffer->block_offset != VEDIT3_STATE.end_line_block_offset ||
+        VEDIT3_EDITOR_STATUS.current_buffer->line_offset != VEDIT3_STATE.end_line_line_offset ||
+        VEDIT3_EDITOR_STATUS.current_buffer->comment_offset != VEDIT3_STATE.end_line_comment_offset) return S_OK;
+
+
+
+
     return S_OK;
 }
 
@@ -424,7 +460,7 @@ _vedit3_action_move_begin_line()
 
 Err
 _vedit3_action_redraw()
-{    
+{
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
     return S_OK;
