@@ -317,16 +317,13 @@ Err
 _sync_vedit3_buffer_info_count_extra_next_range(VEdit3Buffer *buffer, int *n_extra_range)
 {
     VEdit3Buffer *p_buffer = NULL;
-    // XXX log
-    int total_i = 0;
-    for(total_i = 0, p_buffer = buffer; p_buffer; total_i++, p_buffer = p_buffer->next);
 
     int i = 0;
     for (i = 0, p_buffer = buffer; i < SOFT_N_VEDIT3_BUFFER && p_buffer; i++, p_buffer = p_buffer->next);
 
     *n_extra_range = i == SOFT_N_VEDIT3_BUFFER ? 0 : (HARD_N_VEDIT3_BUFFER - i);
 
-    fprintf(stderr, "vedit3_buffer._sync_vedit3_buffer_info_count-extra_next_range: total_i: %d i: %d n_extra_range: %d\n", total_i, i, *n_extra_range);
+    //fprintf(stderr, "vedit3_buffer._sync_vedit3_buffer_info_count-extra_next_range: i: %d n_extra_range: %d\n", i, *n_extra_range);
 
     return S_OK;
 }
@@ -357,12 +354,6 @@ _sync_vedit3_buffer_info_extend_pre_buffer(VEdit3BufferInfo *buffer_info, VEdit3
     VEdit3ResourceDict resource_dict = {};
     error_code = _sync_vedit3_buffer_info_extend_pre_buffer_no_buf(buffer_info, file_info, n_buffer);
     if (error_code) return error_code;
-
-    // XXX log
-    int total_i = 0;
-    VEdit3Buffer *p_buffer = start_buffer;
-    for(total_i = 0; p_buffer; total_i++, p_buffer = p_buffer->pre);
-    fprintf(stderr, "vedit3_buffer._sync_vedit3_buffer_info_extend_pre_buffer: n_buffer: %d total_i (from buffer_info->head): %d\n", n_buffer, total_i);
 
     if (start_buffer->buf) start_buffer = start_buffer->pre;
 
@@ -580,12 +571,6 @@ _sync_vedit3_buffer_info_extend_next_buffer(VEdit3BufferInfo *buffer_info, VEdit
     VEdit3ResourceDict resource_dict = {};
     error_code = _sync_vedit3_buffer_info_extend_next_buffer_no_buf(buffer_info, file_info, n_buffer);
     if (error_code) return error_code;
-
-    // XXX log
-    int total_i = 0;
-    VEdit3Buffer *p_buffer = start_buffer;
-    for(total_i = 0; p_buffer; total_i++, p_buffer = p_buffer->next);
-    fprintf(stderr, "vedit3_buffer._sync_vedit3_buffer_info_extend_next_buffer: n_buffer: %d total_i (from buffer_info->tail): %d\n", n_buffer, total_i);
 
     if (start_buffer->buf) start_buffer = start_buffer->next;
 
