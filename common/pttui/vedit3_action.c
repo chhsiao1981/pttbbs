@@ -432,11 +432,11 @@ _vedit3_action_move_down_ensure_end_of_window()
 {
     // XXX assuming current-buffer <= end-line-buffer
     // need to move down
-    if(VEDIT3_EDITOR_STATUS.current_line != b_line - 1) return S_OK;
+    if(VEDIT3_EDITOR_STATUS.current_line != b_lines - 1) return S_OK;
 
     UUID main_id = {};
     memcpy(main_id, VEDIT3_STATE.main_id, UUIDLEN);
-    int n_window_line = VEDIT3_EDITOR_STATUS.n_window_line;
+    int n_window_line = VEDIT3_STATUS.n_window_line;
 
     UUID new_id = {};
     enum PttDBContentType new_content_type = PTTDB_CONTENT_TYPE_MAIN;
