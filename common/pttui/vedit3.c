@@ -977,7 +977,7 @@ _vedit3_edit_msg()
              VEDIT3_EDITOR_STATUS.is_indent ? 'I' : 'i',
              VEDIT3_EDITOR_STATUS.is_phone ? 'P' : 'p',
              VEDIT3_EDITOR_STATUS.is_raw ? 'R' : 'r',
-             VEDIT3_EDITOR_STATUS.current_line + 1,
+             VEDIT3_EDITOR_STATUS.current_buffer_line + 1,
              n + 1);
 
     vs_footer(FOOTER_VEDIT3_PREFIX, buf);
