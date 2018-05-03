@@ -70,9 +70,13 @@ sync_vedit3_buffer_info(VEdit3BufferInfo *buffer_info, VEdit3Buffer *current_buf
     error_code = _sync_vedit3_buffer_info_is_pre(state, current_buffer, &is_pre);
     if (error_code) return error_code;
 
+    fprintf(stderr, "vedit3_buffer.sync_vedit3_buffer_info: expected_state: content_type: %d block_offset: %d line_offset: %d comment_offset: %d buffer: content_type: %d block_offset: %d line_offset: %d comment_offset: %d is_pre: %d\n", state->top_line_content_type, state->top_line_block_offset, state->top_line_line_offset, state->top_line_comment_offset, current_buffer->content_type, current_buffer->block_offset, current_buffer->line_offset, current_buffer->comment_offset, is_pre);
+
     error_code = _sync_vedit3_buffer_info_get_buffer(state, current_buffer, is_pre, new_buffer);
 
     if (error_code) return error_code;
+
+    fprintf(stderr, "vedit3_buffer.sync_vedit3_buffer_info: after get buffer: new_buffer: %lu\n", new_buffer);
 
     if (!(*new_buffer)) {
         return resync_all_vedit3_buffer_info(buffer_info, state, file_info, new_buffer);
@@ -104,17 +108,25 @@ sync_vedit3_buffer_info(VEdit3BufferInfo *buffer_info, VEdit3Buffer *current_buf
         error_code = _sync_vedit3_buffer_info_count_extra_next_range(*new_buffer, &n_extra_range);
         if (error_code) return error_code;
 
+        fprintf(stderr, "vedit3_buffer.sync_vedit3_buffer_info: after count extra next range: n_extra_range: %d\n", n_extra_range);
+
         if (n_extra_range) {
             error_code = _sync_vedit3_buffer_info_extend_next_buffer(buffer_info, state, file_info, n_extra_range);
         }
         if (error_code) return error_code;
 
+        fprintf(stderr, "vedit3_buffer.sync_vedit3_buffer_info: after extend next buffer\n");
+
         error_code = _sync_vedit3_buffer_info_count_shrink_range(buffer_info, &n_shrink_range);
         if (error_code) return error_code;
+
+        fprintf(stderr, "vedit3_buffer.sync_vedit3_buffer_info: after count shrink range: n_shrink_range: %d\n", n_shrink_range);
 
         if (n_shrink_range) {
             error_code = _sync_vedit3_buffer_info_shrink_head(buffer_info, n_shrink_range);
         }
+
+        fprintf(stderr, "vedit3_buffer.sync_vedit3_buffer_info: after shrink range\n");
     }
 
     return error_code;
