@@ -249,7 +249,8 @@ vedit3_wait_buffer_init()
 Err
 vedit3_wait_buffer_state_sync(int n_iter) {
     Err error_code = S_OK;
-    VEDIT3_STATE current_state = {};
+
+    VEdit3State current_state = {};
 
     struct timespec req = {0, NS_DEFAULT_SLEEP_VEDIT3_WAIT_BUFFER_SYNC};
     struct timespec rem = {};
