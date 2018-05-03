@@ -437,7 +437,7 @@ _file_info_get_pre_line_comment(FileInfo *file_info, UUID orig_id, enum PttDBCon
         p_content_block = file_info->main_blocks + *new_block_offset;
 
         *new_line_offset = p_content_block->n_line - 1;
-        *newcomment_offset = 0;
+        *new_comment_offset = 0;
         *new_storage_type = p_content_block->storage_type;
     }
     else {
@@ -471,7 +471,7 @@ _file_info_get_pre_line_comment_reply(FileInfo *file_info, UUID orig_id, enum Pt
     ContentBlockInfo *p_comment_reply_block = p_comment->comment_reply_blocks + orig_block_offset;
 
     *new_comment_offset = orig_comment_offset;
-    if (current_buffer->block_offset == 0 && current_buffer->line_offset == 0) {
+    if (orig_block_offset == 0 && orig_line_offset == 0) {
         memcpy(new_id, p_comment->comment_id, UUIDLEN);
         *new_content_type = PTTDB_CONTENT_TYPE_COMMENT;
         *new_block_offset = 0;
