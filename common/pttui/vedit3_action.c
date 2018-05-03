@@ -552,6 +552,7 @@ _vedit3_action_move_pgup()
 {
     Err error_code = S_OK;
     bool is_begin = false;
+    bool is_each_begin = false;
     int current_line = VEDIT3_EDITOR_STATUS.current_line;
     int current_col = VEDIT3_EDITOR_STATUS.current_col;
     for(int i = 0; i < b_lines - 1; i++) {
