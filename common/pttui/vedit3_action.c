@@ -571,15 +571,10 @@ _vedit3_action_move_pgup()
     }
     if(error_code) return error_code;
 
-    error_code = vedit3_lock_buffer_info();
-    if(error_code) return error_code;
-
-    VEDIT3_EDITOR_STATUS.current_line = current_line;
-    VEDIT3_EDITOR_STATUS.current_buffer_line += current_line;
-    for(int i = 0; i < current_line; i++, VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_EDITOR_STATUS.current_buffer->next);
-
-    error_code = vedit3_unlock_buffer_info();
-    if(error_code) return S_ERR_EDIT_LOCK;
+    for(int i = 0; i < current_line; i++) {
+        error_code = _vedit3_action_move_down();
+        if(error_code) break;
+    }
 
     VEDIT3_EDITOR_STATUS.current_col = current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl ? current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
 
