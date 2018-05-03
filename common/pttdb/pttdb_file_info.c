@@ -548,7 +548,7 @@ _file_info_get_next_line_comment(FileInfo *file_info, UUID orig_id, enum PttDBCo
 }
 
 Err
-_file_info_get_next_line_comment_reply(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset)
+_file_info_get_next_line_comment_reply(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, enum StorageType orig_storage_type, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
 {
 
     CommentInfo *p_comment = file_info->comments + orig_comment_offset;
