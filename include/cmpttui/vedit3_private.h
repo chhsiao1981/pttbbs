@@ -35,9 +35,6 @@ Err _vedit3_wait_buffer_init();
 
 Err _vedit3_wait_buffer_thread_loop(enum PttUIThreadState expected_state);
 
-Err _vedit3_set_expected_state(UUID main_id, enum PttDBContentType top_line_content_type, UUID top_line_id, int top_line_block_offset, int top_line_line_offset, int top_line_comment_offset, int n_window_line);
-Err _vedit3_get_expected_state(VEdit3State *expected_state);
-
 Err _vedit3_set_buffer_current_state(VEdit3State *state);
 Err _vedit3_get_buffer_current_state(VEdit3State *state);
 

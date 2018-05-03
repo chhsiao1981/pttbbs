@@ -432,16 +432,25 @@ _vedit3_action_move_down_ensure_end_of_window()
 {
     // XXX assuming current-buffer <= end-line-buffer
     // need to move down
-    if (VEDIT3_EDITOR_STATUS.current_buffer->content_type != VEDIT3_STATE.end_line_content_type ||
-        memcmp(VEDIT3_EDITOR_STATUS.current_buffer->the_id, VEDIT3_STATE.end_line_id, UUIDLEN) ||
-        VEDIT3_EDITOR_STATUS.current_buffer->block_offset != VEDIT3_STATE.end_line_block_offset ||
-        VEDIT3_EDITOR_STATUS.current_buffer->line_offset != VEDIT3_STATE.end_line_line_offset ||
-        VEDIT3_EDITOR_STATUS.current_buffer->comment_offset != VEDIT3_STATE.end_line_comment_offset) return S_OK;
+    if(VEDIT3_EDITOR_STATUS.current_line != b_line - 1) return S_OK;
 
+    UUID main_id = {};
+    memcpy(main_id, VEDIT3_STATE.main_id, UUIDLEN);
+    int n_window_line = VEDIT3_EDITOR_STATUS.n_window_line;
 
-    
+    UUID new_id = {};
+    enum PttDBContentType new_content_type = PTTDB_CONTENT_TYPE_MAIN;
+    int new_block_offset = 0;
+    int new_line_offset = 0;
+    int new_comment_offset = 0;
+    enum StorageType _dummy = PTTDB_STORAGE_TYPE_MONGO;
 
-    return S_OK;
+    Err error_code = file_info_get_next_line(&VEDIT3_FILE_INFO, VEDIT3_STATE.top_line_id, VEDIT3_STATE.top_line_block_offset, VEDIT3_STATE.top_line_line_offset, VEDIT3_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
+    if(error_code) return error_code;
+
+    error_code = vedit3_set_expected_state(main_id, new_content_type, new_id, new_block_offset, new_line_offset, new_comment_offset, n_window_line);
+
+    return error_code;
 }
 
 Err

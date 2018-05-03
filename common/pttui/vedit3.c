@@ -142,7 +142,7 @@ _vedit3_init_editor(UUID main_id)
     fprintf(stderr, "vedit3._vedit3_init_editor: after init file_info: e: %d\n", error_code);
     if (error_code) return error_code;
 
-    error_code = _vedit3_set_expected_state(main_id, PTTDB_CONTENT_TYPE_MAIN, VEDIT3_FILE_INFO.main_content_id, 0, 0, 0, b_lines);
+    error_code = vedit3_set_expected_state(main_id, PTTDB_CONTENT_TYPE_MAIN, VEDIT3_FILE_INFO.main_content_id, 0, 0, 0, b_lines);
     fprintf(stderr, "vedit3._vedit3_init_editor: after vedit3 set expected state: e: %d\n", error_code);
     if (error_code) return error_code;
 
@@ -184,7 +184,7 @@ _vedit3_init_file_info(UUID main_id)
 }
 
 Err
-_vedit3_set_expected_state(UUID main_id, enum PttDBContentType top_line_content_type, UUID top_line_id, int top_line_block_offset, int top_line_line_offset, int top_line_comment_offset, int n_window_line)
+vedit3_set_expected_state(UUID main_id, enum PttDBContentType top_line_content_type, UUID top_line_id, int top_line_block_offset, int top_line_line_offset, int top_line_comment_offset, int n_window_line)
 {
 
     Err error_code = pttui_thread_lock_wrlock(LOCK_VEDIT3_EXPECTED_STATE);
@@ -204,7 +204,7 @@ _vedit3_set_expected_state(UUID main_id, enum PttDBContentType top_line_content_
 }
 
 Err
-_vedit3_get_expected_state(VEdit3State *expected_state)
+vedit3_get_expected_state(VEdit3State *expected_state)
 {
     Err error_code = pttui_thread_lock_rdlock(LOCK_VEDIT3_EXPECTED_STATE);
     if (error_code) return error_code;
@@ -782,7 +782,7 @@ vedit3_init_disp_buffer()
     Err error_code = S_OK;
 
     VEdit3State expected_state = {};
-    error_code = _vedit3_get_expected_state(&expected_state);
+    error_code = vedit3_get_expected_state(&expected_state);
     if (error_code) return error_code;
 
     if (!memcmp(expected_state.main_id, VEDIT3_FILE_INFO.main_id, UUIDLEN) &&
@@ -812,7 +812,7 @@ vedit3_disp_buffer()
 
     //fprintf(stderr, "vedit3_disp_buffer: to get expected state\n");
 
-    error_code = _vedit3_get_expected_state(&expected_state);
+    error_code = vedit3_get_expected_state(&expected_state);
 
     // sync disp buffer to tmp_disp_buffer while checking the alignment of orig_expected_state and new_expected_state
     /*
