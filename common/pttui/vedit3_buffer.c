@@ -19,20 +19,35 @@ destroy_vedit3_buffer_info(VEdit3BufferInfo *buffer_info)
 }
 
 Err
+vedit3_buffer_is_begin_of_file(VEdit3Buffer *buffer, FileInfo *file_info, bool *is_begin)
+{
+    if (buffer->content_type == PTTDB_CONTENT_TYPE_MAIN &&
+        buffer->block_offset == 0 &&
+        buffer->line_offset == 0) {
+        *is_begin = true;
+    }
+    else {
+        *is_begin = false;
+    }
+
+    return S_OK;
+}
+
+Err
 vedit3_buffer_is_eof(VEdit3Buffer *buffer, FileInfo *file_info, bool *is_eof)
 {
-    if(!file_info->n_comment &&
+    if (!file_info->n_comment &&
         buffer->block_offset == file_info->n_main_block - 1 &&
         buffer->line_offset == file_info->main_blocks[buffer->block_offset].n_line - 1) {
         *is_eof = true;
     }
-    else if(file_info->n_comment &&
+    else if (file_info->n_comment &&
         buffer->comment_offset == file_info->n_comment - 1 &&
         buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT &&
         file_info->comments[buffer->comment_offset].n_comment_reply_block == 0) {
         *is_eof = true;
     }
-    else if(file_info->n_comment &&
+    else if (file_info->n_comment &&
         buffer->comment_offset == file_info->n_comment - 1 &&
         buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT_REPLY &&
         file_info->comments[buffer->comment_offset].n_comment_reply_block &&
@@ -329,13 +344,30 @@ _sync_vedit3_buffer_info_extend_pre_buffer(VEdit3BufferInfo *buffer_info, VEdit3
         n_buffer--;
     }
 
+    VEdit3Buffer *start_buffer = buffer_info->head;
+
+    bool is_begin = false;
+    if(start_buffer && start_buffer->buf) {
+        error_code = vedit3_buffer_is_begin_of_file(start_buffer, file_info, &is_begin);
+        if(error_code) return error_code;
+        if(is_begin) return S_OK;
+    }
+
     VEdit3ResourceInfo resource_info = {};
     VEdit3ResourceDict resource_dict = {};
     error_code = _sync_vedit3_buffer_info_extend_pre_buffer_no_buf(buffer_info, file_info, n_buffer);
     if (error_code) return error_code;
 
+    // XXX log
+    int total_i = 0;
+    VEdit3Buffer *p_buffer = start_buffer;
+    for(total_i = 0; p_buffer; total_i++, p_buffer = p_buffer->pre);
+    fprintf(stderr, "vedit3_buffer._sync_vedit3_buffer_info_extend_pre_buffer: n_buffer: %d total_i (from buffer_info->head): %d\n", n_buffer, total_i);
+
+    if (start_buffer->buf) start_buffer = start_buffer->pre;
+
     fprintf(stderr, "vedit3_buffer._sync_vedit3_buffer_info_extend_pre_buffer: to buffer_info_to_resource_info\n");
-    error_code = _vedit3_buffer_info_to_resource_info(buffer_info->head, &resource_info);
+    error_code = _vedit3_buffer_info_to_resource_info(start_buffer, &resource_info);
 
     fprintf(stderr, "vedit3_buffer._sync_vedit3_buffer_info_extend_pre_buffer: after buffer_info to resource_info: e: %d\n", error_code);
     if (!error_code) {
@@ -344,7 +376,7 @@ _sync_vedit3_buffer_info_extend_pre_buffer(VEdit3BufferInfo *buffer_info, VEdit3
 
     fprintf(stderr, "vedit3_buffer._sync_vedit3_buffer_info_extend_pre_buffer: after resource_info to resource_dict: e: %d buffer_info: %d\n", error_code, buffer_info->n_buffer);
     if (!error_code) {
-        error_code = _vedit3_buffer_info_set_buf_from_resource_dict(buffer_info->head, &resource_dict);
+        error_code = _vedit3_buffer_info_set_buf_from_resource_dict(start_buffer, &resource_dict);
     }
 
     fprintf(stderr, "vedit3_buffer._sync_vedit3_buffer_info_extend_pre_buffer: after set buf from resource_dict: e: %d\n", error_code);

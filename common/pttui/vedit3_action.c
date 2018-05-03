@@ -98,11 +98,9 @@ vedit3_action_to_store(bool *is_end)
         case KEY_RIGHT:
             error_code = _vedit3_action_move_right();
             break;
-        /*
         case KEY_UP:
             error_code = _vedit3_action_move_up();
             break;
-        */
         case KEY_DOWN:
             error_code = _vedit3_action_move_down();
             break;
@@ -391,7 +389,73 @@ _vedit3_action_move_left()
 Err
 _vedit3_action_move_up()
 {
-    return S_OK;
+    Err error_code = S_OK;
+    // is begin of file
+    bool is_begin = false;
+    error_code = vedit3_buffer_is_begin_of_file(VEDIT3_EDITOR_STATUS.current_buffer, &VEDIT3_FILE_INFO, &is_begin);
+    if (error_code) return error_code;
+    if (is_eof) return S_OK;
+
+    // check begin-of-window
+    error_code = _vedit3_action_move_up_ensure_top_of_window();
+    if (error_code) return error_code;
+
+    // move next
+    error_code = vedit3_lock_buffer_info();
+    if (error_code) return error_code;
+
+    if (VEDIT3_EDITOR_STATUS.current_buffer->pre) VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_EDITOR_STATUS.current_buffer->pre;
+
+    Err error_code_lock = vedit3_unlock_buffer_info();
+    if (error_code_lock) error_code = S_ERR_EDIT_LOCK;
+
+    if (VEDIT3_EDITOR_STATUS.current_line > 0) VEDIT3_EDITOR_STATUS.current_line--;
+
+    VEDIT3_EDITOR_STATUS.current_buffer_line--;
+
+    VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len ? VEDIT3_EDITOR_STATUS.current_col : VEDIT3_EDITOR_STATUS.current_buffer->len;
+
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
+    return error_code;
+}
+
+/**
+ * @brief [brief description]
+ * @details given that current-buffer is not eof, want to check the end of window and do corresponding works to maintain the state
+ */
+Err
+_vedit3_action_move_up_ensure_top_of_window()
+{
+    // XXX assuming current-buffer <= end-line-buffer
+    // need to move down
+    if (VEDIT3_EDITOR_STATUS.current_line != b_lines - 1) return S_OK;
+
+    UUID main_id = {};
+    memcpy(main_id, VEDIT3_STATE.main_id, UUIDLEN);
+    int n_window_line = VEDIT3_STATE.n_window_line;
+
+    UUID new_id = {};
+    enum PttDBContentType new_content_type = PTTDB_CONTENT_TYPE_MAIN;
+    int new_block_offset = 0;
+    int new_line_offset = 0;
+    int new_comment_offset = 0;
+    enum StorageType _dummy = PTTDB_STORAGE_TYPE_MONGO;
+
+    Err error_code = file_info_get_pre_line(&VEDIT3_FILE_INFO, VEDIT3_STATE.top_line_id, VEDIT3_STATE.top_line_content_type, VEDIT3_STATE.top_line_block_offset, VEDIT3_STATE.top_line_line_offset, VEDIT3_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
+    if (error_code) return error_code;
+
+    fprintf(stderr, "vedit3_action._vedit3_action_move_up_ensure_top_of_window: orig_content_type: %d orig_block_offset: %d orig_line_offset: %d orig_comment_offset: %d new_content_type: %d new_block_offset: %d new_line_offset: %d new_comment_offset: %d\n", VEDIT3_STATE.top_line_content_type, VEDIT3_STATE.top_line_block_offset, VEDIT3_STATE.top_line_line_offset, VEDIT3_STATE.top_line_comment_offset, new_content_type, new_block_offset, new_line_offset, new_comment_offset);
+
+    error_code = vedit3_set_expected_state(main_id, new_content_type, new_id, new_block_offset, new_line_offset, new_comment_offset, n_window_line);
+    if (error_code) return error_code;
+
+    fprintf(stderr, "vedit3_action._vedit3_action_move_down_ensure_end_of_window: to wait buffer state sync\n");
+
+    error_code = vedit3_wait_buffer_state_sync(DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC);
+    if (error_code) return error_code;
+
+    return error_code;
 }
 
 Err

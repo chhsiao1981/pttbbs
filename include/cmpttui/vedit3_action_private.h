@@ -27,6 +27,7 @@ Err _vedit3_action_move_left();
 Err _vedit3_action_move_right();
 
 Err _vedit3_action_move_up();
+Err _vedit3_action_move_up_ensure_top_of_window();
 
 Err _vedit3_action_move_down();
 Err _vedit3_action_move_down_ensure_end_of_window();
