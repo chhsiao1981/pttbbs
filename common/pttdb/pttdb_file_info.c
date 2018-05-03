@@ -423,7 +423,7 @@ _file_info_get_pre_line_main(FileInfo *file_info, UUID orig_id, enum PttDBConten
 }
 
 Err
-_file_info_get_pre_line_comment(FileInfo *file_info, UUID orig_id GCC_UNUSED, enum PttDBContentType orig_content_type GCC_UNUSED, int orig_block_offset, int orig_line_offset GCC_UNUSED, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
+_file_info_get_pre_line_comment(FileInfo *file_info, UUID orig_id GCC_UNUSED, enum PttDBContentType orig_content_type GCC_UNUSED, int orig_block_offset GCC_UNUSED, int orig_line_offset GCC_UNUSED, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
 {
     CommentInfo *p_comment = NULL;
     ContentBlockInfo *p_comment_reply_block = NULL;
@@ -465,7 +465,7 @@ _file_info_get_pre_line_comment(FileInfo *file_info, UUID orig_id GCC_UNUSED, en
 }
 
 Err
-_file_info_get_pre_line_comment_reply(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
+_file_info_get_pre_line_comment_reply(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type GCC_UNUSED, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
 {
     CommentInfo *p_comment = file_info->comments + orig_comment_offset;
     ContentBlockInfo *p_comment_reply_block = p_comment->comment_reply_blocks + orig_block_offset;
@@ -560,7 +560,7 @@ file_info_get_next_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType
 }
 
 Err
-_file_info_get_next_line_main(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
+_file_info_get_next_line_main(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset GCC_UNUSED, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
 {
     ContentBlockInfo *p_content_block = file_info->main_blocks + orig_block_offset;
 
@@ -602,7 +602,7 @@ _file_info_get_next_line_main(FileInfo *file_info, UUID orig_id, enum PttDBConte
 }
 
 Err
-_file_info_get_next_line_comment(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
+_file_info_get_next_line_comment(FileInfo *file_info, UUID orig_id GCC_UNUSED, enum PttDBContentType orig_content_type GCC_UNUSED, int orig_block_offset GCC_UNUSED, int orig_line_offset GCC_UNUSED, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
 {
     CommentInfo *p_comment = file_info->comments + orig_comment_offset;
     ContentBlockInfo *p_comment_reply_block = NULL;
@@ -634,7 +634,7 @@ _file_info_get_next_line_comment(FileInfo *file_info, UUID orig_id, enum PttDBCo
 }
 
 Err
-_file_info_get_next_line_comment_reply(FileInfo *file_info, UUID orig_id, enum PttDBContentType attr GCC_UNUSED, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
+_file_info_get_next_line_comment_reply(FileInfo *file_info, UUID orig_id GCC_UNUSED, enum PttDBContentType attr GCC_UNUSED, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
 {
 
     CommentInfo *p_comment = file_info->comments + orig_comment_offset;
