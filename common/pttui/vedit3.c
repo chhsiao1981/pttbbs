@@ -478,6 +478,7 @@ _vedit3_disp_line(int line, char *buf, int len)
 
     move(line, 0);
     clrtoeol();
+    move(line, 0);
     int attr = (int)VEDIT3_ATTR_NORMAL;
     int detected_attr = 0;
 
