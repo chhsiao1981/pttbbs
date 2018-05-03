@@ -394,7 +394,7 @@ _vedit3_action_move_up()
     bool is_begin = false;
     error_code = vedit3_buffer_is_begin_of_file(VEDIT3_EDITOR_STATUS.current_buffer, &VEDIT3_FILE_INFO, &is_begin);
     if (error_code) return error_code;
-    if (is_eof) return S_OK;
+    if (is_begin) return S_OK;
 
     // check begin-of-window
     error_code = _vedit3_action_move_up_ensure_top_of_window();
