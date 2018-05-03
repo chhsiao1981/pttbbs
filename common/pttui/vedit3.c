@@ -848,7 +848,15 @@ vedit3_disp_buffer()
     fprintf(stderr, "vedit3.vedit3_disp_buffer: to sync expected_state: content_type: %d block_offset: %d line_offset: %d comment_offset: %d buffer_state: content_type: %d block_offset: %d line_offset: %d comment_offset: %d\n", expected_state.top_line_content_type, expected_state.top_line_block_offset, expected_state.top_line_line_offset, expected_state.top_line_comment_offset, VEDIT3_BUFFER_STATE.top_line_content_type, VEDIT3_BUFFER_STATE.top_line_block_offset, VEDIT3_BUFFER_STATE.top_line_line_offset, VEDIT3_BUFFER_STATE.top_line_comment_offset);
 
     // sync disp buffer to tmp_disp_buffer while checking the alignment of orig_expected_state and new_expected_state
-    error_code = _vedit3_sync_disp_buffer(&expected_state);
+    VEdit3Buffer *new_buffer = NULL;
+
+    error_code = sync_vedit3_buffer_info(VEDIT3_BUFFER_INFO, VEDIT3_DISP_TOP_LINE_BUFFER, &VEDIT3_STATE, &VEDIT3_FILE_INFO, &new_top_line_buffer);
+    if(error_code) return error_code;
+
+    // XXX may result in race-condition. need to bind with buffer-info.
+    VEDIT3_DISP_TOP_LINE_BUFFER = new_top_line_buffer;
+
+    error_code = _vedit3_set_buffer_current_state(&expected_state);
 
     //fprintf(stderr, "vedit3_disp_buffer: end: e: %d\n", error_code);
 
@@ -859,7 +867,6 @@ Err
 _vedit3_sync_disp_buffer(VEdit3State *expected_state)
 {
     Err error_code = S_OK;
-    bool is_need_sync = false;
 
     /*
     error_code = _vedit3_sync_disp_buffer_is_need_sync_primitive(expected_state, &is_need_sync);
