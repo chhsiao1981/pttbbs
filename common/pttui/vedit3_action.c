@@ -552,8 +552,8 @@ _vedit3_action_move_pgup()
 {
     Err error_code = S_OK;
     bool is_begin = false;
-    int current_line = VEDIT3_FILE_INFO.current_line;
-    int current_col = VEDIT3_FILE_INFO.current_col;
+    int current_line = VEDIT3_EDITOR_STATUS.current_line;
+    int current_col = VEDIT3_EDITOR_STATUS.current_col;
     for(int i = 0; i < b_lines - 1; i++) {
         error_code = vedit3_buffer_is_begin_of_file(VEDIT3_EDITOR_STATUS.current_buffer, &VEDIT3_FILE_INFO, &is_each_begin);
         if(error_code) break;
@@ -570,9 +570,17 @@ _vedit3_action_move_pgup()
     if(error_code) return error_code;
 
     if(!is_begin) {
-        VEDIT3_FILE_INFO.current_line = current_line;
-        for(int i = 0; i < current_line; i++, VEDIT3_FILE_INFO.current_buffer = VEDIT3_FILE_INFO.current_buffer->next);
+        error_code = vedit3_lock_buffer_info();
+        if(error_code) return error_code;
+
+        VEDIT3_EDITOR_STATUS.current_line = current_line;
+        for(int i = 0; i < current_line; i++, VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_EDITOR_STATUS.current_buffer->next);
+
+        error_code = vedit3_unlock_buffer_info();
+        if(error_code) return S_ERR_EDIT_LOCK;
     }
+
+    return S_OK;
 }
 
 Err

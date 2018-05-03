@@ -32,6 +32,8 @@ Err _vedit3_action_move_up_ensure_top_of_window();
 Err _vedit3_action_move_down();
 Err _vedit3_action_move_down_ensure_end_of_window();
 
+Err _vedit3_action_move_pgup();
+
 Err _vedit3_action_move_end_line();
 
 Err _vedit3_action_move_begin_line();
