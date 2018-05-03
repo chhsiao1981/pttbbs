@@ -431,7 +431,7 @@ _vedit3_action_move_down_ensure_end_of_window()
     // XXX assuming current-buffer <= end-line-buffer
     // need to move down
     if (VEDIT3_EDITOR_STATUS.current_buffer->content_type != VEDIT3_STATE.end_line_content_type ||
-        memcmp(VEDIT3_EDITOR_STATUS.current_buffer->the_id, VEDIT3_STATE.end_line_id ||
+        memcmp(VEDIT3_EDITOR_STATUS.current_buffer->the_id, VEDIT3_STATE.end_line_id) ||
         VEDIT3_EDITOR_STATUS.current_buffer->block_offset != VEDIT3_STATE.end_line_block_offset ||
         VEDIT3_EDITOR_STATUS.current_buffer->line_offset != VEDIT3_STATE.end_line_line_offset ||
         VEDIT3_EDITOR_STATUS.current_buffer->comment_offset != VEDIT3_STATE.end_line_comment_offset) return S_OK;

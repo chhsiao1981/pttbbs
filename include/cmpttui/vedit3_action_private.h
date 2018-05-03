@@ -20,14 +20,23 @@ Err _vedit3_action_t_users();
 
 Err _vedit3_action_get_key(int *ch);
 
+
 Err _vedit3_action_move_left();
+
 Err _vedit3_action_move_right();
+
 Err _vedit3_action_move_up();
+
 Err _vedit3_action_move_down();
+Err _vedit3_action_move_down_ensure_end_of_window();
+
 Err _vedit3_action_move_end_line();
+
 Err _vedit3_action_move_begin_line();
 
+
 Err _vedit3_action_redraw();
+
 Err _vedit3_action_show_help();
 
 
