@@ -841,14 +841,14 @@ vedit3_disp_buffer()
     //fprintf(stderr, "vedit3_disp_buffer: to get expected state\n");
 
     error_code = vedit3_get_expected_state(&expected_state);
+    if (error_code) return error_code;
+
+    if (!memcmp(&expected_state, &VEDIT3_BUFFER_STATE, sizeof(VEdit3State))) return S_OK;
+
+    fprintf(stderr, "vedit3.vedit3_disp_buffer: to sync expected_state: content_type: %d block_offset: %d line_offset: %d comment_offset: %d buffer_state: content_type: %d block_offset: %d line_offset: %d comment_offset: %d\n", expected_state.top_line_content_type, expected_state.top_line_block_offset, expected_state.top_line_line_offset, expected_state.top_line_comment_offset, VEDIT3_BUFFER_STATE.top_line_content_type, VEDIT3_BUFFER_STATE.top_line_block_offset, VEDIT3_BUFFER_STATE.top_line_line_offset, VEDIT3_BUFFER_STATE.top_line_comment_offset);
 
     // sync disp buffer to tmp_disp_buffer while checking the alignment of orig_expected_state and new_expected_state
-    /*
-    if (!error_code) {
-        error_code = _vedit3_sync_disp_buffer(&expected_state);
-    }
-    */
-
+    error_code = _vedit3_sync_disp_buffer(&expected_state);
 
     //fprintf(stderr, "vedit3_disp_buffer: end: e: %d\n", error_code);
 
