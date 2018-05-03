@@ -449,13 +449,14 @@ _vedit3_action_move_down_ensure_end_of_window()
     Err error_code = file_info_get_next_line(&VEDIT3_FILE_INFO, VEDIT3_STATE.top_line_id, VEDIT3_STATE.top_line_content_type, VEDIT3_STATE.top_line_block_offset, VEDIT3_STATE.top_line_line_offset, VEDIT3_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
     if (error_code) return error_code;
 
+    fprintf(stderr, "vedit3_action._vedit3_action_move_down_ensure_end_of_window: orig_content_type: %d orig_block_offset: %d orig_line_offset: %d orig_comment_offset: %d new_content_type: %d new_block_offset: %d new_line_offset: %d new_comment_offset: %d\n", VEDIT3_STATE.top_line_content_type, VEDIT3_STATE.top_line_block_offset, VEDIT3_STATE.top_line_line_offset, VEDIT3_STATE.top_line_comment_offset, new_content_type, new_block_offset, new_line_offset, new_comment_offset);
+
     error_code = vedit3_set_expected_state(main_id, new_content_type, new_id, new_block_offset, new_line_offset, new_comment_offset, n_window_line);
     if (error_code) return error_code;
 
-    error_code = vedit3_wait_buffer_state_sync(DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC);
-    if (error_code) return error_code;
+    fprintf(stder, "vedit3_action._vedit3_action_move_down_ensure_end_of_window: to wait buffer state sync\n");
 
-    error_code = vedit3_lock_buffer_info();
+    error_code = vedit3_wait_buffer_state_sync(DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC);
     if (error_code) return error_code;
 
     return error_code;
