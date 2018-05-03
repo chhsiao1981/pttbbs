@@ -102,9 +102,11 @@ vedit3_action_to_store(bool *is_end)
         case KEY_UP:
             error_code = _vedit3_action_move_up();
             break;
+        */
         case KEY_DOWN:
             error_code = _vedit3_action_move_down();
             break;
+        /*
         case Ctrl('B'):
         case KEY_PGUP:
             error_code = _vedit3_action_move_pgup();
