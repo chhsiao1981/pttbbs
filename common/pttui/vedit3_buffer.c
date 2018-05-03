@@ -884,7 +884,7 @@ _vedit3_buffer_info_set_buf_from_resource_dict(VEdit3Buffer *head, VEdit3Resourc
         p_buffer->len = p_buffer_len;
         p_buffer_len_no_nl = p_buffer_len;
         p_buf_no_nl = buf_next_offset - 1;
-        for(int i = 0; i < 2; i++) {
+        for(int i_no_nl = 0; i_no_nl < 2; i_no_nl++) {
             if(p_buffer_len_no_nl) {
                 if(*p_buf_no_nl && (*p_buf_no_nl == '\r' || *p_buf_no_nl == '\n')) {
                     p_buffer_len_no_nl--;
