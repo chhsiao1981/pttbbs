@@ -602,13 +602,13 @@ _vedit3_action_move_pgdn()
         VEDIT3_EDITOR_STATUS.current_line = b_lines - 1;
     }
     else {
-        for(int i = b_lines - 1; i >= current_line; i--) {
+        for(int i = b_lines - 1; i > current_line; i--) {
             error_code = _vedit3_action_move_down();
             if(error_code) break;
         }
         if(error_code) return error_code;
 
-        for(int i = b_lines - 1; i >= current_line; i--) {
+        for(int i = b_lines - 1; i > current_line; i--) {
             error_code = _vedit3_action_move_up();
             if(error_code) break;
         }
