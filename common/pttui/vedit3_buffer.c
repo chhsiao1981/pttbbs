@@ -835,6 +835,7 @@ _vedit3_buffer_info_set_buf_from_resource_dict(VEdit3Buffer *head, VEdit3Resourc
     int buf_offset = 0;
     int buf_next_offset = 0;
     int p_buffer_len = 0;
+    int p_buffer_len_no_nl = 0;
     int i = 0;
 
     // pre-head
@@ -880,6 +881,18 @@ _vedit3_buffer_info_set_buf_from_resource_dict(VEdit3Buffer *head, VEdit3Resourc
 
         p_buffer_len = buf_next_offset - buf_offset;
         p_buffer->len = p_buffer_len;
+        p_buffer_len_no_nl = p_buffer_len;
+        p_buf = buf_next_offset - 1;
+        for(int i = 0; i < 2; i++) {
+            if(p_buffer_len_no_nl) {
+                if(*p_buf && (*p_buf == '\r' || *p_buf == '\n')) {
+                    p_buffer_len_nl--;
+                    p_buf--;
+                }
+            }
+        }
+        p_buffer->len_no_nl = p_buffer_len_no_nl;
+
         p_buffer->buf = malloc(p_buffer_len + 1);
         memcpy(p_buffer->buf, p_buf, p_buffer_len);
         p_buffer->buf[p_buffer_len] = 0;

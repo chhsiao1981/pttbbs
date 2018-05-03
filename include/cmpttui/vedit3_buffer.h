@@ -27,6 +27,7 @@ typedef struct VEdit3Buffer {
     enum StorageType storage_type;
 
     int len;
+    int len_no_nl;
     char *buf;
 } VEdit3Buffer;
 

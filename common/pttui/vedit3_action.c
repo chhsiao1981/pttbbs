@@ -228,7 +228,7 @@ _vedit3_action_insert_char(int ch)
 
     bool is_wordwrap = true;
 
-    assert(VEDIT3_EDITOR_STATUS.current_col <= current_buffer->len);
+    assert(VEDIT3_EDITOR_STATUS.current_col <= current_buffer->len_no_nl);
 //#ifdef DEBUG
     //assert(curr_buf->currline->mlength == WRAPMARGIN);
 //#endif
@@ -241,7 +241,7 @@ _vedit3_action_insert_char(int ch)
 
 
     int current_col_n2ansi = 0;
-    if (VEDIT3_EDITOR_STATUS.current_col < current_buffer->len && !VEDIT3_EDITOR_STATUS.is_insert) {
+    if (VEDIT3_EDITOR_STATUS.current_col < current_buffer->len_no_nl && !VEDIT3_EDITOR_STATUS.is_insert) {
         current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col++] = ch;
 
         /* Thor: ansi 編輯, 可以overwrite, 不蓋到 ansi code */
@@ -255,12 +255,13 @@ _vedit3_action_insert_char(int ch)
     }
     else { // insert-mode
 #ifdef DEBUG
-        assert(p->len < p->mlength);
+        assert(p->len_no_nl < p->mlength);
 #endif
         error_code = pttui_raw_shift_right(current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col, current_buffer->len - VEDIT3_EDITOR_STATUS.current_col + 1);
 
         current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col++] = ch;
         ++(current_buffer->len);
+        ++(current_buffer->len_no_nl);
     }
 
 
@@ -311,7 +312,7 @@ _vedit3_action_move_right()
     int mbcs_current_col = 0;
     int orig_current_col = VEDIT3_EDITOR_STATUS.current_col;
     // within the same line
-    if (VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len) {
+    if (VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl) {
         // TODO use function-map to replace if-else
         if (VEDIT3_EDITOR_STATUS.is_ansi) {
             error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
@@ -533,7 +534,7 @@ _vedit3_action_move_down_ensure_end_of_window()
 Err
 _vedit3_action_move_end_line()
 {
-    VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_buffer->len;
+    VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
 
     return S_OK;
 }
