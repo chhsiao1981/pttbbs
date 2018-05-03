@@ -359,7 +359,7 @@ file_info_get_next_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType
 {
     Err error_code = S_OK;
 
-    Err (*p_func)(FileInfo *, UUID, enum PttDBContentType, int, int int, UUID, enum PttDBContentType *, int *, int *, int *) = NULL;
+    Err (*p_func)(FileInfo *, UUID, enum PttDBContentType, int, int, int, UUID, enum PttDBContentType *, int *, int *, int *) = NULL;
 
     switch (orig_content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
