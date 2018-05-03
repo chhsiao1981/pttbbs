@@ -262,7 +262,7 @@ vedit3_wait_buffer_state_sync(int n_iter) {
         error_code_get_current_state = _vedit3_get_buffer_current_state(&current_state);
         if(error_code_get_current_state) continue;
 
-        if(!memcmp(current_state, VEDIT3_STATE, sizeof(VEdit3State))) break;
+        if(!memcmp(&current_state, &VEDIT3_STATE, sizeof(VEdit3State))) break;
 
         ret_sleep = nanosleep(&req, &rem);
         if(ret_sleep) {
