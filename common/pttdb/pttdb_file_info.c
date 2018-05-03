@@ -481,7 +481,7 @@ file_info_get_next_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType
 Err
 _file_info_get_next_line_main(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type)
 {
-    ContentBlockInfo *p_content_block = file_info->main_blocks + orig_block_offset
+    ContentBlockInfo *p_content_block = file_info->main_blocks + orig_block_offset;
 
     // last line of main-block. new-buffer as comment
     if (orig_block_offset == file_info->n_main_block - 1 &&
