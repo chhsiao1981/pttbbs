@@ -6,6 +6,8 @@
 #include "ptt_const.h"
 #include "cmpttui/vedit3_state.h"
 #include "cmpttui/vedit3_buffer.h"
+#include "cmpttui/pttui_thread.h"
+#include "cmpttui/pttui_thread_lock.h"
 
 #include "cmpttdb.h"
 
