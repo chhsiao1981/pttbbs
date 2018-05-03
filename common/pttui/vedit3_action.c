@@ -108,12 +108,10 @@ vedit3_action_to_store(bool *is_end)
         case KEY_PGUP:
             error_code = _vedit3_action_move_pgup();
             break;
-            /*
         case Ctrl('F'):
         case KEY_PGDN:
             error_code = _vedit3_action_move_pgdn();
             break;
-            */
         case KEY_END:
         case Ctrl('E'):
             error_code = _vedit3_action_move_end_line();
@@ -575,6 +573,43 @@ _vedit3_action_move_pgup()
 
         for(int i = 0; i < current_line; i++) {
             error_code = _vedit3_action_move_down();
+            if(error_code) break;
+        }
+        if(error_code) return error_code;
+    }
+
+    VEDIT3_EDITOR_STATUS.current_col = current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl ? current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
+    return S_OK;
+}
+
+Err
+_vedit3_action_move_pgdn()
+{
+    Err error_code = S_OK;
+    bool is_eof = false;
+    int current_line = VEDIT3_EDITOR_STATUS.current_line;
+    int current_col = VEDIT3_EDITOR_STATUS.current_col;
+    for(int i = 0; i < b_lines - 1; i++) {
+        error_code = _vedit3_action_move_down();
+        if(error_code) break;
+        error_code = vedit3_buffer_is_eof(VEDIT3_EDITOR_STATUS.current_buffer, &VEDIT3_FILE_INFO, &is_eof);
+        if(error_code) break;
+        if(is_eof) break;
+    }
+    if(error_code) return error_code;
+
+    if(is_eof) {
+        VEDIT3_EDITOR_STATUS.current_line = b_lines - 1;
+    }
+    else {
+        for(int i = 0; i < current_line; i++) {
+            error_code = _vedit3_action_move_down();
+            if(error_code) break;
+        }
+        if(error_code) return error_code;
+
+        for(int i = 0; i < current_line; i++) {
+            error_code = _vedit3_action_move_up();
             if(error_code) break;
         }
         if(error_code) return error_code;
