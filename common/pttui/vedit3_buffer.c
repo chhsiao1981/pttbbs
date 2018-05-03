@@ -304,7 +304,7 @@ _sync_vedit3_buffer_info_count_extra_next_range(VEdit3Buffer *buffer, int *n_ext
     VEdit3Buffer *p_buffer = NULL;
     // XXX log
     int total_i = 0;
-    for(total_i = 0; p_buffer = buffer; p_buffer; total_i++, p_buffer = p_buffer->next);
+    for(total_i = 0, p_buffer = buffer; p_buffer; total_i++, p_buffer = p_buffer->next);
 
     int i = 0;
     for (i = 0, p_buffer = buffer; i < SOFT_N_VEDIT3_BUFFER && p_buffer; i++, p_buffer = p_buffer->next);
