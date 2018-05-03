@@ -104,11 +104,11 @@ vedit3_action_to_store(bool *is_end)
         case KEY_DOWN:
             error_code = _vedit3_action_move_down();
             break;
-        /*
         case Ctrl('B'):
         case KEY_PGUP:
             error_code = _vedit3_action_move_pgup();
             break;
+            /*
         case Ctrl('F'):
         case KEY_PGDN:
             error_code = _vedit3_action_move_pgdn();
@@ -545,6 +545,34 @@ _vedit3_action_move_begin_line()
     VEDIT3_EDITOR_STATUS.current_col = 0;
 
     return S_OK;
+}
+
+Err
+_vedit3_action_move_pgup()
+{
+    Err error_code = S_OK;
+    bool is_begin = false;
+    int current_line = VEDIT3_FILE_INFO.current_line;
+    int current_col = VEDIT3_FILE_INFO.current_col;
+    for(int i = 0; i < b_lines - 1; i++) {
+        error_code = vedit3_buffer_is_begin_of_file(VEDIT3_EDITOR_STATUS.current_buffer, &VEDIT3_FILE_INFO, &is_each_begin);
+        if(error_code) break;
+        if(is_each_begin) is_begin = true;
+        error_code = _vedit3_action_move_up();
+        if(error_code) break;
+    }
+    if(error_code) return error_code;
+
+    for(int i = 0; i < current_line; i++) {
+        error_code = _vedit3_action_move_up();
+        if(error_code) break;
+    }
+    if(error_code) return error_code;
+
+    if(!is_begin) {
+        VEDIT3_FILE_INFO.current_line = current_line;
+        for(int i = 0; i < current_line; i++, VEDIT3_FILE_INFO.current_buffer = VEDIT3_FILE_INFO.current_buffer->next);
+    }
 }
 
 Err
