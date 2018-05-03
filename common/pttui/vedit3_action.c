@@ -580,6 +580,8 @@ _vedit3_action_move_pgup()
     error_code = vedit3_unlock_buffer_info();
     if(error_code) return S_ERR_EDIT_LOCK;
 
+    VEDIT3_EDITOR_STATUS.current_col = current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl ? current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
+
     return S_OK;
 }
 
