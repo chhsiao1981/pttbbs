@@ -563,21 +563,21 @@ _vedit3_action_move_pgup()
     }
     if(error_code) return error_code;
 
-    if(is_begin) return S_OK;
+    if(!is_begin) {
+        for(int i = 0; i < current_line; i++) {
+            error_code = _vedit3_action_move_up();
+            if(error_code) break;
+        }
+        if(error_code) return error_code;
 
-    for(int i = 0; i < current_line; i++) {
-        error_code = _vedit3_action_move_up();
-        if(error_code) break;
-    }
-    if(error_code) return error_code;
-
-    for(int i = 0; i < current_line; i++) {
-        error_code = _vedit3_action_move_down();
-        if(error_code) break;
+        for(int i = 0; i < current_line; i++) {
+            error_code = _vedit3_action_move_down();
+            if(error_code) break;
+        }
+        if(error_code) return error_code;
     }
 
     VEDIT3_EDITOR_STATUS.current_col = current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl ? current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
-
     return S_OK;
 }
 
