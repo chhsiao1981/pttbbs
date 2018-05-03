@@ -9,6 +9,8 @@ pttui_is_eof(int line_no, FileInfo *file_info, bool is_full_comment_reply, bool 
     error_code = file_info_get_total_lines(file_info, is_full_comment_reply, &expected_total_lines);
     if (error_code) return error_code;
 
+    fprintf(stderr, "pttui_util.pttui_is_eof: line_no: %d expected_total_lines: %d\n", line_no, expected_total_lines);
+
     *is_eof = line_no >= expected_total_lines ? true : false;
 
     return S_OK;
