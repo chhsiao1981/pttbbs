@@ -355,7 +355,7 @@ destroy_file_info(FileInfo *file_info)
 }
 
 Err
-file_info_is_pre_line(FileInfo * attr GCC_UNUSED, enum PttDBContentType content_type, int block_offset, int line_offset, int attr GCC_UNUSED, bool *is_pre_line)
+file_info_is_pre_line(FileInfo *file_info GCC_UNUSED, enum PttDBContentType content_type, int block_offset, int line_offset, int comment_offset GCC_UNUSED, bool *is_pre_line)
 {
     if (content_type == PTTDB_CONTENT_TYPE_MAIN &&
         block_offset == 0 &&
