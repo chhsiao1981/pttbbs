@@ -302,10 +302,16 @@ Err
 _sync_vedit3_buffer_info_count_extra_next_range(VEdit3Buffer *buffer, int *n_extra_range)
 {
     VEdit3Buffer *p_buffer = NULL;
+    // XXX log
+    int total_i = 0;
+    for(total_i = 0; p_buffer = buffer; p_buffer; total_i++, p_buffer = p_buffer->next);
+
     int i = 0;
     for (i = 0, p_buffer = buffer; i < SOFT_N_VEDIT3_BUFFER && p_buffer; i++, p_buffer = p_buffer->next);
 
     *n_extra_range = i == SOFT_N_VEDIT3_BUFFER ? 0 : (HARD_N_VEDIT3_BUFFER - i);
+
+    fprintf(stderr, "vedit3_buffer._sync_vedit3_buffer_info_count-extra_next_range: total_i: %d i: %d n_extra_range: %d\n", total_i, i, *n_extra_range);
 
     return S_OK;
 }
