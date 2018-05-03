@@ -97,16 +97,27 @@ pttui_thread_lock_rdlock(enum PttUIThreadLock thread_lock)
     struct timespec req = {0, NS_DEFAULT_SLEEP_LOCK};
     struct timespec rem = {};
 
-    if(_IS_WR_PTTUI_RWLOCKS[thread_lock]) {
-        fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_rdlock: IS_WR_PTTUI_RWLOCKS: thread_lock: %d\n", thread_lock);
-        return S_ERR_BUSY;
-    }
-
     int ret_sleep = 0;
+    int i = 0; 
+    for(i = 0; i < N_ITER_PTTUI_READ_LOCK; i++) {
+        if(!_IS_WR_PTTUI_RWLOCKS[thread_lock]) break;
+
+        fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_rdlock: (%d/%d) IS_WR_PTTUI_RWLOCKS thread_lock: %d\n", i, N_ITER_PTTUI_READ_LOCK, thread_lock);
+
+        ret_sleep = nanosleep(&req, &rem);
+        if(ret_sleep) {
+            error_code = S_ERR;
+            break;
+        }
+    }
+    if(!error_code && i == N_ITER_PTTUI_READ_LOCK) error_code = S_ERR_BUSY;
+    
+    if(error_code) return error_code;
+
     int ret_lock = pthread_rwlock_tryrdlock(&PTTUI_RWLOCKS[thread_lock]);
     //fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_rdlock: after tryrdlock: ret_lock: %d EBUSY: %d\n", ret_lock, EBUSY);
 
-    for(int i = 0; i < N_ITER_PTTUI_READ_LOCK; i++) {
+    for(i = 0; i < N_ITER_PTTUI_READ_LOCK; i++) {
         if(!ret_lock) break;
         if(ret_lock != EBUSY) {
             error_code = S_ERR;
