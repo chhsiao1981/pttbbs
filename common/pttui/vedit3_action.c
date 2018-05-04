@@ -628,7 +628,7 @@ _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, V
     error_code = vedit3_buffer_insert_buffer(current_buffer, p_new_buffer, &VEDIT3_BUFFER_INFO);
 
     // buffer after new_buffer
-    for(VEdit3Buffer *p_buffer2 = p_new_buffer->next; p_buffer2 && p_buffer2->content_type == p_buffer->content_type && p_buffer2->block_offset == p_buffer->block_offset && p_buffer2->comment_offset == p_buffer->comment_offset; p_buffer2->line_offset++, p_buffer2 = p_buffer2->next);
+    for(VEdit3Buffer *p_buffer2 = p_new_buffer->next; p_buffer2 && p_buffer2->content_type == p_new_buffer->content_type && p_buffer2->block_offset == p_new_buffer->block_offset && p_buffer2->comment_offset == p_new_buffer->comment_offset; p_buffer2->line_offset++, p_buffer2 = p_buffer2->next);
 
     // file-info
     error_code = vedit3_wrlock_file_info();

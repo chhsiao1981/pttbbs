@@ -21,6 +21,7 @@ enum LiveStatus {
 enum StorageType {
     PTTDB_STORAGE_TYPE_MONGO,
     PTTDB_STORAGE_TYPE_FILE,
+    PTTDB_STORAGE_TYPE_OTHER,
     N_PTTDB_STORAGE_TYPE,
 };
 
