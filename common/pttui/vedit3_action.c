@@ -815,10 +815,7 @@ _vedit3_action_move_pgup()
     }
     if(error_code) return error_code;
 
-    if(is_begin) {
-        VEDIT3_EDITOR_STATUS.current_line = 0;
-    }
-    else {
+    if(!is_begin) {
         for(int i = 0; i < current_line; i++) {
             error_code = _vedit3_action_move_up();
             if(error_code) break;
