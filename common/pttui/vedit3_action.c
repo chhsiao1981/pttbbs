@@ -11,116 +11,135 @@ vedit3_action_to_store(bool *is_end)
         error_code = _vedit3_action_get_key(&ch);
         if (error_code) break;
 
-        // ch as printable letter
-        if (ch < 0x100 && isprint2(ch)) {
-            /*
-            error_code = VEDIT3_EDITOR_STATUS.is_phone && (pstr = phone_char(char)) ? _vedit3_action_insert_dchar(pstr) : _vedit3_action_insert_char(ch);
-            if(error_code) break;
-            */
-
-            continue;
-        }
-
-        // ch as ctrl
-
-        switch (ch) {
-        case KEY_UP:
-        case KEY_DOWN:
+        switch(VEDIT3_EDITOR_STATUS.current_buffer->content_type) {
+        case PTTDB_CONTENT_TYPE_MAIN:
+            error_code = _vedit3_action_to_store_main(ch, is_end);
             break;
-        case KEY_ESC:
+        case PTTDB_CONTENT_TYPE_COMMENT:
+            error_code = _vedit3_action_to_store_comment(ch, is_end);
+            break;
+        case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
+            error_code = _vedit3_action_to_store_comment_reply(ch, is_end);
+            break;
+        default:
             break;
         }
+    }
+    if (error_code == S_ERR_NO_KEY) error_code = S_OK;
+
+    return error_code;
+}
 
 
-        // ctrl-command
-
-        switch (ch) {
-        case KEY_F10:
-        case Ctrl('X'): // save and exit
-            *is_end = true;
-            break;
-        case KEY_F5:    // goto-line
-            break;
-
-        case KEY_F8:    // users
-            error_code = _vedit3_action_t_users();
-            break;
-        case Ctrl('W'):
-            break;
-
-        case Ctrl('Q'): // quit
-            break;
-
-        case Ctrl('C'): // ansi-code
-            break;
-
-        case KEY_ESC:   // escape
-            break;
-
-        case Ctrl('S'): // search-str
-        case KEY_F3:
-            break;
-
+Err
+_vedit3_action_to_store_main(int ch, bool *is_end) {
+    if (ch < 0x100 && isprint2(ch)) {
         /*
-        case Ctrl('U'): // insert-esc
-            error_code = _vedit3_action_insert_char(ESC_CHR);
-            break;
+        error_code = VEDIT3_EDITOR_STATUS.is_phone && (pstr = phone_char(char)) ? _vedit3_action_insert_dchar(pstr) : _vedit3_action_insert_char(ch);
+        if(error_code) break;
         */
-        case Ctrl('V'): // toggle ansi-color
-            error_code = _vedit3_action_toggle_ansi();
-            break;
-        /*
-        case Ctrl('I'): // insert-tab
-            error_code = _vedit3_action_insert_tab();
+
+        continue;
+    }
+
+    // ch as ctrl
+    switch (ch) {
+    case KEY_UP:
+    case KEY_DOWN:
+        break;
+    case KEY_ESC:
+        break;
+    }
+
+
+    // ctrl-command
+    switch (ch) {
+    case KEY_F10:
+    case Ctrl('X'): // save and exit
+        *is_end = true;
+        break;
+    case KEY_F5:    // goto-line
+        break;
+
+    case KEY_F8:    // users
+        error_code = _vedit3_action_t_users();
+        break;
+    case Ctrl('W'):
+        break;
+
+    case Ctrl('Q'): // quit
+        break;
+
+    case Ctrl('C'): // ansi-code
+        break;
+
+    case KEY_ESC:   // escape
             break;
 
-        case KEY_ENTER: // new-line
-            error_code = _vedit3_action_insert_new_line();
-            break;
+    case Ctrl('S'): // search-str
+    case KEY_F3:
+        break;
 
-        case Ctrl('G'): // edit-assistant
-            break;
+    /*
+    case Ctrl('U'): // insert-esc
+        error_code = _vedit3_action_insert_char(ESC_CHR);
+        break;
+    */
+    case Ctrl('V'): // toggle ansi-color
+        error_code = _vedit3_action_toggle_ansi();
+        break;
+    /*
+    case Ctrl('I'): // insert-tab
+        error_code = _vedit3_action_insert_tab();
+        break;
 
-        case Ctrl('P'): // toogle-phone-mode
-            error_code = _vedit3_action_toggle_phone_mode();
-            break;
-        */
-        case KEY_F1:
-        case Ctrl('Z'): // help
-            error_code = _vedit3_action_show_help();
-            break;
-        case Ctrl('L'): // redraw
-            error_code = _vedit3_action_redraw();
-            break;
-        case KEY_LEFT:
-            error_code = _vedit3_action_move_left();
-            break;
-        case KEY_RIGHT:
-            error_code = _vedit3_action_move_right();
-            break;
-        case KEY_UP:
-            error_code = _vedit3_action_move_up();
-            break;
-        case KEY_DOWN:
-            error_code = _vedit3_action_move_down();
-            break;
-        case Ctrl('B'):
-        case KEY_PGUP:
-            error_code = _vedit3_action_move_pgup();
-            break;
-        case Ctrl('F'):
-        case KEY_PGDN:
-            error_code = _vedit3_action_move_pgdn();
-            break;
-        case KEY_END:
-        case Ctrl('E'):
-            error_code = _vedit3_action_move_end_line();
-            break;
-        case KEY_HOME:
-        case Ctrl('A'):
-            error_code = _vedit3_action_move_begin_line();
-            break;
-        /*
+    case KEY_ENTER: // new-line
+        error_code = _vedit3_action_insert_new_line();
+        break;
+
+    case Ctrl('G'): // edit-assistant
+        break;
+    
+    case Ctrl('P'): // toogle-phone-mode
+        error_code = _vedit3_action_toggle_phone_mode();
+        break;
+    */
+    case KEY_F1:
+    case Ctrl('Z'): // help
+        error_code = _vedit3_action_show_help();
+        break;
+    case Ctrl('L'): // redraw
+        error_code = _vedit3_action_redraw();
+        break;
+    case KEY_LEFT:
+        error_code = _vedit3_action_move_left();
+        break;
+    case KEY_RIGHT:
+        error_code = _vedit3_action_move_right();
+        break;
+    case KEY_UP:
+        error_code = _vedit3_action_move_up();
+        break;
+    case KEY_DOWN:
+        error_code = _vedit3_action_move_down();
+        break;
+    case Ctrl('B'):
+    case KEY_PGUP:
+        error_code = _vedit3_action_move_pgup();
+        break;
+    case Ctrl('F'):
+    case KEY_PGDN:
+        error_code = _vedit3_action_move_pgdn();
+        break;
+    case KEY_END:
+    case Ctrl('E'):
+        error_code = _vedit3_action_move_end_line();
+        break;
+    case KEY_HOME:
+    case Ctrl('A'):
+        error_code = _vedit3_action_move_begin_line();
+        break;
+    /*
         case Ctrl(']'):
         error_code = _vedit3_action_move_start_file();
         break;
@@ -144,12 +163,234 @@ vedit3_action_to_store(bool *is_end)
         case Ctrl('K'):
         error_code = _vedit3_action_delete_end_of_line();
         break;
-        */
-        default:
-            break;
-        }
+    */
+    default:
+        break;
     }
-    if (error_code == S_ERR_NO_KEY) error_code = S_OK;
+
+    return error_code;
+}
+
+Err
+_vedit3_action_to_store_comment(int ch, bool *is_end) {
+    // ctrl-command
+    switch (ch) {
+    case KEY_F10:
+    case Ctrl('X'): // save and exit
+        *is_end = true;
+        break;
+    case KEY_F5:    // goto-line
+        break;
+    case KEY_F8:    // users
+        error_code = _vedit3_action_t_users();
+        break;
+    case Ctrl('W'):
+        break;
+    case Ctrl('Q'): // quit
+        break;
+    case Ctrl('C'): // ansi-code
+        break;
+    case Ctrl('S'): // search-str
+    case KEY_F3:
+        break;
+    case Ctrl('V'): // toggle ansi-color
+        error_code = _vedit3_action_toggle_ansi();
+        break;
+    /*
+    case KEY_ENTER: // new-line
+        error_code = _vedit3_action_insert_new_line();
+        break;
+    */
+    case KEY_F1:
+    case Ctrl('Z'): // help
+        error_code = _vedit3_action_show_help();
+        break;
+    case Ctrl('L'): // redraw
+        error_code = _vedit3_action_redraw();
+        break;
+    case KEY_LEFT:
+        error_code = _vedit3_action_move_left();
+        break;
+    case KEY_RIGHT:
+        error_code = _vedit3_action_move_right();
+        break;
+    case KEY_UP:
+        error_code = _vedit3_action_move_up();
+        break;
+    case KEY_DOWN:
+        error_code = _vedit3_action_move_down();
+        break;
+    case Ctrl('B'):
+    case KEY_PGUP:
+        error_code = _vedit3_action_move_pgup();
+        break;
+    case Ctrl('F'):
+    case KEY_PGDN:
+        error_code = _vedit3_action_move_pgdn();
+        break;
+    case KEY_END:
+    case Ctrl('E'):
+        error_code = _vedit3_action_move_end_line();
+        break;
+    case KEY_HOME:
+    case Ctrl('A'):
+        error_code = _vedit3_action_move_begin_line();
+        break;
+    /*
+        case Ctrl(']'):
+        error_code = _vedit3_action_move_start_file();
+        break;
+        case Ctrl('T'):
+        error_code = _vedit3_action_move_tail_file();
+        break;
+        case Ctrl('O'):
+        case KEY_INS:
+        error_code = _vedit3_action_toggle_insert();
+        break;
+    */
+    default:
+        break;
+    }
+
+    return error_code;
+}
+
+Err
+_vedit3_action_to_store_comment_reply(int ch, bool *is_end) {
+    if (ch < 0x100 && isprint2(ch)) {
+        /*
+        error_code = VEDIT3_EDITOR_STATUS.is_phone && (pstr = phone_char(char)) ? _vedit3_action_insert_dchar(pstr) : _vedit3_action_insert_char(ch);
+        if(error_code) break;
+        */
+
+        continue;
+    }
+
+    // ch as ctrl
+    switch (ch) {
+    case KEY_UP:
+    case KEY_DOWN:
+        break;
+    case KEY_ESC:
+        break;
+    }
+
+
+    // ctrl-command
+    switch (ch) {
+    case KEY_F10:
+    case Ctrl('X'): // save and exit
+        *is_end = true;
+        break;
+    case KEY_F5:    // goto-line
+        break;
+
+    case KEY_F8:    // users
+        error_code = _vedit3_action_t_users();
+        break;
+    case Ctrl('W'):
+        break;
+
+    case Ctrl('Q'): // quit
+        break;
+
+    case Ctrl('C'): // ansi-code
+        break;
+
+    case KEY_ESC:   // escape
+            break;
+
+    case Ctrl('S'): // search-str
+    case KEY_F3:
+        break;
+
+    /*
+    case Ctrl('U'): // insert-esc
+        error_code = _vedit3_action_insert_char(ESC_CHR);
+        break;
+    */
+    case Ctrl('V'): // toggle ansi-color
+        error_code = _vedit3_action_toggle_ansi();
+        break;
+    /*
+    case Ctrl('I'): // insert-tab
+        error_code = _vedit3_action_insert_tab();
+        break;
+
+    case KEY_ENTER: // new-line
+        error_code = _vedit3_action_insert_new_line();
+        break;
+
+    case Ctrl('G'): // edit-assistant
+        break;
+    
+    case Ctrl('P'): // toogle-phone-mode
+        error_code = _vedit3_action_toggle_phone_mode();
+        break;
+    */
+    case KEY_F1:
+    case Ctrl('Z'): // help
+        error_code = _vedit3_action_show_help();
+        break;
+    case Ctrl('L'): // redraw
+        error_code = _vedit3_action_redraw();
+        break;
+    case KEY_LEFT:
+        error_code = _vedit3_action_move_left();
+        break;
+    case KEY_RIGHT:
+        error_code = _vedit3_action_move_right();
+        break;
+    case KEY_UP:
+        error_code = _vedit3_action_move_up();
+        break;
+    case KEY_DOWN:
+        error_code = _vedit3_action_move_down();
+        break;
+    case Ctrl('B'):
+    case KEY_PGUP:
+        error_code = _vedit3_action_move_pgup();
+        break;
+    case Ctrl('F'):
+    case KEY_PGDN:
+        error_code = _vedit3_action_move_pgdn();
+        break;
+    case KEY_END:
+    case Ctrl('E'):
+        error_code = _vedit3_action_move_end_line();
+        break;
+    case KEY_HOME:
+    case Ctrl('A'):
+        error_code = _vedit3_action_move_begin_line();
+        break;
+    /*
+        case Ctrl(']'):
+        error_code = _vedit3_action_move_start_file();
+        break;
+        case Ctrl('T'):
+        error_code = _vedit3_action_move_tail_file();
+        break;
+        case Ctrl('O'):
+        case KEY_INS:
+        error_code = _vedit3_action_toggle_insert();
+        break;
+        case KEY_BS:
+        error_code = _vedit3_action_backspace();
+        break;
+        case Ctrl('D'):
+        case KEY_DEL:
+        error_code = _vedit3_action_delete_char();
+        break;
+        case Ctrl('Y'):
+        error_code = _vedit3_action_delete_line();
+        break;
+        case Ctrl('K'):
+        error_code = _vedit3_action_delete_end_of_line();
+        break;
+    */
+    default:
+        break;
+    }
 
     return error_code;
 }
@@ -231,15 +472,13 @@ _vedit3_action_insert_char(int ch)
     //assert(curr_buf->currline->mlength == WRAPMARGIN);
 //#endif
 
-    error_code = vedit3_wrlock_buffer_info();
-    if (error_code) return error_code;
-
     // XXX remove block-cancel for now
     // block_cancel();
 
 
     int current_col_n2ansi = 0;
     if (VEDIT3_EDITOR_STATUS.current_col < current_buffer->len_no_nl && !VEDIT3_EDITOR_STATUS.is_insert) {
+        // no need to change len
         current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col++] = ch;
 
         /* Thor: ansi 編輯, 可以overwrite, 不蓋到 ansi code */
@@ -252,52 +491,64 @@ _vedit3_action_insert_char(int ch)
         }
     }
     else { // insert-mode
-#ifdef DEBUG
-        assert(p->len_no_nl < p->mlength);
-#endif
         error_code = pttui_raw_shift_right(current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col, current_buffer->len - VEDIT3_EDITOR_STATUS.current_col + 1);
 
         current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col++] = ch;
         ++(current_buffer->len);
         ++(current_buffer->len_no_nl);
     }
+    current_buffer->is_modified = true;
+    if(current_buffer->len_no_nl < WRAPMARGIN) return S_OK;
 
-
-    char *s = NULL;
-    if (current_buffer->len >= WRAPMARGIN && !error_code) {
-// find the last non-space word, pointing to the 0th char
-        s = current_buffer->buf + current_buffer->len - 1;
-        while (s != current_buffer->buf && *s == ' ') s--;
-        while (s != current_buffer->buf && *s != ' ') s--;
-        if (s == current_buffer) { // if only 1 word
-            is_wordwrap = false;
-            s = current_buffer->buf + (current_buffer->len - 2);
-        }
-    }
-
-    VEdit3Buffer *new_buffer = NULL;
-    if (!current_buffer->len >= WRAPMARGIN && !error_code) {
-        error_code = vedit3_buffer_split(current_buffer, s - current_buffer->buf + 1, 0, &new_buffer);
-    }
-
-    if (!error_code && is_wordwrap && new_buffer && new_buffer->len >= 1) {
-        VEDIT3_EDITOR_STATUS.current_buffer = new_buffer;
-        current_buffer = new_buffer;
-
-        if (current_buffer->buf[current_buffer->len - 1] != ' ') {
-            current_buffer->buf[current_buffer->len] = ' ';
-            current_buffer->buf[current_buffer->len + 1] = '\0';
-            current_buffer->len++;
-        }
-    }
-
-    Err error_code_lock = vedit3_wrunlock_buffer_info();
-    if (error_code_lock) error_code = S_ERR_EDIT_LOCK;
-
+    error_code = _vedit3_action_ensure_buffer_wrap();
 
 //#ifdef DEBUG
 //    assert(curr_buf->currline->mlength == WRAPMARGIN);
 //#endif
+
+    return error_code;
+}
+
+Err
+_vedit3_action_ensure_buffer_wrap()
+{
+    Err error_code = S_OK;
+
+    if (!VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info) return S_ERR_EDIT_LOCK;
+
+    bool is_wordwrap = true;    
+    char *s = current_buffer->buf + current_buffer->len_no_nl - 1;    
+    while (s != current_buffer->buf && *s == ' ') s--;
+    while (s != current_buffer->buf && *s != ' ') s--;
+    if (s == current_buffer) { // if only 1 word
+        is_wordwrap = false;
+        s = current_buffer->buf + (current_buffer->len - 2);
+    }
+
+    VEdit3Buffer *new_buffer = NULL;
+    error_code = _vedit3_action_buffer_split(current_buffer, s - current_buffer->buf + 1, 0, &new_buffer);
+
+    int new_buffer_len_no_nl = new_buffer ? new_buffer->len_no_nl : 0;
+    if (!error_code && is_wordwrap && new_buffer && new_buffer_len_no_nl >= 1) {
+        if (new_buffer->buf[new_buffer_len_no_nl - 1] != ' ') {
+            new_buffer->buf[new_buffer_len_no_nl] = ' ';
+            new_buffer->buf[new_buffer_len_no_nl + 1] = '\n';
+            new_buffer->buf[new_buffer_len_no_nl + 2] = '\0';
+            new_buffer->len++;
+            new_buffer->len_no_nl++;
+        }
+    }
+
+    return error_code;
+}
+
+Err
+_vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, VEdit3Buffer **new_buffer)
+{
+    Err error_code = S_OK;
+
+    // XXX should not happen.
+    if(pos > current_buffer->len_no_nl) return S_OK;
 
     return error_code;
 }

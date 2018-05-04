@@ -44,6 +44,9 @@ Err _vedit3_action_redraw();
 
 Err _vedit3_action_show_help();
 
+Err _vedit3_action_to_store_main(int ch, bool *is_end);
+Err _vedit3_action_to_store_comment(int ch, bool *is_end);
+Err _vedit3_action_to_store_comment_reply(int ch, bool *is_end);
 
 #ifdef __cplusplus
 }

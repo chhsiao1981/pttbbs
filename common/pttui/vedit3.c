@@ -432,12 +432,12 @@ _vedit3_disp_screen(int start_line, int end_line)
     if (!error_code) {
         for (; i <= end_line && p_buffer; i++, p_buffer = p_buffer->next) {
             if (!p_buffer->buf) {
-                error_code = _vedit3_disp_line(i, VEDIT3_EMPTY_LINE, LEN_VEDIT3_EMPTY_LINE);
+                error_code = _vedit3_disp_line(i, VEDIT3_EMPTY_LINE, LEN_VEDIT3_EMPTY_LINE, p_buffer->content_type);
                 if (error_code) break;
 
                 continue;
             }
-            error_code = _vedit3_disp_line(i, p_buffer->buf, p_buffer->len);
+            error_code = _vedit3_disp_line(i, p_buffer->buf, p_buffer->len, p_buffer->content_type);
             if (error_code) break;
         }
     }
@@ -447,7 +447,7 @@ _vedit3_disp_screen(int start_line, int end_line)
     // disp
     if (!error_code) {
         for (; i <= end_line; i++) {
-            error_code = _vedit3_disp_line(i, VEDIT3_END_LINE, LEN_VEDIT3_END_LINE);
+            error_code = _vedit3_disp_line(i, VEDIT3_END_LINE, LEN_VEDIT3_END_LINE, PTTDB_CONTENT_TYPE_OTHER);
             if (error_code) break;
         }
     }
@@ -472,7 +472,7 @@ _vedit3_disp_screen(int start_line, int end_line)
  * @param len [description]
  */
 Err
-_vedit3_disp_line(int line, char *buf, int len)
+_vedit3_disp_line(int line, char *buf, int len, PttDBContentType content_type)
 {
     Err error_code = S_OK;
 
@@ -482,7 +482,7 @@ _vedit3_disp_line(int line, char *buf, int len)
     int attr = (int)VEDIT3_ATTR_NORMAL;
     int detected_attr = 0;
 
-    if (VEDIT3_EDITOR_STATUS.is_ansi) {
+    if (VEDIT3_EDITOR_STATUS.is_ansi || content_type == PTTDB_CONTENT_TYPE_COMMENT) {
         outs(buf);
     }
     else {

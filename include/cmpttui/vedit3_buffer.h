@@ -23,8 +23,12 @@ typedef struct VEdit3Buffer {
     int block_offset;
     int line_offset;
     int comment_offset;
+    int load_line_offset;
     
     enum StorageType storage_type;
+
+    bool is_modified;
+    bool is_new;
 
     int len;
     int len_no_nl;

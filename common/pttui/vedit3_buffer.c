@@ -881,6 +881,9 @@ _vedit3_buffer_info_set_buf_from_resource_dict(VEdit3Buffer *head, VEdit3Resourc
         memcpy(p_buffer->buf, p_buf, p_buffer_len);
         p_buffer->buf[p_buffer_len] = 0;
 
+        // hack for load_line_offset
+        p_buffer->load_line_offset = p_buffer->line_offset;
+
         p_buf = p_next_buf;
         buf_offset = buf_next_offset;
     }
