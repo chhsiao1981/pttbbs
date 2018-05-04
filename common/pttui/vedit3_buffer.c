@@ -872,7 +872,7 @@ _vedit3_buffer_info_set_buf_from_resource_dict(VEdit3Buffer *head, VEdit3Resourc
         }
         p_buffer->len_no_nl = p_buffer_len_no_nl;
 
-        p_buffer->buf = malloc(p_buffer_len_no_nl + 1);
+        p_buffer->buf = malloc(MAX_TEXTLINE_SIZE + 1);
         memcpy(p_buffer->buf, p_buf, p_buffer_len_no_nl);
         p_buffer->buf[p_buffer_len_no_nl] = 0;
 

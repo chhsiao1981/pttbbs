@@ -3,6 +3,7 @@
 #define VEDIT3_BUFFER_PRIVATE_H
 
 #include "ptterr.h"
+#include "cmpttui/pttui_const.h"
 #include "cmpttui/vedit3_state.h"
 #include "cmpttui/vedit3_buffer.h"
 #include "cmpttui/vedit3_resource_info.h"

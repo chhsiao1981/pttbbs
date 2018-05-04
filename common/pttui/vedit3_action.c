@@ -578,7 +578,6 @@ _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, V
     VEdit3Buffer *p_new_buffer = *new_buffer;
     bzero(p_new_buffer, sizeof(VEdit3Buffer));
 
-
     memcpy(p_new_buffer->the_id, current_buffer->the_id, UUIDLEN);
     p_new_buffer->content_type = current_buffer->content_type;
     p_new_buffer->block_offset = current_buffer->block_offset;
@@ -592,7 +591,7 @@ _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, V
     p_new_buffer->is_new = true;
 
     p_new_buffer->len_no_nl = current_buffer->len_no_nl - pos + indent;
-    p_new_buffer->buf = malloc(p_new_buffer->len_no_nl + 1);
+    p_new_buffer->buf = malloc(MAX_TEXTLINE_SIZE + 1);
     memset(p_new_buffer->buf, ' ', indent);
 
     char *p_buf = current_buffer->buf + pos;
