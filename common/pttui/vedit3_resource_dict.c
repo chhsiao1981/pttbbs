@@ -390,7 +390,7 @@ log_vedit3_resource_dict(VEdit3ResourceDict *resource_dict, char *prompt)
         if(!resource_dict->data[i]) continue;
         for(j = 0, p_dict_link_list = resource_dict->data[i]; p_dict_link_list; j++, p_dict_link_list = p_dict_link_list->next) {
             _disp_uuid = display_uuid(p_dict_link_list->the_id);
-            fprintf(stderr, "%s: (%d/%d): (%s, %d)\n", prompt, i, j, disp_uuid, p_dict_link_list->block_id);
+            fprintf(stderr, "%s: (%d/%d): (%s, %d)\n", prompt, i, j, _disp_uuid, p_dict_link_list->block_id);
             free(_disp_uuid);
         }
     }
