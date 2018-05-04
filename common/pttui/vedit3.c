@@ -397,7 +397,7 @@ _vedit3_store_to_render()
     error_code = _vedit3_edit_msg();
 
     bool is_ansi = false;
-    error_code = _vedit3_is_ansi(&is_ansi);
+    error_code = _vedit3_is_ansi(VEDIT3_EDITOR_STATUS.current_buffer->content_type, &is_ansi);
 
     int ch = VEDIT3_EDITOR_STATUS.current_col;
     if(is_ansi) error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ch);
@@ -488,7 +488,10 @@ _vedit3_disp_line(int line, char *buf, int len, enum PttDBContentType content_ty
     int attr = (int)VEDIT3_ATTR_NORMAL;
     int detected_attr = 0;
 
-    if (VEDIT3_EDITOR_STATUS.is_ansi || content_type == PTTDB_CONTENT_TYPE_COMMENT) {
+    bool is_ansi = false;
+    error_code = _vedit3_is_ansi(content_type, &is_ansi);
+
+    if (is_ansi) {
         outs(buf);
     }
     else {
@@ -1028,9 +1031,9 @@ _vedit3_loading_rotate_dots()
 }
 
 Err
-_vedit3_is_ansi(bool *is_ansi)
+_vedit3_is_ansi(enum PttDBContentType content_type, bool *is_ansi)
 {
-    if(VEDIT3_EDITOR_STATUS.is_ansi || VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) {
+    if(VEDIT3_EDITOR_STATUS.is_ansi || content_type == PTTDB_CONTENT_TYPE_COMMENT) {
         *is_ansi = true;
     }
     else {
