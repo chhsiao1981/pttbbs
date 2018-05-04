@@ -494,7 +494,7 @@ _vedit3_action_insert_char(int ch)
         }
     }
     else { // insert-mode
-        error_code = pttui_raw_shift_right(current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col, current_buffer->len - VEDIT3_EDITOR_STATUS.current_col + 1);
+        error_code = pttui_raw_shift_right(current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col, current_buffer->len_no_nl - VEDIT3_EDITOR_STATUS.current_col + 1);
 
         current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col++] = ch;
         ++(current_buffer->len);
@@ -526,7 +526,7 @@ _vedit3_action_ensure_buffer_wrap()
     while (s != current_buffer->buf && *s != ' ') s--;
     if (s == current_buffer) { // if only 1 word
         is_wordwrap = false;
-        s = current_buffer->buf + (current_buffer->len - 2);
+        s = current_buffer->buf + (current_buffer->len_no_nl - 2);
     }
 
     VEdit3Buffer *new_buffer = NULL;
@@ -536,7 +536,6 @@ _vedit3_action_ensure_buffer_wrap()
     if (!error_code && is_wordwrap && new_buffer && new_buffer_len_no_nl >= 1) {
         if (new_buffer->buf[new_buffer_len_no_nl - 1] != ' ') {
             new_buffer->buf[new_buffer_len_no_nl] = ' ';
-            new_buffer->buf[new_buffer_len_no_nl + 1] = '\n';
             new_buffer->buf[new_buffer_len_no_nl + 2] = '\0';
             new_buffer->len++;
             new_buffer->len_no_nl++;

@@ -869,9 +869,9 @@ _vedit3_buffer_info_set_buf_from_resource_dict(VEdit3Buffer *head, VEdit3Resourc
         }
         p_buffer->len_no_nl = p_buffer_len_no_nl;
 
-        p_buffer->buf = malloc(p_buffer_len + 1);
-        memcpy(p_buffer->buf, p_buf, p_buffer_len);
-        p_buffer->buf[p_buffer_len] = 0;
+        p_buffer->buf = malloc(p_buffer_len_no_nl + 1);
+        memcpy(p_buffer->buf, p_buf, p_buffer_len_no_nl);
+        p_buffer->buf[p_buffer_len_no_nl] = 0;
 
         // hack for load_line_offset
         p_buffer->load_line_offset = p_buffer->line_offset;
