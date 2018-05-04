@@ -975,7 +975,7 @@ vedit3_wrlock_file_info()
 }
 
 Err
-vedit3_wrunlock_buffer_info()
+vedit3_wrunlock_file_info()
 {
     Err error_code = pttui_thread_lock_unlock(LOCK_VEDIT3_FILE_INFO);
 
