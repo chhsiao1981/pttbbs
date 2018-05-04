@@ -396,7 +396,13 @@ _vedit3_store_to_render()
 
     error_code = _vedit3_edit_msg();
 
-    move(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_col);
+    bool is_ansi = false;
+    error_code = _vedit3_is_ansi(&is_ansi);
+
+    int ch = VEDIT3_EDITOR_STATUS.current_col;
+    if(is_ansi) error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ch);
+
+    move(VEDIT3_EDITOR_STATUS.current_line, ch);
     refresh();
 
     return error_code;
@@ -1017,6 +1023,19 @@ _vedit3_loading_rotate_dots()
     _VEDIT3_LOADING_DOT0 = _VEDIT3_LOADING_DOT2;
     _VEDIT3_LOADING_DOT2 = _VEDIT3_LOADING_DOT1;
     _VEDIT3_LOADING_DOT1 = tmp;
+
+    return S_OK;
+}
+
+Err
+_vedit3_is_ansi(bool *is_ansi)
+{
+    if(VEDIT3_EDITOR_STATUS.is_ansi || VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) {
+        *is_ansi = true;
+    }
+    else {
+        *is_ansi = false;
+    }
 
     return S_OK;
 }

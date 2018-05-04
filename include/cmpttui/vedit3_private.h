@@ -42,6 +42,8 @@ Err _vedit3_init_dots();
 Err _vedit3_loading();
 Err _vedit3_loading_rotate_dots();
 
+Err _vedit3_is_ansi(bool *is_ansi);
+
 Err _vedit3_detect_attr(const char *ps, size_t len, int *p_attr);
 int _vedit3_syn_lua_keyword(const char *text, int n, char *wlen);
 
@@ -61,6 +63,7 @@ Err _vedit3_edit_ansi_outs_n(const char *str, int n, int attr GCC_UNUSED);
 
 // VEdit3 buffer
 Err _vedit3_sync_disp_buffer(VEdit3State *expected_state);
+
 
 
 #ifdef __cplusplus
