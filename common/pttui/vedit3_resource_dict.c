@@ -378,3 +378,20 @@ vedit3_resource_dict_get_comment_reply_from_file(PttQueue *queue, VEdit3Resource
 {
     return S_OK;
 }
+
+
+Err
+log_vedit3_resource_dict(VEdit3ResourceDict *resource_dict, char *prompt)
+{
+    char *_disp_uuid = NULL;
+    _VEdit3ResourceDictLinkList p_dict_link_list = NULL;
+    int j = 0;
+    for(int i = 0; i < N_VEDIT3_RESOURCE_DICT_LINK_LIST; i++) {
+        if(!resource_dict->data[i]) continue;
+        for(j = 0, p_dict_link_list = resource_dict->data[i]; p_dict_link_list; j++, p_dict_link_list = p_dict_link_list->next) {
+            _disp_uuid = display_uuid(p_dict_link_list->the_id);
+            fprintf(stderr, "%s: (%d/%d): (%s, %d)\n", prompt, i, j, disp_uuid, p_dict_link_list->block_id);
+            free(_disp_uuid);
+        }
+    }
+}

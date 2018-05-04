@@ -816,6 +816,9 @@ _vedit3_buffer_info_set_buf_from_resource_dict(VEdit3Buffer *head, VEdit3Resourc
     int p_buffer_len_no_nl = 0;
     int i = 0;
 
+    // XXX log
+    vedit3_resource_dict_log(resource_dict, "vedit3_buffer._vedit3_buffer_info_set_buf_from_resource_dict");
+
     // pre-head
     error_code = vedit3_resource_dict_get_data(resource_dict, p_buffer->the_id, p_buffer->block_offset, &len, &buf);
     if(error_code) return error_code;
