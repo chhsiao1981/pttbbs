@@ -206,12 +206,6 @@ _vedit3_action_to_store_comment(int ch, bool *is_end) {
     case Ctrl('L'): // redraw
         error_code = _vedit3_action_redraw();
         break;
-    case KEY_LEFT:
-        error_code = _vedit3_action_move_left();
-        break;
-    case KEY_RIGHT:
-        error_code = _vedit3_action_move_right();
-        break;
     case KEY_UP:
         error_code = _vedit3_action_move_up();
         break;
@@ -225,14 +219,6 @@ _vedit3_action_to_store_comment(int ch, bool *is_end) {
     case Ctrl('F'):
     case KEY_PGDN:
         error_code = _vedit3_action_move_pgdn();
-        break;
-    case KEY_END:
-    case Ctrl('E'):
-        error_code = _vedit3_action_move_end_line();
-        break;
-    case KEY_HOME:
-    case Ctrl('A'):
-        error_code = _vedit3_action_move_begin_line();
         break;
     /*
         case Ctrl(']'):
