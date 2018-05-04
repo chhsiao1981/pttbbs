@@ -519,7 +519,8 @@ _vedit3_action_ensure_buffer_wrap()
 
     if (!VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info) return S_ERR_EDIT_LOCK;
 
-    bool is_wordwrap = true;    
+    VEdit3Buffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
+    bool is_wordwrap = true;
     char *s = current_buffer->buf + current_buffer->len_no_nl - 1;    
     while (s != current_buffer->buf && *s == ' ') s--;
     while (s != current_buffer->buf && *s != ' ') s--;
