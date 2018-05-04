@@ -589,24 +589,24 @@ _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, V
     if(pos > current_buffer->len_no_nl) return S_OK;
 
     *new_buffer = malloc(sizeof(VEdit3Buffer));
-    VEdit3Buffer *p_buffer = new_buffer;
-    bzero(p_buffer, sizeof(VEdit3Buffer));
+    VEdit3Buffer *p_new_buffer = *new_buffer;
+    bzero(p_new_buffer, sizeof(VEdit3Buffer));
 
 
-    memcpy(new_buffer->the_id, current_buffer->the_id, UUIDLEN);
-    new_buffer->content_type = current_buffer->content_type;
-    new_buffer->block_offset = current_buffer->block_offset;
-    new_buffer->line_offset = current_buffer->line_offset + 1;
-    new_buffer->comment_offset = current_buffer->comment_offset;
-    new_buffer->load_line_offset = -1;
+    memcpy(p_new_buffer->the_id, current_buffer->the_id, UUIDLEN);
+    p_new_buffer->content_type = current_buffer->content_type;
+    p_new_buffer->block_offset = current_buffer->block_offset;
+    p_new_buffer->line_offset = current_buffer->line_offset + 1;
+    p_new_buffer->comment_offset = current_buffer->comment_offset;
+    p_new_buffer->load_line_offset = -1;
 
-    new_buffer->storage_type = PTTDB_STORAGE_TYPE_MEM;
+    p_new_buffer->storage_type = PTTDB_STORAGE_TYPE_OTHER;
 
-    new_buffer->is_modified = true;
-    new_buffer->is_new = true;
+    p_new_buffer->is_modified = true;
+    p_new_buffer->is_new = true;
 
-    new_buffer->len_no_nl = current_buffer->len_no_nl - pos + indent;
-    new_buffer->buf = malloc(new_buffer->len_no_nl + 1);
+    p_new_buffer->len_no_nl = current_buffer->len_no_nl - pos + indent;
+    p_new_buffer->buf = malloc(p_new_buffer->len_no_nl + 1);
     memset(new_buffer->buf, ' ', indent);
 
     char *p_buf = current_buffer->buf + pos;
@@ -617,18 +617,18 @@ _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, V
         p->len = strlen(ptr) + spcs;
     }
     */
-    memcpy(new_buffer->buf + indent, p_buf, current_buffer->len_no_nl - pos);
-    new_buffer->buf[new_buffer->len_no_nl] = 0;
-    new_buffer->len = new_buffer->len_no_nl + 1;
+    memcpy(p_new_buffer->buf + indent, p_buf, current_buffer->len_no_nl - pos);
+    p_new_buffer->buf[p_new_buffer->len_no_nl] = 0;
+    p_new_buffer->len = p_new_buffer->len_no_nl + 1;
 
     current_buffer->len += (pos - current_buffer->len_no_nl);
     current_buffer->len_no_nl = pos;
     current_buffer->buf[current_buffer->len_no_nl] = 0;
 
-    error_code = vedit3_buffer_insert_buffer(current_buffer, p_buffer, &VEDIT3_BUFFER_INFO);
+    error_code = vedit3_buffer_insert_buffer(current_buffer, p_new_buffer, &VEDIT3_BUFFER_INFO);
 
     // buffer after new_buffer
-    for(VEdit3Buffer *p_buffer2 = p_buffer->next; p_buffer2 && p_buffer2->content_type == p_buffer->content_type && p_buffer2->block_offset == p_buffer->block_offset && p_buffer2->comment_offset == p_buffer->comment_offset; p_buffer2->line_offset++, p_buffer2 = p_buffer2->next);
+    for(VEdit3Buffer *p_buffer2 = p_new_buffer->next; p_buffer2 && p_buffer2->content_type == p_buffer->content_type && p_buffer2->block_offset == p_buffer->block_offset && p_buffer2->comment_offset == p_buffer->comment_offset; p_buffer2->line_offset++, p_buffer2 = p_buffer2->next);
 
     // file-info
     error_code = vedit3_wrlock_file_info();
