@@ -40,7 +40,7 @@ _vedit3_action_to_store_main(int ch, bool *is_end) {
         if(error_code) break;
         */
 
-        continue;
+        return error_code;        
     }
 
     // ch as ctrl
@@ -266,7 +266,7 @@ _vedit3_action_to_store_comment_reply(int ch, bool *is_end) {
         if(error_code) break;
         */
 
-        continue;
+        return error_code;
     }
 
     // ch as ctrl

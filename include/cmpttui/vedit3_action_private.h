@@ -48,6 +48,10 @@ Err _vedit3_action_to_store_main(int ch, bool *is_end);
 Err _vedit3_action_to_store_comment(int ch, bool *is_end);
 Err _vedit3_action_to_store_comment_reply(int ch, bool *is_end);
 
+Err _vedit3_action_insert_char(int ch);
+Err _vedit3_action_ensure_buffer_wrap();
+Err _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, VEdit3Buffer **new_buffer);
+
 #ifdef __cplusplus
 }
 #endif
