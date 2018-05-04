@@ -54,7 +54,7 @@ Err _vedit3_store_to_render();
 // VEdit3 disp screen
 Err _vedit3_disp_screen(int start_line, int end_line);
 
-Err _vedit3_disp_line(int line, char *buf, int len, PttDBContentType content_type);
+Err _vedit3_disp_line(int line, char *buf, int len, enum PttDBContentType content_type);
 
 Err _vedit3_edit_outs_attr_n(const char *text, int len, int attr);
 Err _vedit3_edit_ansi_outs_n(const char *str, int n, int attr GCC_UNUSED);

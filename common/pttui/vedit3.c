@@ -472,7 +472,7 @@ _vedit3_disp_screen(int start_line, int end_line)
  * @param len [description]
  */
 Err
-_vedit3_disp_line(int line, char *buf, int len, PttDBContentType content_type)
+_vedit3_disp_line(int line, char *buf, int len, enum PttDBContentType content_type)
 {
     Err error_code = S_OK;
 
