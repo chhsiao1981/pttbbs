@@ -837,9 +837,9 @@ _vedit3_buffer_info_set_buf_from_resource_dict(VEdit3Buffer *head, VEdit3Resourc
 
     // start
     for(; p_buffer && !p_buffer->buf; p_buffer = p_buffer->next, i++) {
-        if(memcmp(p_buffer->the_id, current_the_id, UUIDLEN) || current_block_id != p_buffer->block_offset) {
+        if(memcmp(p_buffer->the_id, current_the_id, UUIDLEN) || current_block_id != p_buffer->block_offset) {            
             error_code = vedit3_resource_dict_get_data(resource_dict, p_buffer->the_id, p_buffer->block_offset, &len, &buf);
-            fprintf(stderr, "vedit3_buffer._vedit3_buffer_info_set_buf_from_resource_dict: after get data: i: %d len: %d e: %d\n", i, len, error_code);
+            fprintf(stderr, "vedit3_buffer._vedit3_buffer_info_set_buf_from_resource_dict: after get data: i: %d p_buffer: content-type: %d block_offset: %d comment_offset: %d len: %d e: %d\n", i, p_buffer->content_type, p_buffer->block_offset, p_buffer->comment_offset, len, error_code);
 
             if(error_code) break;
 
