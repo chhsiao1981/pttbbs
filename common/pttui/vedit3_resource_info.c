@@ -30,32 +30,32 @@ vedit3_resource_info_to_resource_dict(VEdit3ResourceInfo *resource_info, VEdit3R
 {
     Err error_code = S_OK;
 
-    PttQueue *p_queue = resource_info->queue;
+    PttQueue *p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_MAIN * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_MONGO];
     error_code = vedit3_resource_dict_get_main_from_db(p_queue, resource_dict);
     fprintf(stderr, "vedit3_resource_info.vedit3_resource_info_to_resource_dict: after get main_from_db: queue: %d e: %d\n", p_queue->n_queue, error_code);
     if(error_code) return error_code;
 
-    p_queue++;
+    p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_MAIN * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
     error_code = vedit3_resource_dict_get_main_from_file(p_queue, resource_dict);
     fprintf(stderr, "vedit3_resource_info.vedit3_resource_info_to_resource_dict: after get main_from_file: queue: %d e: %d\n", p_queue->n_queue, error_code);
     if(error_code) return error_code;
 
-    p_queue++;
+    p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_MONGO];
     error_code = vedit3_resource_dict_get_comment_from_db(p_queue, resource_dict);
     fprintf(stderr, "vedit3_resource_info.vedit3_resource_info_to_resource_dict: after get comment_from_db: queue: %d e: %d\n", p_queue->n_queue, error_code);
     if(error_code) return error_code;
 
-    p_queue++;    
+    p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
     error_code = vedit3_resource_dict_get_comment_from_file(p_queue, resource_dict);
     fprintf(stderr, "vedit3_resource_info.vedit3_resource_info_to_resource_dict: after get comment_from_file: queue: %d e: %d\n", p_queue->n_queue, error_code);
     if(error_code) return error_code;
 
-    p_queue++;
+    p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT_REPLY * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_MONGO];
     error_code = vedit3_resource_dict_get_comment_reply_from_db(p_queue, resource_dict);
     fprintf(stderr, "vedit3_resource_info.vedit3_resource_info_to_resource_dict: after get comment_reply_from_db: queue: %d e: %d\n", p_queue->n_queue, error_code);
     if(error_code) return error_code;
 
-    p_queue++;
+    p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT_REPLY * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
     error_code = vedit3_resource_dict_get_comment_reply_from_file(p_queue, resource_dict);
     fprintf(stderr, "vedit3_resource_info.vedit3_resource_info_to_resource_dict: after get comment_reply_from_file: queue: %d e: %d\n", p_queue->n_queue, error_code);
     if(error_code) return error_code;
