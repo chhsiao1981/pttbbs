@@ -34,9 +34,9 @@ VEdit3BufferInfo VEDIT3_BUFFER_INFO = {};
 VEdit3Buffer *VEDIT3_DISP_TOP_LINE_BUFFER = NULL;
 
 char *_CONST_VEDIT3_LOADINGS[] = {
-    ANSI_COLOR(0; 37)".",
-    ANSI_COLOR(0; 37)".",
-    ANSI_COLOR(0; 37)"."
+    ANSI_COLOR(0;37)".",
+    ANSI_COLOR(0;37)".",
+    ANSI_COLOR(0;37)"."
 };
 char *_VEDIT3_LOADING_DOT0 = NULL;
 char *_VEDIT3_LOADING_DOT1 = NULL;
@@ -540,7 +540,7 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
     if ((attr & VEDIT3_ATTR_SELECTED) &&
             (attr & ~VEDIT3_ATTR_SELECTED))
     {
-        reset = ANSI_COLOR(0; 7; 36);
+        reset = ANSI_COLOR(0;7;36);
         doReset = 1;
         outs(reset);
     }
@@ -548,13 +548,13 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
 #endif // if not defined, color by  priority - selection first
         if (attr & VEDIT3_ATTR_SELECTED)
         {
-            reset = ANSI_COLOR(0; 7);
+            reset = ANSI_COLOR(0;7);
             doReset = 1;
             outs(reset);
         }
         else if (attr & VEDIT3_ATTR_MOVIECODE)
         {
-            reset = ANSI_COLOR(0; 36);
+            reset = ANSI_COLOR(0;36);
             doReset = 1;
             outs(reset);
 #ifdef ENABLE_PMORE_ASCII_MOVIE_SYNTAX
@@ -563,13 +563,13 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
         }
         else if (attr & VEDIT3_ATTR_BBSLUA)
         {
-            reset = ANSI_COLOR(0; 1; 31);
+            reset = ANSI_COLOR(0;1;31);
             doReset = 1;
             outs(reset);
         }
         else if (attr & VEDIT3_ATTR_COMMENT)
         {
-            reset = ANSI_COLOR(0; 1; 34);
+            reset = ANSI_COLOR(0;1;34);
             doReset = 1;
             outs(reset);
         }
@@ -608,7 +608,7 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
             if (isDBCS == 1)
             {
                 isDBCS = 2;
-                outs(ANSI_COLOR(1; 33) "?");
+                outs(ANSI_COLOR(1;33) "?");
                 outs(reset);
             }
 #endif
@@ -622,7 +622,7 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
             else if (isDBCS == 2)
             {
                 /* ansi in middle. */
-                outs(ANSI_COLOR(0; 33) "?");
+                outs(ANSI_COLOR(0;33) "?");
                 outs(reset);
                 isDBCS = 0;
                 continue;
@@ -675,12 +675,12 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
                 } else if (ch == '-' && n > 0 && *(text) == '-') {
                     fComment = 1;
                     doReset = 1;
-                    outs(ANSI_COLOR(0; 1; 34));
+                    outs(ANSI_COLOR(0;1;34));
                 } else if (ch == '[' && n > 0 && *(text) == '[') {
                     fSquareQuote = 1;
                     doReset = 1;
                     fWord = 0;
-                    outs(ANSI_COLOR(1; 35));
+                    outs(ANSI_COLOR(1;35));
                 } else if (ch == '\'' || ch == '"') {
                     if (ch == '"')
                         fDoubleQuote = 1;
@@ -688,7 +688,7 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
                         fSingleQuote = 1;
                     doReset = 1;
                     fWord = 0;
-                    outs(ANSI_COLOR(1; 35));
+                    outs(ANSI_COLOR(1;35));
                 } else {
                     // normal words
                     if (fWord)
@@ -702,7 +702,7 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
                             continue;
                         }
                     } else if (isalnum(tolower(ch)) || ch == '#') {
-                        char attr[] = ANSI_COLOR(0; 1; 37);
+                        char attr[] = ANSI_COLOR(0;1;37);
                         int x = _vedit3_syn_lua_keyword(text - 1, n + 1, &fWord);
                         if (fWord > 0)
                             fWord --;
@@ -736,7 +736,7 @@ _vedit3_edit_outs_attr_n(const char *text, int n, int attr)
                 {
                     if (*pmattr)
                     {
-                        prints(ANSI_COLOR(1; 3 % d),
+                        prints(ANSI_COLOR(1;3%d),
                                8 - ((mattr - 1) % 7 + 1) );
                     } else {
                         outs(ANSI_RESET);
