@@ -593,7 +593,7 @@ _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, V
     bzero(p_buffer, sizeof(VEdit3Buffer));
 
 
-    memcpy(new_buffer->the_id, current_buffer->the_id);
+    memcpy(new_buffer->the_id, current_buffer->the_id, UUIDLEN);
     new_buffer->content_type = current_buffer->content_type;
     new_buffer->block_offset = current_buffer->block_offset;
     new_buffer->line_offset = current_buffer->line_offset + 1;
