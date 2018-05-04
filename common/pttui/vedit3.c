@@ -394,7 +394,7 @@ _vedit3_store_to_render()
         error_code = _vedit3_disp_screen(0, b_lines - 1);
     }
     else {
-        //error_code = _vedit3_disp_line(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl, VEDIT3_EDITOR_STATUS.current_buffer->content_type);
+        error_code = _vedit3_disp_line(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl, VEDIT3_EDITOR_STATUS.current_buffer->content_type);
     }
 
     error_code = _vedit3_edit_msg();
