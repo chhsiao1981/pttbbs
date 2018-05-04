@@ -51,6 +51,7 @@ typedef struct VEdit3EditorStatus {
     int last_margin;
 
     bool is_own_lock_buffer_info;
+    bool is_own_wrlock_buffer_info;
     bool is_redraw_everything;
 
     VEdit3Buffer *current_buffer;
@@ -87,6 +88,10 @@ Err vedit3_unlock_buffer_info();
 Err vedit3_wrlock_buffer_info();
 
 Err vedit3_wrunlock_buffer_info();
+
+Err vedit3_wrlock_file_info();
+
+Err vedit3_wrunlock_file_info();
 
 Err vedit3_set_expected_state(UUID main_id, enum PttDBContentType top_line_content_type, UUID top_line_id, int top_line_block_offset, int top_line_line_offset, int top_line_comment_offset, int n_window_line);
 Err vedit3_get_expected_state(VEdit3State *expected_state);

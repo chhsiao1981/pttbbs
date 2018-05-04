@@ -980,3 +980,20 @@ _sync_vedit3_buffer_info_shrink_tail(VEdit3BufferInfo *buffer_info, int n_shrink
 
     return S_OK;
 }
+
+Err
+vedit3_buffer_insert_buffer(VEdit3Buffer *current_buffer, VEdit3Buffer *next_buffer, VEdit3BufferInfo *buffer_info)
+{
+    next_buffer->next = current_buffer->next;
+    next_buffer->pre = current_buffer;
+
+    current_buffer->next = next_buffer;
+    if(next_buffer->next) {
+        next_buffer->next->pre = next_buffer;
+    }
+    else {
+        buffer_info->tail = next_buffer;
+    }
+
+    return S_OK;
+}

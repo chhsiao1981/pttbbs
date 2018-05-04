@@ -52,6 +52,8 @@ Err sync_vedit3_buffer_info(VEdit3BufferInfo *buffer_info, VEdit3Buffer *current
 
 Err resync_all_vedit3_buffer_info(VEdit3BufferInfo *buffer_info, VEdit3State *state, FileInfo *file_info, VEdit3Buffer **new_buffer);
 
+Err vedit3_buffer_insert_buffer(VEdit3Buffer *current_buffer, VEdit3Buffer *next_buffer, VEdit3BufferInfo *buffer_info);
+
 #ifdef __cplusplus
 }
 #endif

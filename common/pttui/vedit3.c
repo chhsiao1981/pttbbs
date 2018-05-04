@@ -950,6 +950,8 @@ vedit3_wrlock_buffer_info()
     Err error_code = pttui_thread_lock_wrlock(LOCK_VEDIT3_BUFFER_INFO);
     if (error_code) return error_code;
 
+    VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info = true;
+
     return S_OK;
 }
 
@@ -957,6 +959,25 @@ Err
 vedit3_wrunlock_buffer_info()
 {
     Err error_code = pttui_thread_lock_unlock(LOCK_VEDIT3_BUFFER_INFO);
+
+    VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info = false;
+
+    return error_code;
+}
+
+Err
+vedit3_wrlock_file_info()
+{
+    Err error_code = pttui_thread_lock_wrlock(LOCK_VEDIT3_FILE_INFO);
+    if (error_code) return error_code;
+
+    return S_OK;
+}
+
+Err
+vedit3_wrunlock_buffer_info()
+{
+    Err error_code = pttui_thread_lock_unlock(LOCK_VEDIT3_FILE_INFO);
 
     return error_code;
 }

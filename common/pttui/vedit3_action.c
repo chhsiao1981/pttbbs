@@ -35,12 +35,8 @@ Err
 _vedit3_action_to_store_main(int ch, bool *is_end) {
     Err error_code = S_OK;
     if (ch < 0x100 && isprint2(ch)) {
-        /*
-        error_code = VEDIT3_EDITOR_STATUS.is_phone && (pstr = phone_char(char)) ? _vedit3_action_insert_dchar(pstr) : _vedit3_action_insert_char(ch);
-        if(error_code) break;
-        */
-
-        return error_code;        
+        error_code = _vedit3_action_insert_ch(ch);
+        return error_code;
     }
 
     // ch as ctrl
@@ -450,6 +446,45 @@ _vedit3_action_get_key(int *ch)
     return S_OK;
 }
 
+Err
+_vedit3_action_insert_ch(int ch)
+{
+    Err error_code = S_OK;
+    char *pstr = NULL;
+    if(VEDIT3_EDITOR_STATUS.is_phone) {
+        error_code = pttui_phone_char(ch, VEDIT3_EDITOR_STATUS.phone_mode, &pstr);
+    }   
+    if(error_code) return error_code;
+
+    error_code = vedit3_wrlock_buffer_info();
+
+    if(pstr) {
+        error_code = _vedit3_action_insert_dchar(pstr);
+    }
+    else {
+        error_code = _vedit3_action_insert_char(ch);
+    }
+
+    Err error_code_lock = vedit3_wrunlock_buffer_info();
+    if(!error_code && error_code_lock) error_code = S_ERR_EDIT_LOCK;
+
+    return error_code;
+}
+
+Err
+_vedit3_action_insert_dchar(const char *dchar)
+{
+    if (!VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info) return S_ERR_EDIT_LOCK;
+
+    Err error_code = _vedit3_action_insert_char(*dchar);
+    Err error_code2 = _vedit3_action_insert_char(*(dchar+1));
+
+    if(error_code) return error_code;
+    if(error_code2) return error_code2;
+
+    return S_OK;
+}
+
 /**
  * @brief
  * @details ref: insert_char in edit.c
@@ -464,7 +499,7 @@ _vedit3_action_insert_char(int ch)
 {
     Err error_code = S_OK;
 
-    if (!VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info) return S_ERR_EDIT_LOCK;
+    if (!VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info) return S_ERR_EDIT_LOCK;
 
     VEdit3Buffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
 
@@ -536,7 +571,7 @@ _vedit3_action_ensure_buffer_wrap()
     if (!error_code && is_wordwrap && new_buffer && new_buffer_len_no_nl >= 1) {
         if (new_buffer->buf[new_buffer_len_no_nl - 1] != ' ') {
             new_buffer->buf[new_buffer_len_no_nl] = ' ';
-            new_buffer->buf[new_buffer_len_no_nl + 2] = '\0';
+            new_buffer->buf[new_buffer_len_no_nl + 1] = '\0';
             new_buffer->len++;
             new_buffer->len_no_nl++;
         }
@@ -552,6 +587,66 @@ _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, V
 
     // XXX should not happen.
     if(pos > current_buffer->len_no_nl) return S_OK;
+
+    *new_buffer = malloc(sizeof(VEdit3Buffer));
+    VEdit3Buffer *p_buffer = new_buffer;
+    bzero(p_buffer, sizeof(VEdit3Buffer));
+
+
+    memcpy(new_buffer->the_id, current_buffer->the_id);
+    new_buffer->content_type = current_buffer->content_type;
+    new_buffer->block_offset = current_buffer->block_offset;
+    new_buffer->line_offset = current_buffer->line_offset + 1;
+    new_buffer->comment_offset = current_buffer->comment_offset;
+    new_buffer->load_line_offset = -1;
+
+    new_buffer->storage_type = PTTDB_STORAGE_TYPE_MEM;
+
+    new_buffer->is_modified = true;
+    new_buffer->is_new = true;
+
+    new_buffer->len_no_nl = current_buffer->len_no_nl - pos + indent;
+    new_buffer->buf = malloc(new_buffer->len_no_nl + 1);
+    memset(new_buffer->buf, ' ', indent);
+
+    char *p_buf = current_buffer->buf + pos;
+    // XXX indent-mode
+    /*
+    if (curr_buf->indent_mode) {
+        ptr = next_non_space_char(ptr);
+        p->len = strlen(ptr) + spcs;
+    }
+    */
+    memcpy(new_buffer->buf + indent, p_buf, current_buffer->len_no_nl - pos);
+    new_buffer->buf[new_buffer->len_no_nl] = 0;
+    new_buffer->len = new_buffer->len_no_nl + 1;
+
+    current_buffer->len += (pos - current_buffer->len_no_nl);
+    current_buffer->len_no_nl = pos;
+    current_buffer->buf[current_buffer->len_no_nl] = 0;
+
+    error_code = vedit3_buffer_insert_buffer(current_buffer, p_buffer, &VEDIT3_BUFFER_INFO);
+
+    // buffer after new_buffer
+    for(VEdit3Buffer *p_buffer2 = p_buffer->next; p_buffer2 && p_buffer2->content_type == p_buffer->content_type && p_buffer2->block_offset == p_buffer->block_offset && p_buffer2->comment_offset == p_buffer->comment_offset; p_buffer2->line_offset++, p_buffer2 = p_buffer2->next);
+
+    // file-info
+    error_code = vedit3_wrlock_file_info();
+    if(error_code) return error_code;
+
+    switch(current_buffer->content_type) {
+    case PTTDB_CONTENT_TYPE_MAIN:
+        VEDIT3_FILE_INFO.main_blocks[current_buffer->block_offset].n_line++;
+        break;
+    case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
+        VEDIT3_FILE_INFO.comments[current_buffer->comment_offset].comment_reply_blocks[current_buffer->block_offset].n_line++;
+        break;
+    default:
+        break;
+    }
+
+    Err error_code_lock = vedit3_wrunlock_file_info();
+    if(!error_code && error_code_lock) error_code = S_ERR_EDIT_LOCK;
 
     return error_code;
 }
