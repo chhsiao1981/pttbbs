@@ -40,6 +40,8 @@ Err vedit3_resource_dict_get_comment_from_file(PttQueue *queue, VEdit3ResourceDi
 
 Err vedit3_resource_dict_get_comment_reply_from_file(PttQueue *queue, VEdit3ResourceDict *resource_dict);
 
+Err log_vedit3_resource_dict(VEdit3ResourceDict *resource_dict, char *prompt);
+
 #ifdef __cplusplus
 }
 #endif
