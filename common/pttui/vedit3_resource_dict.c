@@ -384,7 +384,7 @@ Err
 log_vedit3_resource_dict(VEdit3ResourceDict *resource_dict, char *prompt)
 {
     char *_disp_uuid = NULL;
-    _VEdit3ResourceDictLinkList p_dict_link_list = NULL;
+    _VEdit3ResourceDictLinkList *p_dict_link_list = NULL;
     int j = 0;
     for(int i = 0; i < N_VEDIT3_RESOURCE_DICT_LINK_LIST; i++) {
         if(!resource_dict->data[i]) continue;
