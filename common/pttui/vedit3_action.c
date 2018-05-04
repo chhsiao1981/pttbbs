@@ -607,7 +607,7 @@ _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, V
 
     p_new_buffer->len_no_nl = current_buffer->len_no_nl - pos + indent;
     p_new_buffer->buf = malloc(p_new_buffer->len_no_nl + 1);
-    memset(new_buffer->buf, ' ', indent);
+    memset(p_new_buffer->buf, ' ', indent);
 
     char *p_buf = current_buffer->buf + pos;
     // XXX indent-mode
