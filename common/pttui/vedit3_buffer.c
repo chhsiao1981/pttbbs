@@ -19,7 +19,7 @@ destroy_vedit3_buffer_info(VEdit3BufferInfo *buffer_info)
 }
 
 Err
-vedit3_buffer_is_begin_of_file(VEdit3Buffer *buffer, FileInfo *file_info, bool *is_begin)
+vedit3_buffer_is_begin_of_file(VEdit3Buffer *buffer, FileInfo *file_info GCC_UNUSED, bool *is_begin)
 {
     if (buffer->content_type == PTTDB_CONTENT_TYPE_MAIN &&
         buffer->block_offset == 0 &&
@@ -60,14 +60,6 @@ vedit3_buffer_is_eof(VEdit3Buffer *buffer, FileInfo *file_info, bool *is_eof)
     }
 
     return S_OK;
-}
-
-Err
-vedit3_buffer_split(VEdit3Buffer *buffer, int offset, int indent, VEdit3Buffer *new_buffer)
-{
-    Err error_code = S_OK;
-    
-    return error_code;
 }
 
 Err
