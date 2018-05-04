@@ -83,7 +83,7 @@ sync_vedit3_buffer_info(VEdit3BufferInfo *buffer_info, VEdit3Buffer *current_buf
 
     if (error_code) return error_code;
 
-    fprintf(stderr, "vedit3_buffer.sync_vedit3_buffer_info: after get buffer: new_buffer: %lu\n", new_buffer);
+    fprintf(stderr, "vedit3_buffer.sync_vedit3_buffer_info: after get buffer: new_buffer: %lu\n", (unsigned long)new_buffer);
 
     if (!(*new_buffer)) {
         return resync_all_vedit3_buffer_info(buffer_info, state, file_info, new_buffer);
@@ -855,7 +855,7 @@ _vedit3_buffer_info_set_buf_from_resource_dict(VEdit3Buffer *head, VEdit3Resourc
         error_code = _vedit3_buffer_info_set_buf_from_resource_dict_get_next_buf(p_buf, buf_offset, len, &p_next_buf, &buf_next_offset);
         if(error_code) break;
 
-        fprintf(stderr, "vedit3_buffer._vedit3_buffer_info_set_buf_from_resource_dict: i: %d content_type: %d buf_offset: %d buf_next_offset: %d len: %d p_next: %lu\n", i, p_buffer->content_type, buf_offset, buf_next_offset, len, p_buffer->next);
+        fprintf(stderr, "vedit3_buffer._vedit3_buffer_info_set_buf_from_resource_dict: i: %d content_type: %d buf_offset: %d buf_next_offset: %d len: %d p_next: %lu\n", i, p_buffer->content_type, buf_offset, buf_next_offset, len, (unsigned long)p_buffer->next);
 
         p_buffer_len = buf_next_offset - buf_offset;
         p_buffer->len = p_buffer_len;
