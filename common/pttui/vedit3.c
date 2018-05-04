@@ -396,11 +396,13 @@ _vedit3_store_to_render()
 
     error_code = _vedit3_edit_msg();
 
-    bool is_ansi = false;
-    error_code = _vedit3_is_ansi(VEDIT3_EDITOR_STATUS.current_buffer->content_type, &is_ansi);
-
     int ch = VEDIT3_EDITOR_STATUS.current_col;
-    if(is_ansi) error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ch);
+    if(VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) {
+        ch = 0;
+    }
+    else if(VEDIT3_EDITOR_STATUS.is_ansi) {
+        error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ch);
+    }
 
     move(VEDIT3_EDITOR_STATUS.current_line, ch);
     refresh();
