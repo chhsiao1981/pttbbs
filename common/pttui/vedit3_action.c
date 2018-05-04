@@ -33,6 +33,7 @@ vedit3_action_to_store(bool *is_end)
 
 Err
 _vedit3_action_to_store_main(int ch, bool *is_end) {
+    Err error_code = S_OK;
     if (ch < 0x100 && isprint2(ch)) {
         /*
         error_code = VEDIT3_EDITOR_STATUS.is_phone && (pstr = phone_char(char)) ? _vedit3_action_insert_dchar(pstr) : _vedit3_action_insert_char(ch);
@@ -173,6 +174,7 @@ _vedit3_action_to_store_main(int ch, bool *is_end) {
 
 Err
 _vedit3_action_to_store_comment(int ch, bool *is_end) {
+    Err error_code = S_OK;
     // ctrl-command
     switch (ch) {
     case KEY_F10:
@@ -257,6 +259,7 @@ _vedit3_action_to_store_comment(int ch, bool *is_end) {
 
 Err
 _vedit3_action_to_store_comment_reply(int ch, bool *is_end) {
+    Err error_code = S_OK;
     if (ch < 0x100 && isprint2(ch)) {
         /*
         error_code = VEDIT3_EDITOR_STATUS.is_phone && (pstr = phone_char(char)) ? _vedit3_action_insert_dchar(pstr) : _vedit3_action_insert_char(ch);
