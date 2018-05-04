@@ -852,10 +852,7 @@ _vedit3_action_move_pgdn()
     }
     if(error_code) return error_code;
 
-    if(is_eof) {
-        VEDIT3_EDITOR_STATUS.current_line = b_lines - 1;
-    }
-    else {
+    if(!is_eof) {
         for(int i = b_lines - 1; i > current_line; i--) {
             error_code = _vedit3_action_move_down();
             if(error_code) break;
