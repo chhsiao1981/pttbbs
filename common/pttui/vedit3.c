@@ -490,10 +490,7 @@ _vedit3_disp_line(int line, char *buf, int len, enum PttDBContentType content_ty
     int attr = (int)VEDIT3_ATTR_NORMAL;
     int detected_attr = 0;
 
-    bool is_ansi = false;
-    error_code = _vedit3_is_ansi(content_type, &is_ansi);
-
-    if (is_ansi) {
+    if(VEDIT3_EDITOR_STATUS.is_ansi || content_type == PTTDB_CONTENT_TYPE_COMMENT) {
         outs(buf);
     }
     else {

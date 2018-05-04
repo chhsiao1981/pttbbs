@@ -11,13 +11,13 @@
 #include "cmpttui/vedit3_action.h"
 #include "cmpttui/pttui_lua_bbs.h"
 #include "cmpttui/pttui_util.h"
-#include "proto_extra.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include <time.h>
+#include "grayout.h"
 
 #define N_ITER_VEDIT3_WAIT_BUFFER_INIT 50
 #define NS_DEFAULT_SLEEP_VEDIT3_WAIT_BUFFER_INIT 100000000 // 100 ms
