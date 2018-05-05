@@ -910,7 +910,7 @@ _vedit3_action_move_pgup()
         if(error_code) return error_code;
     }
 
-    VEDIT3_EDITOR_STATUS.current_col = (VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl || VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) ? VEDIT3_EDITOR_STATUS.current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
+    VEDIT3_EDITOR_STATUS.current_col = (current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl || VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) ? current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
     return S_OK;
 }
 
@@ -944,7 +944,7 @@ _vedit3_action_move_pgdn()
         if(error_code) return error_code;
     }
 
-    VEDIT3_EDITOR_STATUS.current_col = (VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl || VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) ? VEDIT3_EDITOR_STATUS.current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
+    VEDIT3_EDITOR_STATUS.current_col = (current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl || VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) ? current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
     return S_OK;
 }
 
