@@ -394,4 +394,6 @@ log_vedit3_resource_dict(VEdit3ResourceDict *resource_dict, char *prompt)
             free(_disp_uuid);
         }
     }
+
+    return S_OK;
 }
