@@ -454,6 +454,13 @@ _vedit3_action_insert_ch(int ch)
     Err error_code_lock = vedit3_wrunlock_buffer_info();
     if(!error_code && error_code_lock) error_code = S_ERR_EDIT_LOCK;
 
+    if(error_code) return error_code;
+
+    if(VEDIT3_EDITOR_STATUS.current_col >= VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl && VEDIT3_EDITOR_STATUS.current_buffer->next) {
+        VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_col - VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
+        error_code = _vedit3_action_move_down();
+    }
+
     return error_code;
 }
 
@@ -571,12 +578,6 @@ _vedit3_action_ensure_buffer_wrap()
             new_buffer->buf[new_buffer_len_no_nl] = '\0';
         }
     }
-
-    if(VEDIT3_EDITOR_STATUS.current_col >= VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl && VEDIT3_EDITOR_STATUS.current_buffer->next) {
-        VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_col - VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
-        VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_EDITOR_STATUS.current_buffer->next;
-    }
-    error_code = _vedit3_action_ensure_current_col(VEDIT3_EDITOR_STATUS.current_col);
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
