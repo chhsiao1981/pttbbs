@@ -565,9 +565,7 @@ _vedit3_action_ensure_buffer_wrap()
 
     VEdit3Buffer *new_buffer = NULL;
 
-    fprintf(stderr, "vedit3_action._vedit3_action_ensure_buffer_wrap: to buffer_split: offset-s: %d s: %d\n", s - current_buffer->buf, s[0]);
     error_code = _vedit3_action_buffer_split(current_buffer, s - current_buffer->buf + 1, 0, &new_buffer);
-    fprintf(stderr, "vedit3_action._vedit3_action_ensure_buffer_wrap: after buffer_split\n");
 
     int new_buffer_len_no_nl = new_buffer ? new_buffer->len_no_nl : 0;
     if (!error_code && is_wordwrap && new_buffer && new_buffer_len_no_nl >= 1) {
@@ -641,6 +639,7 @@ _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, V
     for(VEdit3Buffer *p_buffer2 = p_new_buffer->next; p_buffer2 && p_buffer2->content_type == p_new_buffer->content_type && p_buffer2->block_offset == p_new_buffer->block_offset && p_buffer2->comment_offset == p_new_buffer->comment_offset; p_buffer2->line_offset++, p_buffer2 = p_buffer2->next);
 
     // file-info
+    /*
     error_code = vedit3_wrlock_file_info();
     if(error_code) return error_code;
 
@@ -657,6 +656,7 @@ _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, V
 
     Err error_code_lock = vedit3_wrunlock_file_info();
     if(!error_code && error_code_lock) error_code = S_ERR_EDIT_LOCK;
+    */
 
     return error_code;
 }
