@@ -489,8 +489,6 @@ _vedit3_action_insert_char(int ch)
 
     VEdit3Buffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
 
-    bool is_wordwrap = true;
-
     assert(VEDIT3_EDITOR_STATUS.current_col <= current_buffer->len_no_nl);
 //#ifdef DEBUG
     //assert(curr_buf->currline->mlength == WRAPMARGIN);
@@ -546,7 +544,7 @@ _vedit3_action_ensure_buffer_wrap()
     char *s = current_buffer->buf + current_buffer->len_no_nl - 1;    
     while (s != current_buffer->buf && *s == ' ') s--;
     while (s != current_buffer->buf && *s != ' ') s--;
-    if (s == current_buffer) { // if only 1 word
+    if (s == current_buffer->buf) { // if only 1 word
         is_wordwrap = false;
         s = current_buffer->buf + (current_buffer->len_no_nl - 2);
     }
