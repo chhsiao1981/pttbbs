@@ -898,40 +898,6 @@ vedit3_disp_buffer()
     return error_code;
 }
 
-Err
-_vedit3_sync_disp_buffer(VEdit3State *expected_state)
-{
-    Err error_code = S_OK;
-
-    /*
-    error_code = _vedit3_sync_disp_buffer_is_need_sync_primitive(expected_state, &is_need_sync);
-    if (error_code) return error_code;
-    if (!is_need_sync) return S_OK;
-
-    // main-id diff: resync all
-    if(memcmp(expected_state->main_id, _VEDIT3_CURRENT_STATE.main_id, UUIDLEN)) {
-        error_code = _vedit3_sync_disp_buffer_resync_all(expected_state);
-        return error_code;
-    }
-    */
-
-    // get buffer line
-    /*
-    error_code = _vedit3_get_buffer_line(expected_state->top_line_content_type, expected_state->top_line_block_offset, expected_state->top_line_line_offset, &p_top_buffer_line, &offset_buffer_line);
-    if(error_code) return error_code;
-
-    // if top_buffer_line exists in current buffer and top-buffer-line is in safe range
-    //     => we just need to set top-line
-    if(p_top_buffer_line && offset_buffer_line >= DEFAULT_VEDIT3_MIN_OFFSET_BUFFER_LINE && offset_buffer_line < _VEDIT3_CURRENT_BUFFER.n_buffer_line - DEFAULT_VEDIT3_MIN_OFFSET_BUFFER_LINE) {
-        error_code = _vedit3_sync_disp_buffer_set_expected_top_line(p_top_buffer_line);
-        return error_code;
-    }
-
-    error_code = _vedit3_sync_disp_buffer_sync(expected_state);
-    */
-    return error_code;
-}
-
 /*********
  * VEdit3 Misc
  *********/

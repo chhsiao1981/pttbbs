@@ -476,10 +476,10 @@ _vedit3_action_insert_dchar(const char *dchar)
  * @details ref: insert_char in edit.c
  *          XXX Design decision: 1. Insert in the middle of the sentences.
  *                               2. ignore DBCSAWARE, need to be taken care of in other place.
- *
- *
- * @param ch [description]
- */
+*
+*
+* @param ch [description]
+* /
 Err
 _vedit3_action_insert_char(int ch)
 {
@@ -518,6 +518,7 @@ _vedit3_action_insert_char(int ch)
         current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col++] = ch;
         ++(current_buffer->len);
         ++(current_buffer->len_no_nl);
+        current_buffer->buf[current_buffer->len_no_nl] = 0;
     }
     current_buffer->is_modified = true;
 
@@ -536,12 +537,14 @@ _vedit3_action_ensure_buffer_wrap()
     Err error_code = S_OK;
     VEdit3Buffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
 
-    if(current_buffer->len_no_nl < WRAPMARGIN) return S_OK;
+    if (current_buffer->len_no_nl < WRAPMARGIN) return S_OK;
 
     if (!VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info) return S_ERR_EDIT_LOCK;
 
+    fprintf(stderr, "vedit3_action._vedit3_action_ensure_buffer_wrap: buf: %s len_no_nl: %d\n", current_buffer->buf, current_buffer->len_no_nl);
+
     bool is_wordwrap = true;
-    char *s = current_buffer->buf + current_buffer->len_no_nl - 1;    
+    char *s = current_buffer->buf + current_buffer->len_no_nl - 1;
     while (s != current_buffer->buf && *s == ' ') s--;
     while (s != current_buffer->buf && *s != ' ') s--;
     if (s == current_buffer->buf) { // if only 1 word
@@ -550,15 +553,18 @@ _vedit3_action_ensure_buffer_wrap()
     }
 
     VEdit3Buffer *new_buffer = NULL;
+
+    fprintf(stderr, "vedit3_action._vedit3_action_ensure_buffer_wrap: to buffer_split: offset-s: %d s: %d\n", s - current_buffer->buf, s[0]);
     error_code = _vedit3_action_buffer_split(current_buffer, s - current_buffer->buf + 1, 0, &new_buffer);
+    fprintf(stderr, "vedit3_action._vedit3_action_ensure_buffer_wrap: after buffer_split\n");
 
     int new_buffer_len_no_nl = new_buffer ? new_buffer->len_no_nl : 0;
     if (!error_code && is_wordwrap && new_buffer && new_buffer_len_no_nl >= 1) {
         if (new_buffer->buf[new_buffer_len_no_nl - 1] != ' ') {
             new_buffer->buf[new_buffer_len_no_nl] = ' ';
-            new_buffer->buf[new_buffer_len_no_nl + 1] = '\0';
             new_buffer->len++;
             new_buffer->len_no_nl++;
+            new_buffer->buf[new_buffer_len_no_nl] = '\0';
         }
     }
 

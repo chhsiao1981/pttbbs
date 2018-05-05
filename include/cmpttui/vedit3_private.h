@@ -61,10 +61,6 @@ Err _vedit3_disp_line(int line, char *buf, int len, enum PttDBContentType conten
 Err _vedit3_edit_outs_attr_n(const char *text, int len, int attr);
 Err _vedit3_edit_ansi_outs_n(const char *str, int n, int attr GCC_UNUSED);
 
-// VEdit3 buffer
-Err _vedit3_sync_disp_buffer(VEdit3State *expected_state);
-
-
 
 #ifdef __cplusplus
 }
