@@ -400,16 +400,19 @@ _vedit3_store_to_render()
     }
     else {
         error_code = _vedit3_disp_line(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl, VEDIT3_EDITOR_STATUS.current_buffer->content_type);
+        outs(ANSI_RESET ANSI_CLRTOEND);
     }
-
     error_code = _vedit3_edit_msg();
 
-    int ch = VEDIT3_EDITOR_STATUS.current_col;
+    int ch = 0;
     if(VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) {
         ch = 0;
     }
     else if(VEDIT3_EDITOR_STATUS.is_ansi) {
         error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ch);
+    }
+    else {
+        ch = VEDIT3_EDITOR_STATUS.current_col - VEDIT3_EDITOR_STATUS.edit_margin;
     }
 
     move(VEDIT3_EDITOR_STATUS.current_line, ch);
@@ -467,6 +470,8 @@ _vedit3_disp_screen(int start_line, int end_line)
             if (error_code) break;
         }
     }
+
+    outs(ANSI_RESET ANSI_CLRTOEND);
 
     if (!error_code) {
         refresh();
