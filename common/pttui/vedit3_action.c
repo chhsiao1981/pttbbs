@@ -747,7 +747,7 @@ _vedit3_action_move_up()
 
     VEDIT3_EDITOR_STATUS.current_buffer_line--;
 
-    VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl ? VEDIT3_EDITOR_STATUS.current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
+    VEDIT3_EDITOR_STATUS.current_col = (VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl || VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) ? VEDIT3_EDITOR_STATUS.current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
@@ -819,7 +819,7 @@ _vedit3_action_move_down()
 
     VEDIT3_EDITOR_STATUS.current_buffer_line++;
 
-    VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl ? VEDIT3_EDITOR_STATUS.current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
+    VEDIT3_EDITOR_STATUS.current_col = (VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl || VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) ? VEDIT3_EDITOR_STATUS.current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
