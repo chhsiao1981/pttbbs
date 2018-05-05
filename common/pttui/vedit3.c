@@ -505,7 +505,7 @@ _vedit3_disp_line(int line, char *buf, int len, enum PttDBContentType content_ty
     int attr = (int)VEDIT3_ATTR_NORMAL;
     int detected_attr = 0;
 
-    if(VEDIT3_EDITOR_STATUS.is_ansi || content_type == PTTDB_CONTENT_TYPE_COMMENT) {
+    if(VEDIT3_EDITOR_STATUS.is_ansi) {
         outs(buf);
     }
     else if(VEDIT3_EDITOR_STATUS.edit_margin >= len) {
