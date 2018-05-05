@@ -54,6 +54,8 @@ Err _vedit3_action_insert_char(int ch);
 Err _vedit3_action_ensure_buffer_wrap();
 Err _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, VEdit3Buffer **new_buffer);
 
+Err _vedit3_action_ensure_current_col(int current_col);
+
 #ifdef __cplusplus
 }
 #endif

@@ -572,9 +572,18 @@ _vedit3_action_ensure_buffer_wrap()
         }
     }
 
+    error_code = _vedit3_action_ensure_current_col(VEDIT3_EDITOR_STATUS.current_col);
+
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
     return error_code;
+}
+
+Err
+_vedit3_action_ensure_current_col(int current_col) {
+    VEDIT3_EDITOR_STATUS.current_col = (current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl || VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) ? current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
+
+    return S_OK;
 }
 
 Err
@@ -757,7 +766,7 @@ _vedit3_action_move_up()
 
     VEDIT3_EDITOR_STATUS.current_buffer_line--;
 
-    VEDIT3_EDITOR_STATUS.current_col = (VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl || VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) ? VEDIT3_EDITOR_STATUS.current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
+    error_code = _vedit3_action_ensure_current_col(VEDIT3_EDITOR_STATUS.current_col);
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
@@ -829,7 +838,7 @@ _vedit3_action_move_down()
 
     VEDIT3_EDITOR_STATUS.current_buffer_line++;
 
-    VEDIT3_EDITOR_STATUS.current_col = (VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl || VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) ? VEDIT3_EDITOR_STATUS.current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
+    error_code = _vedit3_action_ensure_current_col(VEDIT3_EDITOR_STATUS.current_col);
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
@@ -920,8 +929,9 @@ _vedit3_action_move_pgup()
         if(error_code) return error_code;
     }
 
-    VEDIT3_EDITOR_STATUS.current_col = (current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl || VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) ? current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
-    return S_OK;
+    error_code = _vedit3_action_ensure_current_col(current_col);
+
+    return error_code;
 }
 
 Err
@@ -954,8 +964,9 @@ _vedit3_action_move_pgdn()
         if(error_code) return error_code;
     }
 
-    VEDIT3_EDITOR_STATUS.current_col = (current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl || VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) ? current_col : VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
-    return S_OK;
+    error_code = _vedit3_action_ensure_current_col(current_col);
+
+    return error_code;
 }
 
 Err
