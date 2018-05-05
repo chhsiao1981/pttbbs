@@ -513,8 +513,12 @@ _vedit3_disp_line(int line, char *buf, int len, enum PttDBContentType content_ty
         outs("");
     }
     else if(content_type == PTTDB_CONTENT_TYPE_COMMENT) {
-        error_code = pttui_ansi2n(VEDIT3_EDITOR_STATUS.edit_margin, buf, &edit_margin_n);
-        outs(buf + edit_margin_n);
+        if(edit_margin) {
+            outs("");
+        }
+        else {
+            outs(buf);
+        }
     }
     else {
         error_code = _vedit3_detect_attr(buf, len, &detected_attr);
