@@ -538,9 +538,12 @@ _vedit3_action_ensure_buffer_wrap()
     Err error_code = S_OK;
     VEdit3Buffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
 
-    if (current_buffer->len_no_nl < WRAPMARGIN) return S_OK;
+    fprintf(stderr, "vedit3_action._vedit3_action_ensure_buffer_wrap: len_no_nl: %d WRAPMARGIN: %d\n", current_buffer->len_no_nl, WRAPMARGIN);
+    if (current_buffer->len_no_nl < WRAPMARGIN) {
+        return S_OK;
+    }
 
-    if (!VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info) return S_ERR_EDIT_LOCK;
+    if (!VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info) return S_ERR_EDIT_LOCK;
 
     fprintf(stderr, "vedit3_action._vedit3_action_ensure_buffer_wrap: buf: %s len_no_nl: %d\n", current_buffer->buf, current_buffer->len_no_nl);
 
