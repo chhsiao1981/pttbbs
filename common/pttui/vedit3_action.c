@@ -456,7 +456,7 @@ _vedit3_action_insert_ch(int ch)
 
     if(error_code) return error_code;
 
-    if(VEDIT3_EDITOR_STATUS.current_col >= VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl && VEDIT3_EDITOR_STATUS.current_buffer->next) {
+    if(VEDIT3_EDITOR_STATUS.current_col > VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl && VEDIT3_EDITOR_STATUS.current_buffer->next) {
         VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_col - VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
         error_code = _vedit3_action_move_down();
     }
