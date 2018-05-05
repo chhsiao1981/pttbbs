@@ -391,7 +391,6 @@ _vedit3_store_to_render()
     Err error_code = S_OK;
 
     int ch = 0;
-    bool is_the_rest = false;
     if(VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) {
         ch = 0;
     }
@@ -400,7 +399,6 @@ _vedit3_store_to_render()
     }
     else {
         ch = VEDIT3_EDITOR_STATUS.current_col;
-        is_the_rest = true;
     }
 
     VEDIT3_EDITOR_STATUS.edit_margin = (ch < t_columns - 1) ? 0 : (ch / (t_columns - 8) * (t_columns - 8));
@@ -417,7 +415,7 @@ _vedit3_store_to_render()
     }
     error_code = _vedit3_edit_msg();
 
-    if(is_the_rest) ch -= VEDIT3_EDITOR_STATUS.edit_margin;
+    if(!VEDIT3_EDITOR_STATUS.is_ansi) ch -= VEDIT3_EDITOR_STATUS.edit_margin;
 
     move(VEDIT3_EDITOR_STATUS.current_line, ch);
     refresh();
@@ -509,6 +507,9 @@ _vedit3_disp_line(int line, char *buf, int len, enum PttDBContentType content_ty
 
     if(VEDIT3_EDITOR_STATUS.is_ansi || content_type == PTTDB_CONTENT_TYPE_COMMENT) {
         outs(buf);
+    }
+    else if(VEDIT3_EDITOR_STATUS.edit_margin >= len) {
+        outs("");
     }
     else {
         error_code = _vedit3_detect_attr(buf, len, &detected_attr);
