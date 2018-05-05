@@ -504,7 +504,6 @@ _vedit3_disp_line(int line, char *buf, int len, enum PttDBContentType content_ty
     move(line, 0);
     int attr = (int)VEDIT3_ATTR_NORMAL;
     int detected_attr = 0;
-    int edit_margin_n = 0;
 
     if(VEDIT3_EDITOR_STATUS.is_ansi) {
         outs(buf);
@@ -513,7 +512,8 @@ _vedit3_disp_line(int line, char *buf, int len, enum PttDBContentType content_ty
         outs("");
     }
     else if(content_type == PTTDB_CONTENT_TYPE_COMMENT) {
-        if(edit_margin) {
+        // XXX hack for comment, because comment is supposed to fit in the 1st column-page.
+        if(VEDIT3_EDITOR_STATUS.edit_margin) {
             outs("");
         }
         else {
