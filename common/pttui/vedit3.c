@@ -387,8 +387,13 @@ _vedit3_check_healthy()
 Err
 _vedit3_store_to_render()
 {
-    // XXX check why redraw-everything makes different len in comments
+    // XXX check why redraw-everything makes different len in comments    
     Err error_code = S_OK;
+
+    VEDIT3_EDITOR_STATUS.edit_margin = ch < t_columns - 1 ? 0 : VEDIT3_EDITOR_STATUS.edit_margin = ch / (t_columns - 8) * (t_columns - 8);
+    if(VEDIT3_EDITOR_STATUS.edit_margin != VEDIT3_EDITOR_STATUS.last_margin) VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+    VEDIT3_EDITOR_STATUS.last_margin = VEDIT3_EDITOR_STATUS.edit_margin;
+
     if (VEDIT3_EDITOR_STATUS.is_redraw_everything) {
         VEDIT3_EDITOR_STATUS.is_redraw_everything = false;
         error_code = _vedit3_disp_screen(0, b_lines - 1);
