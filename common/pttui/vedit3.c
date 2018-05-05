@@ -390,6 +390,19 @@ _vedit3_store_to_render()
     // XXX check why redraw-everything makes different len in comments    
     Err error_code = S_OK;
 
+    int ch = 0;
+    bool is_the_rest = false;
+    if(VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) {
+        ch = 0;
+    }
+    else if(VEDIT3_EDITOR_STATUS.is_ansi) {
+        error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ch);
+    }
+    else {
+        ch = VEDIT3_EDITOR_STATUS.current_col;
+        is_the_rest = true;
+    }
+
     VEDIT3_EDITOR_STATUS.edit_margin = ch < t_columns - 1 ? 0 : VEDIT3_EDITOR_STATUS.edit_margin = ch / (t_columns - 8) * (t_columns - 8);
     if(VEDIT3_EDITOR_STATUS.edit_margin != VEDIT3_EDITOR_STATUS.last_margin) VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
     VEDIT3_EDITOR_STATUS.last_margin = VEDIT3_EDITOR_STATUS.edit_margin;
@@ -404,16 +417,7 @@ _vedit3_store_to_render()
     }
     error_code = _vedit3_edit_msg();
 
-    int ch = 0;
-    if(VEDIT3_EDITOR_STATUS.current_buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) {
-        ch = 0;
-    }
-    else if(VEDIT3_EDITOR_STATUS.is_ansi) {
-        error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ch);
-    }
-    else {
-        ch = VEDIT3_EDITOR_STATUS.current_col - VEDIT3_EDITOR_STATUS.edit_margin;
-    }
+    if(is_the_rest) ch -= VEDIT3_EDITOR_STATUS.edit_margin;
 
     move(VEDIT3_EDITOR_STATUS.current_line, ch);
     refresh();
