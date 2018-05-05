@@ -476,10 +476,11 @@ _vedit3_action_insert_dchar(const char *dchar)
  * @details ref: insert_char in edit.c
  *          XXX Design decision: 1. Insert in the middle of the sentences.
  *                               2. ignore DBCSAWARE, need to be taken care of in other place.
-*
-*
-* @param ch [description]
-* /
+ *
+ *
+ * @param ch [description]
+ */
+
 Err
 _vedit3_action_insert_char(int ch)
 {
