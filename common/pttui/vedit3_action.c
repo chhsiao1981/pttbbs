@@ -572,6 +572,10 @@ _vedit3_action_ensure_buffer_wrap()
         }
     }
 
+    if(VEDIT3_EDITOR_STATUS.current_col >= VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl && VEDIT3_EDITOR_STATUS.current_buffer->next) {
+        VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_col - VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
+        VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_EDITOR_STATUS.current_buffer->next;
+    }
     error_code = _vedit3_action_ensure_current_col(VEDIT3_EDITOR_STATUS.current_col);
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
