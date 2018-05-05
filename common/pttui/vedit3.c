@@ -403,7 +403,7 @@ _vedit3_store_to_render()
         is_the_rest = true;
     }
 
-    VEDIT3_EDITOR_STATUS.edit_margin = ch < t_columns - 1 ? 0 : VEDIT3_EDITOR_STATUS.edit_margin = ch / (t_columns - 8) * (t_columns - 8);
+    VEDIT3_EDITOR_STATUS.edit_margin = (ch < t_columns - 1) ? 0 : (ch / (t_columns - 8) * (t_columns - 8));
     if(VEDIT3_EDITOR_STATUS.edit_margin != VEDIT3_EDITOR_STATUS.last_margin) VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
     VEDIT3_EDITOR_STATUS.last_margin = VEDIT3_EDITOR_STATUS.edit_margin;
 
