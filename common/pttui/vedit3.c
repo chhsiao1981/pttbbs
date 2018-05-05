@@ -504,12 +504,17 @@ _vedit3_disp_line(int line, char *buf, int len, enum PttDBContentType content_ty
     move(line, 0);
     int attr = (int)VEDIT3_ATTR_NORMAL;
     int detected_attr = 0;
-
+    int n_edit_margin = 0;
+    
     if(VEDIT3_EDITOR_STATUS.is_ansi) {
         outs(buf);
     }
     else if(VEDIT3_EDITOR_STATUS.edit_margin >= len) {
         outs("");
+    }
+    else if(content_type == PTTDB_CONTENT_TYPE_COMMENT) {
+        error_code = pttui_ansi2n(VEDIT3_EDITOR_STATUS.edit_margin, buf, &n_edit_margin);
+        outs(buf + n_edit_margin);
     }
     else {
         error_code = _vedit3_detect_attr(buf, len, &detected_attr);
