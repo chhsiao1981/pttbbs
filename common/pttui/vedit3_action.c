@@ -48,7 +48,6 @@ _vedit3_action_to_store_main(int ch, bool *is_end) {
         break;
     }
 
-
     // ctrl-command
     switch (ch) {
     case KEY_F10:
@@ -243,11 +242,7 @@ Err
 _vedit3_action_to_store_comment_reply(int ch, bool *is_end) {
     Err error_code = S_OK;
     if (ch < 0x100 && isprint2(ch)) {
-        /*
-        error_code = VEDIT3_EDITOR_STATUS.is_phone && (pstr = phone_char(char)) ? _vedit3_action_insert_dchar(pstr) : _vedit3_action_insert_char(ch);
-        if(error_code) break;
-        */
-
+        error_code = _vedit3_action_insert_ch(ch);
         return error_code;
     }
 
