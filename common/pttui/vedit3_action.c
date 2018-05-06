@@ -1120,7 +1120,7 @@ _vedit3_action_concat_next_line()
 
     // 3. if no overflow
     int overflow = current_buffer->len_no_nl + p_next_buffer->len_no_nl - WRAPMARGIN;
-    int non_space_offset = p_non_space_buf - current_buffer->buf;
+    int non_space_offset = p_non_space_buf - p_next_buffer->buf;
     int len_word = 0;
     if(overflow < 0) {
         memcpy(current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col, p_next_buffer->buf, p_next_buffer->len_no_nl);
