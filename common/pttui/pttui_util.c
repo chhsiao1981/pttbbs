@@ -8,7 +8,7 @@ pttui_next_non_space_char(char *buf, int len, char **p_buf)
     for(i = 0; i < len && *tmp_buf == ' '; i++, tmp_buf++);
     if(i == len) return S_OK;
 
-    *p_buf = *tmp_buf;
+    *p_buf = tmp_buf;
 
     return S_OK;
 }
