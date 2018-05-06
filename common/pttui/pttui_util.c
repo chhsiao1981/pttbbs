@@ -6,7 +6,10 @@ pttui_next_non_space_char(char *buf, int len, char **p_buf)
     char *tmp_buf = buf;
     int i = 0;
     for(i = 0; i < len && *tmp_buf == ' '; i++, tmp_buf++);
-    if(i == len) return S_OK;
+    if(i == len) {
+        *p_buf = NULL;
+        return S_OK;
+    }
 
     *p_buf = tmp_buf;
 
