@@ -1091,7 +1091,9 @@ _vedit3_action_delete_char_core()
  *             3.2 delete next line
  *          4. 4.1. get first_word
  *             4.2. 如果 len + first_word >= WRAPMARGIN: no change.
- *             4.3. else: concat first-word. shift next line.
+ *             4.3. else: concat first-word.
+ *                        if no second-word: delete next-line
+ *                        else: shift-line.
  */
 Err
 _vedit3_action_concat_next_line()
@@ -1146,8 +1148,18 @@ _vedit3_action_concat_next_line()
     current_buffer->buf[current_buffer->len_no_nl] = 0;
     current_buffer->is_modified = true;
 
+    error_code = pttui_next_non_space_char(p_next_buffer->buf + len_word, p_next_buffer->len_no_nl - len_word, &p_non_space_buf);
+    if(error_code) return error_code;
+
+    if(!p_non_space_buf) {
+        error_code = _vedit3_action_delete_line(&p_next_buffer);
+        return error_code;
+    }
+
+    // shift next line.
     char *p_buf = p_next_buffer->buf;
-    char *p_buf2 = p_next_buffer->buf + len_word;
+    char *p_buf2 = p_non_space_buf;
+    len_word = p_buf2 - p_buf;
     int n_shift = p_next_buffer->len_no_nl - len_word;
     for(int i = 0; *p_buf2 && i < n_shift; i++, p_buf++, p_buf2++) {
         *p_buf = *p_buf2;
