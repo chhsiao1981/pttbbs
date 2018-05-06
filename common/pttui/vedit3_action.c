@@ -1111,6 +1111,8 @@ _vedit3_action_concat_next_line()
     error_code = pttui_next_non_space_char(p_next_buffer->buf, p_next_buffer->len_no_nl, &p_non_space_buf);
     if(error_code) return error_code;
 
+    fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: p_non_space_buf: %lu\n", p_non_space_buf);
+
     if(!p_non_space_buf) {
         error_code = _vedit3_action_delete_line(&p_next_buffer);
         return error_code;
@@ -1135,6 +1137,8 @@ _vedit3_action_concat_next_line()
     // 4. get first word
     error_code = pttui_first_word(p_non_space_buf, p_next_buffer->len_no_nl - non_space_offset, &len_word);
     if(error_code) return error_code;
+
+    fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: after pttui_first_word: current_len_no_nl: %d non_space_offset: %d len_word: %d\n", current_buffer->len_no_nl, non_space_offset, len_word);
 
     len_word += non_space_offset;
 
