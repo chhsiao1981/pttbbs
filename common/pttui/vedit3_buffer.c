@@ -20,6 +20,16 @@ vedit3_buffer_next_ne(VEdit3Buffer *buffer) {
     return p_next;
 }
 
+VEdit3Buffer *
+vedit3_buffer_pre_ne(VEdit3Buffer *buffer) {
+    if(!buffer) return NULL;
+
+    VEdit3Buffer *p_pre = buffer->pre;
+    for(; p_pre && p_pre->is_to_delete; p_pre = p_pre->pre);
+
+    return p_pre;
+}
+
 Err
 safe_free_vedit3_buffer(VEdit3Buffer **buffer)
 {

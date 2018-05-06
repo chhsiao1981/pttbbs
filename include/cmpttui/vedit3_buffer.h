@@ -61,6 +61,7 @@ Err vedit3_buffer_insert_buffer(VEdit3Buffer *current_buffer, VEdit3Buffer *next
 
 bool vedit3_buffer_is_end_ne(VEdit3Buffer *buffer);
 VEdit3Buffer * vedit3_buffer_next_ne(VEdit3Buffer *buffer);
+VEdit3Buffer * vedit3_buffer_pre_ne(VEdit3Buffer *buffer);
 
 #ifdef __cplusplus
 }

@@ -44,7 +44,7 @@ inline Err pttui_phone_mode_switch(bool *is_phone, int *phone_mode);
 Err pttui_phone_char(char c, int phone_mode, char **ret);
 inline Err phone_mode_filter(char ch, int phone_mode, int last_phone_mode, char *ret);
 
-int pttui_mchar_len(unsigned char *str);
+int pttui_mchar_len_ne(unsigned char *str);
 
 Err pttui_fix_cursor(char *str, int pos, enum PttUIFixCursorDir dir, int *new_pos);
 
