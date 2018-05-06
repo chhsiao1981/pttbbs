@@ -1096,10 +1096,11 @@ _vedit3_action_concat_next_line()
 {
     Err error_code = S_OK;
 
-    VEdit3Buffer *p_next_buffer = VEDIT3_EDITOR_STATUS.current_buffer->next;
+    VEdit3Buffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
+    VEdit3Buffer *p_next_buffer = current_buffer->next;
 
     // 1. if no next: return
-    if(!p_next) return S_OK;
+    if(!p_next_buffer) return S_OK;
 
     // 2. if no next-non-space-char: delete next char
     char *p_non_space_buf = NULL;
