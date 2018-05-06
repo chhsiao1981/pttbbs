@@ -24,11 +24,14 @@ typedef struct VEdit3Buffer {
     int line_offset;
     int comment_offset;
     int load_line_offset;
+    int load_line_pre_offset;
+    int load_line_next_offset;
     
     enum StorageType storage_type;
 
     bool is_modified;
     bool is_new;
+    bool is_to_delete;
 
     int len;
     int len_no_nl;
@@ -55,6 +58,9 @@ Err sync_vedit3_buffer_info(VEdit3BufferInfo *buffer_info, VEdit3Buffer *current
 Err resync_all_vedit3_buffer_info(VEdit3BufferInfo *buffer_info, VEdit3State *state, FileInfo *file_info, VEdit3Buffer **new_buffer);
 
 Err vedit3_buffer_insert_buffer(VEdit3Buffer *current_buffer, VEdit3Buffer *next_buffer, VEdit3BufferInfo *buffer_info);
+
+bool vedit3_buffer_is_end_ne(VEdit3Buffer *buffer);
+VEdit3Buffer * vedit3_buffer_next_ne(VEdit3Buffer *buffer);
 
 #ifdef __cplusplus
 }

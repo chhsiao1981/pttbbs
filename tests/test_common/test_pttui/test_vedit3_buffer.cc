@@ -5,6 +5,18 @@
 #include "cmmigrate_pttdb.h"
 #include "cmpttdb.h"
 
+TEST(vedit3_buffer, vedit3_buffer_is_end_ne)
+{
+    VEdit3Buffer buffer = {};
+    buffer.is_to_delete = true;
+
+    EXPECT_EQ(true, vedit3_buffer_is_end_ne(&buffer));
+
+    buffer.is_to_delete = false;
+
+    EXPECT_EQ(false, vedit3_buffer_is_end_ne(&buffer));
+}
+
 TEST(vedit3_buffer, sync_vedit3_buffer_info_is_pre)
 {
 

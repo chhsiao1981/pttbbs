@@ -1,6 +1,25 @@
 #include "cmpttui/vedit3_buffer.h"
 #include "cmpttui/vedit3_buffer_private.h"
 
+bool
+vedit3_buffer_is_end_ne(VEdit3Buffer *buffer) {
+    for (; buffer; buffer = buffer->next) {
+        if (!buffer->is_to_delete) return false;
+    }
+
+    return true;
+}
+
+VEdit3Buffer *
+vedit3_buffer_next_ne(VEdit3Buffer *buffer) {
+    if (!buffer) return NULL;
+
+    VEdit3Buffer *p_next = buffer->next;
+    for (; p_next && p_next->is_to_delete; p_next = p_next->next);
+
+    return p_next;
+}
+
 Err
 safe_free_vedit3_buffer(VEdit3Buffer **buffer)
 {
