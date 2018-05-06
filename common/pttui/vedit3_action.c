@@ -88,11 +88,11 @@ _vedit3_action_to_store_main(int ch, bool *is_end) {
     case Ctrl('I'): // insert-tab
         error_code = _vedit3_action_insert_tab();
         break;
-
+    */
     case KEY_ENTER: // new-line
         error_code = _vedit3_action_insert_new_line();
         break;
-
+    /*
     case Ctrl('G'): // edit-assistant
         break;
     
@@ -1175,4 +1175,14 @@ _vedit3_action_delete_line(VEdit3Buffer **buffer)
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
     return S_OK;
+}
+
+Err
+_vedit3_action_insert_new_line()
+{
+    VEdit3Buffer *new_buffer = NULL;
+
+    Err error_code = _vedit3_action_buffer_split(VEDIT3_EDITOR_STATUS.current_buffer, VEDIT3_EDITOR_STATUS.current_col, 0, &new_buffer);
+
+    return error_code;
 }

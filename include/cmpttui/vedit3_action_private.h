@@ -60,6 +60,7 @@ Err _vedit3_action_delete_char_core();
 Err _vedit3_action_backspace();
 Err _vedit3_action_concat_next_line();
 Err _vedit3_action_delete_line(VEdit3Buffer **buffer);
+Err _vedit3_action_insert_new_line();
 
 #ifdef __cplusplus
 }
