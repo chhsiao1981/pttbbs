@@ -814,7 +814,8 @@ _vedit3_action_move_up_ensure_top_of_window()
     fprintf(stderr, "vedit3_action._vedit3_action_move_down_ensure_end_of_window: to wait buffer state sync\n");
 
     error_code = vedit3_wait_buffer_state_sync(DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC);
-    if (error_code) return error_code;
+
+    fprintf(stderr, "vedit3_action._vedit3_action_move_down_ensure_end_of_window: after wait buffer state sync: e: %d\n", error_code);
 
     return error_code;
 }
