@@ -2,6 +2,19 @@
 #include "cmpttui/vedit3_buffer_private.h"
 
 Err
+safe_free_vedit3_buffer(VEdit3Buffer **buffer)
+{
+    VEdit3Buffer *p_buffer = *buffer;
+    if(!p_buffer) return S_OK;
+
+    if(p_buffer->buf) free(p_buffer->buf);
+    free(p_buffer);
+    *buffer = NULL;
+
+    return S_OK;
+}
+
+Err
 destroy_vedit3_buffer_info(VEdit3BufferInfo *buffer_info)
 {
     VEdit3Buffer *p_buffer = buffer_info->head;
@@ -9,11 +22,10 @@ destroy_vedit3_buffer_info(VEdit3BufferInfo *buffer_info)
     while (p_buffer != NULL) {
         tmp = p_buffer;
         p_buffer = p_buffer->next;
-        if(tmp->buf) free(tmp->buf);
-        free(tmp);
+        safe_free_vedit3_buffer(&tmp);
     }
 
-    bzero(buffer_info, sizeof(VEdit3Buffer));
+    bzero(buffer_info, sizeof(VEdit3BufferInfo));
 
     return S_OK;
 }

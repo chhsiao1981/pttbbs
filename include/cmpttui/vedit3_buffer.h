@@ -43,6 +43,8 @@ typedef struct VEdit3BufferInfo {
     UUID main_id;
 } VEdit3BufferInfo;
 
+Err safe_free_vedit3_buffer(VEdit3Buffer **buffer);
+
 Err destroy_vedit3_buffer_info(VEdit3BufferInfo *buffer_info);
 
 Err vedit3_buffer_is_begin_of_file(VEdit3Buffer *buffer, FileInfo *file_info, bool *is_begin);

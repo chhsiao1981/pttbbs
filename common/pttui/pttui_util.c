@@ -1,6 +1,31 @@
 #include "cmpttui/pttui_util.h"
 
 Err
+pttui_next_non_space_char(char *buf, int len, char **p_buf)
+{
+    char *tmp_buf = buf;
+    int i = 0;
+    for(i = 0; i < len && *tmp_buf == ' '; i++, tmp_buf++);
+    if(i == len) return S_OK;
+
+    *p_buf = *tmp_buf;
+
+    return S_OK;
+}
+
+Err
+pttui_first_word(char *buf, int len, int *len_word)
+{
+    char *tmp_buf = buf;
+    int i = 0;
+    for(i = 0; i < len && *tmp_buf != ' '; i++, tmp_buf++);
+
+    *len_word = i;
+
+    return S_OK;
+}
+
+Err
 pttui_raw_shift_right(char *s, int len)
 {
     int i;

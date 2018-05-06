@@ -1060,6 +1060,8 @@ _vedit3_action_delete_char()
         if(error_code) return error_code;
     }
 
+    VEDIT3_EDITOR_STATUS.current_buffer->is_modified = true;
+
     return S_OK;
 }
 
@@ -1077,8 +1079,92 @@ _vedit3_action_delete_char_core()
     return S_OK;
 }
 
+/**
+ * @brief [brief description]
+ * @details assume in the end of line (current_col == current_buffer->len_no_nl)
+ *          1. if no next: return
+ *          2. if no next-non-space-char: delete next line
+ *          3. if no overflow:
+ *             3.1 concat
+ *             3.2 delete next line
+ *          4. 4.1. get first_word
+ *             4.2. 如果 len + first_word >= WRAPMARGIN: no change.
+ *             4.3. else: concat first-word. shift next line.
+ */
 Err
 _vedit3_action_concat_next_line()
 {
-    return S_OK;    
+    Err error_code = S_OK;
+
+    VEdit3Buffer *p_next_buffer = VEDIT3_EDITOR_STATUS.current_buffer->next;
+
+    // 1. if no next: return
+    if(!p_next) return S_OK;
+
+    // 2. if no next-non-space-char: delete next char
+    char *p_non_space_buf = NULL;
+    error_code = pttui_next_non_space_char(p_next_buffer->buf, p_next_buffer->len_no_nl, &p_non_space_buf);
+    if(error_code) return error_code;
+
+    if(!p_non_space_buf) {
+        error_code = _vedit3_action_delete_line(&p_next_buffer);
+        return error_code;
+    }
+
+    // 3. if no overflow
+    int overflow = current_buffer->len_no_nl + p_next_buffer->len_no_nl - WRAPMARGIN;
+    int non_space_offset = p_non_space_buf - current_buffer->buf;
+    int len_word = 0;
+    if(overflow < 0) {
+        memcpy(current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col, p_next_buffer->buf, p_next_buffer->len_no_nl);
+        current_buffer->len_no_nl += p_next_buffer->len_no_nl;
+        current_buffer->len += p_next_buffer->len_no_nl;
+        current_buffer->is_modified = true;
+
+        error_code = _vedit3_action_delete_line(&p_next_buffer);
+
+        return error_code;
+    }
+
+    // 4. get first word
+    error_code = pttui_first_word(p_non_space_buf, p_next_buffer->len_no_nl - non_space_offset, &len_word);
+    if(error_code) return error_code;
+
+    len_word += non_space_offset;
+
+    // 4.2: if len + first_word >= WRAPMARGIN: no change
+    if(current_buffer->len_no_nl + len_word >= WRAPMARGIN) return S_OK;
+
+    // 4.3: concat first-word. shift next line.
+    memcpy(current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col, p_next_buffer->buf, len_word);
+    current_buffer->len_no_nl += len_word;
+    current_buffer->len += len_word;
+    current_buffer->is_modified = true;
+
+    char *p_buf = p_next_buffer->buf;
+    char *p_buf2 = p_next_buffer->buf + len_word;
+    int n_shift = p_next_buffer->len_no_nl - len_word;
+    for(int i = 0; *p_buf2 && i < n_shift; i++, p_buf++, p_buf2++) {
+        *p_buf = *p_buf2;
+    }
+    p_next_buffer->len_no_nl -= len_word;
+    p_next_buffer->len -= len_word;
+    p_next_buffer->is_modified = true;
+
+    return S_OK;
+}
+
+Err
+_vedit3_action_delete_line(VEdit3Buffer **buffer)
+{
+    VEdit3Buffer *p_buffer = *p_buffer;
+    VEdit3Buffer *p_pre_buffer = p_buffer->pre;
+    VEdit3Buffer *p_next_buffer = p_buffer->next;
+
+    if(p_pre_buffer) p_pre_buffer->next = p_next_buffer;
+    if(p_next_buffer) p_next_buffer->pre = p_pre_buffer;
+
+    safe_free_vedit3_buffer(buffer);
+
+    return S_OK;
 }

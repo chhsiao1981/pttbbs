@@ -48,6 +48,8 @@ int pttui_mchar_len(unsigned char *str);
 
 Err pttui_fix_cursor(char *str, int pos, enum PttUIFixCursorDir dir, int *new_pos);
 
+Err pttui_next_non_space_char(char *buf, int len, char **p_buf);
+Err pttui_first_word(char *buf, int len, int *len_word);
 
 #ifdef __cplusplus
 }
