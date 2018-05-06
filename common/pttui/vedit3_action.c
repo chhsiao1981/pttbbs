@@ -1197,6 +1197,13 @@ _vedit3_action_insert_new_line()
     VEdit3Buffer *new_buffer = NULL;
 
     Err error_code = _vedit3_action_buffer_split(VEDIT3_EDITOR_STATUS.current_buffer, VEDIT3_EDITOR_STATUS.current_col, 0, &new_buffer);
+    if(error_code) return error_code;
+
+    error_code = _vedit3_action_move_down();
+    if(error_code) return error_code;
+
+    error_code = _vedit3_action_move_begin_line();
+    if(error_code) return error_code;
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
