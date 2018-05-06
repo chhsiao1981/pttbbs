@@ -1184,5 +1184,7 @@ _vedit3_action_insert_new_line()
 
     Err error_code = _vedit3_action_buffer_split(VEDIT3_EDITOR_STATUS.current_buffer, VEDIT3_EDITOR_STATUS.current_col, 0, &new_buffer);
 
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
     return error_code;
 }
