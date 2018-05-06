@@ -1038,7 +1038,7 @@ _vedit3_action_delete_char()
         return error_code;
     }
 
-    int w = VEDIT3_EDITOR_STATUS.is_mbcs ? pttui_mchar_len((unsigned char*)(VEDIT3_EDITOR_STATUS.current_buffer->buf + VEDIT3_EDITOR_STATUS.current_buffer->current_col)) : 1;
+    int w = VEDIT3_EDITOR_STATUS.is_mbcs ? pttui_mchar_len((unsigned char*)(VEDIT3_EDITOR_STATUS.current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col)) : 1;
 
     for(int i = 0; i < w; i++) {
         error_code = _vedit3_action_delete_char_core();
