@@ -136,27 +136,29 @@ _vedit3_action_to_store_main(int ch, bool *is_end) {
         error_code = _vedit3_action_move_begin_line();
         break;
     /*
-        case Ctrl(']'):
+    case Ctrl(']'):
         error_code = _vedit3_action_move_start_file();
         break;
-        case Ctrl('T'):
+    case Ctrl('T'):
         error_code = _vedit3_action_move_tail_file();
         break;
-        case Ctrl('O'):
+    case Ctrl('O'):
         case KEY_INS:
         error_code = _vedit3_action_toggle_insert();
         break;
-        case KEY_BS:
+    */
+    case KEY_BS:
         error_code = _vedit3_action_backspace();
         break;
-        case Ctrl('D'):
-        case KEY_DEL:
+    case Ctrl('D'):
+    case KEY_DEL:
         error_code = _vedit3_action_delete_char();
         break;
-        case Ctrl('Y'):
+    /*
+    case Ctrl('Y'):
         error_code = _vedit3_action_delete_line();
         break;
-        case Ctrl('K'):
+    case Ctrl('K'):
         error_code = _vedit3_action_delete_end_of_line();
         break;
     */
@@ -205,9 +207,11 @@ _vedit3_action_to_store_comment(int ch, bool *is_end) {
     case Ctrl('L'): // redraw
         error_code = _vedit3_action_redraw();
         break;
+    case KEY_LEFT:
     case KEY_UP:
         error_code = _vedit3_action_move_up();
         break;
+    case KEY_RIGHT:
     case KEY_DOWN:
         error_code = _vedit3_action_move_down();
         break;
@@ -344,27 +348,29 @@ _vedit3_action_to_store_comment_reply(int ch, bool *is_end) {
         error_code = _vedit3_action_move_begin_line();
         break;
     /*
-        case Ctrl(']'):
+    case Ctrl(']'):
         error_code = _vedit3_action_move_start_file();
         break;
-        case Ctrl('T'):
+    case Ctrl('T'):
         error_code = _vedit3_action_move_tail_file();
         break;
-        case Ctrl('O'):
+    case Ctrl('O'):
         case KEY_INS:
         error_code = _vedit3_action_toggle_insert();
         break;
-        case KEY_BS:
+    */
+    case KEY_BS:
         error_code = _vedit3_action_backspace();
         break;
         case Ctrl('D'):
-        case KEY_DEL:
+    case KEY_DEL:
         error_code = _vedit3_action_delete_char();
         break;
-        case Ctrl('Y'):
+    /*
+    case Ctrl('Y'):
         error_code = _vedit3_action_delete_line();
         break;
-        case Ctrl('K'):
+    case Ctrl('K'):
         error_code = _vedit3_action_delete_end_of_line();
         break;
     */
