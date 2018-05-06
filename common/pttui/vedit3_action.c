@@ -1158,7 +1158,7 @@ _vedit3_action_concat_next_line()
 Err
 _vedit3_action_delete_line(VEdit3Buffer **buffer)
 {
-    VEdit3Buffer *p_buffer = *p_buffer;
+    VEdit3Buffer *p_buffer = *buffer;
     VEdit3Buffer *p_pre_buffer = p_buffer->pre;
     VEdit3Buffer *p_next_buffer = p_buffer->next;
 
