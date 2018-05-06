@@ -986,3 +986,93 @@ _vedit3_action_show_help()
 
     return S_OK;
 }
+
+/**
+ * @brief 
+ * @details ref: case KEY_BS in edit.c
+ *          1. is-ansi: is-ansi == false
+ *          2. is current-line == 0 and current-col == 0: no change
+ *          3. current-col == 0: move to previous-line, try to concat the next line.
+ *          4. move-left. do delete-char.
+ */
+Err
+_vedit3_action_backspace()
+{
+    Err error_code = S_OK;
+    // XXX remove block cancel for now
+    //block_cancel();
+
+    // is-ansi: is-ansi = false
+    if(VEDIT3_EDITOR_STATUS.is_ansi) {
+        VEDIT3_EDITOR_STATUS.is_ansi = false;
+        VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+        return S_OK;
+    }
+
+    // current-line == 0 and current-col == 0: no change
+    if(VEDIT3_EDITOR_STATUS.current_line == 0 && VEDIT3_EDITOR_STATUS.current_col == 0) return S_OK;
+
+    // current-col == 0: move to previous-line, try to concat the next line.s
+    if(VEDIT3_EDITOR_STATUS.current_col == 0) {
+        error_code = _vedit3_action_move_left();
+        if(error_code) return error_code;
+
+        error_code = _vedit3_action_concat_next_line();
+        return error_code;
+    }
+
+    error_code = _vedit3_action_move_left();
+    if(error_code) return error_code;
+
+    error_code = _vedit3_action_delete_char();
+
+    return error_code;
+}
+
+Err
+_vedit3_action_delete_char()
+{
+    Err error_code = S_OK;
+    if(VEDIT3_EDITOR_STATUS.current_col == VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl) {
+        error_code = _vedit3_action_concat_next_line();
+        return error_code;
+    }
+
+    int w = VEDIT3_EDITOR_STATUS.is_mbcs ? pttui_mchar_len((unsigned char*)(VEDIT3_EDITOR_STATUS.current_buffer->buf + VEDIT3_EDITOR_STATUS.current_buffer->current_col)) : 1;
+
+    for(int i = 0; i < w; i++) {
+        error_code = _vedit3_action_delete_char_core();
+        if(error_code) return error_code;
+    }
+
+    int ansi_current_col = 0;
+    if(VEDIT3_EDITOR_STATUS.is_ansi) {
+        error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
+        if(error_code) return error_code;
+
+        error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
+        if(error_code) return error_code;
+    }
+
+    return S_OK;
+}
+
+Err
+_vedit3_action_delete_char_core()
+{
+    if(!VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl) return S_OK;
+
+    Err error_code = pttui_raw_shift_left(VEDIT3_EDITOR_STATUS.current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl - VEDIT3_EDITOR_STATUS.current_col + 1);
+    if(error_code) return error_code;
+
+    VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl--;
+    VEDIT3_EDITOR_STATUS.current_buffer->len--;
+
+    return S_OK;
+}
+
+Err
+_vedit3_action_concat_next_line()
+{
+    return S_OK;    
+}

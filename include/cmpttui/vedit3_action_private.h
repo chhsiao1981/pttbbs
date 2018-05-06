@@ -40,7 +40,6 @@ Err _vedit3_action_move_end_line();
 
 Err _vedit3_action_move_begin_line();
 
-
 Err _vedit3_action_redraw();
 
 Err _vedit3_action_show_help();
@@ -55,6 +54,11 @@ Err _vedit3_action_ensure_buffer_wrap();
 Err _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, VEdit3Buffer **new_buffer);
 
 Err _vedit3_action_ensure_current_col(int current_col);
+
+Err _vedit3_action_delete_char();
+Err _vedit3_action_delete_char_core();
+Err _vedit3_action_backspace();
+Err _vedit3_action_concat_next_line();
 
 #ifdef __cplusplus
 }
