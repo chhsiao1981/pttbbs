@@ -1152,6 +1152,8 @@ _vedit3_action_concat_next_line()
     p_next_buffer->len -= len_word;
     p_next_buffer->is_modified = true;
 
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
     return S_OK;
 }
 
@@ -1166,6 +1168,8 @@ _vedit3_action_delete_line(VEdit3Buffer **buffer)
     if(p_next_buffer) p_next_buffer->pre = p_pre_buffer;
 
     safe_free_vedit3_buffer(buffer);
+
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
     return S_OK;
 }
