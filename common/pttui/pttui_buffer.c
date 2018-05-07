@@ -364,7 +364,6 @@ _pttui_buffer_init_buffer_no_buf_from_file_info(PttUIState *state, FileInfo *fil
  * extend pttui buffer
  **********/
 
-
 Err
 extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttUIBuffer *current_buffer)
 {
