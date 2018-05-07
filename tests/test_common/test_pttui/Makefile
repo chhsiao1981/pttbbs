@@ -14,7 +14,7 @@ SRCROOT:= ../../..
 # test
 ##########
 
-TEST_PROGS=	test_dummy test_pttui_thread_lock test_pttui_thread test_pttui_resource_info test_pttui_resource_dict
+TEST_PROGS=	test_dummy test_pttui_thread_lock test_pttui_thread test_pttui_buffer test_pttui_resource_info test_pttui_resource_dict
 
 #######################################################################
 # test
