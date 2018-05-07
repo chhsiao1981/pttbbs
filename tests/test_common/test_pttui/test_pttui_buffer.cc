@@ -1434,7 +1434,7 @@ TEST(pttui_buffer, sync_pttui_buffer_info_extend_next_buffer_no_buf_comment3)
 
     PttUIBuffer *new_buffer = NULL;
 
-    error = _sync_pttui_buffer_info_extend_next_buffer_no_buf_comment(&current_buffer, &file_info, &new_buffer);
+    error = _extend_pttui_buffer_extend_next_buffer_no_buf_comment(&current_buffer, &file_info, &new_buffer);
     EXPECT_EQ(S_OK, error);
 
     EXPECT_EQ(NULL, new_buffer);
@@ -1492,7 +1492,7 @@ TEST(pttui_buffer, sync_pttui_buffer_info_extend_next_buffer_no_buf_comment_repl
 
     PttUIBuffer *new_buffer = NULL;
 
-    error = _sync_pttui_buffer_info_extend_next_buffer_no_buf_comment_reply(&current_buffer, &file_info, &new_buffer);
+    error = _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(&current_buffer, &file_info, &new_buffer);
     EXPECT_EQ(S_OK, error);
 
     EXPECT_EQ(0, new_buffer->block_offset);
@@ -1553,7 +1553,7 @@ TEST(pttui_buffer, sync_pttui_buffer_info_extend_next_buffer_no_buf_comment_repl
 
     PttUIBuffer *new_buffer = NULL;
 
-    error = _sync_pttui_buffer_info_extend_next_buffer_no_buf_comment_reply(&current_buffer, &file_info, &new_buffer);
+    error = _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(&current_buffer, &file_info, &new_buffer);
     EXPECT_EQ(S_OK, error);
 
     EXPECT_EQ(1, new_buffer->block_offset);
@@ -1614,7 +1614,7 @@ TEST(pttui_buffer, sync_pttui_buffer_info_extend_next_buffer_no_buf_comment_repl
 
     PttUIBuffer *new_buffer = NULL;
 
-    error = _sync_pttui_buffer_info_extend_next_buffer_no_buf_comment_reply(&current_buffer, &file_info, &new_buffer);
+    error = _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(&current_buffer, &file_info, &new_buffer);
     EXPECT_EQ(S_OK, error);
 
     EXPECT_EQ(0, new_buffer->block_offset);
