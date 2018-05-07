@@ -439,7 +439,7 @@ _extend_pttui_buffer(FileInfo *file_info, PttUIBuffer *head_buffer, PttUIBuffer 
     error_code = _extend_pttui_buffer_count_extra_pre_range(current_buffer, &n_extra_range);
 
     // extend-pre
-    if(!error_code && (!head_buffer->buf || n_extra_pre_range)) {
+    if(!error_code && (!head_buffer->buf || n_extra_range)) {
         error_code = _extend_pttui_buffer_extend_pre_buffer(file_info, head_buffer, n_extra_range, new_head_buffer, n_new_buffer);
     }
 
@@ -448,7 +448,7 @@ _extend_pttui_buffer(FileInfo *file_info, PttUIBuffer *head_buffer, PttUIBuffer 
     }
 
     // extend-next
-    if (!error_code && (!tail_buffer->buf || n_extra_next_range)) {
+    if (!error_code && (!tail_buffer->buf || n_extra_range)) {
         error_code = _extend_pttui_buffer_extend_next_buffer(file_info, tail_buffer, n_extra_range, new_tail_buffer, n_new_buffer);
     }
 
