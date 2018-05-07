@@ -4,6 +4,7 @@
 
 #include "ptterr.h"
 #include "cmpttui/pttui_buffer.h"
+#include "cmpttui/pttui_thread_lock.h"
 #include "cmpttdb.h"
 
 #ifdef __cplusplus
