@@ -50,19 +50,21 @@ TEST(pttui_resource_info, pttui_resource_info_to_resource_dict)
     state.top_line_line_offset = 30;
     state.top_line_comment_offset = 0;
 
-    PttUIBuffer buffer = {};
+    PttUIBuffer *buffer = NULL;
     error = _pttui_buffer_init_buffer_no_buf_from_file_info(&state, &file_info, &buffer);
     EXPECT_EQ(S_OK, error);
 
-    EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer.content_type);
-    EXPECT_EQ(0, buffer.block_offset);
-    EXPECT_EQ(30, buffer.line_offset);
-    EXPECT_EQ(0, buffer.comment_offset);
-    EXPECT_EQ(30, buffer.load_line_offset);
-    EXPECT_EQ(29, buffer.load_line_pre_offset);
-    EXPECT_EQ(31, buffer.load_line_next_offset);
+    EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer->content_type);
+    EXPECT_EQ(0, buffer->block_offset);
+    EXPECT_EQ(30, buffer->line_offset);
+    EXPECT_EQ(0, buffer->comment_offset);
+    EXPECT_EQ(30, buffer->load_line_offset);
+    EXPECT_EQ(29, buffer->load_line_pre_offset);
+    EXPECT_EQ(31, buffer->load_line_next_offset);
 
-    error = _extend_pttui_buffer_extend_next_buffer_no_buf(&buffer_info, &file_info, HARD_N_PTTUI_BUFFER);
+    PttUIBuffer *new_tail_buffer = NULL;
+    int n_new_buffer = 0;
+    error = _extend_pttui_buffer_extend_next_buffer_no_buf(buffer, &file_info, HARD_N_PTTUI_BUFFER, &new_tail_buffer, &n_new_buffer);
     EXPECT_EQ(S_OK, error);
 
     EXPECT_EQ(214, buffer_info.n_buffer);
@@ -163,7 +165,7 @@ TEST(pttui_resource_info, pttui_resource_info_to_resource_dict)
     // free
     safe_destroy_pttui_resource_dict(&resource_dict);
 
-    destroy_pttui_buffer_info(&buffer_info);
+    safe_free_pttui_buffer(&buffer);
 
     destroy_pttui_resource_info(&resource_info);
 
