@@ -41,7 +41,6 @@ TEST(pttui_resource_info, pttui_resource_info_to_resource_dict)
 
     // PttUI
     PttUIState state = {};
-    PttUIBufferInfo buffer_info = {};
 
     memcpy(state.top_line_id, file_info.main_content_id, UUIDLEN);
     memcpy(state.main_id, file_info.main_id, UUIDLEN);
@@ -59,6 +58,9 @@ TEST(pttui_resource_info, pttui_resource_info_to_resource_dict)
     EXPECT_EQ(0, buffer.block_offset);
     EXPECT_EQ(30, buffer.line_offset);
     EXPECT_EQ(0, buffer.comment_offset);
+    EXPECT_EQ(30, buffer.load_line_offset);
+    EXPECT_EQ(29, buffer.load_line_pre_offset);
+    EXPECT_EQ(31, buffer.load_line_next_offset);
 
     error = _extend_pttui_buffer_extend_next_buffer_no_buf(&buffer_info, &file_info, HARD_N_PTTUI_BUFFER);
     EXPECT_EQ(S_OK, error);
