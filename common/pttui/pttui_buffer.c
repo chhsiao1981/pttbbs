@@ -457,7 +457,7 @@ _extend_pttui_buffer_count_extra_pre_range(PttUIBuffer *buffer, int *n_extra_ran
 {
     PttUIBuffer *p_buffer = NULL;
     int i = 0;
-    for (i = 0, p_buffer = buffer; i < SOFT_N_PTTUI_BUFFER && p_buffer && p_buffer != head; i++, p_buffer = p_buffer->pre);
+    for (i = 0, p_buffer = buffer; i < SOFT_N_PTTUI_BUFFER && p_buffer; i++, p_buffer = p_buffer->pre);
 
     *n_extra_range = i == SOFT_N_PTTUI_BUFFER ? 0 : (HARD_N_PTTUI_BUFFER - i);
 
@@ -612,7 +612,7 @@ _extend_pttui_buffer_extend_pre_buffer_no_buf_main(PttUIBuffer *current_buffer, 
 }
 
 Err
-_extend_pttui_buffer_info_extend_pre_buffer_no_buf_comment(PttUIBuffer *current_buffer, FileInfo *file_info, PttUIBuffer **new_buffer)
+_extend_pttui_buffer_extend_pre_buffer_no_buf_comment(PttUIBuffer *current_buffer, FileInfo *file_info, PttUIBuffer **new_buffer)
 {
     *new_buffer = malloc(sizeof(PttUIBuffer));
     PttUIBuffer *tmp = *new_buffer;
@@ -669,7 +669,7 @@ _extend_pttui_buffer_info_extend_pre_buffer_no_buf_comment(PttUIBuffer *current_
 }
 
 Err
-_extend_pttui_buffer_info_extend_pre_buffer_no_buf_comment_reply(PttUIBuffer *current_buffer, FileInfo *file_info, PttUIBuffer **new_buffer)
+_extend_pttui_buffer_extend_pre_buffer_no_buf_comment_reply(PttUIBuffer *current_buffer, FileInfo *file_info, PttUIBuffer **new_buffer)
 {
     // same-block, but no valid pre-offset
     if(current_buffer->line_offset != 0 && current_buffer->load_line_pre_offset < 0) return S_ERR_EXTEND;
