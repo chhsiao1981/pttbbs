@@ -51,17 +51,14 @@ TEST(pttui_resource_info, pttui_resource_info_to_resource_dict)
     state.top_line_line_offset = 30;
     state.top_line_comment_offset = 0;
 
-    error = _pttui_buffer_init_buffer_no_buf_from_file_info(&state, &file_info, &buffer_info);
+    PttUIBuffer buffer = {};
+    error = _pttui_buffer_init_buffer_no_buf_from_file_info(&state, &file_info, &buffer);
     EXPECT_EQ(S_OK, error);
 
-    EXPECT_EQ(1, buffer_info.n_buffer);
-    EXPECT_EQ(buffer_info.head, buffer_info.tail);
-    EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer_info.head->content_type);
-    EXPECT_EQ(NULL, buffer_info.head->next);
-    EXPECT_EQ(NULL, buffer_info.head->pre);
-    EXPECT_EQ(0, buffer_info.head->block_offset);
-    EXPECT_EQ(30, buffer_info.head->line_offset);
-    EXPECT_EQ(0, buffer_info.head->comment_offset);
+    EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer.content_type);
+    EXPECT_EQ(0, buffer.block_offset);
+    EXPECT_EQ(30, buffer.line_offset);
+    EXPECT_EQ(0, buffer.comment_offset);
 
     error = _extend_pttui_buffer_extend_next_buffer_no_buf(&buffer_info, &file_info, HARD_N_PTTUI_BUFFER);
     EXPECT_EQ(S_OK, error);
