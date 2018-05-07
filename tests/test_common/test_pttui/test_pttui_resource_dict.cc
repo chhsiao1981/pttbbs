@@ -2,6 +2,7 @@
 #include "test.h"
 #include "cmpttui/pttui_resource_dict.h"
 #include "cmpttui/pttui_resource_dict_private.h"
+#include "cmpttui/pttui_thread_lock.h"
 
 TEST(pttui_resource_dict, pttui_resource_dict_get_main_from_db)
 {
