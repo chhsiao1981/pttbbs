@@ -731,7 +731,7 @@ Err
 _extend_pttui_buffer_extend_next_buffer(FileInfo *file_info, PttUIBuffer *tail_buffer, int n_buffer, PttUIBuffer **new_tail_buffer, int *ret_n_buffer)
 {
     Err error_code = S_OK;
-    PttUIBuffer *start_buffer = *tail_buffer;
+    PttUIBuffer *start_buffer = tail_buffer;
 
     // 1. check eof
     bool is_eof = false;
@@ -792,7 +792,7 @@ _extend_pttui_buffer_extend_next_buffer_no_buf(PttUIBuffer *current_buffer, File
 }
 
 Err
-_extend_pttui_buffer_info_extend_next_buffer_no_buf_core(PttUIBuffer *current_buffer, FileInfo *file_info, PttUIBuffer **new_buffer)
+_extend_pttui_buffer_extend_next_buffer_no_buf_core(PttUIBuffer *current_buffer, FileInfo *file_info, PttUIBuffer **new_buffer)
 {
     Err error_code = S_OK;
     switch (current_buffer->content_type) {
@@ -958,9 +958,9 @@ _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(PttUIBuffer *curren
     if (current_buffer->line_offset != p_comment_reply_block->n_line - 1) {
         tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;        
         memcpy(tmp->the_id, p_comment->comment_reply_id, UUIDLEN);
-        tmp->comment_offset = current_buffer_comment_offset;
-        tmp->block_offset = current_buffer_block_offset;
-        tmp->line_offset = current_buffer_line_offset + 1;
+        tmp->comment_offset = current_buffer->comment_offset;
+        tmp->block_offset = current_buffer->block_offset;
+        tmp->line_offset = current_buffer->line_offset + 1;
 
         tmp->load_line_offset = current_buffer->load_line_next_offset;
         tmp->load_line_pre_offset = current_buffer->load_line_offset;
@@ -972,8 +972,8 @@ _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(PttUIBuffer *curren
         // different block, within same comment, referring file-info
         tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;
         memcpy(tmp->the_id, p_comment->comment_reply_id, UUIDLEN);
-        tmp->comment_offset = current_buffer_comment_offset;
-        tmp->block_offset = current_buffer_block_offset + 1;
+        tmp->comment_offset = current_buffer->comment_offset;
+        tmp->block_offset = current_buffer->block_offset + 1;
         tmp->line_offset = 0;
 
         p_comment_reply_block++;
@@ -989,7 +989,7 @@ _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(PttUIBuffer *curren
         tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT;
         p_comment++;
         memcpy(tmp->the_id, p_comment->comment_id, UUIDLEN);
-        tmp->comment_offset = current_buffer_comment_offset + 1;
+        tmp->comment_offset = current_buffer->comment_offset + 1;
         tmp->block_offset = 0;
         tmp->line_offset = 0;
 
