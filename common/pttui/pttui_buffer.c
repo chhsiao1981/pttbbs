@@ -241,9 +241,6 @@ resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, Fi
     error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_WR_BUFFER_INFO);
     if(error_code) return error_code;
 
-    PttUIBuffer *p_buffer = buffer_info->head;
-    PttUIBuffer *p_tail_buffer = buffer_info->tail;
-
     // 1. save all buffer to tmp_file
 
     error_code = save_pttui_buffer_info_to_tmp_file(buffer_info);
