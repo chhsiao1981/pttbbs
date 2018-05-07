@@ -1754,7 +1754,7 @@ TEST(pttui_buffer, extend_pttui_buffer_extend_pre_buffer2)
     error = _pttui_buffer_init_buffer_no_buf_from_file_info(&state, &file_info, &buffer);
     EXPECT_EQ(S_OK, error);
 
-    EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer.content_type);
+    EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer->content_type);
     EXPECT_EQ(0, buffer->block_offset);
     EXPECT_EQ(40, buffer->line_offset);
     EXPECT_EQ(0, buffer->comment_offset);
@@ -1765,7 +1765,7 @@ TEST(pttui_buffer, extend_pttui_buffer_extend_pre_buffer2)
     PttUIBuffer *new_head_buffer = NULL;
     int n_new_buffer = 1;
 
-    error = _extend_pttui_buffer_info_extend_pre_buffer(&file_info, buffer, HARD_N_PTTUI_BUFFER, &new_head_buffer, &n_new_buffer);
+    error = _extend_pttui_buffer_extend_pre_buffer(&file_info, buffer, HARD_N_PTTUI_BUFFER, &new_head_buffer, &n_new_buffer);
     EXPECT_EQ(S_OK, error);
 
     buffer_info.head = new_head_buffer;
@@ -1844,7 +1844,7 @@ TEST(pttui_buffer, extend_pttui_buffer_extend_pre_buffer3)
     PttUIBuffer *new_head_buffer = NULL;
     int n_new_buffer = 1;
 
-    error = _extend_pttui_buffer_info_extend_pre_buffer(&file_info, buffer, HARD_N_PTTUI_BUFFER, &new_head_buffer, &n_new_buffer);
+    error = _extend_pttui_buffer_extend_pre_buffer(&file_info, buffer, HARD_N_PTTUI_BUFFER, &new_head_buffer, &n_new_buffer);
     EXPECT_EQ(S_OK, error);
 
     buffer_info.head = new_head_buffer;
@@ -2014,7 +2014,7 @@ TEST(pttui_buffer, pttui_buffer_info_to_resource_info)
     state.top_line_line_offset = 30;
     state.top_line_comment_offset = 0;
 
-    error = _pttui_buffer_init_buffer_no_buf_from_file_info(&state, &file_info, &buffer_info);
+    error = _pttui_buffer_init_buffer_no_buf_from_file_info(&state, &file_info, &buffer);
     EXPECT_EQ(S_OK, error);
 
     EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer->content_type);
@@ -2024,7 +2024,7 @@ TEST(pttui_buffer, pttui_buffer_info_to_resource_info)
 
     PttUIBuffer *new_tail_buffer = NULL;
     int n_new_buffer = 0;
-    error = _extend_pttui_buffer_extend_next_buffer_no_buf(buffer, &file_info, HARD_N_PTTUI_BUFFER, &new_tail_buffer, n_new_buffer);
+    error = _extend_pttui_buffer_extend_next_buffer_no_buf(buffer, &file_info, HARD_N_PTTUI_BUFFER, &new_tail_buffer, &n_new_buffer);
     EXPECT_EQ(S_OK, error);
 
     buffer_info.head = buffer;
