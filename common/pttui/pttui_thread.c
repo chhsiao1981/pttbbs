@@ -54,6 +54,7 @@ destroy_pttui_thread()
 void *
 pttui_thread_disp_buffer(void *a)
 {
+    /*
     Err error_code = S_OK;
     bool is_end = false;
     enum PttUIThreadState expected_state = PTTUI_THREAD_STATE_START;
@@ -102,6 +103,7 @@ pttui_thread_disp_buffer(void *a)
 
     Err error_code_set_state = pttui_thread_set_current_state(PTTUI_THREAD_DISP_BUFFER, PTTUI_THREAD_STATE_END);
     if (!error_code && error_code_set_state) error_code = error_code_set_state;
+    */
 
     return NULL;
 }
