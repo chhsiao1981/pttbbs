@@ -70,8 +70,9 @@ TEST(pttui_resource_info, pttui_resource_info_to_resource_dict)
     PttUIBufferInfo buffer_info = {};
     buffer_info.head = buffer;
     buffer_info.tail = new_tail_buffer;
+    buffer_info.n_buffer = n_new_buffer + 1; // the init-one
 
-    EXPECT_EQ(214, n_new_buffer);
+    EXPECT_EQ(214, buffer_info.n_buffer);
     EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer_info.head->content_type);
     EXPECT_EQ(NULL, buffer_info.head->pre);
     EXPECT_EQ(NULL, buffer_info.tail->next);
