@@ -246,7 +246,7 @@ resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, Fi
 
     // 1. save all buffer to tmp_file
 
-    error_code = _save_pttui_buffer_info_to_tmp_file(buffer_info);
+    error_code = save_pttui_buffer_info_to_tmp_file(buffer_info);
 
     // 2. destroy buffer_info
     if(!error_code) {
@@ -1133,6 +1133,15 @@ _pttui_buffer_info_set_buf_from_resource_dict_get_next_buf(char *p_buf, int buf_
     *p_next_buf = tmp_next_buf;
     *buf_next_offset = tmp_next_offset;
 
+    return S_OK;
+}
+
+/**********
+ * save to tmp file
+ **********/
+Err
+save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info)
+{
     return S_OK;
 }
 

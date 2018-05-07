@@ -68,6 +68,8 @@ Err extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, 
 
 Err pttui_buffer_insert_buffer(PttUIBuffer *current_buffer, PttUIBuffer *next_buffer, PttUIBufferInfo *buffer_info);
 
+Err save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info);
+
 #ifdef __cplusplus
 }
 #endif
