@@ -1760,7 +1760,7 @@ TEST(pttui_buffer, extend_pttui_buffer_extend_pre_buffer2)
     EXPECT_EQ(0, buffer->comment_offset);
     EXPECT_EQ(40, buffer->load_line_offset);
     EXPECT_EQ(39, buffer->load_line_pre_offset);
-    EXPECT_EQ(41, buffer->load_line_next_offset);
+    EXPECT_EQ(INVALID_LINE_OFFSET_NEXT_END, buffer->load_line_next_offset);
 
     PttUIBuffer *new_head_buffer = NULL;
     int n_new_buffer = 1;
@@ -2023,7 +2023,7 @@ TEST(pttui_buffer, pttui_buffer_info_to_resource_info)
     EXPECT_EQ(0, buffer->comment_offset);
 
     PttUIBuffer *new_tail_buffer = NULL;
-    int n_new_buffer = 0;
+    int n_new_buffer = 1;
     error = _extend_pttui_buffer_extend_next_buffer_no_buf(buffer, &file_info, HARD_N_PTTUI_BUFFER, &new_tail_buffer, &n_new_buffer);
     EXPECT_EQ(S_OK, error);
 
