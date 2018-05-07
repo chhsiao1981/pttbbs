@@ -503,18 +503,18 @@ _extend_vedit3_buffer_extend_pre_buffer_no_buf(VEdit3Buffer *current_buffer, Fil
 }
 
 Err
-_extend_vedit3_buffer_info_extend_pre_buffer_no_buf_core(VEdit3Buffer *current_buffer, FileInfo *file_info, VEdit3Buffer **new_buffer)
+_extend_vedit3_buffer_extend_pre_buffer_no_buf_core(VEdit3Buffer *current_buffer, FileInfo *file_info, VEdit3Buffer **new_buffer)
 {
     Err error_code = S_OK;
     switch (current_buffer->content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
-        error_code = _extend_vedit3_buffer_info_extend_pre_buffer_no_buf_main(current_buffer, file_info, new_buffer);
+        error_code = _extend_vedit3_buffer_extend_pre_buffer_no_buf_main(current_buffer, file_info, new_buffer);
         break;
     case PTTDB_CONTENT_TYPE_COMMENT:
-        error_code = _extend_vedit3_buffer_info_extend_pre_buffer_no_buf_comment(current_buffer, file_info, new_buffer);
+        error_code = _extend_vedit3_buffer_extend_pre_buffer_no_buf_comment(current_buffer, file_info, new_buffer);
         break;
     case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
-        error_code = _extend_vedit3_buffer_info_extend_pre_buffer_no_buf_comment_reply(current_buffer, file_info, new_buffer);
+        error_code = _extend_vedit3_buffer_extend_pre_buffer_no_buf_comment_reply(current_buffer, file_info, new_buffer);
         break;
     default:
         error_code = S_ERR;
@@ -525,10 +525,18 @@ _extend_vedit3_buffer_info_extend_pre_buffer_no_buf_core(VEdit3Buffer *current_b
 }
 
 Err
-_extend_vedit3_buffer_info_extend_pre_buffer_no_buf_main(VEdit3Buffer *current_buffer, FileInfo *file_info, VEdit3Buffer **new_buffer)
+_extend_vedit3_buffer_extend_pre_buffer_no_buf_main(VEdit3Buffer *current_buffer, FileInfo *file_info, VEdit3Buffer **new_buffer)
 {
-    if (current_buffer->block_offset == 0 && current_buffer->line_offset == 0) return S_OK;
+    // begin-of-file
+    bool is_begin = false;
+    Err error_code = vedit3_buffer_is_begin_of_file(current_buffer, file_info, &is_begin);
+    if(error_code) return error_code;    
+    if(is_begin) return S_OK;
 
+    // same-block, but no valid pre-offset
+    if(current_buffer->line_offset != 0 && current_buffer->load_line_pre_offset < 0) return S_ERR_EXTEND;
+
+    // malloc new buffer
     *new_buffer = malloc(sizeof(VEdit3Buffer));
     VEdit3Buffer *tmp = *new_buffer;
     bzero(tmp, sizeof(VEdit3Buffer));
@@ -537,7 +545,7 @@ _extend_vedit3_buffer_info_extend_pre_buffer_no_buf_main(VEdit3Buffer *current_b
     tmp->content_type = current_buffer->content_type;
     tmp->comment_offset = 0;
 
-    if (current_buffer->line_offset != 0) {
+    if (current_buffer->line_offset != 0) { // same-block
         tmp->block_offset = current_buffer->block_offset;
         tmp->line_offset = current_buffer->line_offset - 1;
         tmp->storage_type = current_buffer->storage_type;
@@ -566,20 +574,21 @@ _extend_vedit3_buffer_info_extend_pre_buffer_no_buf_comment(VEdit3Buffer *curren
     VEdit3Buffer *tmp = *new_buffer;
     bzero(tmp, sizeof(VEdit3Buffer));
 
-    tmp->storage_type = PTTDB_STORAGE_TYPE_MONGO;
-
     CommentInfo *p_comment = NULL;
-    ContentBlockInfo *p_comment_reply_block;
+    ContentBlockInfo *p_content_block = NULL;
     if (current_buffer->comment_offset == 0) { // main-block. referring to file-info
         tmp->content_type = PTTDB_CONTENT_TYPE_MAIN;
         memcpy(tmp->the_id, file_info->main_content_id, UUIDLEN);
         tmp->block_offset = file_info->n_main_block - 1;
-        tmp->line_offset = file_info->main_blocks[tmp->block_offset].n_line - 1;
+        p_content_block = file_info->main_blocks + tmp->block_offset;
+        tmp->line_offset = p_content_block->n_line - 1;
         tmp->comment_offset = 0;
 
         tmp->load_line_offset = tmp->line_offset;
         tmp->load_line_pre_offset = tmp->load_line_offset ? tmp->load_line_offset - 1 : INVALID_LINE_OFFSET_PRE_END;
         tmp->load_line_next_offset = INVALID_LINE_OFFSET_NEXT_END;
+
+        tmp->storage_type = p_content_block->storage_type;        
     }
     else {
         tmp->comment_offset = current_buffer->comment_offset - 1;
@@ -588,13 +597,15 @@ _extend_vedit3_buffer_info_extend_pre_buffer_no_buf_comment(VEdit3Buffer *curren
             tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;
             memcpy(tmp->the_id, p_comment->comment_reply_id, UUIDLEN);
             tmp->block_offset = p_comment->n_comment_reply_block - 1;
-            p_comment_reply_block = p_comment->comment_reply_blocks + tmp->block_offset;
-            tmp->line_offset = p_comment_reply_block->n_line - 1;
-            tmp->storage_type = p_comment_reply_block->storage_type;
+
+            p_content_block = p_comment->comment_reply_blocks + tmp->block_offset;
+            tmp->line_offset = p_content_block->n_line - 1;
 
             tmp->load_line_offset = tmp->line_offset;
             tmp->load_line_pre_offset = tmp->load_line_offset ? tmp->load_line_offset - 1 : INVALID_LINE_OFFSET_PRE_END;
             tmp->load_line_next_offset = INVALID_LINE_OFFSET_NEXT_END;
+
+            tmp->storage_type = p_content_block->storage_type;
         }
         else {
             tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT; // comment
@@ -605,6 +616,8 @@ _extend_vedit3_buffer_info_extend_pre_buffer_no_buf_comment(VEdit3Buffer *curren
             tmp->load_line_offset = tmp->line_offset;
             tmp->load_line_pre_offset = INVALID_LINE_OFFSET_PRE_END;
             tmp->load_line_next_offset = INVALID_LINE_OFFSET_NEXT_END;
+
+            tmp->storage_type = PTTDB_STORAGE_TYPE_MONGO;
         }
     }
 
@@ -614,6 +627,9 @@ _extend_vedit3_buffer_info_extend_pre_buffer_no_buf_comment(VEdit3Buffer *curren
 Err
 _extend_vedit3_buffer_info_extend_pre_buffer_no_buf_comment_reply(VEdit3Buffer *current_buffer, FileInfo *file_info, VEdit3Buffer **new_buffer)
 {
+    // same-block, but no valid pre-offset
+    if(current_buffer->line_offset != 0 && current_buffer->load_line_pre_offset < 0) return S_ERR_EXTEND;
+
     *new_buffer = malloc(sizeof(VEdit3Buffer));
     VEdit3Buffer *tmp = *new_buffer;
     bzero(tmp, sizeof(VEdit3Buffer));
@@ -627,11 +643,12 @@ _extend_vedit3_buffer_info_extend_pre_buffer_no_buf_comment_reply(VEdit3Buffer *
         memcpy(tmp->the_id, p_comment->comment_id, UUIDLEN);
         tmp->block_offset = 0;
         tmp->line_offset = 0;
-        tmp->storage_type = PTTDB_STORAGE_TYPE_MONGO;
 
         tmp->load_line_offset = tmp->line_offset;
         tmp->load_line_pre_offset = INVALID_LINE_OFFSET_PRE_END;
         tmp->load_line_next_offset = INVALID_LINE_OFFSET_NEXT_END;
+
+        tmp->storage_type = PTTDB_STORAGE_TYPE_MONGO;
     }
     else {
         tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;
@@ -640,21 +657,23 @@ _extend_vedit3_buffer_info_extend_pre_buffer_no_buf_comment_reply(VEdit3Buffer *
         if (current_buffer->line_offset != 0) { // same-block
             tmp->block_offset = current_buffer->block_offset;
             tmp->line_offset = current_buffer->line_offset - 1;
-            tmp->storage_type = current_buffer->storage_type;
 
             tmp->load_line_offset = current_buffer->load_line_pre_offset;
             tmp->load_line_pre_offset = tmp->load_line_offset ? tmp->load_line_offset - 1 : INVALID_LINE_OFFSET_PRE_END;
             tmp->load_line_next_offset = current_buffer->load_line_offset;
+
+            tmp->storage_type = current_buffer->storage_type;
         }
         else { // different block. referring to file-info
             tmp->block_offset = current_buffer->block_offset - 1;
             p_comment_reply_block = p_comment->comment_reply_blocks + tmp->block_offset;
             tmp->line_offset = p_comment_reply_block->n_line - 1;
-            tmp->storage_type = p_comment_reply_block->storage_type;
 
             tmp->load_line_offset = tmp->line_offset;
             tmp->load_line_pre_offset = tmp->load_line_offset ? tmp->load_line_offset - 1 : INVALID_LINE_OFFSET_PRE_END;
             tmp->load_line_next_offset = INVALID_LINE_OFFSET_NEXT_END;
+
+            tmp->storage_type = p_comment_reply_block->storage_type;
         }
     }
 
@@ -753,29 +772,36 @@ _extend_vedit3_buffer_info_extend_next_buffer_no_buf_core(VEdit3Buffer *current_
 Err
 _extend_vedit3_buffer_extend_next_buffer_no_buf_main(VEdit3Buffer *current_buffer, FileInfo *file_info, VEdit3Buffer **new_buffer)
 {
-    if (current_buffer->block_offset == file_info->n_main_block - 1 &&
-            current_buffer->line_offset == file_info->main_blocks[current_buffer->block_offset].n_line - 1 &&
-            !file_info->n_comment) return S_OK;
+    // eof
+    bool is_eof = false;
+    Err error_code = vedit3_buffer_is_eof(current_buffer, file_info, &is_eof);
+    if(error_code) return error_code;    
+    if(is_eof) return S_OK;
 
+    // same-block, but no valid next-offset
+    ContentBlockInfo *p_content_block = file_info->main_blocks + current_buffer->block_offset;    
+    if(current_buffer->line_offset != p_content_block->n_line - 1 && current_buffer->load_line_next_offset < 0) return S_ERR_EXTEND;
+
+    // malloc new buffer
     *new_buffer = malloc(sizeof(VEdit3Buffer));
     VEdit3Buffer *tmp = *new_buffer;
     bzero(tmp, sizeof(VEdit3Buffer));
 
     // last line of main-block. new-buffer as comment
     if (current_buffer->block_offset == file_info->n_main_block - 1 &&
-            current_buffer->line_offset == file_info->main_blocks[current_buffer->block_offset].n_line - 1) {
+            current_buffer->line_offset == p_content_block->n_line - 1) {
 
         memcpy(tmp->the_id, file_info->comments[0].comment_id, UUIDLEN);
         tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT;
         tmp->comment_offset = 0;
         tmp->block_offset = 0;
         tmp->line_offset = 0;
-        tmp->storage_type = PTTDB_STORAGE_TYPE_MONGO;
 
         tmp->load_line_offset = 0;
         tmp->load_line_pre_offset = INVALID_LINE_OFFSET_PRE_END;
         tmp->load_line_next_offset = INVALID_LINE_OFFSET_NEXT_END;
 
+        tmp->storage_type = PTTDB_STORAGE_TYPE_MONGO;
         return S_OK;
     }
 
@@ -784,26 +810,29 @@ _extend_vedit3_buffer_extend_next_buffer_no_buf_main(VEdit3Buffer *current_buffe
     tmp->content_type = current_buffer->content_type;
     tmp->comment_offset = 0;
 
-    if (current_buffer->line_offset != file_info->main_blocks[current_buffer->block_offset].n_line - 1) {
+    if (current_buffer->line_offset != p_content_block->n_line - 1) {
         // not the last-line
         tmp->block_offset = current_buffer->block_offset;
         tmp->line_offset = current_buffer->line_offset + 1;
-        tmp->storage_type = current_buffer->storage_type;
 
         tmp->load_line_offset = current_buffer->load_line_next_offset;
-        if(tmp->load_line_offset < 0) return S_ERR_EXTEND;
         tmp->load_line_pre_offset = current_buffer->load_line_offset;
-        tmp->load_line_next_offset = tmp->load_line_offset < file_info->main_blocks[current_buffer->block_offset].n_line_in_db - 1 ? tmp->load_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
+        tmp->load_line_next_offset = tmp->load_line_offset < p_content_block->n_line_in_db - 1 ? tmp->load_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
+
+        tmp->storage_type = p_content_block->storage_type;
     }
     else {
         // last-line, but not the last block, referring from file-info
         tmp->block_offset = current_buffer->block_offset + 1;
         tmp->line_offset = 0;
-        tmp->storage_type = file_info->main_blocks[tmp->block_offset].storage_type;
+
+        p_content_block++;
 
         tmp->load_line_offset = tmp->line_offset;
         tmp->load_line_pre_offset = INVALID_LINE_OFFSET_PRE_END;
-        tmp->load_line_next_offset = tmp->load_line_offset < file_info->main_blocks[current_buffer->block_offset].n_line_in_db - 1 ? tmp->load_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
+        tmp->load_line_next_offset = tmp->load_line_offset < p_content_block->n_line_in_db - 1 ? tmp->load_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
+
+        tmp->storage_type = p_content_block->storage_type;
     }
 
     return S_OK;
@@ -812,13 +841,15 @@ _extend_vedit3_buffer_extend_next_buffer_no_buf_main(VEdit3Buffer *current_buffe
 Err
 _extend_vedit3_buffer_extend_next_buffer_no_buf_comment(VEdit3Buffer *current_buffer, FileInfo *file_info, VEdit3Buffer **new_buffer)
 {
+    // eof
+    bool is_eof = false;
+    Err error_code = vedit3_buffer_is_eof(current_buffer, file_info, &is_eof);
+    if(error_code) return error_code;    
+    if(is_eof) return S_OK;
+
     int current_buffer_comment_offset = current_buffer->comment_offset;
     CommentInfo *p_comment = file_info->comments + current_buffer_comment_offset;
     ContentBlockInfo *p_comment_reply_block = NULL;
-
-    // the end of file
-    if (current_buffer_comment_offset == file_info->n_comment - 1 &&
-        !p_comment->n_comment_reply_block) return S_OK;
 
     *new_buffer = malloc(sizeof(VEdit3Buffer));
     VEdit3Buffer *tmp = *new_buffer;
@@ -837,12 +868,14 @@ _extend_vedit3_buffer_extend_next_buffer_no_buf_comment(VEdit3Buffer *current_bu
 
         tmp->load_line_offset = tmp->line_offset;
         tmp->load_line_pre_offset = INVALID_LINE_OFFSET_PRE_END;
-        tmp->load_line_next_offset = tmp->load_line_offset < p_comment_reply_block.n_line_in_db - 1 ? tmp->load_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
+        tmp->load_line_next_offset = tmp->load_line_offset < p_comment_reply_block->n_line_in_db - 1 ? tmp->load_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
     }
     else {
         // next comment
         tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT;
+
         p_comment++;
+
         memcpy(tmp->the_id, p_comment->comment_id, UUIDLEN);
         tmp->comment_offset = current_buffer_comment_offset + 1;
         tmp->block_offset = 0;
@@ -860,49 +893,39 @@ _extend_vedit3_buffer_extend_next_buffer_no_buf_comment(VEdit3Buffer *current_bu
 Err
 _extend_vedit3_buffer_extend_next_buffer_no_buf_comment_reply(VEdit3Buffer *current_buffer, FileInfo *file_info, VEdit3Buffer **new_buffer)
 {
-    int current_buffer_comment_offset = current_buffer->comment_offset;
-    int current_buffer_block_offset = current_buffer->block_offset;
-    int current_buffer_line_offset = current_buffer->line_offset;
-    int next_buffer_load_line_offset = current_buffer->load_line_next_offset;
+    // eof
+    bool is_eof = false;
+    Err error_code = vedit3_buffer_is_eof(current_buffer, file_info, &is_eof);
+    if(error_code) return error_code;    
+    if(is_eof) return S_OK;
 
-    if(next_buffer_load_line_offset < 0 && next_buffer_load_line_offset != INVALID_LINE_OFFSET_NEXT_END) return S_ERR_EXTEND;
+    CommentInfo *p_comment = file_info->comments + current_buffer->comment_offset;
+    ContentBlockInfo *p_comment_reply_block = p_comment->comment_reply_blocks + current_buffer->block_offset;
 
-    CommentInfo *p_comment = file_info->comments + current_buffer_comment_offset;
-    ContentBlockInfo *p_comment_reply_block = p_comment->comment_reply_blocks + current_buffer_block_offset;
+    // same-block, but no valid load_line_next_offset
+    if(current_buffer->line_offset != p_comment_reply_block->n_line - 1 &&
+        current_buffer->load_line_next_offset < 0) return S_ERR_EXTEND;
 
-    // the end of file
-    if (current_buffer_comment_offset == file_info->n_comment - 1 &&
-            current_buffer_block_offset == p_comment->n_comment_reply_block - 1 &&
-            current_buffer_line_offset == p_comment_reply_block->n_line - 1) return S_OK;
+    *new_buffer = malloc(sizeof(VEdit3Buffer));
+    VEdit3Buffer *tmp = *new_buffer;
+    bzero(tmp, sizeof(VEdit3Buffer));
 
-    if (current_buffer_line_offset != p_comment_reply_block->n_line - 1) {
-        // within the same block
-        if(current_buffer->load_line_next_offset < 0) return S_ERR_EXTEND;
-
-        *new_buffer = malloc(sizeof(VEdit3Buffer));
-        VEdit3Buffer *tmp = *new_buffer;
-        bzero(tmp, sizeof(VEdit3Buffer));
-
-        tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;
+    // same-block
+    if (current_buffer->line_offset != p_comment_reply_block->n_line - 1) {
+        tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;        
         memcpy(tmp->the_id, p_comment->comment_reply_id, UUIDLEN);
         tmp->comment_offset = current_buffer_comment_offset;
         tmp->block_offset = current_buffer_block_offset;
         tmp->line_offset = current_buffer_line_offset + 1;
 
         tmp->load_line_offset = current_buffer->load_line_next_offset;
-
         tmp->load_line_pre_offset = current_buffer->load_line_offset;
         tmp->load_line_next_offset = tmp->load_line_offset < p_comment_reply_block->n_line_in_db - 1 ? tmp->load_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
 
         tmp->storage_type = p_comment_reply_block->storage_type;
     }
-    else if (current_buffer_block_offset != p_comment->n_comment_reply_block - 1) {
+    else if (current_buffer->block_offset != p_comment->n_comment_reply_block - 1) {
         // different block, within same comment, referring file-info
-
-        *new_buffer = malloc(sizeof(VEdit3Buffer));
-        VEdit3Buffer *tmp = *new_buffer;
-        bzero(tmp, sizeof(VEdit3Buffer));
-
         tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;
         memcpy(tmp->the_id, p_comment->comment_reply_id, UUIDLEN);
         tmp->comment_offset = current_buffer_comment_offset;
@@ -919,10 +942,6 @@ _extend_vedit3_buffer_extend_next_buffer_no_buf_comment_reply(VEdit3Buffer *curr
     }
     else {
         // different comment
-        *new_buffer = malloc(sizeof(VEdit3Buffer));
-        VEdit3Buffer *tmp = *new_buffer;
-        bzero(tmp, sizeof(VEdit3Buffer));
-
         tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT;
         p_comment++;
         memcpy(tmp->the_id, p_comment->comment_id, UUIDLEN);
