@@ -1628,7 +1628,7 @@ TEST(pttui_buffer, sync_pttui_buffer_info_extend_next_buffer_no_buf_comment_repl
     destroy_file_info(&file_info);
 }
 
-TEST(pttui_buffer, sync_pttui_buffer_info_extend_pre_buffer)
+TEST(pttui_buffer, extend_pttui_buffer_extend_pre_buffer)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN);
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
@@ -1668,24 +1668,27 @@ TEST(pttui_buffer, sync_pttui_buffer_info_extend_pre_buffer)
     // PttUI
     PttUIState state = {};
     PttUIBufferInfo buffer_info = {};
+    PttUIBuffer *buffer = NULL;
 
     memcpy(state.top_line_id, file_info.main_content_id, UUIDLEN);
     memcpy(state.main_id, file_info.main_id, UUIDLEN);
 
-    error = _sync_pttui_buffer_info_init_buffer_no_buf_from_file_info(&state, &file_info, &buffer_info);
+    error = _pttui_buffer_init_buffer_no_buf_from_file_info(&state, &file_info, &buffer);
     EXPECT_EQ(S_OK, error);
 
-    EXPECT_EQ(1, buffer_info.n_buffer);
-    EXPECT_EQ(buffer_info.head, buffer_info.tail);
-    EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer_info.head->content_type);
-    EXPECT_EQ(NULL, buffer_info.head->next);
-    EXPECT_EQ(NULL, buffer_info.head->pre);
-    EXPECT_EQ(0, buffer_info.head->block_offset);
-    EXPECT_EQ(0, buffer_info.head->line_offset);
-    EXPECT_EQ(0, buffer_info.head->comment_offset);
+    EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer->content_type);
+    EXPECT_EQ(0, buffer->block_offset);
+    EXPECT_EQ(0, buffer->line_offset);
+    EXPECT_EQ(0, buffer->comment_offset);
 
-    error = _sync_pttui_buffer_info_extend_pre_buffer(&buffer_info, &state, &file_info, HARD_N_VEDIT3_BUFFER);
+    PttUIBuffer *new_head_buffer = NULL;
+    int n_new_buffer = 1;
+    error = _extend_pttui_buffer_extend_pre_buffer(&file_info, buffer, HARD_N_VEDIT3_BUFFER, &new_head_buffer, &n_new_buffer);
     EXPECT_EQ(S_OK, error);
+
+    buffer_info.head = new_head_buffer;
+    buffer_info.tail = buffer;
+    buffer_info.n_buffer = n_new_buffer;
 
     EXPECT_EQ(1, buffer_info.n_buffer);
     EXPECT_EQ(buffer_info.head, buffer_info.tail);
@@ -1752,12 +1755,12 @@ TEST(pttui_buffer, extend_pttui_buffer_extend_pre_buffer2)
     EXPECT_EQ(S_OK, error);
 
     EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer.content_type);
-    EXPECT_EQ(0, buffer.block_offset);
-    EXPECT_EQ(40, buffer.line_offset);
-    EXPECT_EQ(0, buffer.comment_offset);
-    EXPECT_EQ(40, buffer.load_line_offset);
-    EXPECT_EQ(39, buffer.load_line_pre_offset);
-    EXPECT_EQ(41, buffer.load_line_next_offset);
+    EXPECT_EQ(0, buffer->block_offset);
+    EXPECT_EQ(40, buffer->line_offset);
+    EXPECT_EQ(0, buffer->comment_offset);
+    EXPECT_EQ(40, buffer->load_line_offset);
+    EXPECT_EQ(39, buffer->load_line_pre_offset);
+    EXPECT_EQ(41, buffer->load_line_next_offset);
 
     PttUIBuffer *new_head_buffer = NULL;
     int n_new_buffer = 1;
@@ -1830,13 +1833,13 @@ TEST(pttui_buffer, extend_pttui_buffer_extend_pre_buffer3)
     error = _pttui_buffer_init_buffer_no_buf_from_file_info(&state, &file_info, &buffer);
     EXPECT_EQ(S_OK, error);
 
-    EXPECT_EQ(PTTDB_CONTENT_TYPE_COMMENT, buffer.content_type);
-    EXPECT_EQ(0, buffer.block_offset);
-    EXPECT_EQ(0, buffer.line_offset);
-    EXPECT_EQ(102, buffer.comment_offset);
-    EXPECT_EQ(0, buffer.load_line_offset);
-    EXPECT_EQ(INVALID_LINE_OFFSET_PRE_END, buffer.load_line_pre_offset);
-    EXPECT_EQ(INVALID_LINE_OFFSET_NEXT_END, buffer.load_line_next_offset);
+    EXPECT_EQ(PTTDB_CONTENT_TYPE_COMMENT, buffer->content_type);
+    EXPECT_EQ(0, buffer->block_offset);
+    EXPECT_EQ(0, buffer->line_offset);
+    EXPECT_EQ(102, buffer->comment_offset);
+    EXPECT_EQ(0, buffer->load_line_offset);
+    EXPECT_EQ(INVALID_LINE_OFFSET_PRE_END, buffer->load_line_pre_offset);
+    EXPECT_EQ(INVALID_LINE_OFFSET_NEXT_END, buffer->load_line_next_offset);
 
     PttUIBuffer *new_head_buffer = NULL;
     int n_new_buffer = 1;
@@ -1938,10 +1941,10 @@ TEST(pttui_buffer, extend_pttui_buffer_info_extend_next_buffer)
     error = _pttui_buffer_init_buffer_no_buf_from_file_info(&state, &file_info, &buffer);
     EXPECT_EQ(S_OK, error);
 
-    EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer.content_type);
-    EXPECT_EQ(0, buffer.block_offset);
-    EXPECT_EQ(0, buffer.line_offset);
-    EXPECT_EQ(0, buffer.comment_offset);
+    EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer->content_type);
+    EXPECT_EQ(0, buffer->block_offset);
+    EXPECT_EQ(0, buffer->line_offset);
+    EXPECT_EQ(0, buffer->comment_offset);
 
     PttUIBuffer *new_tail_buffer = NULL;
     int n_new_buffer = 1;
@@ -2014,10 +2017,10 @@ TEST(pttui_buffer, pttui_buffer_info_to_resource_info)
     error = _pttui_buffer_init_buffer_no_buf_from_file_info(&state, &file_info, &buffer_info);
     EXPECT_EQ(S_OK, error);
 
-    EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer.content_type);
-    EXPECT_EQ(0, buffer.block_offset);
-    EXPECT_EQ(30, buffer.line_offset);
-    EXPECT_EQ(0, buffer.comment_offset);
+    EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer->content_type);
+    EXPECT_EQ(0, buffer->block_offset);
+    EXPECT_EQ(30, buffer->line_offset);
+    EXPECT_EQ(0, buffer->comment_offset);
 
     PttUIBuffer *new_tail_buffer = NULL;
     int n_new_buffer = 0;
