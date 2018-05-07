@@ -1094,7 +1094,6 @@ _pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIResourceDi
         fprintf(stderr, "pttui_buffer._pttui_buffer_info_set_buf_from_resource_dict: i: %d content_type: %d buf_offset: %d buf_next_offset: %d len: %d p_next: %lu\n", i, p_buffer->content_type, buf_offset, buf_next_offset, len, (unsigned long)p_buffer->next);
 
         p_buffer_len = buf_next_offset - buf_offset;
-        p_buffer->len = p_buffer_len;
         p_buffer_len_no_nl = p_buffer_len;
         p_buf_no_nl = p_buf + p_buffer_len - 1;
         for(int i_no_nl = 0; i_no_nl < 2; i_no_nl++) {
