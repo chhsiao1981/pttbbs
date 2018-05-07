@@ -14,6 +14,10 @@ extern "C" {
 #define HARD_N_VEDIT3_BUFFER 250
 #define N_SHRINK_VEDIT3_BUFFER 600
 
+#define INVALID_LINE_OFFSET_PRE_END -1
+#define INVALID_LINE_OFFSET_NEXT_END -2
+#define INVALID_LINE_OFFSET_NEW -3
+
 typedef struct VEdit3Buffer {
     struct VEdit3Buffer *next;
     struct VEdit3Buffer *pre;
@@ -33,7 +37,6 @@ typedef struct VEdit3Buffer {
     bool is_new;
     bool is_to_delete;
 
-    int len;
     int len_no_nl;
     char *buf;
 } VEdit3Buffer;

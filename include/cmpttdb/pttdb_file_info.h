@@ -14,6 +14,7 @@ extern "C" {
 
 typedef struct ContentBlockInfo {
     int n_line;
+    int n_line_in_db;
     int n_new_line;
     int n_to_delete_line;
     enum StorageType storage_type;

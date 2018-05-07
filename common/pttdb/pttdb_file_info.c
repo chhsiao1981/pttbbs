@@ -81,6 +81,7 @@ _get_file_info_set_content_block_info(UUID main_content_id, int n_content_block,
             if(error_code) break;
 
             file_info->main_blocks[block_id].n_line = n_line;
+            file_info->main_blocks[block_id].n_line_in_db = n_line;
             file_info->main_blocks[block_id].storage_type = PTTDB_STORAGE_TYPE_MONGO;
         }
     }
@@ -315,6 +316,7 @@ _get_file_info_set_comment_replys_to_comment_info(bson_t **b_comments, int n_com
             if(error_code) break;
 
             comments[each_idx].comment_reply_blocks[each_block_id].n_line = each_n_line;
+            comments[each_idx].comment_reply_blocks[each_block_id].n_line_in_db = each_n_line;
         }
     }
 
