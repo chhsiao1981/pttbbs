@@ -118,11 +118,6 @@ sync_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIBuffer *current_buffer
 {
     Err error_code = S_OK;
 
-    // no buffer in buffer_info
-    if (!current_buffer) {
-        return resync_all_pttui_buffer_info(buffer_info, state, file_info, new_buffer);
-    }
-
     // determine new buffer of the expected-state
     bool tmp_is_pre = false;
     error_code = _sync_pttui_buffer_info_is_pre(state, current_buffer, &tmp_is_pre);
@@ -275,7 +270,7 @@ resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, Fi
 
     // 4. extend pttui buffer
     if(!error_code) {
-        error_code = _extend_pttui_buffer(state, file_info, tmp_buffer, tmp_buffer, tmp_buffer, &tmp_head, &tmp_tail, &n_buffer);
+        error_code = _extend_pttui_buffer(file_info, tmp_buffer, tmp_buffer, tmp_buffer, &tmp_head, &tmp_tail, &n_buffer);
     }
 
     // 5. set to buffer-info
@@ -439,18 +434,17 @@ _extend_pttui_buffer(FileInfo *file_info, PttUIBuffer *head_buffer, PttUIBuffer 
     // 2. do extend buffer.
     Err error_code = S_OK;
 
-    int n_extra_pre_range = 0;
-    int n_extra_next_range = 0;
+    int n_extra_range = 0;
 
     error_code = _extend_pttui_buffer_count_extra_pre_range(current_buffer, &n_extra_range);
-
-    if(!error_code) {
-        error_code = _extend_pttui_buffer_count_extra_next_range(current_buffer, &n_extra_range);
-    }
 
     // extend-pre
     if(!error_code && (!head_buffer->buf || n_extra_pre_range)) {
         error_code = _extend_pttui_buffer_extend_pre_buffer(file_info, head_buffer, n_extra_range, new_head_buffer, n_new_buffer);
+    }
+
+    if(!error_code) {
+        error_code = _extend_pttui_buffer_count_extra_next_range(current_buffer, &n_extra_range);
     }
 
     // extend-next

@@ -60,7 +60,7 @@ Err destroy_pttui_buffer_info(PttUIBufferInfo *buffer_info);
 Err pttui_buffer_is_begin_of_file(PttUIBuffer *buffer, FileInfo *file_info, bool *is_begin);
 Err pttui_buffer_is_eof(PttUIBuffer *buffer, FileInfo *file_info, bool *is_eof);
 
-Err sync_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, FileInfo *file_info, PttUIBuffer **new_buffer);
+Err sync_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIBuffer *current_buffer, PttUIState *state, FileInfo *file_info, PttUIBuffer **new_buffer);
 
 Err resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, FileInfo *file_info, PttUIBuffer **new_buffer);
 
