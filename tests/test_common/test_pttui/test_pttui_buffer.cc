@@ -451,14 +451,14 @@ TEST(pttui_buffer, pttui_buffer_init_buffer_no_buf_from_file_info)
     fprintf(stderr, "test_pttui_buffer.pttui_buffer_info_init_buffer_no_buf_from_file_info: after sync\n");
     EXPECT_EQ(S_OK, error);
 
-    EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer.content_type);
-    EXPECT_EQ(0, buffer.block_offset);
-    EXPECT_EQ(0, buffer.line_offset);
-    EXPECT_EQ(0, buffer.comment_offset);
-    EXPECT_EQ(PTTDB_STORAGE_TYPE_MONGO, buffer.storage_type);
-    EXPECT_EQ(0, buffer.len_no_nl);
-    EXPECT_EQ(NULL, buffer.buf);
-    EXPECT_EQ(0, memcmp(file_info.main_content_id, buffer.the_id, UUIDLEN));
+    EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer->content_type);
+    EXPECT_EQ(0, buffer->block_offset);
+    EXPECT_EQ(0, buffer->line_offset);
+    EXPECT_EQ(0, buffer->comment_offset);
+    EXPECT_EQ(PTTDB_STORAGE_TYPE_MONGO, buffer->storage_type);
+    EXPECT_EQ(0, buffer->len_no_nl);
+    EXPECT_EQ(NULL, buffer->buf);
+    EXPECT_EQ(0, memcmp(file_info.main_content_id, buffer->the_id, UUIDLEN));
 
     // free
 
