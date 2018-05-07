@@ -1683,7 +1683,7 @@ TEST(pttui_buffer, extend_pttui_buffer_extend_pre_buffer)
 
     PttUIBuffer *new_head_buffer = NULL;
     int n_new_buffer = 1;
-    error = _extend_pttui_buffer_extend_pre_buffer(&file_info, buffer, HARD_N_VEDIT3_BUFFER, &new_head_buffer, &n_new_buffer);
+    error = _extend_pttui_buffer_extend_pre_buffer(&file_info, buffer, HARD_N_PTTUI_BUFFER, &new_head_buffer, &n_new_buffer);
     EXPECT_EQ(S_OK, error);
 
     buffer_info.head = new_head_buffer;
@@ -1765,7 +1765,7 @@ TEST(pttui_buffer, extend_pttui_buffer_extend_pre_buffer2)
     PttUIBuffer *new_head_buffer = NULL;
     int n_new_buffer = 1;
 
-    error = _extend_pttui_buffer_info_extend_pre_buffer(&file_info, buffer, HARD_N_VEDIT3_BUFFER, &new_head_buffer, &n_new_buffer);
+    error = _extend_pttui_buffer_info_extend_pre_buffer(&file_info, buffer, HARD_N_PTTUI_BUFFER, &new_head_buffer, &n_new_buffer);
     EXPECT_EQ(S_OK, error);
 
     buffer_info.head = new_head_buffer;
@@ -1844,7 +1844,7 @@ TEST(pttui_buffer, extend_pttui_buffer_extend_pre_buffer3)
     PttUIBuffer *new_head_buffer = NULL;
     int n_new_buffer = 1;
 
-    error = _extend_pttui_buffer_info_extend_pre_buffer(&file_info, buffer, HARD_N_VEDIT3_BUFFER, &new_head_buffer, &n_new_buffer);
+    error = _extend_pttui_buffer_info_extend_pre_buffer(&file_info, buffer, HARD_N_PTTUI_BUFFER, &new_head_buffer, &n_new_buffer);
     EXPECT_EQ(S_OK, error);
 
     buffer_info.head = new_head_buffer;
@@ -1948,7 +1948,7 @@ TEST(pttui_buffer, extend_pttui_buffer_info_extend_next_buffer)
 
     PttUIBuffer *new_tail_buffer = NULL;
     int n_new_buffer = 1;
-    error = _extend_pttui_buffer_extend_next_buffer(&file_info, buffer, HARD_N_VEDIT3_BUFFER, &new_tail_buffer, &n_new_buffer);
+    error = _extend_pttui_buffer_extend_next_buffer(&file_info, buffer, HARD_N_PTTUI_BUFFER, &new_tail_buffer, &n_new_buffer);
     EXPECT_EQ(S_OK, error);
 
     buffer_info.head = buffer;
@@ -2024,7 +2024,7 @@ TEST(pttui_buffer, pttui_buffer_info_to_resource_info)
 
     PttUIBuffer *new_tail_buffer = NULL;
     int n_new_buffer = 0;
-    error = _extend_pttui_buffer_extend_next_buffer_no_buf(buffer, &file_info, HARD_N_VEDIT3_BUFFER, &new_tail_buffer, n_new_buffer);
+    error = _extend_pttui_buffer_extend_next_buffer_no_buf(buffer, &file_info, HARD_N_PTTUI_BUFFER, &new_tail_buffer, n_new_buffer);
     EXPECT_EQ(S_OK, error);
 
     buffer_info.head = buffer;
