@@ -25,14 +25,6 @@ VEdit3EditorStatus DEFAULT_VEDIT3_EDITOR_STATUS = {
 
 VEdit3EditorStatus VEDIT3_EDITOR_STATUS = {};
 
-VEdit3State VEDIT3_STATE = {};
-VEdit3State VEDIT3_BUFFER_STATE = {};
-
-FileInfo VEDIT3_FILE_INFO = {};
-
-VEdit3BufferInfo VEDIT3_BUFFER_INFO = {};
-VEdit3Buffer *VEDIT3_DISP_TOP_LINE_BUFFER = NULL;
-
 char *_CONST_VEDIT3_LOADINGS[] = {
     ANSI_COLOR(0;37)".",
     ANSI_COLOR(0;37)".",

@@ -4,8 +4,8 @@
 
 #include "ptterr.h"
 #include "ptt_const.h"
-#include "cmpttui/vedit3_state.h"
-#include "cmpttui/vedit3_buffer.h"
+#include "cmpttui/pttui_state.h"
+#include "cmpttui/pttui_buffer.h"
 #include "cmpttui/pttui_thread.h"
 #include "cmpttui/pttui_thread_lock.h"
 
@@ -62,16 +62,6 @@ typedef struct VEdit3EditorStatus {
 
 extern VEdit3EditorStatus DEFAULT_VEDIT3_EDITOR_STATUS;
 extern VEdit3EditorStatus VEDIT3_EDITOR_STATUS;
-
-extern VEdit3State VEDIT3_STATE;
-extern VEdit3State VEDIT3_BUFFER_STATE;
-
-extern FileInfo VEDIT3_FILE_INFO;
-
-extern VEdit3BufferInfo VEDIT3_BUFFER_INFO;
-extern VEdit3Buffer *VEDIT3_DISP_TOP_LINE_BUFFER;
-
-//extern VEdit3Buffer *VEDIT3_BUFFER_HEAD;
 
 int vedit3_wrapper(const char *fpath, int saveheader, char title[TTLEN + 1], int flags, fileheader_t *fhdr, boardheader_t *bp);
 
