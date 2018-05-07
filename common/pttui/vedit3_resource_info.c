@@ -1,7 +1,7 @@
 #include "cmpttui/vedit3_resource_info.h"
 
 Err
-vedit3_resource_info_push_queue(VEdit3Buffer *buffer, VEdit3ResourceInfo *resource_info, enum PttDBContentType content_type, enum StorageType storage_type)
+vedit3_resource_info_push_queue(VEdit3Buffer *buffer, VEdit3ResourceInfo *resource_info, enum PttDBContentType content_type, enum PttDBStorageType storage_type)
 {
     Err error_code = S_OK;
 

@@ -17,7 +17,7 @@ typedef struct VEdit3ResourceInfo {
 } VEdit3ResourceInfo;
 
 Err
-vedit3_resource_info_push_queue(VEdit3Buffer *buffer, VEdit3ResourceInfo *resource_info, enum PttDBContentType content_type, enum StorageType storage_type);
+vedit3_resource_info_push_queue(VEdit3Buffer *buffer, VEdit3ResourceInfo *resource_info, enum PttDBContentType content_type, enum PttDBStorageType storage_type);
 
 Err destroy_vedit3_resource_info(VEdit3ResourceInfo *resource_info);
 

@@ -17,7 +17,7 @@ typedef struct ContentBlockInfo {
     int n_line_in_db;
     int n_new_line;
     int n_to_delete_line;
-    enum StorageType storage_type;
+    enum PttDBStorageType storage_type;
 } ContentBlockInfo;
 
 typedef struct CommentInfo {
@@ -56,11 +56,11 @@ Err file_info_get_total_lines(FileInfo *file_info, bool is_full_comment_reply, i
 
 Err file_info_is_pre_line(FileInfo *file_info, enum PttDBContentType content_type, int block_offset, int line_offset, int comment_offset, bool *is_pre_line);
 
-Err file_info_get_pre_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type);
+Err file_info_get_pre_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum PttDBStorageType *new_storage_type);
 
 Err file_info_is_next_line(FileInfo *file_info, enum PttDBContentType content_type, int block_offset, int line_offset, int comment_offset, bool *is_next_line);
 
-Err file_info_get_next_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum StorageType *new_storage_type);
+Err file_info_get_next_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum PttDBStorageType *new_storage_type);
 
 #ifdef __cplusplus
 }

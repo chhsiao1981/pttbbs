@@ -801,7 +801,7 @@ _vedit3_action_move_up_ensure_top_of_window()
     int new_block_offset = 0;
     int new_line_offset = 0;
     int new_comment_offset = 0;
-    enum StorageType _dummy = PTTDB_STORAGE_TYPE_MONGO;
+    enum PttDBStorageType _dummy = PTTDB_STORAGE_TYPE_MONGO;
 
     Err error_code = file_info_get_pre_line(&VEDIT3_FILE_INFO, VEDIT3_STATE.top_line_id, VEDIT3_STATE.top_line_content_type, VEDIT3_STATE.top_line_block_offset, VEDIT3_STATE.top_line_line_offset, VEDIT3_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
     if (error_code) return error_code;
@@ -874,7 +874,7 @@ _vedit3_action_move_down_ensure_end_of_window()
     int new_block_offset = 0;
     int new_line_offset = 0;
     int new_comment_offset = 0;
-    enum StorageType _dummy = PTTDB_STORAGE_TYPE_MONGO;
+    enum PttDBStorageType _dummy = PTTDB_STORAGE_TYPE_MONGO;
 
     Err error_code = file_info_get_next_line(&VEDIT3_FILE_INFO, VEDIT3_STATE.top_line_id, VEDIT3_STATE.top_line_content_type, VEDIT3_STATE.top_line_block_offset, VEDIT3_STATE.top_line_line_offset, VEDIT3_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
     if (error_code) return error_code;

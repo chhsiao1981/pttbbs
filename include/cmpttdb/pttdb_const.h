@@ -18,7 +18,7 @@ enum LiveStatus {
     LIVE_STATUS_DELETED,
 };
 
-enum StorageType {
+enum PttDBStorageType {
     PTTDB_STORAGE_TYPE_MONGO,
     PTTDB_STORAGE_TYPE_FILE,
     PTTDB_STORAGE_TYPE_OTHER,

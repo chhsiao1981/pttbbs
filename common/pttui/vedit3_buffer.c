@@ -341,7 +341,7 @@ _vedit3_buffer_init_buffer_no_buf_from_file_info(VEdit3State *state, FileInfo *f
     case PTTDB_CONTENT_TYPE_MAIN:
         p_content_block_info = file_info->main_blocks + p_buffer->block_offset;
         p_buffer->storage_type = p_content_block_info->storage_type;
-        p_buffer->load_line_next_offset = p_buffer->load_line_offset < p_content_block_info->n_line - 1 ? p_buffer->load_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
+        p_buffer->load_line_next_offset = p_buffer->load_line_offset < p_content_block_info->n_line_in_db - 1 ? p_buffer->load_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
         break;
     case PTTDB_CONTENT_TYPE_COMMENT:
         p_buffer->storage_type = PTTDB_STORAGE_TYPE_MONGO;
@@ -351,7 +351,7 @@ _vedit3_buffer_init_buffer_no_buf_from_file_info(VEdit3State *state, FileInfo *f
         p_comment_info = file_info->comments + p_buffer->comment_offset;
         p_content_block_info = p_comment_info->comment_reply_blocks + p_buffer->block_offset;
         p_buffer->storage_type = p_content_block_info->storage_type;
-        p_buffer->load_line_next_offset = p_buffer->load_line_offset < p_content_block_info->n_line - 1 ? p_buffer->load_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
+        p_buffer->load_line_next_offset = p_buffer->load_line_offset < p_content_block_info->n_line_in_db - 1 ? p_buffer->load_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
         break;
     default:
         break;
@@ -366,7 +366,61 @@ _vedit3_buffer_init_buffer_no_buf_from_file_info(VEdit3State *state, FileInfo *f
 
 
 Err
-extend_vedit3_buffer_info(VEdit3State *state, FileInfo *file_info,)
+extend_vedit3_buffer_info(FileInfo *file_info, VEdit3BufferInfo *buffer_info, VEdit3Buffer *current_buffer)
+{
+    Err error_code = S_OK;
+    // lock for writing buffer-info
+    error_code = pttui_thread_lock_wrlock(LOCK_VEDIT3_WR_BUFFER_INFO);
+    if(error_code) return error_code;
+
+    VEdit3Buffer *orig_head = malloc(sizeof(VEdit3Buffer));
+    VEdit3Buffer *orig_tail = malloc(sizeof(VEdit3Buffer));
+
+    memcpy(orig_head, buffer_info->head, sizeof(VEdit3Buffer));
+    memcpy(orig_tail, buffer_info->tail, sizeof(VEdit3Buffer));
+
+    VEdit3Buffer *new_head_buffer = NULL;
+    VEdit3Buffer *new_tail_buffer = NULL;
+    int n_new_buffer = 0;    
+
+    error_code = _extend_vedit3_buffer(file_info, orig_head, orig_tail, current_buffer, &new_head_buffer, &new_tail_buffer, &n_new_buffer);
+
+    Err error_code_lock = S_ERR_NOT_INIT;
+    if(!error_code) {
+        error_code_lock = pttui_thread_lock_wrlock(LOCK_VEDIT3_BUFFER_INFO);
+        if(!error_code && error_code_lock) error_code = error_code_lock;
+    }
+
+    if(!error_code) {
+        buffer_info->head->pre = orig_head->pre;
+        if(orig_head != new_head_buffer) {
+            buffer_info->head = new_head_buffer;
+        }
+
+        buffer_info->tail->next = orig_tail->next;
+        if(orig_tail != new_tail_buffer) {
+            buffer_info->tail = new_tail_buffer;
+        }
+
+        buffer_info->n_buffer += n_new_buffer;
+    }
+
+    if(!error_code_lock) {
+        error_code_lock = pttui_thread_lock_unlock(LOCK_VEDIT3_BUFFER_INFO);
+        if(!error_code && error_code_lock) error_code = error_code_lock;
+    }
+
+    error_code_lock = pttui_thread_lock_unlock(LOCK_VEDIT3_WR_BUFFER_INFO);
+    if(!error_code && error_code_lock) error_code = error_code_lock;
+
+    // free
+
+    safe_free(&orig_head);
+    safe_free(&orig_tail);
+
+    return error_code;
+
+}
 
 /**
  * @brief [brief description]
@@ -380,7 +434,7 @@ extend_vedit3_buffer_info(VEdit3State *state, FileInfo *file_info,)
  * @param current_buffer [description]
  */
 Err
-_extend_vedit3_buffer(FileInfo *file_info, VEdit3Buffer *head_buffer, VEdit3Buffer *tail_buffer, VEdit3Buffer *current_buffer, VEdit3Buffer **new_head_buffer, VEdit3Buffer **new_tail_buffer)
+_extend_vedit3_buffer(FileInfo *file_info, VEdit3Buffer *head_buffer, VEdit3Buffer *tail_buffer, VEdit3Buffer *current_buffer, VEdit3Buffer **new_head_buffer, VEdit3Buffer **new_tail_buffer, int *n_new_buffer)
 {
     // 1. determine extra-range required to retrieve.
     // 2. do extend buffer.
@@ -397,12 +451,12 @@ _extend_vedit3_buffer(FileInfo *file_info, VEdit3Buffer *head_buffer, VEdit3Buff
 
     // extend-pre
     if(!error_code && (!head_buffer->buf || n_extra_pre_range)) {
-        error_code = _extend_vedit3_buffer_extend_pre_buffer(file_info, head_buffer, n_extra_range, new_head_buffer, ret_n_buffer);
+        error_code = _extend_vedit3_buffer_extend_pre_buffer(file_info, head_buffer, n_extra_range, new_head_buffer, n_new_buffer);
     }
 
     // extend-next
     if (!error_code && (!tail_buffer->buf || n_extra_next_range)) {
-        error_code = _extend_vedit3_buffer_extend_next_buffer(file_info, tail_buffer, n_extra_range, new_tail_buffer, ret_n_buffer);
+        error_code = _extend_vedit3_buffer_extend_next_buffer(file_info, tail_buffer, n_extra_range, new_tail_buffer, n_new_buffer);
     }
 
     return error_code;

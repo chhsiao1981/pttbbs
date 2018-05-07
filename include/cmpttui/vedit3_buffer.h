@@ -31,7 +31,7 @@ typedef struct VEdit3Buffer {
     int load_line_pre_offset;
     int load_line_next_offset;
     
-    enum StorageType storage_type;
+    enum PttDBStorageType storage_type;
 
     bool is_modified;
     bool is_new;
