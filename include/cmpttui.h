@@ -3,7 +3,7 @@
 #define CMPTTUI_H
 
 #include "ptterr.h"
-#include "cmpttui/vedit3.h"
+//#include "cmpttui/vedit3.h"
 
 #ifdef __cplusplus
 extern "C" {
