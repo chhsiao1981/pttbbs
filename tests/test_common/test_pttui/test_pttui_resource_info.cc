@@ -167,11 +167,11 @@ TEST(pttui_resource_info, pttui_resource_info_to_resource_dict)
     */
 
     // free
-    safe_destroy_pttui_resource_dict(&resource_dict);
+    //safe_destroy_pttui_resource_dict(&resource_dict);
 
     safe_free_pttui_buffer(&buffer);
 
-    destroy_pttui_resource_info(&resource_info);
+    //destroy_pttui_resource_info(&resource_info);
 
     destroy_file_info(&file_info);
 }
