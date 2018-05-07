@@ -62,15 +62,16 @@ TEST(pttui_resource_info, pttui_resource_info_to_resource_dict)
     EXPECT_EQ(29, buffer->load_line_pre_offset);
     EXPECT_EQ(31, buffer->load_line_next_offset);
 
-    /*
     PttUIBuffer *new_tail_buffer = NULL;
     int n_new_buffer = 0;
     error = _extend_pttui_buffer_extend_next_buffer_no_buf(buffer, &file_info, HARD_N_PTTUI_BUFFER, &new_tail_buffer, &n_new_buffer);
     EXPECT_EQ(S_OK, error);
-    */
 
-    /*
-    EXPECT_EQ(214, buffer_info.n_buffer);
+    PttUIBufferInfo buffer_info = {};
+    buffer_info.head = buffer;
+    buffer_info.tail = new_tail_buffer;
+
+    EXPECT_EQ(214, n_new_buffer);
     EXPECT_EQ(PTTDB_CONTENT_TYPE_MAIN, buffer_info.head->content_type);
     EXPECT_EQ(NULL, buffer_info.head->pre);
     EXPECT_EQ(NULL, buffer_info.tail->next);
@@ -164,14 +165,13 @@ TEST(pttui_resource_info, pttui_resource_info_to_resource_dict)
         EXPECT_NE(0, len);
         EXPECT_NE((char *)NULL, (char *)buf);
     }
-    */
 
     // free
-    //safe_destroy_pttui_resource_dict(&resource_dict);
+    safe_destroy_pttui_resource_dict(&resource_dict);
 
-    safe_free_pttui_buffer(&buffer);
+    destroy_pttui_buffer_info(&buffer_info);
 
-    //destroy_pttui_resource_info(&resource_info);
+    destroy_pttui_resource_info(&resource_info);
 
     destroy_file_info(&file_info);
 }
