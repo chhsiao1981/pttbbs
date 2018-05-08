@@ -167,7 +167,7 @@ pttui_thread_wait_buffer_loop(enum PttUIThreadState expected_state, int n_iter)
 
     int i = 0;
     for (i = 0; i < n_iter; i++) {
-        error_code = pttui_thread_get_buffer_state(PTTUI_THREAD_DISP_BUFFER, &current_state);
+        error_code = pttui_thread_get_buffer_state(&current_state);
         if (error_code) break;
 
         if (expected_state == current_state) break; // XXX maybe re-edit too quickly
