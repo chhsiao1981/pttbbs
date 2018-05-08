@@ -38,6 +38,8 @@ Err pttui_thread_get_current_state(enum PttUIThreadType thread_type, enum PttUIT
 Err init_pttui_thread();
 Err destroy_pttui_thread();
 
+Err pttui_thread_wait_buffer_loop(enum PttUIThreadState expected_state, int n_iter);
+
 #ifdef __cplusplus
 }
 #endif

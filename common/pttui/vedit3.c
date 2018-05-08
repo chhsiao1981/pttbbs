@@ -111,7 +111,7 @@ vedit3(UUID main_id, char *title, int edflags, int *money)
     Err error_code_set_expected_state = pttui_thread_set_expected_state(PTTUI_THREAD_STATE_START);
     if (error_code_set_expected_state) error_code = S_ERR_ABORT_BBS;
 
-    Err error_code_sync = vedit3_wait_buffer_thread_loop(PTTUI_THREAD_STATE_START);
+    Err error_code_sync = pttui_thread_wait_buffer_loop(PTTUI_THREAD_STATE_START, N_ITER_VEDIT3_WAIT_BUFFER_THREAD_LOOP);
     if (error_code_sync) error_code = S_ERR_ABORT_BBS;
 
     return error_code;
@@ -164,13 +164,19 @@ Err
 _vedit3_init_file_info(UUID main_id)
 {
     // XXX disp-buffer and disp-screen may need old file-info?
-    Err error_code = destroy_file_info(&VEDIT3_FILE_INFO);
+    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_FILE_INFO);
+    if(error_code) return error_code;
+
+    error_code = destroy_file_info(&VEDIT3_FILE_INFO);
     fprintf(stderr, "_vedit3_init_file_info: after destroy_file_info: e: %d\n", error_code);
     if (error_code) return error_code;
 
     error_code = construct_file_info(main_id, &VEDIT3_FILE_INFO);
     fprintf(stderr, "_vedit3_init_file_info: after get_file_info: e: %d\n", error_code);
     fprintf(stderr, "vedit3._vedit3_init_file_info: n_main_line: %d n_main_block: %d n_comment: %d\n", VEDIT3_FILE_INFO.n_main_line, VEDIT3_FILE_INFO.n_main_block, VEDIT3_FILE_INFO.n_comment);
+
+    Err error_code_lock = pttui_thread_lock_unlock(LOCK_PTTUI_FILE_INFO);
+    if(!error_code && error_code_lock) error_code = error_code_lock;
 
     return error_code;
 }
@@ -266,34 +272,6 @@ vedit3_wait_buffer_state_sync(int n_iter) {
     return error_code;
 }
 
-
-Err
-vedit3_wait_buffer_thread_loop(enum PttUIThreadState expected_state)
-{
-    Err error_code = S_OK;
-    int ret_sleep = 0;
-    enum PttUIThreadState current_state = PTTUI_THREAD_STATE_START;
-
-    struct timespec req = {0, NS_DEFAULT_SLEEP_VEDIT3_WAIT_BUFFER_THREAD_LOOP};
-    struct timespec rem = {};
-
-    int i = 0;
-    for (i = 0; i < N_ITER_VEDIT3_WAIT_BUFFER_THREAD_LOOP; i++) {
-        error_code = pttui_thread_get_current_state(PTTUI_THREAD_DISP_BUFFER, &current_state);
-        if (error_code) break;
-
-        if (expected_state == current_state) break; // XXX maybe re-edit too quickly
-
-        ret_sleep = nanosleep(&req, &rem);
-        if (ret_sleep) {
-            error_code = S_ERR;
-            break;
-        }
-    }
-    if (i == N_ITER_VEDIT3_WAIT_BUFFER_THREAD_LOOP) error_code = S_ERR_BUSY;
-
-    return error_code;
-}
 
 /*********
  * VEdit3 repl
@@ -1031,19 +1009,6 @@ _vedit3_loading_rotate_dots()
     _VEDIT3_LOADING_DOT0 = _VEDIT3_LOADING_DOT2;
     _VEDIT3_LOADING_DOT2 = _VEDIT3_LOADING_DOT1;
     _VEDIT3_LOADING_DOT1 = tmp;
-
-    return S_OK;
-}
-
-Err
-_vedit3_is_ansi(enum PttDBContentType content_type, bool *is_ansi)
-{
-    if(VEDIT3_EDITOR_STATUS.is_ansi || content_type == PTTDB_CONTENT_TYPE_COMMENT) {
-        *is_ansi = true;
-    }
-    else {
-        *is_ansi = false;
-    }
 
     return S_OK;
 }

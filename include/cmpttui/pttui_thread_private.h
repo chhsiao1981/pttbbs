@@ -14,6 +14,7 @@ extern "C" {
 #include <time.h>
 
 #define NS_DEFAULT_SLEEP_THREAD 10000000 // 10 ms
+#define NS_DEFAULT_SLEEP_PTTUI_THREAD_WAIT_BUFFER_LOOP 100000000 // 100 ms
 
 Err _pttui_thread_is_end(bool *is_end);
 

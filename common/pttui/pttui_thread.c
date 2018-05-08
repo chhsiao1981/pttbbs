@@ -173,3 +173,32 @@ _pttui_thread_is_end(bool *is_end)
     *is_end = false;
     return S_OK;
 }
+
+Err
+pttui_thread_wait_buffer_loop(enum PttUIThreadState expected_state, int n_iter)
+{
+    Err error_code = S_OK;
+    int ret_sleep = 0;
+    enum PttUIThreadState current_state = PTTUI_THREAD_STATE_START;
+
+    struct timespec req = {0, NS_DEFAULT_SLEEP_PTTUI_THREAD_WAIT_BUFFER_LOOP};
+    struct timespec rem = {};
+
+    int i = 0;
+    for (i = 0; i < n_iter; i++) {
+        error_code = pttui_thread_get_current_state(PTTUI_THREAD_DISP_BUFFER, &current_state);
+        if (error_code) break;
+
+        if (expected_state == current_state) break; // XXX maybe re-edit too quickly
+
+        ret_sleep = nanosleep(&req, &rem);
+        if (ret_sleep) {
+            error_code = S_ERR;
+            break;
+        }
+    }
+    if (i == n_iter) error_code = S_ERR_BUSY;
+
+    return error_code;
+}
+

@@ -25,7 +25,6 @@ extern "C" {
 #define NS_DEFAULT_SLEEP_VEDIT3_WAIT_BUFFER_SYNC 10000000 // 10 ms
 
 #define N_ITER_VEDIT3_WAIT_BUFFER_THREAD_LOOP 100
-#define NS_DEFAULT_SLEEP_VEDIT3_WAIT_BUFFER_THREAD_LOOP 100000000 // 100 ms
 
 #define NS_DEFAULT_SLEEP_VEDIT3_REPL 10000000 // 10 ms
 
@@ -41,8 +40,6 @@ Err _vedit3_edit_msg();
 Err _vedit3_init_dots();
 Err _vedit3_loading();
 Err _vedit3_loading_rotate_dots();
-
-Err _vedit3_is_ansi(enum PttDBContentType content_type, bool *is_ansi);
 
 Err _vedit3_detect_attr(const char *ps, size_t len, int *p_attr);
 int _vedit3_syn_lua_keyword(const char *text, int n, char *wlen);
