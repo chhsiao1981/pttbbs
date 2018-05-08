@@ -59,7 +59,7 @@ pttui_thread_lock_wrlock(enum PttUIThreadLock thread_lock)
 
     int ret_sleep = 0;
     int ret_lock = pthread_rwlock_trywrlock(&PTTUI_RWLOCKS[thread_lock]);
-    if(thread_lock != LOCK_PTTUI_THREAD_STATE_DISP_BUFFER) fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_wrlock: to for-loop: thread_lock: %d IS_WR_PTTUI_RWLOCKS: %d\n", thread_lock, _IS_WR_PTTUI_RWLOCKS[thread_lock]);
+    if(thread_lock != LOCK_PTTUI_THREAD_BUFFER_STATE) fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_wrlock: to for-loop: thread_lock: %d IS_WR_PTTUI_RWLOCKS: %d\n", thread_lock, _IS_WR_PTTUI_RWLOCKS[thread_lock]);
 
     for(int i = 0; i < N_ITER_PTTUI_WRITE_LOCK; i++) {
         if(!ret_lock) break;
@@ -84,7 +84,7 @@ pttui_thread_lock_wrlock(enum PttUIThreadLock thread_lock)
     if(ret_lock && !error_code) error_code = S_ERR_BUSY;
 
     _IS_WR_PTTUI_RWLOCKS[thread_lock] = false;
-    if(thread_lock != LOCK_PTTUI_THREAD_STATE_DISP_BUFFER) fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_wrlock: to return: thread_lock: %d IS_WR_PTTUI_RWLOCKS: %d\n", thread_lock, _IS_WR_PTTUI_RWLOCKS[thread_lock]);
+    if(thread_lock != LOCK_PTTUI_THREAD_BUFFER_STATE) fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_wrlock: to return: thread_lock: %d IS_WR_PTTUI_RWLOCKS: %d\n", thread_lock, _IS_WR_PTTUI_RWLOCKS[thread_lock]);
 
     return error_code;
 }
