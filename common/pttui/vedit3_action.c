@@ -631,7 +631,7 @@ _vedit3_action_buffer_split(PttUIBuffer *current_buffer, int pos, int indent, Pt
     current_buffer->len_no_nl = pos;
     current_buffer->buf[current_buffer->len_no_nl] = 0;
 
-    error_code = vedit3_buffer_insert_buffer(current_buffer, p_new_buffer, &PTTUI_BUFFER_INFO);
+    error_code = pttui_buffer_insert_buffer(current_buffer, p_new_buffer, &PTTUI_BUFFER_INFO);
 
     // buffer after new_buffer
     for(PttUIBuffer *p_buffer2 = p_new_buffer->next; p_buffer2 && p_buffer2->content_type == p_new_buffer->content_type && p_buffer2->block_offset == p_new_buffer->block_offset && p_buffer2->comment_offset == p_new_buffer->comment_offset; p_buffer2->line_offset++, p_buffer2 = p_buffer2->next);    
