@@ -470,6 +470,7 @@ vedit3_action_insert_new_line()
     if(error_code) return error_code;
 
     error_code = _vedit3_action_buffer_split(VEDIT3_EDITOR_STATUS.current_buffer, VEDIT3_EDITOR_STATUS.current_col, 0, &new_buffer);
+    fprintf(stderr, "vedit3_action.vedit3_action_insert_new_line: after buffer_split: e: %d\n", error_code);
 
     if(!error_code) {
         error_code = vedit3_action_move_down();
