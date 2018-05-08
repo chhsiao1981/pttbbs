@@ -383,12 +383,12 @@ _vedit3_disp_screen(int start_line, int end_line)
 
     // iterate to the start line
     int i = 0;
-    for (i = 0; i < start_line && p_buffer; i++, p_buffer = p_buffer->next);
+    for (i = 0; i < start_line && p_buffer; i++, p_buffer = pttui_buffer_next_ne(p_buffer));
     if (i != start_line) error_code = S_ERR;
 
     // disp between start_line and end_line (end-line included)
     if (!error_code) {
-        for (; i <= end_line && p_buffer; i++, p_buffer = p_buffer->next) {
+        for (; i <= end_line && p_buffer; i++, p_buffer = pttui_buffer_next_ne(p_buffer)) {
             if (!p_buffer->buf) {
                 error_code = _vedit3_disp_line(i, VEDIT3_EMPTY_LINE, LEN_VEDIT3_EMPTY_LINE, p_buffer->content_type);
                 if (error_code) break;

@@ -49,6 +49,7 @@ typedef struct PttUIBufferInfo {
     UUID main_id;
 } PttUIBufferInfo;
 
+bool pttui_buffer_is_begin_ne(PttUIBuffer *buffer);
 bool pttui_buffer_is_end_ne(PttUIBuffer *buffer);
 PttUIBuffer * pttui_buffer_next_ne(PttUIBuffer *buffer);
 PttUIBuffer * pttui_buffer_pre_ne(PttUIBuffer *buffer);

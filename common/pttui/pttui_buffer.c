@@ -2,12 +2,15 @@
 #include "cmpttui/pttui_buffer_private.h"
 
 bool
-pttui_buffer_is_end_ne(PttUIBuffer *buffer) {
-    for (; buffer; buffer = buffer->next) {
-        if (!buffer->is_to_delete) return false;
-    }
+pttui_buffer_is_begin_ne(PttUIBuffer *buffer) {
+    PttUIBuffer *pre = pttui_buffer_pre_ne(buffer);
+    return pre == NULL;
+}
 
-    return true;
+bool
+pttui_buffer_is_end_ne(PttUIBuffer *buffer) {
+    PttUIBuffer *next = pttui_buffer_next_ne(buffer);
+    return next == NULL;
 }
 
 PttUIBuffer *
@@ -35,6 +38,11 @@ safe_free_pttui_buffer(PttUIBuffer **buffer)
 {
     PttUIBuffer *p_buffer = *buffer;
     if(!p_buffer) return S_OK;
+
+    PttUIBuffer *p_pre_buffer = p_buffer->pre;
+    PttUIBuffer *p_next_buffer = p_buffer->next;
+    if(p_pre_buffer) p_pre_buffer->next = p_next_buffer;
+    if(p_next_buffer) p_next_buffer->pre = p_pre_buffer;
 
     if(p_buffer->buf) free(p_buffer->buf);
     free(p_buffer);
@@ -204,13 +212,14 @@ _sync_pttui_buffer_info_get_buffer(PttUIState *state, PttUIBuffer *current_buffe
     PttUIBuffer *p_buffer = current_buffer;
 
     while (p_buffer != NULL) {
-        if (!memcmp(state->top_line_id, p_buffer->the_id, UUIDLEN) &&
-                state->top_line_block_offset == p_buffer->block_offset &&
-                state->top_line_line_offset == p_buffer->line_offset) {
+        if (state->top_line_content_type == p_buffer->content_type) &&
+            state->top_line_block_offset == p_buffer->block_offset &&
+            state->top_line_line_offset == p_buffer->line_offset &&
+            state->top_line_comment_offset == p_buffer->comment_offset) {
             break;
         }
 
-        p_buffer = is_pre ? p_buffer->pre : p_buffer->next;
+        p_buffer = is_pre ? pttui_buffer_pre_ne(p_buffer): pttui_buffer_next_ne(p_buffer);
     }
 
     *new_buffer = p_buffer;

@@ -1212,13 +1212,6 @@ _vedit3_action_concat_next_line()
 Err
 _vedit3_action_delete_line_core(PttUIBuffer **buffer)
 {
-    PttUIBuffer *p_buffer = *buffer;
-    PttUIBuffer *p_pre_buffer = p_buffer->pre;
-    PttUIBuffer *p_next_buffer = p_buffer->next;
-
-    if(p_pre_buffer) p_pre_buffer->next = p_next_buffer;
-    if(p_next_buffer) p_next_buffer->pre = p_pre_buffer;
-
     safe_free_pttui_buffer(buffer);
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
