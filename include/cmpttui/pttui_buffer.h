@@ -67,7 +67,7 @@ Err resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state
 
 Err extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttUIBuffer *current_buffer);
 
-Err pttui_buffer_insert_buffer(PttUIBuffer *current_buffer, PttUIBuffer *next_buffer, PttUIBufferInfo *buffer_info);
+Err pttui_buffer_insert_buffer(PttUIBuffer *current_buffer, PttUIBuffer *next_buffer);
 
 Err save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info);
 

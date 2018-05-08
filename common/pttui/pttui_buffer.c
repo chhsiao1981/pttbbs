@@ -1238,7 +1238,7 @@ _sync_pttui_buffer_info_shrink_tail(PttUIBufferInfo *buffer_info, int n_shrink_r
 }
 
 Err
-pttui_buffer_insert_buffer(PttUIBuffer *current_buffer, PttUIBuffer *next_buffer, PttUIBufferInfo *buffer_info)
+pttui_buffer_insert_buffer(PttUIBuffer *current_buffer, PttUIBuffer *next_buffer)
 {
     next_buffer->next = current_buffer->next;
     next_buffer->pre = current_buffer;
@@ -1246,9 +1246,6 @@ pttui_buffer_insert_buffer(PttUIBuffer *current_buffer, PttUIBuffer *next_buffer
     current_buffer->next = next_buffer;
     if(next_buffer->next) {
         next_buffer->next->pre = next_buffer;
-    }
-    else {
-        buffer_info->tail = next_buffer;
     }
 
     return S_OK;
