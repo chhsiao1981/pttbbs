@@ -71,6 +71,15 @@ Err pttui_buffer_insert_buffer(PttUIBuffer *current_buffer, PttUIBuffer *next_bu
 
 Err save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info);
 
+Err pttui_buffer_rdlock_file_info();
+Err pttui_buffer_unlock_file_info();
+Err pttui_buffer_lock_wr_buffer_info(bool *is_lock_wr_buffer_info);
+Err pttui_buffer_unlock_wr_buffer_info(bool is_lock_wr_buffer_info);
+Err pttui_buffer_wrlock_buffer_info(bool *is_lock_buffer_info);
+Err pttui_buffer_wrunlock_buffer_info(bool is_lock_buffer_info);
+Err pttui_buffer_rdlock_buffer_info();
+Err pttui_buffer_unlock_buffer_info();
+
 #ifdef __cplusplus
 }
 #endif

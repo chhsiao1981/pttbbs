@@ -72,7 +72,7 @@ destroy_pttui_buffer_info(PttUIBufferInfo *buffer_info)
 
     bzero(buffer_info, sizeof(PttUIBufferInfo));
 
-    return error_code;
+    return S_OK;
 }
 
 Err
@@ -301,7 +301,7 @@ resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, Fi
 
     // 4. extend pttui buffer
     if(!error_code) {
-        error_code = _extend_pttui_buffer(file_info, tmp_buffer, tmp_buffer, tmp_buffer, &tmp_head, &tmp_tail, &n_buffer);
+        error_code = _extend_pttui_buffer(file_info, tmp_buffer, tmp_buffer, tmp_buffer, &tmp_head, &tmp_tail, &n_buffer, buffer_info);
     }
 
     // 5. set to buffer-info
@@ -409,7 +409,7 @@ extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttU
     int n_new_buffer = 0;    
 
     if(!error_code) {
-        error_code = _extend_pttui_buffer(file_info, orig_head, orig_tail, current_buffer, &new_head_buffer, &new_tail_buffer, &n_new_buffer);
+        error_code = _extend_pttui_buffer(file_info, orig_head, orig_tail, current_buffer, &new_head_buffer, &new_tail_buffer, &n_new_buffer, buffer_info);
     }
 
     if(!error_code) {
@@ -457,7 +457,7 @@ extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttU
  * @param current_buffer [description]
  */
 Err
-_extend_pttui_buffer(FileInfo *file_info, PttUIBuffer *head_buffer, PttUIBuffer *tail_buffer, PttUIBuffer *current_buffer, PttUIBuffer **new_head_buffer, PttUIBuffer **new_tail_buffer, int *n_new_buffer)
+_extend_pttui_buffer(FileInfo *file_info, PttUIBuffer *head_buffer, PttUIBuffer *tail_buffer, PttUIBuffer *current_buffer, PttUIBuffer **new_head_buffer, PttUIBuffer **new_tail_buffer, int *n_new_buffer, PttUIBufferInfo *buffer_info)
 {
     // 1. determine extra-range required to retrieve.
     // 2. do extend buffer.
@@ -465,7 +465,7 @@ _extend_pttui_buffer(FileInfo *file_info, PttUIBuffer *head_buffer, PttUIBuffer 
 
     int n_extra_range = 0;
 
-    error_code = _extend_pttui_buffer_count_extra_pre_range(current_buffer, &n_extra_range);
+    error_code = _extend_pttui_buffer_count_extra_pre_range(current_buffer, &n_extra_range, buffer_info);
 
     // extend-pre
     if(!error_code && (!head_buffer->buf || n_extra_range)) {
@@ -473,7 +473,7 @@ _extend_pttui_buffer(FileInfo *file_info, PttUIBuffer *head_buffer, PttUIBuffer 
     }
 
     if(!error_code) {
-        error_code = _extend_pttui_buffer_count_extra_next_range(current_buffer, &n_extra_range);
+        error_code = _extend_pttui_buffer_count_extra_next_range(current_buffer, &n_extra_range, buffer_info);
     }
 
     // extend-next
@@ -1268,4 +1268,70 @@ pttui_buffer_insert_buffer(PttUIBuffer *current_buffer, PttUIBuffer *next_buffer
     }
 
     return S_OK;
+}
+
+Err
+pttui_buffer_rdlock_file_info()
+{
+    return pttui_thread_lock_rdlock(LOCK_PTTUI_FILE_INFO);
+}
+
+Err
+pttui_buffer_unlock_file_info()
+{
+    return pttui_thread_lock_unlock(LOCK_PTTUI_FILE_INFO);
+}
+
+Err
+pttui_buffer_lock_wr_buffer_info(bool *is_lock_wr_buffer_info)
+{
+    *is_lock_wr_buffer_info = false;
+
+    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_WR_BUFFER_INFO);
+    if(error_code) return error_code;
+
+    *is_lock_wr_buffer_info = true;
+
+    return S_OK;
+}
+
+Err
+pttui_buffer_unlock_wr_buffer_info(bool is_lock_wr_buffer_info)
+{
+    if(!is_lock_wr_buffer_info) return S_OK;
+
+    return pttui_thread_lock_unlock(LOCK_PTTUI_WR_BUFFER_INFO);
+}
+
+Err
+pttui_buffer_wrlock_buffer_info(bool *is_lock_buffer_info)
+{
+    *is_lock_buffer_info = false;
+
+    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_BUFFER_INFO);
+    if(error_code) return error_code;
+
+    *is_lock_buffer_info = true;
+
+    return S_OK;
+}
+
+Err
+pttui_buffer_wrunlock_buffer_info(bool is_lock_buffer_info)
+{
+    if(!is_lock_buffer_info) return S_OK;
+
+    return pttui_thread_lock_unlock(LOCK_PTTUI_BUFFER_INFO);
+}
+
+Err
+pttui_buffer_rdlock_buffer_info()
+{
+    return pttui_thread_lock_rdlock(LOCK_PTTUI_BUFFER_INFO);
+}
+
+Err
+pttui_buffer_unlock_buffer_info()
+{
+    return pttui_thread_lock_unlock(LOCK_PTTUI_BUFFER_INFO);
 }
