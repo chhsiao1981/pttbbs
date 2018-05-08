@@ -18,6 +18,7 @@ extern "C" {
 #include "ansi.h"
 #include "vtuikit.h"
 #include "vtkbd.h"
+#include "grayout.h"
     
 #include "var.h"
 
