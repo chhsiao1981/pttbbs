@@ -660,7 +660,7 @@ vedit3_repl_wrunlock_file_info_buffer_info(bool is_lock_file_info, bool is_lock_
     Err error_code = S_OK;
 
     Err error_code_lock = S_OK;
-    if(is_lock_file_info) {
+    if(is_lock_buffer_info) {
         error_code_lock = vedit3_repl_wrunlock_buffer_info();
         if(error_code_lock) error_code = error_code_lock;
     }
