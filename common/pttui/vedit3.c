@@ -186,14 +186,14 @@ vedit3_wait_buffer_init()
 {
     Err error_code = S_OK;
     int ret_sleep = 0;
-    VEdit3State current_state = {};
+    PttUIState current_state = {};
 
     struct timespec req = {0, NS_DEFAULT_SLEEP_VEDIT3_WAIT_BUFFER_INIT};
     struct timespec rem = {};
 
     int i = 0;
     for (i = 0; i < N_ITER_VEDIT3_WAIT_BUFFER_INIT; i++) {
-        error_code = _vedit3_get_buffer_current_state(&current_state);
+        error_code = pttui_get_buffer_state(&current_state);
         if (error_code) break;
 
         fprintf(stderr, "vedit3._vedit3_wait_buffer_init: PTTUI_STATE: (%d, %d, %d, %d) current_state: (%d, %d, %d, %d)\n", PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset, PTTUI_STATE.n_window_line, current_state.top_line_content_type, current_state.top_line_block_offset, current_state.top_line_line_offset, current_state.n_window_line);
