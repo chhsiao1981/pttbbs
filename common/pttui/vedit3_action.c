@@ -525,7 +525,6 @@ _vedit3_action_insert_char(int ch)
         error_code = pttui_raw_shift_right(current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col, current_buffer->len_no_nl - VEDIT3_EDITOR_STATUS.current_col + 1);
 
         current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col++] = ch;
-        ++(current_buffer->len);
         ++(current_buffer->len_no_nl);
         current_buffer->buf[current_buffer->len_no_nl] = 0;
     }
@@ -573,7 +572,6 @@ _vedit3_action_ensure_buffer_wrap()
     if (!error_code && is_wordwrap && new_buffer && new_buffer_len_no_nl >= 1) {
         if (new_buffer->buf[new_buffer_len_no_nl - 1] != ' ') {
             new_buffer->buf[new_buffer_len_no_nl] = ' ';
-            new_buffer->len++;
             new_buffer->len_no_nl++;
             new_buffer->buf[new_buffer_len_no_nl] = '\0';
         }
@@ -629,9 +627,7 @@ _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, V
     */
     memcpy(p_new_buffer->buf + indent, p_buf, current_buffer->len_no_nl - pos);
     p_new_buffer->buf[p_new_buffer->len_no_nl] = 0;
-    p_new_buffer->len = p_new_buffer->len_no_nl + 1;
 
-    current_buffer->len += (pos - current_buffer->len_no_nl);
     current_buffer->len_no_nl = pos;
     current_buffer->buf[current_buffer->len_no_nl] = 0;
 
@@ -1078,7 +1074,6 @@ _vedit3_action_delete_char_core()
     if(error_code) return error_code;
 
     VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl--;
-    VEDIT3_EDITOR_STATUS.current_buffer->len--;
 
     return S_OK;
 }
@@ -1127,7 +1122,6 @@ _vedit3_action_concat_next_line()
     if(overflow < 0) {
         memcpy(current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col, p_next_buffer->buf, p_next_buffer->len_no_nl);
         current_buffer->len_no_nl += p_next_buffer->len_no_nl;
-        current_buffer->len += p_next_buffer->len_no_nl;
         current_buffer->buf[current_buffer->len_no_nl] = 0;
         current_buffer->is_modified = true;
 
@@ -1150,7 +1144,6 @@ _vedit3_action_concat_next_line()
     // 4.3: concat first-word. shift next line.
     memcpy(current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col, p_next_buffer->buf, len_word);
     current_buffer->len_no_nl += len_word;
-    current_buffer->len += len_word;
     current_buffer->buf[current_buffer->len_no_nl] = 0;
     current_buffer->is_modified = true;
 
@@ -1171,7 +1164,6 @@ _vedit3_action_concat_next_line()
         *p_buf = *p_buf2;
     }
     p_next_buffer->len_no_nl -= len_word;
-    p_next_buffer->len -= len_word;
     p_next_buffer->is_modified = true;
     p_next_buffer->buf[p_next_buffer->len_no_nl] = 0;
 
