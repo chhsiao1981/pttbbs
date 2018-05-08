@@ -14,7 +14,7 @@ TEST(pttui_buffer, pttui_buffer_is_end_ne)
 
     buffer.is_to_delete = false;
 
-    EXPECT_EQ(false, pttui_buffer_is_end_ne(&buffer, NULL));
+    EXPECT_EQ(true, pttui_buffer_is_end_ne(&buffer, NULL));
 }
 
 TEST(pttui_buffer, pttui_buffer_next_ne)
