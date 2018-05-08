@@ -449,7 +449,7 @@ vedit3_action_insert_char(int ch)
     Err error_code_lock = vedit3_repl_wrunlock_file_info_buffer_info(is_lock_file_info, is_lock_wr_buffer_info, is_lock_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
 
-    if(!error_code && VEDIT3_EDITOR_STATUS.current_col > VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl && VEDIT3_EDITOR_STATUS.current_buffer->next) {
+    if(!error_code && VEDIT3_EDITOR_STATUS.current_col > VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl && pttui_buffer_next_ne(VEDIT3_EDITOR_STATUS.current_buffer)) {
         VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_col - VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
         error_code = vedit3_action_move_down();
     }
@@ -501,8 +501,6 @@ vedit3_action_move_right()
             error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
             ansi_current_col++;
             error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
-
-
         }
         else {
             VEDIT3_EDITOR_STATUS.current_col++;
@@ -1008,7 +1006,7 @@ _vedit3_action_buffer_split(PttUIBuffer *current_buffer, int pos, int indent, Pt
     error_code = pttui_buffer_insert_buffer(current_buffer, p_new_buffer, &PTTUI_BUFFER_INFO);
 
     // buffer after new_buffer
-    for(PttUIBuffer *p_buffer2 = p_new_buffer->next; p_buffer2 && p_buffer2->content_type == p_new_buffer->content_type && p_buffer2->block_offset == p_new_buffer->block_offset && p_buffer2->comment_offset == p_new_buffer->comment_offset; p_buffer2->line_offset++, p_buffer2 = p_buffer2->next);    
+    for(PttUIBuffer *p_buffer2 = pttui_buffer_next_ne(p_new_buffer); p_buffer2 && p_buffer2->content_type == p_new_buffer->content_type && p_buffer2->block_offset == p_new_buffer->block_offset && p_buffer2->comment_offset == p_new_buffer->comment_offset; p_buffer2->line_offset++, p_buffer2 = pttui_buffer_next_ne(p_buffer2));    
 
     // file-info
     switch(current_buffer->content_type) {
@@ -1137,7 +1135,7 @@ _vedit3_action_concat_next_line()
     Err error_code = S_OK;
 
     PttUIBuffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
-    PttUIBuffer *p_next_buffer = current_buffer->next;
+    PttUIBuffer *p_next_buffer = pttui_buffer_next_ne(current_buffer);
 
     // 1. if no next: return
     if(!p_next_buffer) return S_OK;

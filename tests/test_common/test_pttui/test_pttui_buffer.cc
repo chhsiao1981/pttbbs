@@ -17,6 +17,29 @@ TEST(pttui_buffer, pttui_buffer_is_end_ne)
     EXPECT_EQ(false, pttui_buffer_is_end_ne(&buffer));
 }
 
+TEST(pttui_buffer, pttui_buffer_next_ne)
+{
+    PttUIBuffer *buffer = NULL;
+    PttUIBuffer *next = pttui_buffer_next_ne(buffer);
+    EXPECT_EQ(NULL, next);
+}
+
+TEST(pttui_buffer, pttui_buffer_next_ne2)
+{
+    PttUIBuffer buffer = {};
+    PttUIBuffer *next = pttui_buffer_next_ne(&buffer);
+    EXPECT_EQ(NULL, next);
+}
+
+TEST(pttui_buffer, pttui_buffer_next_ne3)
+{
+    PttUIBuffer buffer = {};
+    PttUIBuffer next = {};
+    buffer.next = &next;
+    PttUIBuffer *next2 = pttui_buffer_next_ne(&buffer);
+    EXPECT_EQ(&next, next2);
+}
+
 TEST(pttui_buffer, sync_pttui_buffer_info_is_pre)
 {
 
