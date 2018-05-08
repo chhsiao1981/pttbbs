@@ -564,7 +564,7 @@ _vedit3_action_ensure_buffer_wrap()
         s = current_buffer->buf + (current_buffer->len_no_nl - 2);
     }
 
-    VEdit3Buffer *new_buffer = NULL;
+    PttUIBuffer *new_buffer = NULL;
 
     error_code = _vedit3_action_buffer_split(current_buffer, s - current_buffer->buf + 1, 0, &new_buffer);
 
