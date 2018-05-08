@@ -127,7 +127,7 @@ TEST(pttui_buffer, pttui_buffer_pre_ne3)
     PttUIBuffer buffer = {};
     PttUIBuffer pre = {};
     buffer.pre = &pre;
-    PttUIBuffer *pre2 = pttui_buffer_pre_ne(&pre);
+    PttUIBuffer *pre2 = pttui_buffer_pre_ne(&buffer);
     EXPECT_EQ(&pre, pre2);
 }
 
