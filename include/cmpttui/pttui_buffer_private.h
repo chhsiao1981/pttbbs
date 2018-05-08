@@ -21,7 +21,7 @@ extern "C" {
  ***/
 Err _sync_pttui_buffer_info_is_pre(PttUIState *state, PttUIBuffer *buffer, bool *is_pre);
 
-Err _sync_pttui_buffer_info_get_buffer(PttUIState *state, PttUIBuffer *current_buffer, bool is_pre, PttUIBuffer **new_buffer);
+Err _sync_pttui_buffer_info_get_buffer(PttUIState *state, PttUIBuffer *current_buffer, bool is_pre, PttUIBuffer **new_buffer, PttUIBufferInfo *buffer_info);
 
 /***
  * init buffer
@@ -33,8 +33,8 @@ Err _pttui_buffer_init_buffer_no_buf_from_file_info(PttUIState *state, FileInfo 
  ***/
 Err _extend_pttui_buffer(FileInfo *file_info, PttUIBuffer *head_buffer, PttUIBuffer *tail_buffer, PttUIBuffer *current_buffer, PttUIBuffer **new_head_buffer, PttUIBuffer **new_tail_buffer, int *n_new_buffer);
 
-Err _extend_pttui_buffer_count_extra_pre_range(PttUIBuffer *buffer, int *n_extra_range);
-Err _extend_pttui_buffer_count_extra_next_range(PttUIBuffer *buffer, int *n_extra_range);
+Err _extend_pttui_buffer_count_extra_pre_range(PttUIBuffer *buffer, int *n_extra_range, PttUIBufferInfo *buffer_info);
+Err _extend_pttui_buffer_count_extra_next_range(PttUIBuffer *buffer, int *n_extra_range, PttUIBufferInfo *buffer_info);
 
 Err _extend_pttui_buffer_extend_pre_buffer(FileInfo *file_info, PttUIBuffer *head_buffer, int n_buffer, PttUIBuffer **new_head_buffer, int *ret_n_buffer);
 Err _extend_pttui_buffer_extend_pre_buffer_no_buf(PttUIBuffer *current_buffer, FileInfo *file_info, int n_buffer, PttUIBuffer **new_head_buffer, int *ret_n_buffer);

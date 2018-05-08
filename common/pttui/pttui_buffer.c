@@ -2,20 +2,22 @@
 #include "cmpttui/pttui_buffer_private.h"
 
 bool
-pttui_buffer_is_begin_ne(PttUIBuffer *buffer) {
-    PttUIBuffer *pre = pttui_buffer_pre_ne(buffer);
+pttui_buffer_is_begin_ne(PttUIBuffer *buffer, PttUIBuffer *head) {
+    PttUIBuffer *pre = pttui_buffer_pre_ne(buffer, head);
     return pre == NULL;
 }
 
 bool
-pttui_buffer_is_end_ne(PttUIBuffer *buffer) {
-    PttUIBuffer *next = pttui_buffer_next_ne(buffer);
+pttui_buffer_is_end_ne(PttUIBuffer *buffer, PttUIBuffer *tail) {
+    PttUIBuffer *next = pttui_buffer_next_ne(buffer, tail);
     return next == NULL;
 }
 
 PttUIBuffer *
-pttui_buffer_next_ne(PttUIBuffer *buffer) {
+pttui_buffer_next_ne(PttUIBuffer *buffer, PttUIBuffer *tail) {
     if (!buffer) return NULL;
+
+    if(buffer == tail) return NULL;
 
     // basic operation, use ->next directly
     PttUIBuffer *p_next = buffer->next;
@@ -25,8 +27,10 @@ pttui_buffer_next_ne(PttUIBuffer *buffer) {
 }
 
 PttUIBuffer *
-pttui_buffer_pre_ne(PttUIBuffer *buffer) {
+pttui_buffer_pre_ne(PttUIBuffer *buffer, PttUIBuffer *head) {
     if(!buffer) return NULL;
+
+    if(buffer == head) return NULL;
 
     // basic operation, use ->pre directly
     PttUIBuffer *p_pre = buffer->pre;
@@ -57,10 +61,6 @@ safe_free_pttui_buffer(PttUIBuffer **buffer)
 Err
 destroy_pttui_buffer_info(PttUIBufferInfo *buffer_info)
 {
-    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_BUFFER_INFO);
-    fprintf(stderr, "pttui_buffer.destroy_pttui_buffer_info: after wrlock: e: %d\n", error_code);
-    if (error_code) return error_code;
-
     // basic operation, use ->next directly
     PttUIBuffer *p_buffer = buffer_info->head;
     PttUIBuffer *tmp = NULL;
@@ -72,9 +72,6 @@ destroy_pttui_buffer_info(PttUIBufferInfo *buffer_info)
 
     bzero(buffer_info, sizeof(PttUIBufferInfo));
 
-    error_code = pttui_thread_lock_unlock(LOCK_PTTUI_BUFFER_INFO);
-    fprintf(stderr, "pttui_buffer.destroy_pttui_buffer_info: after unlock: e: %d\n", error_code);
-    
     return error_code;
 }
 
@@ -96,6 +93,9 @@ pttui_buffer_is_begin_of_file(PttUIBuffer *buffer, FileInfo *file_info GCC_UNUSE
 Err
 pttui_buffer_is_eof(PttUIBuffer *buffer, FileInfo *file_info, bool *is_eof)
 {
+    Err error_code = pttui_buffer_rdlock_file_info();
+    if(error_code) return error_code;
+
     if (!file_info->n_comment &&
         buffer->block_offset == file_info->n_main_block - 1 &&
         buffer->line_offset == file_info->main_blocks[buffer->block_offset].n_line - 1) {
@@ -119,7 +119,10 @@ pttui_buffer_is_eof(PttUIBuffer *buffer, FileInfo *file_info, bool *is_eof)
         *is_eof = false;
     }
 
-    return S_OK;
+    Err error_code_lock = pttui_buffer_unlock_file_info();
+    if(!error_code && error_code_lock) error_code = error_code_lock;
+
+    return error_code;
 }
 
 /**********
@@ -132,11 +135,20 @@ sync_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIBuffer *current_buffer
 
     // determine new buffer of the expected-state
     bool tmp_is_pre = false;
-    error_code = _sync_pttui_buffer_info_is_pre(state, current_buffer, &tmp_is_pre);
-    if (error_code) return error_code;
 
-    error_code = _sync_pttui_buffer_info_get_buffer(state, current_buffer, tmp_is_pre, new_buffer);
-    if (error_code) return error_code;
+    error_code = pttui_buffer_rdlock_buffer_info();
+    if(error_code) return error_code;
+
+    error_code = _sync_pttui_buffer_info_is_pre(state, current_buffer, &tmp_is_pre);
+
+    if(!error_code) {
+        error_code = _sync_pttui_buffer_info_get_buffer(state, current_buffer, tmp_is_pre, new_buffer, buffer_info);
+    }
+
+    Err error_code_lock = pttui_buffer_unlock_buffer_info();
+    if(!error_code && error_code_lock) error_code = error_code_lock;
+
+    if(error_code) return error_code;
 
     // found buffer in the current buffer-info
     if(*new_buffer) return S_OK;
@@ -211,7 +223,7 @@ _sync_pttui_buffer_info_is_pre(PttUIState *state, PttUIBuffer *buffer, bool *is_
 }
 
 Err
-_sync_pttui_buffer_info_get_buffer(PttUIState *state, PttUIBuffer *current_buffer, bool is_pre, PttUIBuffer **new_buffer)
+_sync_pttui_buffer_info_get_buffer(PttUIState *state, PttUIBuffer *current_buffer, bool is_pre, PttUIBuffer **new_buffer, PttUIBufferInfo *buffer_info)
 {
     PttUIBuffer *p_buffer = current_buffer;
 
@@ -223,7 +235,7 @@ _sync_pttui_buffer_info_get_buffer(PttUIState *state, PttUIBuffer *current_buffe
             break;
         }
 
-        p_buffer = is_pre ? pttui_buffer_pre_ne(p_buffer) : pttui_buffer_next_ne(p_buffer);
+        p_buffer = is_pre ? pttui_buffer_pre_ne(p_buffer, buffer_info->head) : pttui_buffer_next_ne(p_buffer, buffer_info->tail);
     }
 
     *new_buffer = p_buffer;
@@ -250,15 +262,24 @@ resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, Fi
 {
     Err error_code = S_OK;
 
-    // lock for writing buffer-info
-    error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_WR_BUFFER_INFO);
-    if(error_code) return error_code;
-
     // 1. save all buffer to tmp_file
 
-    error_code = save_pttui_buffer_info_to_tmp_file(buffer_info);
+    if(!error_code) {
+        error_code = save_pttui_buffer_info_to_tmp_file(buffer_info);
+    }
 
     // 2. destroy buffer_info
+    bool is_lock_wr_buffer_info = false;
+    bool is_lock_buffer_info = false;
+
+    if(!error_code) {
+        error_code = pttui_buffer_lock_wr_buffer_info(&is_lock_wr_buffer_info);
+    }
+
+    if(!error_code) {
+        error_code = pttui_buffer_wrlock_buffer_info(&is_lock_buffer_info);
+    }
+
     if(!error_code) {
         error_code = destroy_pttui_buffer_info(buffer_info);
     }
@@ -284,12 +305,8 @@ resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, Fi
     }
 
     // 5. set to buffer-info
-    Err error_code_lock = S_ERR_NOT_INIT;
-    if(!error_code) {
-        error_code_lock = pttui_thread_lock_wrlock(LOCK_PTTUI_BUFFER_INFO);
-    }
 
-    if(!error_code && !error_code_lock) {
+    if(!error_code) {
         buffer_info->head = tmp_head;
         buffer_info->tail = tmp_tail;
         buffer_info->n_buffer = n_buffer;
@@ -297,12 +314,10 @@ resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, Fi
     }
 
     // unlock
-    if(!error_code_lock) {
-        error_code_lock = pttui_thread_lock_unlock(LOCK_PTTUI_BUFFER_INFO);
-        if (!error_code && error_code_lock) error_code = error_code_lock;
-    }
+    Err error_code_lock = pttui_buffer_wrunlock_buffer_info(is_lock_buffer_info);
+    if(!error_code && error_code_lock) error_code = error_code_lock;
 
-    error_code_lock = pttui_thread_lock_unlock(LOCK_PTTUI_WR_BUFFER_INFO);
+    error_code_lock = pttui_buffer_unlock_wr_buffer_info(is_lock_wr_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
 
     return error_code;
@@ -374,25 +389,31 @@ extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttU
 {
     Err error_code = S_OK;
     // lock for writing buffer-info
-    error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_WR_BUFFER_INFO);
-    if(error_code) return error_code;
+    bool is_lock_wr_buffer_info = false;
+    bool is_lock_buffer_info = false;
+    PttUIBuffer *orig_head = NULL;
+    PttUIBuffer *orig_tail = NULL;
 
-    PttUIBuffer *orig_head = malloc(sizeof(PttUIBuffer));
-    PttUIBuffer *orig_tail = malloc(sizeof(PttUIBuffer));
+    error_code = pttui_buffer_lock_wr_buffer_info(&is_lock_wr_buffer_info);
 
-    memcpy(orig_head, buffer_info->head, sizeof(PttUIBuffer));
-    memcpy(orig_tail, buffer_info->tail, sizeof(PttUIBuffer));
+    if(!error_code) {
+        orig_head = malloc(sizeof(PttUIBuffer));
+        orig_tail = malloc(sizeof(PttUIBuffer));
+
+        memcpy(orig_head, buffer_info->head, sizeof(PttUIBuffer));
+        memcpy(orig_tail, buffer_info->tail, sizeof(PttUIBuffer));
+    }
 
     PttUIBuffer *new_head_buffer = NULL;
     PttUIBuffer *new_tail_buffer = NULL;
     int n_new_buffer = 0;    
 
-    error_code = _extend_pttui_buffer(file_info, orig_head, orig_tail, current_buffer, &new_head_buffer, &new_tail_buffer, &n_new_buffer);
-
-    Err error_code_lock = S_ERR_NOT_INIT;
     if(!error_code) {
-        error_code_lock = pttui_thread_lock_wrlock(LOCK_PTTUI_BUFFER_INFO);
-        if(!error_code && error_code_lock) error_code = error_code_lock;
+        error_code = _extend_pttui_buffer(file_info, orig_head, orig_tail, current_buffer, &new_head_buffer, &new_tail_buffer, &n_new_buffer);
+    }
+
+    if(!error_code) {
+        error_code = pttui_buffer_wrlock_buffer_info(&is_lock_buffer_info);
     }
 
     if(!error_code) { // basic operation, use ->pre and ->next directly
@@ -409,12 +430,10 @@ extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttU
         buffer_info->n_buffer += n_new_buffer;
     }
 
-    if(!error_code_lock) {
-        error_code_lock = pttui_thread_lock_unlock(LOCK_PTTUI_BUFFER_INFO);
-        if(!error_code && error_code_lock) error_code = error_code_lock;
-    }
+    Err error_code_lock = pttui_buffer_unlock_buffer_info(is_lock_buffer_info);
+    if(!error_code && error_code_lock) error_code = error_code_lock;
 
-    error_code_lock = pttui_thread_lock_unlock(LOCK_PTTUI_WR_BUFFER_INFO);
+    error_code_lock = pttui_buffer_unlock_wr_buffer_info(is_lock_wr_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
 
     // free
@@ -466,11 +485,11 @@ _extend_pttui_buffer(FileInfo *file_info, PttUIBuffer *head_buffer, PttUIBuffer 
 }
 
 Err
-_extend_pttui_buffer_count_extra_pre_range(PttUIBuffer *buffer, int *n_extra_range)
+_extend_pttui_buffer_count_extra_pre_range(PttUIBuffer *buffer, int *n_extra_range, PttUIBufferInfo *buffer_info)
 {
     PttUIBuffer *p_buffer = NULL;
     int i = 0;
-    for (i = 0, p_buffer = buffer; i < SOFT_N_PTTUI_BUFFER && p_buffer; i++, p_buffer = pttui_buffer_pre_ne(p_buffer));
+    for (i = 0, p_buffer = buffer; i < SOFT_N_PTTUI_BUFFER && p_buffer; i++, p_buffer = pttui_buffer_pre_ne(p_buffer, buffer_info->head));
 
     *n_extra_range = i == SOFT_N_PTTUI_BUFFER ? 0 : (HARD_N_PTTUI_BUFFER - i);
 
@@ -478,12 +497,12 @@ _extend_pttui_buffer_count_extra_pre_range(PttUIBuffer *buffer, int *n_extra_ran
 }
 
 Err
-_extend_pttui_buffer_count_extra_next_range(PttUIBuffer *buffer, int *n_extra_range)
+_extend_pttui_buffer_count_extra_next_range(PttUIBuffer *buffer, int *n_extra_range, PttUIBufferInfo *buffer_info)
 {
     PttUIBuffer *p_buffer = NULL;
 
     int i = 0;
-    for (i = 0, p_buffer = buffer; i < SOFT_N_PTTUI_BUFFER && p_buffer; i++, p_buffer = pttui_buffer_next_ne(p_buffer));
+    for (i = 0, p_buffer = buffer; i < SOFT_N_PTTUI_BUFFER && p_buffer; i++, p_buffer = pttui_buffer_next_ne(p_buffer, buffer_info->tail));
 
     *n_extra_range = i == SOFT_N_PTTUI_BUFFER ? 0 : (HARD_N_PTTUI_BUFFER - i);
 

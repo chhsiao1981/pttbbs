@@ -10,24 +10,24 @@ TEST(pttui_buffer, pttui_buffer_is_end_ne)
     PttUIBuffer buffer = {};
     buffer.is_to_delete = true;
 
-    EXPECT_EQ(true, pttui_buffer_is_end_ne(&buffer));
+    EXPECT_EQ(true, pttui_buffer_is_end_ne(&buffer, NULL));
 
     buffer.is_to_delete = false;
 
-    EXPECT_EQ(false, pttui_buffer_is_end_ne(&buffer));
+    EXPECT_EQ(false, pttui_buffer_is_end_ne(&buffer, NULL));
 }
 
 TEST(pttui_buffer, pttui_buffer_next_ne)
 {
     PttUIBuffer *buffer = NULL;
-    PttUIBuffer *next = pttui_buffer_next_ne(buffer);
+    PttUIBuffer *next = pttui_buffer_next_ne(buffer, NULL);
     EXPECT_EQ(NULL, next);
 }
 
 TEST(pttui_buffer, pttui_buffer_next_ne2)
 {
     PttUIBuffer buffer = {};
-    PttUIBuffer *next = pttui_buffer_next_ne(&buffer);
+    PttUIBuffer *next = pttui_buffer_next_ne(&buffer, NULL);
     EXPECT_EQ(NULL, next);
 }
 
@@ -36,7 +36,7 @@ TEST(pttui_buffer, pttui_buffer_next_ne3)
     PttUIBuffer buffer = {};
     PttUIBuffer next = {};
     buffer.next = &next;
-    PttUIBuffer *next2 = pttui_buffer_next_ne(&buffer);
+    PttUIBuffer *next2 = pttui_buffer_next_ne(&buffer, NULL);
     EXPECT_EQ(&next, next2);
 }
 
@@ -47,7 +47,7 @@ TEST(pttui_buffer, pttui_buffer_next_ne4)
     PttUIBuffer next2 = {};
     buffer.next = &next;
     next.next = &next2;
-    PttUIBuffer *next3 = pttui_buffer_next_ne(&buffer);
+    PttUIBuffer *next3 = pttui_buffer_next_ne(&buffer, NULL);
     EXPECT_EQ(&next, next3);
 }
 
@@ -59,7 +59,7 @@ TEST(pttui_buffer, pttui_buffer_next_ne5)
     buffer.next = &next;
     next.next = &next2;
     next.is_to_delete = true;
-    PttUIBuffer *next3 = pttui_buffer_next_ne(&buffer);
+    PttUIBuffer *next3 = pttui_buffer_next_ne(&buffer, NULL);
     EXPECT_EQ(&next2, next3);
 }
 
@@ -73,7 +73,7 @@ TEST(pttui_buffer, pttui_buffer_next_ne6)
     next.next = &next2;
     next2.next = &next3;
     next2.is_to_delete = true;
-    PttUIBuffer *next4 = pttui_buffer_next_ne(&buffer);
+    PttUIBuffer *next4 = pttui_buffer_next_ne(&buffer, NULL);
     EXPECT_EQ(&next, next4);
 }
 
@@ -88,7 +88,7 @@ TEST(pttui_buffer, pttui_buffer_next_ne7)
     next2.next = &next3;
     next.is_to_delete = true;
     next2.is_to_delete = true;
-    PttUIBuffer *next4 = pttui_buffer_next_ne(&buffer);
+    PttUIBuffer *next4 = pttui_buffer_next_ne(&buffer, NULL);
     EXPECT_EQ(&next3, next4);
 }
 
@@ -104,21 +104,21 @@ TEST(pttui_buffer, pttui_buffer_next_ne8)
     next.is_to_delete = true;
     next2.is_to_delete = true;
     next3.is_to_delete = true;
-    PttUIBuffer *next4 = pttui_buffer_next_ne(&buffer);
+    PttUIBuffer *next4 = pttui_buffer_next_ne(&buffer, NULL);
     EXPECT_EQ(NULL, next4);
 }
 
 TEST(pttui_buffer, pttui_buffer_pre_ne)
 {
     PttUIBuffer *buffer = NULL;
-    PttUIBuffer *pre = pttui_buffer_pre_ne(buffer);
+    PttUIBuffer *pre = pttui_buffer_pre_ne(buffer, NULL);
     EXPECT_EQ(NULL, pre);
 }
 
 TEST(pttui_buffer, pttui_buffer_pre_ne2)
 {
     PttUIBuffer buffer = {};
-    PttUIBuffer *pre = pttui_buffer_pre_ne(&buffer);
+    PttUIBuffer *pre = pttui_buffer_pre_ne(&buffer, NULL);
     EXPECT_EQ(NULL, pre);
 }
 
@@ -127,7 +127,7 @@ TEST(pttui_buffer, pttui_buffer_pre_ne3)
     PttUIBuffer buffer = {};
     PttUIBuffer pre = {};
     buffer.pre = &pre;
-    PttUIBuffer *pre2 = pttui_buffer_pre_ne(&buffer);
+    PttUIBuffer *pre2 = pttui_buffer_pre_ne(&buffer, NULL);
     EXPECT_EQ(&pre, pre2);
 }
 
