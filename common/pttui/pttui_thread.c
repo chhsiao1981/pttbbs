@@ -1,10 +1,10 @@
 #include "cmpttui/pttui_thread.h"
 #include "cmpttui/pttui_thread_private.h"
 
-enum PttUIThreadState PTTUI_EXPECTED_STATE = PTTUI_THREAD_STATE_START;
-enum PttUIThreadState PTTUI_CURRENT_STATES[N_PTTUI_THREAD_TYPE] = {};
+enum PttUIThreadState PTTUI_THREAD_EXPECTED_STATE = PTTUI_THREAD_STATE_START;
+enum PttUIThreadState PTTUI_THREAD_BUFFER_STATE = PTTUI_THREAD_STATE_START;
 
-pthread_t PTTUI_THREADS[N_PTTUI_THREAD_TYPE] = {};
+pthread_t PTTUI_THREAD_BUFFER;
 
 Err
 init_pttui_thread()
