@@ -477,6 +477,9 @@ vedit3_action_insert_new_line()
         fprintf(stderr, "vedit3_action.vedit3_action_insert_new_line: after buffer_split: e: %d\n", error_code);
     }
 
+    Err error_code_lock = vedit3_repl_wrunlock_file_info_buffer_info(is_lock_file_info, is_lock_wr_buffer_info, is_lock_buffer_info);
+    if(!error_code && error_code_lock) error_code = error_code_lock;
+
     if(!error_code) {
         error_code = vedit3_action_move_down();
     }
@@ -484,9 +487,6 @@ vedit3_action_insert_new_line()
     if(!error_code) {
         error_code = vedit3_action_move_begin_line();
     }
-
-    Err error_code_lock = vedit3_repl_wrunlock_file_info_buffer_info(is_lock_file_info, is_lock_wr_buffer_info, is_lock_buffer_info);
-    if(!error_code && error_code_lock) error_code = error_code_lock;
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
