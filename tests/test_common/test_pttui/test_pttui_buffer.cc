@@ -2190,7 +2190,7 @@ TEST(pttui_buffer, pttui_buffer_info_to_resource_info)
     fprintf(stderr, "test_pttui_buffer.pttui_buffer_info_to_resource_info: after loop buffer_info\n");
 
     PttUIResourceInfo resource_info = {};
-    error = _pttui_buffer_info_to_resource_info(buffer_info.head, &resource_info);
+    error = _pttui_buffer_info_to_resource_info(buffer_info.head, buffer_info.tail, &resource_info);
     EXPECT_EQ(S_OK, error);
 
     EXPECT_EQ(1, resource_info.queue[PTTDB_CONTENT_TYPE_MAIN * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_MONGO].n_queue);
