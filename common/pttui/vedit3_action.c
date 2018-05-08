@@ -833,10 +833,10 @@ vedit3_action_delete_char()
     int ansi_current_col = 0;
     if(!error_code && VEDIT3_EDITOR_STATUS.is_ansi) {
         error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
-        if(error_code) break;
+    }
 
+    if(!error_code && VEDIT3_EDITOR_STATUS.is_ansi) {
         error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
-        if(error_code) break;
     }
 
     VEDIT3_EDITOR_STATUS.current_buffer->is_modified = true;
@@ -1048,9 +1048,9 @@ _vedit3_action_buffer_split(PttUIBuffer *current_buffer, int pos, int indent, Pt
         p_content_block->n_line++;
         break;
     case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
-        p_content_block = PTTUI_FILE_INFO.commens[buffer->comment_offset].comment_reply_blocks + buffer->block_offset;
+        p_content_block = PTTUI_FILE_INFO.comments[current_buffer->comment_offset].comment_reply_blocks + current_buffer->block_offset;
 
-        p_content_block->n_to_new_line++;
+        p_content_block->n_new_line++;
         p_content_block->n_line++;
         break;
     default:
