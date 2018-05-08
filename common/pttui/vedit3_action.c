@@ -35,7 +35,7 @@ Err
 _vedit3_action_to_store_main(int ch, bool *is_end) {
     Err error_code = S_OK;
     if (ch < 0x100 && isprint2(ch)) {
-        error_code = _vedit3_action_insert_ch(ch);
+        error_code = vedit3_action_insert_char(ch);
         return error_code;
     }
 
@@ -58,7 +58,7 @@ _vedit3_action_to_store_main(int ch, bool *is_end) {
         break;
 
     case KEY_F8:    // users
-        error_code = _vedit3_action_t_users();
+        error_code = vedit3_action_t_users();
         break;
     case Ctrl('W'):
         break;
@@ -78,88 +78,88 @@ _vedit3_action_to_store_main(int ch, bool *is_end) {
 
     /*
     case Ctrl('U'): // insert-esc
-        error_code = _vedit3_action_insert_char(ESC_CHR);
+        error_code = vedit3_action_insert_char(ESC_CHR);
         break;
     */
     case Ctrl('V'): // toggle ansi-color
-        error_code = _vedit3_action_toggle_ansi();
+        error_code = vedit3_action_toggle_ansi();
         break;
     /*
     case Ctrl('I'): // insert-tab
-        error_code = _vedit3_action_insert_tab();
+        error_code = vedit3_action_insert_tab();
         break;
     */
     case KEY_ENTER: // new-line
-        error_code = _vedit3_action_insert_new_line();
+        error_code = vedit3_action_insert_new_line();
         break;
     /*
     case Ctrl('G'): // edit-assistant
         break;
     
     case Ctrl('P'): // toogle-phone-mode
-        error_code = _vedit3_action_toggle_phone_mode();
+        error_code = vedit3_action_toggle_phone_mode();
         break;
     */
     case KEY_F1:
     case Ctrl('Z'): // help
-        error_code = _vedit3_action_show_help();
+        error_code = vedit3_action_show_help();
         break;
     case Ctrl('L'): // redraw
-        error_code = _vedit3_action_redraw();
+        error_code = vedit3_action_redraw();
         break;
     case KEY_LEFT:
-        error_code = _vedit3_action_move_left();
+        error_code = vedit3_action_move_left();
         break;
     case KEY_RIGHT:
-        error_code = _vedit3_action_move_right();
+        error_code = vedit3_action_move_right();
         break;
     case KEY_UP:
-        error_code = _vedit3_action_move_up();
+        error_code = vedit3_action_move_up();
         break;
     case KEY_DOWN:
-        error_code = _vedit3_action_move_down();
+        error_code = vedit3_action_move_down();
         break;
     case Ctrl('B'):
     case KEY_PGUP:
-        error_code = _vedit3_action_move_pgup();
+        error_code = vedit3_action_move_pgup();
         break;
     case Ctrl('F'):
     case KEY_PGDN:
-        error_code = _vedit3_action_move_pgdn();
+        error_code = vedit3_action_move_pgdn();
         break;
     case KEY_END:
     case Ctrl('E'):
-        error_code = _vedit3_action_move_end_line();
+        error_code = vedit3_action_move_end_line();
         break;
     case KEY_HOME:
     case Ctrl('A'):
-        error_code = _vedit3_action_move_begin_line();
+        error_code = vedit3_action_move_begin_line();
         break;
     /*
     case Ctrl(']'):
-        error_code = _vedit3_action_move_start_file();
+        error_code = vedit3_action_move_start_file();
         break;
     case Ctrl('T'):
-        error_code = _vedit3_action_move_tail_file();
+        error_code = vedit3_action_move_tail_file();
         break;
     case Ctrl('O'):
         case KEY_INS:
-        error_code = _vedit3_action_toggle_insert();
+        error_code = vedit3_action_toggle_insert();
         break;
     */
     case KEY_BS:
-        error_code = _vedit3_action_backspace();
+        error_code = vedit3_action_backspace();
         break;
     case Ctrl('D'):
     case KEY_DEL:
-        error_code = _vedit3_action_delete_char();
+        error_code = vedit3_action_delete_char();
         break;
     /*
     case Ctrl('Y'):
-        error_code = _vedit3_action_delete_line();
+        error_code = vedit3_action_delete_line();
         break;
     case Ctrl('K'):
-        error_code = _vedit3_action_delete_end_of_line();
+        error_code = vedit3_action_delete_end_of_line();
         break;
     */
     default:
@@ -181,7 +181,7 @@ _vedit3_action_to_store_comment(int ch, bool *is_end) {
     case KEY_F5:    // goto-line
         break;
     case KEY_F8:    // users
-        error_code = _vedit3_action_t_users();
+        error_code = vedit3_action_t_users();
         break;
     case Ctrl('W'):
         break;
@@ -193,46 +193,42 @@ _vedit3_action_to_store_comment(int ch, bool *is_end) {
     case KEY_F3:
         break;
     case Ctrl('V'): // toggle ansi-color
-        error_code = _vedit3_action_toggle_ansi();
+        error_code = vedit3_action_toggle_ansi();
         break;
-    /*
-    case KEY_ENTER: // new-line
-        error_code = _vedit3_action_insert_new_line();
-        break;
-    */
     case KEY_F1:
     case Ctrl('Z'): // help
-        error_code = _vedit3_action_show_help();
+        error_code = vedit3_action_show_help();
         break;
     case Ctrl('L'): // redraw
-        error_code = _vedit3_action_redraw();
+        error_code = vedit3_action_redraw();
         break;
     case KEY_LEFT:
     case KEY_UP:
-        error_code = _vedit3_action_move_up();
+        error_code = vedit3_action_move_up();
         break;
+    case KEY_ENTER:
     case KEY_RIGHT:
     case KEY_DOWN:
-        error_code = _vedit3_action_move_down();
+        error_code = vedit3_action_move_down();
         break;
     case Ctrl('B'):
     case KEY_PGUP:
-        error_code = _vedit3_action_move_pgup();
+        error_code = vedit3_action_move_pgup();
         break;
     case Ctrl('F'):
     case KEY_PGDN:
-        error_code = _vedit3_action_move_pgdn();
+        error_code = vedit3_action_move_pgdn();
         break;
     /*
         case Ctrl(']'):
-        error_code = _vedit3_action_move_start_file();
+        error_code = vedit3_action_move_start_file();
         break;
         case Ctrl('T'):
-        error_code = _vedit3_action_move_tail_file();
+        error_code = vedit3_action_move_tail_file();
         break;
         case Ctrl('O'):
         case KEY_INS:
-        error_code = _vedit3_action_toggle_insert();
+        error_code = vedit3_action_toggle_insert();
         break;
     */
     default:
@@ -246,7 +242,7 @@ Err
 _vedit3_action_to_store_comment_reply(int ch, bool *is_end) {
     Err error_code = S_OK;
     if (ch < 0x100 && isprint2(ch)) {
-        error_code = _vedit3_action_insert_ch(ch);
+        error_code = vedit3_action_insert_char(ch);
         return error_code;
     }
 
@@ -270,7 +266,7 @@ _vedit3_action_to_store_comment_reply(int ch, bool *is_end) {
         break;
 
     case KEY_F8:    // users
-        error_code = _vedit3_action_t_users();
+        error_code = vedit3_action_t_users();
         break;
     case Ctrl('W'):
         break;
@@ -290,88 +286,88 @@ _vedit3_action_to_store_comment_reply(int ch, bool *is_end) {
 
     /*
     case Ctrl('U'): // insert-esc
-        error_code = _vedit3_action_insert_char(ESC_CHR);
+        error_code = vedit3_action_insert_char(ESC_CHR);
         break;
     */
     case Ctrl('V'): // toggle ansi-color
-        error_code = _vedit3_action_toggle_ansi();
+        error_code = vedit3_action_toggle_ansi();
         break;
     /*
     case Ctrl('I'): // insert-tab
-        error_code = _vedit3_action_insert_tab();
+        error_code = vedit3_action_insert_tab();
         break;
 
     case KEY_ENTER: // new-line
-        error_code = _vedit3_action_insert_new_line();
+        error_code = vedit3_action_insert_new_line();
         break;
 
     case Ctrl('G'): // edit-assistant
         break;
     
     case Ctrl('P'): // toogle-phone-mode
-        error_code = _vedit3_action_toggle_phone_mode();
+        error_code = vedit3_action_toggle_phone_mode();
         break;
     */
     case KEY_F1:
     case Ctrl('Z'): // help
-        error_code = _vedit3_action_show_help();
+        error_code = vedit3_action_show_help();
         break;
     case Ctrl('L'): // redraw
-        error_code = _vedit3_action_redraw();
+        error_code = vedit3_action_redraw();
         break;
     case KEY_LEFT:
-        error_code = _vedit3_action_move_left();
+        error_code = vedit3_action_move_left();
         break;
     case KEY_RIGHT:
-        error_code = _vedit3_action_move_right();
+        error_code = vedit3_action_move_right();
         break;
     case KEY_UP:
-        error_code = _vedit3_action_move_up();
+        error_code = vedit3_action_move_up();
         break;
     case KEY_DOWN:
-        error_code = _vedit3_action_move_down();
+        error_code = vedit3_action_move_down();
         break;
     case Ctrl('B'):
     case KEY_PGUP:
-        error_code = _vedit3_action_move_pgup();
+        error_code = vedit3_action_move_pgup();
         break;
     case Ctrl('F'):
     case KEY_PGDN:
-        error_code = _vedit3_action_move_pgdn();
+        error_code = vedit3_action_move_pgdn();
         break;
     case KEY_END:
     case Ctrl('E'):
-        error_code = _vedit3_action_move_end_line();
+        error_code = vedit3_action_move_end_line();
         break;
     case KEY_HOME:
     case Ctrl('A'):
-        error_code = _vedit3_action_move_begin_line();
+        error_code = vedit3_action_move_begin_line();
         break;
     /*
     case Ctrl(']'):
-        error_code = _vedit3_action_move_start_file();
+        error_code = vedit3_action_move_start_file();
         break;
     case Ctrl('T'):
-        error_code = _vedit3_action_move_tail_file();
+        error_code = vedit3_action_move_tail_file();
         break;
     case Ctrl('O'):
         case KEY_INS:
-        error_code = _vedit3_action_toggle_insert();
+        error_code = vedit3_action_toggle_insert();
         break;
     */
     case KEY_BS:
-        error_code = _vedit3_action_backspace();
+        error_code = vedit3_action_backspace();
         break;
-        case Ctrl('D'):
+    case Ctrl('D'):
     case KEY_DEL:
-        error_code = _vedit3_action_delete_char();
+        error_code = vedit3_action_delete_char();
         break;
     /*
     case Ctrl('Y'):
-        error_code = _vedit3_action_delete_line();
+        error_code = vedit3_action_delete_line();
         break;
     case Ctrl('K'):
-        error_code = _vedit3_action_delete_end_of_line();
+        error_code = vedit3_action_delete_end_of_line();
         break;
     */
     default:
@@ -379,44 +375,6 @@ _vedit3_action_to_store_comment_reply(int ch, bool *is_end) {
     }
 
     return error_code;
-}
-
-/********************
- * action-command
- ********************/
-
-
-/********************
- * action-util
- ********************/
-/**
- * @brief [brief description]
- * @details refer: Ctrl('V') in vedit2 in edit.c
- */
-Err
-_vedit3_action_toggle_ansi()
-{
-    VEDIT3_EDITOR_STATUS.is_ansi ^= 1;
-
-    // XXX block selection
-
-    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
-
-    return S_OK;
-}
-
-/**
- * @brief [brief description]
- * @details ref: KEY_F8 in vedit2 in edit.c
- *
- */
-Err
-_vedit3_action_t_users()
-{
-    t_users();
-    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
-
-    return S_OK;
 }
 
 Err
@@ -433,45 +391,446 @@ _vedit3_action_get_key(int *ch)
     return S_OK;
 }
 
+
+/********************
+ * action-command
+ ********************/
+
+
+/**
+ * @brief [brief description]
+ * @details refer: Ctrl('V') in vedit2 in edit.c
+ */
 Err
-_vedit3_action_insert_ch(int ch)
+vedit3_action_toggle_ansi()
+{
+    VEDIT3_EDITOR_STATUS.is_ansi ^= 1;
+
+    // XXX block selection
+
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
+    return S_OK;
+}
+
+/**
+ * @brief [brief description]
+ * @details ref: KEY_F8 in vedit2 in edit.c
+ *
+ */
+Err
+vedit3_action_t_users()
+{
+    t_users();
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
+    return S_OK;
+}
+
+Err
+vedit3_action_insert_char(int ch)
 {
     Err error_code = S_OK;
     char *pstr = NULL;
     if(VEDIT3_EDITOR_STATUS.is_phone) {
         error_code = pttui_phone_char(ch, VEDIT3_EDITOR_STATUS.phone_mode, &pstr);
+        if(error_code) return error_code;
     }   
+
+    bool is_lock_file_info = false;
+    bool is_lock_wr_buffer_info = false;
+    bool is_lock_buffer_info = false;
+
+    error_code = vedit3_repl_wrlock_file_info_buffer_info(&is_lock_file_info, &is_lock_wr_buffer_info, &is_lock_buffer_info);
     if(error_code) return error_code;
 
-    error_code = vedit3_repl_wrlock_buffer_info();
+    error_code = pstr ? _vedit3_action_insert_dchar_core(pstr) : _vedit3_action_insert_char_core(ch);
 
-    if(pstr) {
-        error_code = _vedit3_action_insert_dchar(pstr);
-    }
-    else {
-        error_code = _vedit3_action_insert_char(ch);
-    }
+    Err error_code_lock = vedit3_repl_wrunlock_file_info_buffer_info(is_lock_file_info, is_lock_wr_buffer_info, is_lock_buffer_info)
+    if(!error_code && error_code_lock) error_code = error_code_lock;
 
-    Err error_code_lock = vedit3_repl_wrunlock_buffer_info();
-    if(!error_code && error_code_lock) error_code = S_ERR_EDIT_LOCK;
-
-    if(error_code) return error_code;
-
-    if(VEDIT3_EDITOR_STATUS.current_col > VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl && VEDIT3_EDITOR_STATUS.current_buffer->next) {
+    if(!error_code && VEDIT3_EDITOR_STATUS.current_col > VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl && VEDIT3_EDITOR_STATUS.current_buffer->next) {
         VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_col - VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
-        error_code = _vedit3_action_move_down();
+        error_code = vedit3_action_move_down();
     }
 
     return error_code;
 }
 
 Err
-_vedit3_action_insert_dchar(const char *dchar)
+vedit3_action_insert_new_line()
+{
+    PttUIBuffer *new_buffer = NULL;
+
+    bool is_lock_file_info = false;
+    bool is_lock_wr_buffer_info = false;
+    bool is_lock_buffer_info = false;
+
+    error_code = vedit3_repl_wrlock_file_info_buffer_info(&is_lock_file_info, &is_lock_wr_buffer_info, &is_lock_buffer_info);
+    if(error_code) return error_code;
+
+    error_code = _vedit3_action_buffer_split(VEDIT3_EDITOR_STATUS.current_buffer, VEDIT3_EDITOR_STATUS.current_col, 0, &new_buffer);
+
+    if(!error_code) {
+        error_code = vedit3_action_move_down();
+    }
+
+    if(!error_code) {
+        error_code = vedit3_action_move_begin_line();
+    }
+
+    Err error_code_lock = vedit3_repl_wrunlock_file_info_buffer_info(is_lock_file_info, is_lock_wr_buffer_info, is_lock_buffer_info);
+    if(!error_code && error_code_lock) error_code = error_code_lock;
+
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
+    return error_code;
+}
+
+Err
+vedit3_action_move_right()
+{
+    Err error_code = S_OK;
+    int ansi_current_col = 0;
+    int mbcs_current_col = 0;
+    int orig_current_col = VEDIT3_EDITOR_STATUS.current_col;
+    // within the same line
+    if (VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl) {
+        // TODO use function-map to replace if-else
+        if (VEDIT3_EDITOR_STATUS.is_ansi) {
+            error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
+            ansi_current_col++;
+            error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
+
+
+        }
+        else {
+            VEDIT3_EDITOR_STATUS.current_col++;
+        }
+
+        if (VEDIT3_EDITOR_STATUS.is_mbcs) {
+            error_code = pttui_fix_cursor(VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_col, PTTUI_FIX_CURSOR_DIR_RIGHT, &mbcs_current_col);
+            VEDIT3_EDITOR_STATUS.current_col = mbcs_current_col;
+        }
+
+        fprintf(stderr, "vedit3_action._vedit3_action_move_right: within same line: orig_current_col: %d is_ansi: %d is_mbcs: %d new_current_col: %d\n", orig_current_col, VEDIT3_EDITOR_STATUS.is_ansi, VEDIT3_EDITOR_STATUS.is_mbcs, VEDIT3_EDITOR_STATUS.current_col);
+
+        return S_OK;
+    }
+
+    // need to move to next line
+
+    // move to next line
+    error_code = vedit3_action_move_down();
+
+    VEDIT3_EDITOR_STATUS.current_col = 0;
+
+    return error_code;
+}
+
+Err
+vedit3_action_move_left()
+{
+    Err error_code = S_OK;
+    int ansi_current_col = 0;
+    int mbcs_current_col = 0;
+    int orig_current_col = VEDIT3_EDITOR_STATUS.current_col;
+    // within the same line
+    if (VEDIT3_EDITOR_STATUS.current_col) {
+        // TODO use function-map to replace if-else
+        if (VEDIT3_EDITOR_STATUS.is_ansi) {
+            error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
+            ansi_current_col--;
+            error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
+
+
+        }
+        else {
+            VEDIT3_EDITOR_STATUS.current_col--;
+        }
+
+        if (VEDIT3_EDITOR_STATUS.is_mbcs) {
+            error_code = pttui_fix_cursor(VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_col, PTTUI_FIX_CURSOR_DIR_LEFT, &mbcs_current_col);
+            VEDIT3_EDITOR_STATUS.current_col = mbcs_current_col;
+        }
+
+        fprintf(stderr, "vedit3_action._vedit3_action_move_left: within same line: orig_current_col: %d is_ansi: %d is_mbcs: %d new_current_col: %d\n", orig_current_col, VEDIT3_EDITOR_STATUS.is_ansi, VEDIT3_EDITOR_STATUS.is_mbcs, VEDIT3_EDITOR_STATUS.current_col);
+
+        return S_OK;
+    }
+
+    // move to previous line
+    error_code = vedit3_action_move_up();
+
+    VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
+
+    return error_code;
+}
+
+Err
+vedit3_action_move_up()
+{
+    Err error_code = S_OK;
+    // is begin of file
+    bool is_begin = false;
+    error_code = pttui_buffer_is_begin_of_file(VEDIT3_EDITOR_STATUS.current_buffer, &PTTUI_FILE_INFO, &is_begin);
+    if (error_code) return error_code;
+    if (is_begin) return S_OK;
+
+    // check begin-of-window
+    error_code = _vedit3_action_move_up_ensure_top_of_window();
+    if (error_code) return error_code;
+
+    // move next
+    error_code = vedit3_repl_lock_buffer_info();
+    if (error_code) return error_code;
+
+    PttUIBuffer *pre_buffer = pttui_buffer_pre_ne(VEDIT3_EDITOR_STATUS.current_buffer);
+    if(!pre_buffer) error_code = S_ERR;
+    if(!error_code) {
+        VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_EDITOR_STATUS.current_buffer->pre;
+    }
+
+    Err error_code_lock = vedit3_repl_unlock_buffer_info();
+    if (!error_code && error_code_lock) error_code = S_ERR_EDIT_LOCK;
+
+    if (VEDIT3_EDITOR_STATUS.current_line > 0) VEDIT3_EDITOR_STATUS.current_line--;
+    VEDIT3_EDITOR_STATUS.current_buffer_line--;
+
+    Err error_code2 = _vedit3_action_ensure_current_col(VEDIT3_EDITOR_STATUS.current_col);
+    if(!error_code && error_code2) error_code = error_code2;
+
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
+    return error_code;
+}
+
+Err
+vedit3_action_move_down()
+{
+    Err error_code = S_OK;
+    // is end of file
+    bool is_eof = false;
+    error_code = pttui_buffer_is_eof(VEDIT3_EDITOR_STATUS.current_buffer, &PTTUI_FILE_INFO, &is_eof);
+    if (error_code) return error_code;
+    if (is_eof) return S_OK;
+
+    // check end-of-window
+    error_code = _vedit3_action_move_down_ensure_end_of_window();
+    if (error_code) return error_code;
+
+    // move next
+    error_code = vedit3_repl_lock_buffer_info();
+    if (error_code) return error_code;
+
+    PttUIBuffer *next_buffer = pttui_buffer_next_ne(VEDIT3_EDITOR_STATUS.current_buffer);
+    if(!next_buffer) error_code = S_ERR;
+
+    if(!error_code) {
+        VEDIT3_EDITOR_STATUS.current_buffer = next_buffer;
+    }
+
+    Err error_code_lock = vedit3_repl_unlock_buffer_info();
+    if (error_code_lock) error_code = S_ERR_EDIT_LOCK;
+
+    if (VEDIT3_EDITOR_STATUS.current_line < b_lines - 1) VEDIT3_EDITOR_STATUS.current_line++;
+    VEDIT3_EDITOR_STATUS.current_buffer_line++;
+
+    Err error_code2 = _vedit3_action_ensure_current_col(VEDIT3_EDITOR_STATUS.current_col);
+    if(!error_code && error_code2) error_code = error_code2;
+
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
+    return error_code;
+}
+
+Err
+vedit3_action_move_end_line()
+{
+    VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
+
+    return S_OK;
+}
+
+Err
+vedit3_action_move_begin_line()
+{
+    VEDIT3_EDITOR_STATUS.current_col = 0;
+
+    return S_OK;
+}
+
+Err
+vedit3_action_move_pgup()
+{
+    Err error_code = S_OK;
+    bool is_begin = false;
+    int current_line = VEDIT3_EDITOR_STATUS.current_line;
+    int current_col = VEDIT3_EDITOR_STATUS.current_col;
+    for(int i = 0; i < b_lines - 1; i++) {
+        error_code = vedit3_action_move_up();
+        if(error_code) break;
+        error_code = pttui_buffer_is_begin_of_file(VEDIT3_EDITOR_STATUS.current_buffer, &PTTUI_FILE_INFO, &is_begin);
+        if(error_code) break;
+        if(is_begin) break;
+    }
+    if(error_code) return error_code;
+
+    if(!is_begin) {
+        for(int i = 0; i < current_line; i++) {
+            error_code = vedit3_action_move_up();
+            if(error_code) break;
+        }
+        if(error_code) return error_code;
+
+        for(int i = 0; i < current_line; i++) {
+            error_code = vedit3_action_move_down();
+            if(error_code) break;
+        }
+        if(error_code) return error_code;
+    }
+
+    error_code = _vedit3_action_ensure_current_col(current_col);
+
+    return error_code;
+}
+
+Err
+vedit3_action_move_pgdn()
+{
+    Err error_code = S_OK;
+    bool is_eof = false;
+    int current_line = VEDIT3_EDITOR_STATUS.current_line;
+    int current_col = VEDIT3_EDITOR_STATUS.current_col;
+    for(int i = 0; i < b_lines - 1; i++) {
+        error_code = vedit3_action_move_down();
+        if(error_code) break;
+        error_code = pttui_buffer_is_eof(VEDIT3_EDITOR_STATUS.current_buffer, &PTTUI_FILE_INFO, &is_eof);
+        if(error_code) break;
+        if(is_eof) break;
+    }
+    if(error_code) return error_code;
+
+    if(!is_eof) {
+        for(int i = b_lines - 1; i > current_line; i--) {
+            error_code = vedit3_action_move_down();
+            if(error_code) break;
+        }
+        if(error_code) return error_code;
+
+        for(int i = b_lines - 1; i > current_line; i--) {
+            error_code = vedit3_action_move_up();
+            if(error_code) break;
+        }
+        if(error_code) return error_code;
+    }
+
+    error_code = _vedit3_action_ensure_current_col(current_col);
+
+    return error_code;
+}
+
+Err
+vedit3_action_redraw()
+{
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
+    return S_OK;
+}
+
+Err
+vedit3_action_show_help()
+{
+    more("etc/ve.hlp", true);
+
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
+    return S_OK;
+}
+
+/**
+ * @brief 
+ * @details ref: case KEY_BS in edit.c
+ *          1. is-ansi: is-ansi == false
+ *          2. is current-line == 0 and current-col == 0: no change
+ *          3. current-col == 0: move to previous-line, try to concat the next line.
+ *          4. move-left. do delete-char.
+ */
+Err
+vedit3_action_backspace()
+{
+    Err error_code = S_OK;
+    // XXX remove block cancel for now
+    //block_cancel();
+
+    // is-ansi: is-ansi = false
+    if(VEDIT3_EDITOR_STATUS.is_ansi) {
+        VEDIT3_EDITOR_STATUS.is_ansi = false;
+        VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+        return S_OK;
+    }
+
+    // current-line == 0 and current-col == 0: no change
+    if(VEDIT3_EDITOR_STATUS.current_line == 0 && VEDIT3_EDITOR_STATUS.current_col == 0) return S_OK;
+
+    // current-col == 0: move to previous-line, try to concat the next line.s
+    if(VEDIT3_EDITOR_STATUS.current_col == 0) {
+        error_code = vedit3_action_move_left();
+        if(error_code) return error_code;
+
+        error_code = _vedit3_action_concat_next_line();
+        return error_code;
+    }
+
+    error_code = vedit3_action_move_left();
+    if(error_code) return error_code;
+
+    error_code = vedit3_action_delete_char();
+
+    return error_code;
+}
+
+Err
+vedit3_action_delete_char()
+{
+    Err error_code = S_OK;
+    if(VEDIT3_EDITOR_STATUS.current_col == VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl) {
+        error_code = _vedit3_action_concat_next_line();
+        return error_code;
+    }
+
+    int w = VEDIT3_EDITOR_STATUS.is_mbcs ? pttui_mchar_len_ne((unsigned char*)(VEDIT3_EDITOR_STATUS.current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col)) : 1;
+
+    for(int i = 0; i < w; i++) {
+        error_code = _vedit3_action_delete_char_core();
+        if(error_code) return error_code;
+    }
+
+    int ansi_current_col = 0;
+    if(VEDIT3_EDITOR_STATUS.is_ansi) {
+        error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
+        if(error_code) return error_code;
+
+        error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
+        if(error_code) return error_code;
+    }
+
+    VEDIT3_EDITOR_STATUS.current_buffer->is_modified = true;
+
+    return S_OK;
+}
+
+/********************
+ * action-util
+ ********************/
+
+Err
+_vedit3_action_insert_dchar_core(const char *dchar)
 {
     if (!VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info) return S_ERR_EDIT_LOCK;
 
-    Err error_code = _vedit3_action_insert_char(*dchar);
-    Err error_code2 = _vedit3_action_insert_char(*(dchar+1));
+    Err error_code = _vedit3_action_insert_char_core(*dchar);
+    Err error_code2 = _vedit3_action_insert_char_core(*(dchar+1));
 
     if(error_code) return error_code;
     if(error_code2) return error_code2;
@@ -490,7 +849,7 @@ _vedit3_action_insert_dchar(const char *dchar)
  */
 
 Err
-_vedit3_action_insert_char(int ch)
+_vedit3_action_insert_char_core(int ch)
 {
     Err error_code = S_OK;
 
@@ -589,10 +948,21 @@ _vedit3_action_ensure_current_col(int current_col) {
     return S_OK;
 }
 
+/**
+ * @brief [brief description]
+ * @details [long description]
+ * 
+ * @param current_buffer [description]
+ * @param pos [description]
+ * @param indent [description]
+ * @param new_buffer [description]
+ */
 Err
 _vedit3_action_buffer_split(PttUIBuffer *current_buffer, int pos, int indent, PttUIBuffer **new_buffer)
 {
     Err error_code = S_OK;
+
+    if (!VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info) return S_ERR_EDIT_LOCK;
 
     // XXX should not happen.
     if(pos > current_buffer->len_no_nl) return S_OK;
@@ -606,12 +976,16 @@ _vedit3_action_buffer_split(PttUIBuffer *current_buffer, int pos, int indent, Pt
     p_new_buffer->block_offset = current_buffer->block_offset;
     p_new_buffer->line_offset = current_buffer->line_offset + 1;
     p_new_buffer->comment_offset = current_buffer->comment_offset;
-    p_new_buffer->load_line_offset = -1;
+    p_new_buffer->load_line_offset = INVALID_LINE_OFFSET_NEW;
+    p_new_buffer->load_line_pre_offset = current_buffer->load_line_offset;
+    p_new_buffer->load_line_next_offset = current_buffer->load_line_next_offset;
+    current_buffer->load_line_next_offset = INVALID_LINE_OFFSET_NEW;
 
     p_new_buffer->storage_type = PTTDB_STORAGE_TYPE_OTHER;
 
     p_new_buffer->is_modified = true;
     p_new_buffer->is_new = true;
+    current_buffer->is_modified = true;
 
     p_new_buffer->len_no_nl = current_buffer->len_no_nl - pos + indent;
     p_new_buffer->buf = malloc(MAX_TEXTLINE_SIZE + 1);
@@ -637,141 +1011,16 @@ _vedit3_action_buffer_split(PttUIBuffer *current_buffer, int pos, int indent, Pt
     for(PttUIBuffer *p_buffer2 = p_new_buffer->next; p_buffer2 && p_buffer2->content_type == p_new_buffer->content_type && p_buffer2->block_offset == p_new_buffer->block_offset && p_buffer2->comment_offset == p_new_buffer->comment_offset; p_buffer2->line_offset++, p_buffer2 = p_buffer2->next);    
 
     // file-info
-    /*
-    error_code = vedit3_wrlock_file_info();
-    if(error_code) return error_code;
-
     switch(current_buffer->content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
-        VEDIT3_FILE_INFO.main_blocks[current_buffer->block_offset].n_line++;
+        PTTUI_FILE_INFO.main_blocks[current_buffer->block_offset].n_line++;
         break;
     case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
-        VEDIT3_FILE_INFO.comments[current_buffer->comment_offset].comment_reply_blocks[current_buffer->block_offset].n_line++;
+        PTTUI_FILE_INFO.comments[current_buffer->comment_offset].comment_reply_blocks[current_buffer->block_offset].n_line++;
         break;
     default:
         break;
     }
-
-    Err error_code_lock = vedit3_wrunlock_file_info();
-    if(!error_code && error_code_lock) error_code = S_ERR_EDIT_LOCK;
-    */
-
-    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
-
-    return error_code;
-}
-
-Err
-_vedit3_action_move_right()
-{
-    Err error_code = S_OK;
-    int ansi_current_col = 0;
-    int mbcs_current_col = 0;
-    int orig_current_col = VEDIT3_EDITOR_STATUS.current_col;
-    // within the same line
-    if (VEDIT3_EDITOR_STATUS.current_col < VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl) {
-        // TODO use function-map to replace if-else
-        if (VEDIT3_EDITOR_STATUS.is_ansi) {
-            error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
-            ansi_current_col++;
-            error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
-
-
-        }
-        else {
-            VEDIT3_EDITOR_STATUS.current_col++;
-        }
-
-        if (VEDIT3_EDITOR_STATUS.is_mbcs) {
-            error_code = pttui_fix_cursor(VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_col, PTTUI_FIX_CURSOR_DIR_RIGHT, &mbcs_current_col);
-            VEDIT3_EDITOR_STATUS.current_col = mbcs_current_col;
-        }
-
-        fprintf(stderr, "vedit3_action._vedit3_action_move_right: within same line: orig_current_col: %d is_ansi: %d is_mbcs: %d new_current_col: %d\n", orig_current_col, VEDIT3_EDITOR_STATUS.is_ansi, VEDIT3_EDITOR_STATUS.is_mbcs, VEDIT3_EDITOR_STATUS.current_col);
-
-        return S_OK;
-    }
-
-    // need to move to next line
-
-    // move to next line
-    error_code = _vedit3_action_move_down();
-
-    VEDIT3_EDITOR_STATUS.current_col = 0;
-
-    return error_code;
-}
-
-Err
-_vedit3_action_move_left()
-{
-    Err error_code = S_OK;
-    int ansi_current_col = 0;
-    int mbcs_current_col = 0;
-    int orig_current_col = VEDIT3_EDITOR_STATUS.current_col;
-    // within the same line
-    if (VEDIT3_EDITOR_STATUS.current_col) {
-        // TODO use function-map to replace if-else
-        if (VEDIT3_EDITOR_STATUS.is_ansi) {
-            error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
-            ansi_current_col--;
-            error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
-
-
-        }
-        else {
-            VEDIT3_EDITOR_STATUS.current_col--;
-        }
-
-        if (VEDIT3_EDITOR_STATUS.is_mbcs) {
-            error_code = pttui_fix_cursor(VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_col, PTTUI_FIX_CURSOR_DIR_LEFT, &mbcs_current_col);
-            VEDIT3_EDITOR_STATUS.current_col = mbcs_current_col;
-        }
-
-        fprintf(stderr, "vedit3_action._vedit3_action_move_left: within same line: orig_current_col: %d is_ansi: %d is_mbcs: %d new_current_col: %d\n", orig_current_col, VEDIT3_EDITOR_STATUS.is_ansi, VEDIT3_EDITOR_STATUS.is_mbcs, VEDIT3_EDITOR_STATUS.current_col);
-
-        return S_OK;
-    }
-
-    // is beginning of file
-    if (VEDIT3_EDITOR_STATUS.current_line == 0 && VEDIT3_EDITOR_STATUS.current_col == 0) return S_OK;
-
-    // move to previous line
-    error_code = _vedit3_action_move_up();
-
-    VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
-
-    return error_code;
-}
-
-Err
-_vedit3_action_move_up()
-{
-    Err error_code = S_OK;
-    // is begin of file
-    bool is_begin = false;
-    error_code = pttui_buffer_is_begin_of_file(VEDIT3_EDITOR_STATUS.current_buffer, &PTTUI_FILE_INFO, &is_begin);
-    if (error_code) return error_code;
-    if (is_begin) return S_OK;
-
-    // check begin-of-window
-    error_code = _vedit3_action_move_up_ensure_top_of_window();
-    if (error_code) return error_code;
-
-    // move next
-    error_code = vedit3_repl_lock_buffer_info();
-    if (error_code) return error_code;
-
-    if (VEDIT3_EDITOR_STATUS.current_buffer->pre) VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_EDITOR_STATUS.current_buffer->pre;
-
-    Err error_code_lock = vedit3_repl_unlock_buffer_info();
-    if (error_code_lock) error_code = S_ERR_EDIT_LOCK;
-
-    if (VEDIT3_EDITOR_STATUS.current_line > 0) VEDIT3_EDITOR_STATUS.current_line--;
-
-    VEDIT3_EDITOR_STATUS.current_buffer_line--;
-
-    error_code = _vedit3_action_ensure_current_col(VEDIT3_EDITOR_STATUS.current_col);
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
@@ -817,40 +1066,6 @@ _vedit3_action_move_up_ensure_top_of_window()
     return error_code;
 }
 
-Err
-_vedit3_action_move_down()
-{
-    Err error_code = S_OK;
-    // is end of file
-    bool is_eof = false;
-    error_code = pttui_buffer_is_eof(VEDIT3_EDITOR_STATUS.current_buffer, &PTTUI_FILE_INFO, &is_eof);
-    if (error_code) return error_code;
-    if (is_eof) return S_OK;
-
-    // check end-of-window
-    error_code = _vedit3_action_move_down_ensure_end_of_window();
-    if (error_code) return error_code;
-
-    // move next
-    error_code = vedit3_repl_lock_buffer_info();
-    if (error_code) return error_code;
-
-    if (VEDIT3_EDITOR_STATUS.current_buffer->next) VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_EDITOR_STATUS.current_buffer->next;
-
-    Err error_code_lock = vedit3_repl_unlock_buffer_info();
-    if (error_code_lock) error_code = S_ERR_EDIT_LOCK;
-
-    if (VEDIT3_EDITOR_STATUS.current_line < b_lines - 1) VEDIT3_EDITOR_STATUS.current_line++;
-
-    VEDIT3_EDITOR_STATUS.current_buffer_line++;
-
-    error_code = _vedit3_action_ensure_current_col(VEDIT3_EDITOR_STATUS.current_col);
-
-    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
-
-    return error_code;
-}
-
 /**
  * @brief [brief description]
  * @details given that current-buffer is not eof, want to check the end of window and do corresponding works to maintain the state
@@ -887,182 +1102,6 @@ _vedit3_action_move_down_ensure_end_of_window()
     if (error_code) return error_code;
 
     return error_code;
-}
-
-Err
-_vedit3_action_move_end_line()
-{
-    VEDIT3_EDITOR_STATUS.current_col = VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl;
-
-    return S_OK;
-}
-
-Err
-_vedit3_action_move_begin_line()
-{
-    VEDIT3_EDITOR_STATUS.current_col = 0;
-
-    return S_OK;
-}
-
-Err
-_vedit3_action_move_pgup()
-{
-    Err error_code = S_OK;
-    bool is_begin = false;
-    int current_line = VEDIT3_EDITOR_STATUS.current_line;
-    int current_col = VEDIT3_EDITOR_STATUS.current_col;
-    for(int i = 0; i < b_lines - 1; i++) {
-        error_code = _vedit3_action_move_up();
-        if(error_code) break;
-        error_code = pttui_buffer_is_begin_of_file(VEDIT3_EDITOR_STATUS.current_buffer, &PTTUI_FILE_INFO, &is_begin);
-        if(error_code) break;
-        if(is_begin) break;
-    }
-    if(error_code) return error_code;
-
-    if(!is_begin) {
-        for(int i = 0; i < current_line; i++) {
-            error_code = _vedit3_action_move_up();
-            if(error_code) break;
-        }
-        if(error_code) return error_code;
-
-        for(int i = 0; i < current_line; i++) {
-            error_code = _vedit3_action_move_down();
-            if(error_code) break;
-        }
-        if(error_code) return error_code;
-    }
-
-    error_code = _vedit3_action_ensure_current_col(current_col);
-
-    return error_code;
-}
-
-Err
-_vedit3_action_move_pgdn()
-{
-    Err error_code = S_OK;
-    bool is_eof = false;
-    int current_line = VEDIT3_EDITOR_STATUS.current_line;
-    int current_col = VEDIT3_EDITOR_STATUS.current_col;
-    for(int i = 0; i < b_lines - 1; i++) {
-        error_code = _vedit3_action_move_down();
-        if(error_code) break;
-        error_code = pttui_buffer_is_eof(VEDIT3_EDITOR_STATUS.current_buffer, &PTTUI_FILE_INFO, &is_eof);
-        if(error_code) break;
-        if(is_eof) break;
-    }
-    if(error_code) return error_code;
-
-    if(!is_eof) {
-        for(int i = b_lines - 1; i > current_line; i--) {
-            error_code = _vedit3_action_move_down();
-            if(error_code) break;
-        }
-        if(error_code) return error_code;
-
-        for(int i = b_lines - 1; i > current_line; i--) {
-            error_code = _vedit3_action_move_up();
-            if(error_code) break;
-        }
-        if(error_code) return error_code;
-    }
-
-    error_code = _vedit3_action_ensure_current_col(current_col);
-
-    return error_code;
-}
-
-Err
-_vedit3_action_redraw()
-{
-    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
-
-    return S_OK;
-}
-
-Err
-_vedit3_action_show_help()
-{
-    more("etc/ve.hlp", true);
-
-    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
-
-    return S_OK;
-}
-
-/**
- * @brief 
- * @details ref: case KEY_BS in edit.c
- *          1. is-ansi: is-ansi == false
- *          2. is current-line == 0 and current-col == 0: no change
- *          3. current-col == 0: move to previous-line, try to concat the next line.
- *          4. move-left. do delete-char.
- */
-Err
-_vedit3_action_backspace()
-{
-    Err error_code = S_OK;
-    // XXX remove block cancel for now
-    //block_cancel();
-
-    // is-ansi: is-ansi = false
-    if(VEDIT3_EDITOR_STATUS.is_ansi) {
-        VEDIT3_EDITOR_STATUS.is_ansi = false;
-        VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
-        return S_OK;
-    }
-
-    // current-line == 0 and current-col == 0: no change
-    if(VEDIT3_EDITOR_STATUS.current_line == 0 && VEDIT3_EDITOR_STATUS.current_col == 0) return S_OK;
-
-    // current-col == 0: move to previous-line, try to concat the next line.s
-    if(VEDIT3_EDITOR_STATUS.current_col == 0) {
-        error_code = _vedit3_action_move_left();
-        if(error_code) return error_code;
-
-        error_code = _vedit3_action_concat_next_line();
-        return error_code;
-    }
-
-    error_code = _vedit3_action_move_left();
-    if(error_code) return error_code;
-
-    error_code = _vedit3_action_delete_char();
-
-    return error_code;
-}
-
-Err
-_vedit3_action_delete_char()
-{
-    Err error_code = S_OK;
-    if(VEDIT3_EDITOR_STATUS.current_col == VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl) {
-        error_code = _vedit3_action_concat_next_line();
-        return error_code;
-    }
-
-    int w = VEDIT3_EDITOR_STATUS.is_mbcs ? pttui_mchar_len_ne((unsigned char*)(VEDIT3_EDITOR_STATUS.current_buffer->buf + VEDIT3_EDITOR_STATUS.current_col)) : 1;
-
-    for(int i = 0; i < w; i++) {
-        error_code = _vedit3_action_delete_char_core();
-        if(error_code) return error_code;
-    }
-
-    int ansi_current_col = 0;
-    if(VEDIT3_EDITOR_STATUS.is_ansi) {
-        error_code = pttui_n2ansi(VEDIT3_EDITOR_STATUS.current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &ansi_current_col);
-        if(error_code) return error_code;
-
-        error_code = pttui_ansi2n(ansi_current_col, VEDIT3_EDITOR_STATUS.current_buffer->buf, &VEDIT3_EDITOR_STATUS.current_col);
-        if(error_code) return error_code;
-    }
-
-    VEDIT3_EDITOR_STATUS.current_buffer->is_modified = true;
-
-    return S_OK;
 }
 
 Err
@@ -1111,7 +1150,7 @@ _vedit3_action_concat_next_line()
     fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: p_non_space_buf: %lu\n", p_non_space_buf);
 
     if(!p_non_space_buf) {
-        error_code = _vedit3_action_delete_line(&p_next_buffer);
+        error_code = _vedit3_action_delete_line_core(&p_next_buffer);
         return error_code;
     }
 
@@ -1125,7 +1164,7 @@ _vedit3_action_concat_next_line()
         current_buffer->buf[current_buffer->len_no_nl] = 0;
         current_buffer->is_modified = true;
 
-        error_code = _vedit3_action_delete_line(&p_next_buffer);
+        error_code = _vedit3_action_delete_line_core(&p_next_buffer);
 
         return error_code;
     }
@@ -1151,7 +1190,7 @@ _vedit3_action_concat_next_line()
     if(error_code) return error_code;
 
     if(!p_non_space_buf) {
-        error_code = _vedit3_action_delete_line(&p_next_buffer);
+        error_code = _vedit3_action_delete_line_core(&p_next_buffer);
         return error_code;
     }
 
@@ -1173,7 +1212,7 @@ _vedit3_action_concat_next_line()
 }
 
 Err
-_vedit3_action_delete_line(PttUIBuffer **buffer)
+_vedit3_action_delete_line_core(PttUIBuffer **buffer)
 {
     PttUIBuffer *p_buffer = *buffer;
     PttUIBuffer *p_pre_buffer = p_buffer->pre;
@@ -1187,23 +1226,4 @@ _vedit3_action_delete_line(PttUIBuffer **buffer)
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
     return S_OK;
-}
-
-Err
-_vedit3_action_insert_new_line()
-{
-    PttUIBuffer *new_buffer = NULL;
-
-    Err error_code = _vedit3_action_buffer_split(VEDIT3_EDITOR_STATUS.current_buffer, VEDIT3_EDITOR_STATUS.current_col, 0, &new_buffer);
-    if(error_code) return error_code;
-
-    error_code = _vedit3_action_move_down();
-    if(error_code) return error_code;
-
-    error_code = _vedit3_action_move_begin_line();
-    if(error_code) return error_code;
-
-    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
-
-    return error_code;
 }

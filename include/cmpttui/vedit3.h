@@ -63,6 +63,14 @@ Err vedit3_init_buffer();
 
 Err vedit3_buffer();
 
+Err vedit3_repl_wrlock_file_info_buffer_info(bool *is_lock_file_info, bool *is_lock_wr_buffer_info, bool *is_lock_buffer_info);
+
+Err vedit3_repl_wrunlock_file_info_buffer_info(bool is_lock_file_info, bool is_lock_wr_buffer_info, bool is_lock_buffer_info);
+
+Err vedit3_repl_lock_wr_buffer_info();
+
+Err vedit3_repl_unlock_wr_buffer_info();
+
 Err vedit3_repl_lock_buffer_info();
 
 Err vedit3_repl_unlock_buffer_info();

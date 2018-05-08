@@ -627,6 +627,55 @@ _vedit3_loading_rotate_dots()
  **********/
 
 Err
+vedit3_repl_wrlock_file_info_buffer_info(bool *is_lock_file_info, bool *is_lock_wr_buffer_info, bool *is_lock_buffer_info)
+{
+    *is_lock_file_info = false;
+    *is_lock_wr_buffer_info = false;
+    *is_lock_buffer_info = false;
+
+    Err error_code = vedit3_repl_wrlock_file_info();
+    if(error_code) return error_code;
+
+    *is_lock_file_info = true;
+
+    error_code = vedit3_repl_lock_wr_buffer_info();
+    if(error_code) return error_code;
+
+    *is_lock_wr_buffer_info = true;
+
+    error_code = vedit3_repl_wrlock_buffer_info();
+    if(error_code) return error_code;
+
+    *is_lock_buffer_info = true;
+
+    return S_OK;
+}
+
+Err
+vedit3_repl_wrunlock_file_info_buffer_info(bool is_lock_file_info, bool is_lock_wr_buffer_info, bool is_lock_buffer_info)
+{
+    Err error_code = S_OK;
+
+    Err error_code_lock = S_OK;
+    if(is_lock_file_info) {
+        error_code_lock = vedit3_repl_wrunlock_buffer_info();
+        if(error_code_lock) error_code = error_code_lock;
+    }
+
+    if(is_lock_wr_buffer_info) {
+        error_code_lock = vedit3_repl_unlock_wr_buffer_info();
+        if(!error_code && error_code_lock) error_code = error_code_lock;
+    }
+
+    if(is_lock_file_info) {
+        error_code_lock = vedit3_repl_wrunlock_file_info();
+        if(!error_code && error_code_lock) error_code = error_code_lock;
+    }
+
+    return error_code;
+}
+
+Err
 vedit3_repl_lock_wr_buffer_info()
 {
     return pttui_thread_lock_wrlock(LOCK_PTTUI_WR_BUFFER_INFO);
@@ -638,6 +687,12 @@ vedit3_repl_unlock_wr_buffer_info()
     return pttui_thread_lock_unlock(LOCK_PTTUI_WR_BUFFER_INFO);
 }
 
+/**
+ * @brief [brief description]
+ * @details XXX require: 1. wrlock_file_info 2. lock_wr_buffer_info
+ * 
+ * @param error_code [description]
+ */
 Err
 vedit3_repl_wrlock_buffer_info()
 {
