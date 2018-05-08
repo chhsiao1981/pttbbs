@@ -505,7 +505,7 @@ vedit3_init_buffer()
     Err error_code = S_OK;
 
     PttUIState expected_state = {};
-    error_code = vedit3_get_expected_state(&expected_state);
+    error_code = pttui_get_expected_state(&expected_state);
     if (error_code) return error_code;
 
     if (!memcmp(expected_state.main_id, PTTUI_FILE_INFO.main_id, UUIDLEN) &&
@@ -543,7 +543,7 @@ vedit3_buffer()
     // XXX may result in race-condition. need to bind with buffer-info.
     PTTUI_BUFFER_TOP_LINE = new_top_line_buffer;
 
-    error_code = _vedit3_set_buffer_current_state(&expected_state);
+    error_code = pttui_set_buffer_state(&expected_state);
 
     //fprintf(stderr, "vedit3_disp_buffer: end: e: %d\n", error_code);
 
