@@ -750,7 +750,7 @@ _vedit3_action_move_up()
     Err error_code = S_OK;
     // is begin of file
     bool is_begin = false;
-    error_code = vedit3_buffer_is_begin_of_file(VEDIT3_EDITOR_STATUS.current_buffer, &VEDIT3_FILE_INFO, &is_begin);
+    error_code = vedit3_buffer_is_begin_of_file(VEDIT3_EDITOR_STATUS.current_buffer, &PTTUI_FILE_INFO, &is_begin);
     if (error_code) return error_code;
     if (is_begin) return S_OK;
 
@@ -790,8 +790,8 @@ _vedit3_action_move_up_ensure_top_of_window()
     if (VEDIT3_EDITOR_STATUS.current_line != 0) return S_OK;
 
     UUID main_id = {};
-    memcpy(main_id, VEDIT3_STATE.main_id, UUIDLEN);
-    int n_window_line = VEDIT3_STATE.n_window_line;
+    memcpy(main_id, PTTUI_STATE.main_id, UUIDLEN);
+    int n_window_line = PTTUI_STATE.n_window_line;
 
     UUID new_id = {};
     enum PttDBContentType new_content_type = PTTDB_CONTENT_TYPE_MAIN;
@@ -800,10 +800,10 @@ _vedit3_action_move_up_ensure_top_of_window()
     int new_comment_offset = 0;
     enum PttDBStorageType _dummy = PTTDB_STORAGE_TYPE_MONGO;
 
-    Err error_code = file_info_get_pre_line(&VEDIT3_FILE_INFO, VEDIT3_STATE.top_line_id, VEDIT3_STATE.top_line_content_type, VEDIT3_STATE.top_line_block_offset, VEDIT3_STATE.top_line_line_offset, VEDIT3_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
+    Err error_code = file_info_get_pre_line(&PTTUI_FILE_INFO, PTTUI_STATE.top_line_id, PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset, PTTUI_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
     if (error_code) return error_code;
 
-    fprintf(stderr, "vedit3_action._vedit3_action_move_up_ensure_top_of_window: orig_content_type: %d orig_block_offset: %d orig_line_offset: %d orig_comment_offset: %d new_content_type: %d new_block_offset: %d new_line_offset: %d new_comment_offset: %d\n", VEDIT3_STATE.top_line_content_type, VEDIT3_STATE.top_line_block_offset, VEDIT3_STATE.top_line_line_offset, VEDIT3_STATE.top_line_comment_offset, new_content_type, new_block_offset, new_line_offset, new_comment_offset);
+    fprintf(stderr, "vedit3_action._vedit3_action_move_up_ensure_top_of_window: orig_content_type: %d orig_block_offset: %d orig_line_offset: %d orig_comment_offset: %d new_content_type: %d new_block_offset: %d new_line_offset: %d new_comment_offset: %d\n", PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset, PTTUI_STATE.top_line_comment_offset, new_content_type, new_block_offset, new_line_offset, new_comment_offset);
 
     error_code = vedit3_set_expected_state(main_id, new_content_type, new_id, new_block_offset, new_line_offset, new_comment_offset, n_window_line);
     if (error_code) return error_code;
@@ -823,7 +823,7 @@ _vedit3_action_move_down()
     Err error_code = S_OK;
     // is end of file
     bool is_eof = false;
-    error_code = vedit3_buffer_is_eof(VEDIT3_EDITOR_STATUS.current_buffer, &VEDIT3_FILE_INFO, &is_eof);
+    error_code = vedit3_buffer_is_eof(VEDIT3_EDITOR_STATUS.current_buffer, &PTTUI_FILE_INFO, &is_eof);
     if (error_code) return error_code;
     if (is_eof) return S_OK;
 
@@ -863,8 +863,8 @@ _vedit3_action_move_down_ensure_end_of_window()
     if (VEDIT3_EDITOR_STATUS.current_line != b_lines - 1) return S_OK;
 
     UUID main_id = {};
-    memcpy(main_id, VEDIT3_STATE.main_id, UUIDLEN);
-    int n_window_line = VEDIT3_STATE.n_window_line;
+    memcpy(main_id, PTTUI_STATE.main_id, UUIDLEN);
+    int n_window_line = PTTUI_STATE.n_window_line;
 
     UUID new_id = {};
     enum PttDBContentType new_content_type = PTTDB_CONTENT_TYPE_MAIN;
@@ -873,10 +873,10 @@ _vedit3_action_move_down_ensure_end_of_window()
     int new_comment_offset = 0;
     enum PttDBStorageType _dummy = PTTDB_STORAGE_TYPE_MONGO;
 
-    Err error_code = file_info_get_next_line(&VEDIT3_FILE_INFO, VEDIT3_STATE.top_line_id, VEDIT3_STATE.top_line_content_type, VEDIT3_STATE.top_line_block_offset, VEDIT3_STATE.top_line_line_offset, VEDIT3_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
+    Err error_code = file_info_get_next_line(&PTTUI_FILE_INFO, PTTUI_STATE.top_line_id, PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset, PTTUI_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
     if (error_code) return error_code;
 
-    fprintf(stderr, "vedit3_action._vedit3_action_move_down_ensure_end_of_window: orig_content_type: %d orig_block_offset: %d orig_line_offset: %d orig_comment_offset: %d new_content_type: %d new_block_offset: %d new_line_offset: %d new_comment_offset: %d\n", VEDIT3_STATE.top_line_content_type, VEDIT3_STATE.top_line_block_offset, VEDIT3_STATE.top_line_line_offset, VEDIT3_STATE.top_line_comment_offset, new_content_type, new_block_offset, new_line_offset, new_comment_offset);
+    fprintf(stderr, "vedit3_action._vedit3_action_move_down_ensure_end_of_window: orig_content_type: %d orig_block_offset: %d orig_line_offset: %d orig_comment_offset: %d new_content_type: %d new_block_offset: %d new_line_offset: %d new_comment_offset: %d\n", PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset, PTTUI_STATE.top_line_comment_offset, new_content_type, new_block_offset, new_line_offset, new_comment_offset);
 
     error_code = vedit3_set_expected_state(main_id, new_content_type, new_id, new_block_offset, new_line_offset, new_comment_offset, n_window_line);
     if (error_code) return error_code;
@@ -915,7 +915,7 @@ _vedit3_action_move_pgup()
     for(int i = 0; i < b_lines - 1; i++) {
         error_code = _vedit3_action_move_up();
         if(error_code) break;
-        error_code = vedit3_buffer_is_begin_of_file(VEDIT3_EDITOR_STATUS.current_buffer, &VEDIT3_FILE_INFO, &is_begin);
+        error_code = vedit3_buffer_is_begin_of_file(VEDIT3_EDITOR_STATUS.current_buffer, &PTTUI_FILE_INFO, &is_begin);
         if(error_code) break;
         if(is_begin) break;
     }
@@ -950,7 +950,7 @@ _vedit3_action_move_pgdn()
     for(int i = 0; i < b_lines - 1; i++) {
         error_code = _vedit3_action_move_down();
         if(error_code) break;
-        error_code = vedit3_buffer_is_eof(VEDIT3_EDITOR_STATUS.current_buffer, &VEDIT3_FILE_INFO, &is_eof);
+        error_code = vedit3_buffer_is_eof(VEDIT3_EDITOR_STATUS.current_buffer, &PTTUI_FILE_INFO, &is_eof);
         if(error_code) break;
         if(is_eof) break;
     }
