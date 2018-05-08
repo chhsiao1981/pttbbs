@@ -26,12 +26,10 @@ destroy_pttui_thread()
 {
     Err error_code = S_OK;
 
-    fprintf(stderr, "pttui_thread.destroy_pttui_thread: start\n");
-
     int ret = pthread_cancel(PTTUI_THREAD_BUFFER);
     if(ret) error_code = S_ERR;
 
-    fprintf(stderr, "pttui_thread.destroy_pttui_thread: after for-loop: e: %d\n", error_code);
+    fprintf(stderr, "pttui_thread.destroy_pttui_thread: after cancel: e: %d\n", error_code);
 
     return error_code;
 }
