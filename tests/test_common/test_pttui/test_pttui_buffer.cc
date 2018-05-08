@@ -128,7 +128,7 @@ TEST(pttui_buffer, pttui_buffer_pre_ne3)
     PttUIBuffer pre = {};
     buffer.pre = &pre;
     PttUIBuffer *pre2 = pttui_buffer_next_ne(&pre);
-    EXPECT_EQ(&next, next2);
+    EXPECT_EQ(&pre, pre2);
 }
 
 TEST(pttui_buffer, sync_pttui_buffer_info_is_pre)
@@ -160,7 +160,6 @@ TEST(pttui_buffer, sync_pttui_buffer_info_is_pre2)
 
 TEST(pttui_buffer, sync_pttui_buffer_info_is_pre3)
 {
-
     PttUIState state = {};
     PttUIBuffer buffer = {};
     bool is_pre = false;
