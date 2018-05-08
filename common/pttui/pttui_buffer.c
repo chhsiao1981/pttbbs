@@ -148,6 +148,8 @@ sync_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIBuffer *current_buffer
     Err error_code_lock = pttui_buffer_unlock_buffer_info();
     if(!error_code && error_code_lock) error_code = error_code_lock;
 
+    fprintf(stderr, "pttui_buffer.sync_pttui_buffer_info: after get buffer: e: %d new_buffer: %lu\n", error_code, *new_buffer);
+
     if(error_code) return error_code;
 
     // found buffer in the current buffer-info
