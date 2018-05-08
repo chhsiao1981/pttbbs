@@ -563,6 +563,9 @@ vedit3_action_move_left()
         return S_OK;
     }
 
+    // begin of the file. (pos: 0, 0) no need to do anything (move_up take cake of line only, not the col)
+    if(VEDIT3_EDITOR_STATUS.current_buffer_line == 0 && VEDIT3_EDITOR_STATUS.current_col == 0) return S_OK;
+
     // move to previous line
     error_code = vedit3_action_move_up();
 
