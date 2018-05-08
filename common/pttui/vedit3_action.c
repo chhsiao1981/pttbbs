@@ -1265,7 +1265,7 @@ _vedit3_action_delete_line_core(PttUIBuffer *buffer)
     buffer->is_to_delete = true;
 
     // buffer after buffer
-    for(PttUIBuffer *p_buffer2 = pttui_buffer_next_ne(p_new_buffer); p_buffer2 && p_buffer2->content_type == p_new_buffer->content_type && p_buffer2->block_offset == p_new_buffer->block_offset && p_buffer2->comment_offset == p_new_buffer->comment_offset; p_buffer2->line_offset--, p_buffer2 = pttui_buffer_next_ne(p_buffer2));    
+    for(PttUIBuffer *p_buffer2 = pttui_buffer_next_ne(buffer); p_buffer2 && p_buffer2->content_type == buffer->content_type && p_buffer2->block_offset == buffer->block_offset && p_buffer2->comment_offset == buffer->comment_offset; p_buffer2->line_offset--, p_buffer2 = pttui_buffer_next_ne(p_buffer2));    
 
     // file-info
     ContentBlockInfo *p_content_block = NULL;
