@@ -1072,6 +1072,7 @@ _vedit3_action_buffer_split(PttUIBuffer *current_buffer, int pos, int indent, Pt
     if(PTTUI_BUFFER_INFO.tail == current_buffer) {
         PTTUI_BUFFER_INFO.tail = pttui_buffer_next_ne(current_buffer, PTTUI_BUFFER_INFO.tail);
     }
+    PTTUI_BUFFER_INFO.n_buffer++;
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
