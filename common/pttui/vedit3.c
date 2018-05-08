@@ -748,7 +748,7 @@ _vedit3_edit_ansi_outs_n(const char *str, int n, int attr GCC_UNUSED)
  *********/
 
 Err
-vedit3_init_disp_buffer()
+vedit3_init_buffer()
 {
     Err error_code = S_OK;
 
@@ -770,7 +770,7 @@ vedit3_init_disp_buffer()
 }
 
 Err
-vedit3_disp_buffer()
+vedit3_buffer()
 {
     Err error_code = S_OK;
 

@@ -6,10 +6,6 @@ enum PttUIThreadState PTTUI_CURRENT_STATES[N_PTTUI_THREAD_TYPE] = {};
 
 pthread_t PTTUI_THREADS[N_PTTUI_THREAD_TYPE] = {};
 
-void *(*PTTUI_THREAD_FUNCS[N_PTTUI_THREAD_TYPE])(void *) = {
-    pttui_thread_disp_buffer,
-};
-
 Err
 init_pttui_thread()
 {
@@ -17,14 +13,8 @@ init_pttui_thread()
 
     fprintf(stderr, "pttui_thread.init_pttui_thread: start\n");
 
-    int ret = 0;
-    for(int i = 0; i < N_PTTUI_THREAD_TYPE; i++) {
-        ret = pthread_create(&PTTUI_THREADS[i], NULL, PTTUI_THREAD_FUNCS[i], NULL);
-        if(ret) {
-            error_code = S_ERR;
-            break;
-        }
-    }
+    int ret = pthread_create(&PTTUI_THREAD_BUFFER, NULL, pttui_thread_buffer, NULL);
+    if(ret) error_code = S_ERR;
 
     fprintf(stderr, "pttui_thread.init_pttui_thread: after for-loop: e: %d\n", error_code);
 
@@ -39,12 +29,8 @@ destroy_pttui_thread()
     fprintf(stderr, "pttui_thread.destroy_pttui_thread: start\n");
 
     int ret = 0;
-    for(int i = 0; i < N_PTTUI_THREAD_TYPE; i++) {
-        ret = pthread_cancel(PTTUI_THREADS[i]);
-        if(ret) {
-            error_code = S_ERR;
-        }
-    }
+    int ret = pthread_cancel(PTTUI_THREAD_BUFFER);
+    if(ret) error_code = S_ERR;
 
     fprintf(stderr, "pttui_thread.destroy_pttui_thread: after for-loop: e: %d\n", error_code);
 
@@ -52,14 +38,13 @@ destroy_pttui_thread()
 }
 
 void *
-pttui_thread_disp_buffer(void *a GCC_UNUSED)
+pttui_thread_buffer(void *a GCC_UNUSED)
 {
-    /*
     Err error_code = S_OK;
     bool is_end = false;
     enum PttUIThreadState expected_state = PTTUI_THREAD_STATE_START;
 
-    error_code = pttui_thread_set_current_state(PTTUI_THREAD_DISP_BUFFER, PTTUI_THREAD_STATE_START);
+    error_code = pttui_thread_set_buffer_state(PTTUI_THREAD_STATE_START);
     if (error_code) return NULL;
 
     struct timespec req = {0, NS_DEFAULT_SLEEP_THREAD};
@@ -76,18 +61,17 @@ pttui_thread_disp_buffer(void *a GCC_UNUSED)
         error_code = pttui_thread_get_expected_state(&expected_state);
         if (error_code) break;
 
-        // fprintf(stderr, "pttui_thread.pttui_thread_disp_buffer: expected_state: %d\n", expected_state);
         switch (expected_state) {
         case PTTUI_THREAD_STATE_INIT_EDIT:
-            pttui_thread_set_current_state(PTTUI_THREAD_DISP_BUFFER, expected_state);
-            error_code = vedit3_init_disp_buffer();
+            pttui_thread_set_buffer_state(expected_state);
+            error_code = vedit3_init_buffer();
             break;
         case PTTUI_THREAD_STATE_EDIT:
-            pttui_thread_set_current_state(PTTUI_THREAD_DISP_BUFFER, expected_state);
-            error_code = vedit3_disp_buffer();
+            pttui_thread_set_buffer_state(expected_state);
+            error_code = vedit3_buffer();
             break;
         default:
-            pttui_thread_set_current_state(PTTUI_THREAD_DISP_BUFFER, expected_state);
+            pttui_thread_set_buffer_state(expected_state);
             break;
         }
 
@@ -101,9 +85,8 @@ pttui_thread_disp_buffer(void *a GCC_UNUSED)
     }
     fprintf(stderr, "pttui_thread.pttui_thread_disp_buffer: end while-loop\n");
 
-    Err error_code_set_state = pttui_thread_set_current_state(PTTUI_THREAD_DISP_BUFFER, PTTUI_THREAD_STATE_END);
+    Err error_code_set_state = pttui_thread_set_buffer_state(PTTUI_THREAD_STATE_END);
     if (!error_code && error_code_set_state) error_code = error_code_set_state;
-    */
 
     return NULL;
 }
@@ -112,14 +95,14 @@ Err
 pttui_thread_set_expected_state(enum PttUIThreadState thread_state)
 {
     // lock
-    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_EXPECTED_STATE);
+    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_THREAD_EXPECTED_STATE);
     if (error_code) return error_code;
 
     // do op
-    PTTUI_EXPECTED_STATE = thread_state;
+    PTTUI_THREAD_EXPECTED_STATE = thread_state;
 
     // release lock
-    pttui_thread_lock_unlock(LOCK_PTTUI_EXPECTED_STATE);
+    pttui_thread_lock_unlock(LOCK_PTTUI_THREAD_EXPECTED_STATE);
 
     return S_OK;
 }
@@ -128,41 +111,40 @@ Err
 pttui_thread_get_expected_state(enum PttUIThreadState *thread_state)
 {
     // lock
-    Err error_code = pttui_thread_lock_rdlock(LOCK_PTTUI_THREAD_STATE);
+    Err error_code = pttui_thread_lock_rdlock(LOCK_PTTUI_THREAD_EXPECTED_STATE);
     if (error_code) return error_code;
 
     // do op
-    *thread_state = PTTUI_EXPECTED_STATE;
+    *thread_state = PTTUI_THREAD_EXPECTED_STATE;
 
     // release lock
-    pttui_thread_lock_unlock(LOCK_PTTUI_THREAD_STATE);
+    pttui_thread_lock_unlock(LOCK_PTTUI_THREAD_EXPECTED_STATE);
 
     return S_OK;
 }
 
 Err
-pttui_thread_set_current_state(enum PttUIThreadType thread_type, enum PttUIThreadState thread_state)
+pttui_thread_set_buffer_state(enum PttUIThreadState thread_state)
 {
-    //fprintf(stderr, "pttui_thread.pttui_thread_set_current_state: thread_type: %d thread_state: %d LOCK_PTTUI_THREAD_STATE: %d\n", thread_type, thread_state, LOCK_PTTUI_THREAD_STATE);
-    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_THREAD_STATE + thread_type);
+    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_THREAD_BUFFER_STATE);
     if (error_code) return error_code;
 
-    PTTUI_CURRENT_STATES[thread_type] = thread_state;
+    PTTUI_THREAD_BUFFER_STATE = thread_state;
 
-    pttui_thread_lock_unlock(LOCK_PTTUI_THREAD_STATE + thread_type);
+    pttui_thread_lock_unlock(LOCK_PTTUI_THREAD_BUFFER_STATE);
 
     return S_OK;
 }
 
 Err
-pttui_thread_get_current_state(enum PttUIThreadType thread_type, enum PttUIThreadState *thread_state)
+pttui_thread_get_buffer_state(enum PttUIThreadState *thread_state)
 {
-    Err error_code = pttui_thread_lock_rdlock(LOCK_PTTUI_THREAD_STATE + thread_type);
+    Err error_code = pttui_thread_lock_rdlock(LOCK_PTTUI_THREAD_BUFFER_STATE);
     if (error_code) return error_code;
 
-    *thread_state = PTTUI_CURRENT_STATES[thread_type];
+    *thread_state = PTTUI_THREAD_BUFFER_STATE;
 
-    pttui_thread_lock_unlock(LOCK_PTTUI_THREAD_STATE + thread_type);
+    pttui_thread_lock_unlock(LOCK_PTTUI_THREAD_BUFFER_STATE);
 
     return S_OK;
 }
@@ -186,7 +168,7 @@ pttui_thread_wait_buffer_loop(enum PttUIThreadState expected_state, int n_iter)
 
     int i = 0;
     for (i = 0; i < n_iter; i++) {
-        error_code = pttui_thread_get_current_state(PTTUI_THREAD_DISP_BUFFER, &current_state);
+        error_code = pttui_thread_get_buffer_state(PTTUI_THREAD_DISP_BUFFER, &current_state);
         if (error_code) break;
 
         if (expected_state == current_state) break; // XXX maybe re-edit too quickly
@@ -201,4 +183,3 @@ pttui_thread_wait_buffer_loop(enum PttUIThreadState expected_state, int n_iter)
 
     return error_code;
 }
-
