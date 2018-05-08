@@ -446,7 +446,7 @@ vedit3_action_insert_char(int ch)
 
     error_code = pstr ? _vedit3_action_insert_dchar_core(pstr) : _vedit3_action_insert_char_core(ch);
 
-    Err error_code_lock = vedit3_repl_wrunlock_file_info_buffer_info(is_lock_file_info, is_lock_wr_buffer_info, is_lock_buffer_info)
+    Err error_code_lock = vedit3_repl_wrunlock_file_info_buffer_info(is_lock_file_info, is_lock_wr_buffer_info, is_lock_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
 
     if(!error_code && VEDIT3_EDITOR_STATUS.current_col > VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl && VEDIT3_EDITOR_STATUS.current_buffer->next) {
@@ -466,7 +466,7 @@ vedit3_action_insert_new_line()
     bool is_lock_wr_buffer_info = false;
     bool is_lock_buffer_info = false;
 
-    error_code = vedit3_repl_wrlock_file_info_buffer_info(&is_lock_file_info, &is_lock_wr_buffer_info, &is_lock_buffer_info);
+    Err error_code = vedit3_repl_wrlock_file_info_buffer_info(&is_lock_file_info, &is_lock_wr_buffer_info, &is_lock_buffer_info);
     if(error_code) return error_code;
 
     error_code = _vedit3_action_buffer_split(VEDIT3_EDITOR_STATUS.current_buffer, VEDIT3_EDITOR_STATUS.current_col, 0, &new_buffer);
