@@ -52,7 +52,7 @@ destroy_pttui_thread()
 }
 
 void *
-pttui_thread_disp_buffer(void *a)
+pttui_thread_disp_buffer(void *a GCC_UNUSED)
 {
     /*
     Err error_code = S_OK;

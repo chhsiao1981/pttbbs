@@ -8,6 +8,7 @@
 #include "cmpttui/pttui_const.h"
 #include "cmpttui/pttui_thread.h"
 #include "cmpttui/pttui_thread_lock.h"
+#include "cmpttui/pttui_state.h"
 #include "cmpttui/vedit3_action.h"
 #include "cmpttui/pttui_lua_bbs.h"
 #include "cmpttui/pttui_util.h"
@@ -32,17 +33,14 @@ Err _vedit3_init_user();
 Err _vedit3_init_editor(UUID main_id);
 Err _vedit3_init_file_info(UUID main_id);
 
-Err _vedit3_set_buffer_current_state(VEdit3State *state);
-Err _vedit3_get_buffer_current_state(VEdit3State *state);
+Err _vedit3_set_buffer_current_state(PttUIState *state);
+Err _vedit3_get_buffer_current_state(PttUIState *state);
 
 // VEdit3 Misc
 Err _vedit3_edit_msg();
 Err _vedit3_init_dots();
 Err _vedit3_loading();
 Err _vedit3_loading_rotate_dots();
-
-Err _vedit3_detect_attr(const char *ps, size_t len, int *p_attr);
-int _vedit3_syn_lua_keyword(const char *text, int n, char *wlen);
 
 // VEdit3 repl
 Err _vedit3_repl_init();

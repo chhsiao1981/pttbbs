@@ -1,5 +1,75 @@
 #include "cmpttui/pttui_util.h"
 
+/**********
+ * pttui-state
+ **********/
+Err
+pttui_set_expected_state(UUID main_id, enum PttDBContentType top_line_content_type, UUID top_line_id, int top_line_block_offset, int top_line_line_offset, int top_line_comment_offset, int n_window_line)
+{
+
+    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_EXPECTED_STATE);
+    if (error_code) return error_code;
+
+    memcpy(PTTUI_STATE.main_id, main_id, UUIDLEN);
+    VEDIT3_STATE.top_line_content_type = top_line_content_type;
+    memcpy(PTTUI_STATE.top_line_id, top_line_id, UUIDLEN);
+    PTTUI_STATE.top_line_block_offset = top_line_block_offset;
+    PTTUI_STATE.top_line_line_offset = top_line_line_offset;
+    PTTUI_STATE.top_line_comment_offset = top_line_comment_offset;
+    PTTUI_STATE.n_window_line = n_window_line;
+
+    pttui_thread_lock_unlock(LOCK_PTTUI_EXPECTED_STATE);
+
+    return S_OK;
+}
+
+Err
+pttui_get_expected_state(PttUIState *expected_state)
+{
+    Err error_code = pttui_thread_lock_rdlock(LOCK_PTTUI_EXPECTED_STATE);
+    if (error_code) return error_code;
+
+    memcpy(expected_state, &PTTUI_STATE, sizeof(PttUIState));
+
+    pttui_thread_lock_unlock(LOCK_PTTUI_EXPECTED_STATE);
+
+    return error_code;
+}
+
+
+Err
+pttui_set_buffer_state(PttUIState *state)
+{
+    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_BUFFER_STATE);
+    if (error_code) return error_code;
+
+    memcpy(&PTTUI_BUFFER_STATE, state, sizeof(PttUIState));
+
+    // free
+    error_code = pttui_thread_lock_unlock(LOCK_PTTUI_BUFFER_STATE);
+    if (error_code) return error_code;
+
+    return S_OK;
+}
+
+Err
+pttui_get_buffer_state(PttUIState *state)
+{
+    Err error_code = pttui_thread_lock_rdlock(LOCK_PTTUI_BUFFER_STATE);
+    if (error_code) return error_code;
+
+    memcpy(state, &PTTUI_BUFFER_STATE, sizeof(PttUIState));
+
+    // free
+    error_code = pttui_thread_lock_unlock(LOCK_PTTUI_BUFFER_STATE);
+    if (error_code) return error_code;
+
+    return S_OK;
+}
+
+/**********
+ * char
+ **********/
 Err
 pttui_next_non_space_char(char *buf, int len, char **p_buf)
 {
@@ -196,7 +266,7 @@ pttui_phone_char(char c, int phone_mode, char **ret)
             tmp_ret = NULL;
         }
         else {
-            tmp_ret = BIG5[phone_mode - 1] + (tolower(c) - 'a') * 2;
+            tmp_ret = (char *)BIG5[phone_mode - 1] + (tolower(c) - 'a') * 2;
         }
     }
     else if (phone_mode >= 20) {
@@ -206,7 +276,7 @@ pttui_phone_char(char c, int phone_mode, char **ret)
             tmp_ret = NULL;
         }
         else {
-            tmp_ret = table[phone_mode - 20] + (c - '/') * 2;
+            tmp_ret = (char *)table[phone_mode - 20] + (c - '/') * 2;
         }
     }
     else {
@@ -312,4 +382,163 @@ pttui_phone_mode_filter(char ch, bool is_phone, int *phone_mode, char *ret, bool
 
     *ret = 0;
     return S_OK;
+}
+
+
+/**
+ * @brief
+ * @details ref: detect_attr in edit.c
+ *
+ * @param ps [description]
+ * @param len [description]
+ * @param p_attr [description]
+ */
+Err
+pttui_detect_attr(const char *ps, size_t len, int *p_attr)
+{
+    int attr = 0;
+#ifdef PMORE_USE_ASCII_MOVIE
+    if (mf_movieFrameHeader((unsigned char*)ps, (unsigned char*)ps + len)) attr |= PTTUI_ATTR_MOVIECODE;
+#endif
+
+#ifdef USE_BBSLUA
+    if (bbslua_isHeader(ps, ps + len))
+    {
+        attr |= PTTUI_ATTR_BBSLUA;
+        if (!curr_buf->synparser)
+        {
+            curr_buf->synparser = 1;
+            // if you need indent, toggle by hotkey.
+            // enabling indent by default may cause trouble to copy pasters
+            // curr_buf->indent_mode = 1;
+        }
+    }
+#endif
+    return attr;
+}
+
+int pttui_syn_lua_keyword_ne(const char *text, int n, char *wlen)
+{
+    int i = 0;
+    const char * const *tbl = NULL;
+    if (*text >= 'A' && *text <= 'Z')
+    {
+        // normal identifier
+        while (n-- > 0 && (isalnum(*text) || *text == '_'))
+        {
+            text++;
+            (*wlen) ++;
+        }
+        return 0;
+    }
+    if (*text >= '0' && *text <= '9')
+    {
+        // digits
+        while (n-- > 0 && (isdigit(*text) || *text == '.' || *text == 'x'))
+        {
+            text++;
+            (*wlen) ++;
+        }
+        return 5;
+    }
+    if (*text == '#')
+    {
+        text++;
+        (*wlen) ++;
+        // length of identifier
+        while (n-- > 0 && (isalnum(*text) || *text == '_'))
+        {
+            text++;
+            (*wlen) ++;
+        }
+        return -2;
+    }
+
+    // ignore non-identifiers
+    if (!(*text >= 'a' && *text <= 'z'))
+        return 0;
+
+    // 1st, try keywords
+    for (i = 0; luaKeywords[i] && *text >= *luaKeywords[i]; i++)
+    {
+        int l = strlen(luaKeywords[i]);
+        if (n < l)
+            continue;
+        if (isalnum(text[l]))
+            continue;
+        if (strncmp(text, luaKeywords[i], l) == 0)
+        {
+            *wlen = l;
+            return 3;
+        }
+    }
+    for (i = 0; luaDataKeywords[i] && *text >= *luaDataKeywords[i]; i++)
+    {
+        int l = strlen(luaDataKeywords[i]);
+        if (n < l)
+            continue;
+        if (isalnum(text[l]))
+            continue;
+        if (strncmp(text, luaDataKeywords[i], l) == 0)
+        {
+            *wlen = l;
+            return 2;
+        }
+    }
+    for (i = 0; luaFunctions[i] && *text >= *luaFunctions[i]; i++)
+    {
+        int l = strlen(luaFunctions[i]);
+        if (n < l)
+            continue;
+        if (isalnum(text[l]))
+            continue;
+        if (strncmp(text, luaFunctions[i], l) == 0)
+        {
+            *wlen = l;
+            return 6;
+        }
+    }
+    for (i = 0; luaLibs[i]; i++)
+    {
+        int l = strlen(luaLibs[i]);
+        if (n < l)
+            continue;
+        if (text[l] != '.' && text[l] != ':')
+            continue;
+        if (strncmp(text, luaLibs[i], l) == 0)
+        {
+            *wlen = l + 1;
+            text += l; text ++;
+            n -= l; n--;
+            break;
+        }
+    }
+
+    tbl = luaLibAPI[i];
+    if (!tbl)
+    {
+        // calcualte wlen
+        while (n-- > 0 && (isalnum(*text) || *text == '_'))
+        {
+            text++;
+            (*wlen) ++;
+        }
+        return 0;
+    }
+
+    for (i = 0; tbl[i]; i++)
+    {
+        int l = strlen(tbl[i]);
+        if (n < l)
+            continue;
+        if (isalnum(text[l]))
+            continue;
+        if (strncmp(text, tbl[i], l) == 0)
+        {
+            *wlen += l;
+            return 6;
+        }
+    }
+    // luaLib. only
+    return -6;
 }

@@ -496,7 +496,7 @@ _vedit3_action_insert_char(int ch)
 
     if (!VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info) return S_ERR_EDIT_LOCK;
 
-    VEdit3Buffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
+    PttUIBuffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
 
     assert(VEDIT3_EDITOR_STATUS.current_col <= current_buffer->len_no_nl);
 //#ifdef DEBUG
@@ -544,14 +544,15 @@ Err
 _vedit3_action_ensure_buffer_wrap()
 {
     Err error_code = S_OK;
+
+    if (!VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info) return S_ERR_EDIT_LOCK;
+
     VEdit3Buffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
 
     fprintf(stderr, "vedit3_action._vedit3_action_ensure_buffer_wrap: len_no_nl: %d WRAPMARGIN: %d\n", current_buffer->len_no_nl, WRAPMARGIN);
     if (current_buffer->len_no_nl < WRAPMARGIN) {
         return S_OK;
     }
-
-    if (!VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info) return S_ERR_EDIT_LOCK;
 
     fprintf(stderr, "vedit3_action._vedit3_action_ensure_buffer_wrap: buf: %s len_no_nl: %d\n", current_buffer->buf, current_buffer->len_no_nl);
 
@@ -1211,6 +1212,68 @@ _vedit3_action_insert_new_line()
     if(error_code) return error_code;
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
+    return error_code;
+}
+
+/**********
+ * lock
+ **********/
+
+Err
+_vedit3_action_lock_wr_buffer_info()
+{
+    return pttui_thread_lock_wrlock(LOCK_PTTUI_WR_BUFFER_INFO);
+}
+
+Err
+_vedit3_action_unlock_wr_buffer_info()
+{
+    return pttui_thread_lock_unlock(LOCK_PTTUI_WR_BUFFER_INFO);
+}
+
+Err
+_vedit3_action_wrlock_buffer_info()
+{
+    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_BUFFER_INFO);
+    if (error_code) return error_code;
+
+    VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info = true;
+
+    return S_OK;
+}
+
+Err
+_vedit3_action_wrunlock_buffer_info()
+{
+    VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info = false;
+
+    return pttui_thread_lock_unlock(LOCK_PTTUI_BUFFER_INFO);
+}
+
+Err
+_vedit3_action_lock_buffer_info()
+{
+    Err error_code = pttui_thread_lock_rdlock(LOCK_PTTUI_BUFFER_INFO);
+    if (error_code) return error_code;
+
+    VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info = true;
+
+    return S_OK;
+}
+
+Err
+_vedit3_action_unlock_buffer_info()
+{
+    pthread_rwlock_t *p_lock = NULL;
+
+    Err error_code = pttui_thread_lock_get_lock(LOCK_PTTUI_BUFFER_INFO, &p_lock);
+
+    if (!error_code && p_lock->__data.__nr_readers == 1) {
+        VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info = false;
+    }
+
+    error_code = pttui_thread_lock_unlock(LOCK_PTTUI_BUFFER_INFO);
 
     return error_code;
 }

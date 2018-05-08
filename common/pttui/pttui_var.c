@@ -3,7 +3,7 @@
 PttUIState PTTUI_STATE = {};
 PttUIState PTTUI_BUFFER_STATE = {};
 
-FileInfo VEDIT3_FILE_INFO = {};
+FileInfo PTTUI_FILE_INFO = {};
 
 PttUIBufferInfo PTTUI_BUFFER_INFO = {};
 PttUIBuffer *PTTUI_DISP_TOP_LINE_BUFFER = NULL;

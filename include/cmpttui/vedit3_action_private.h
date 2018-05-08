@@ -5,7 +5,7 @@
 #include "ptterr.h"
 #include "cmpttui/vedit3.h"
 #include "cmpttui/pttui_util.h"
-#include "cmpttui/vedit3_buffer.h"
+#include "cmpttui/pttui_buffer.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -51,7 +51,7 @@ Err _vedit3_action_to_store_comment_reply(int ch, bool *is_end);
 Err _vedit3_action_insert_dchar(const char *dchar);
 Err _vedit3_action_insert_char(int ch);
 Err _vedit3_action_ensure_buffer_wrap();
-Err _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, VEdit3Buffer **new_buffer);
+Err _vedit3_action_buffer_split(PttUIBuffer *current_buffer, int pos, int indent, PttUIBuffer **new_buffer);
 
 Err _vedit3_action_ensure_current_col(int current_col);
 

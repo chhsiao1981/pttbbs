@@ -134,7 +134,7 @@ _vedit3_init_editor(UUID main_id)
     fprintf(stderr, "vedit3._vedit3_init_editor: after init file_info: e: %d\n", error_code);
     if (error_code) return error_code;
 
-    error_code = vedit3_set_expected_state(main_id, PTTDB_CONTENT_TYPE_MAIN, VEDIT3_FILE_INFO.main_content_id, 0, 0, 0, b_lines);
+    error_code = pttui_set_expected_state(main_id, PTTDB_CONTENT_TYPE_MAIN, PTTUI_FILE_INFO.main_content_id, 0, 0, 0, b_lines);
     fprintf(stderr, "vedit3._vedit3_init_editor: after vedit3 set expected state: e: %d\n", error_code);
     if (error_code) return error_code;
 
@@ -163,53 +163,20 @@ _vedit3_init_user()
 Err
 _vedit3_init_file_info(UUID main_id)
 {
-    // XXX disp-buffer and disp-screen may need old file-info?
+    // XXX disp-buffer and disp-screen may need old file-info?    
     Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_FILE_INFO);
     if(error_code) return error_code;
 
-    error_code = destroy_file_info(&VEDIT3_FILE_INFO);
+    error_code = destroy_file_info(&PTTUI_FILE_INFO);
     fprintf(stderr, "_vedit3_init_file_info: after destroy_file_info: e: %d\n", error_code);
     if (error_code) return error_code;
 
-    error_code = construct_file_info(main_id, &VEDIT3_FILE_INFO);
+    error_code = construct_file_info(main_id, &PTTUI_FILE_INFO);
     fprintf(stderr, "_vedit3_init_file_info: after get_file_info: e: %d\n", error_code);
     fprintf(stderr, "vedit3._vedit3_init_file_info: n_main_line: %d n_main_block: %d n_comment: %d\n", VEDIT3_FILE_INFO.n_main_line, VEDIT3_FILE_INFO.n_main_block, VEDIT3_FILE_INFO.n_comment);
 
     Err error_code_lock = pttui_thread_lock_unlock(LOCK_PTTUI_FILE_INFO);
     if(!error_code && error_code_lock) error_code = error_code_lock;
-
-    return error_code;
-}
-
-Err
-vedit3_set_expected_state(UUID main_id, enum PttDBContentType top_line_content_type, UUID top_line_id, int top_line_block_offset, int top_line_line_offset, int top_line_comment_offset, int n_window_line)
-{
-
-    Err error_code = pttui_thread_lock_wrlock(LOCK_VEDIT3_EXPECTED_STATE);
-    if (error_code) return error_code;
-
-    memcpy(VEDIT3_STATE.main_id, main_id, UUIDLEN);
-    VEDIT3_STATE.top_line_content_type = top_line_content_type;
-    memcpy(VEDIT3_STATE.top_line_id, top_line_id, UUIDLEN);
-    VEDIT3_STATE.top_line_block_offset = top_line_block_offset;
-    VEDIT3_STATE.top_line_line_offset = top_line_line_offset;
-    VEDIT3_STATE.top_line_comment_offset = top_line_comment_offset;
-    VEDIT3_STATE.n_window_line = n_window_line;
-
-    pttui_thread_lock_unlock(LOCK_VEDIT3_EXPECTED_STATE);
-
-    return S_OK;
-}
-
-Err
-vedit3_get_expected_state(VEdit3State *expected_state)
-{
-    Err error_code = pttui_thread_lock_rdlock(LOCK_VEDIT3_EXPECTED_STATE);
-    if (error_code) return error_code;
-
-    memcpy(expected_state, &VEDIT3_STATE, sizeof(VEdit3State));
-
-    pttui_thread_lock_unlock(LOCK_VEDIT3_EXPECTED_STATE);
 
     return error_code;
 }
@@ -229,9 +196,9 @@ vedit3_wait_buffer_init()
         error_code = _vedit3_get_buffer_current_state(&current_state);
         if (error_code) break;
 
-        fprintf(stderr, "vedit3._vedit3_wait_buffer_init: VEDIT3_STATE: (%d, %d, %d, %d) current_state: (%d, %d, %d, %d)\n", VEDIT3_STATE.top_line_content_type, VEDIT3_STATE.top_line_block_offset, VEDIT3_STATE.top_line_line_offset, VEDIT3_STATE.n_window_line, current_state.top_line_content_type, current_state.top_line_block_offset, current_state.top_line_line_offset, current_state.n_window_line);
+        fprintf(stderr, "vedit3._vedit3_wait_buffer_init: PTTUI_STATE: (%d, %d, %d, %d) current_state: (%d, %d, %d, %d)\n", PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset, PTTUI_STATE.n_window_line, current_state.top_line_content_type, current_state.top_line_block_offset, current_state.top_line_line_offset, current_state.n_window_line);
 
-        if (!memcmp(&VEDIT3_STATE, &current_state, sizeof(VEdit3State))) break; // XXX maybe re-edit too quickly
+        if (!memcmp(&PTTUI_STATE, &current_state, sizeof(PttUIState))) break; // XXX maybe re-edit too quickly
 
         ret_sleep = nanosleep(&req, &rem);
         if (ret_sleep) {
@@ -491,7 +458,7 @@ _vedit3_disp_line(int line, char *buf, int len, enum PttDBContentType content_ty
         }
     }
     else {
-        error_code = _vedit3_detect_attr(buf, len, &detected_attr);
+        error_code = pttui_detect_attr(buf, len, &detected_attr);
         attr |= detected_attr;
         _vedit3_edit_outs_attr_n(buf + VEDIT3_EDITOR_STATUS.edit_margin, strlen(buf + VEDIT3_EDITOR_STATUS.edit_margin), attr);
     }
@@ -781,36 +748,6 @@ _vedit3_edit_ansi_outs_n(const char *str, int n, int attr GCC_UNUSED)
  *********/
 
 Err
-_vedit3_get_buffer_current_state(VEdit3State *state)
-{
-    Err error_code = pttui_thread_lock_rdlock(LOCK_VEDIT3_BUFFER_STATE);
-    if (error_code) return error_code;
-
-    memcpy(state, &VEDIT3_BUFFER_STATE, sizeof(VEdit3State));
-
-    // free
-    error_code = pttui_thread_lock_unlock(LOCK_VEDIT3_BUFFER_STATE);
-    if (error_code) return error_code;
-
-    return S_OK;
-}
-
-Err
-_vedit3_set_buffer_current_state(VEdit3State *state)
-{
-    Err error_code = pttui_thread_lock_wrlock(LOCK_VEDIT3_BUFFER_STATE);
-    if (error_code) return error_code;
-
-    memcpy(&VEDIT3_BUFFER_STATE, state, sizeof(VEdit3State));
-
-    // free
-    error_code = pttui_thread_lock_unlock(LOCK_VEDIT3_BUFFER_STATE);
-    if (error_code) return error_code;
-
-    return S_OK;
-}
-
-Err
 vedit3_init_disp_buffer()
 {
     Err error_code = S_OK;
@@ -819,22 +756,17 @@ vedit3_init_disp_buffer()
     error_code = vedit3_get_expected_state(&expected_state);
     if (error_code) return error_code;
 
-    if (!memcmp(expected_state.main_id, VEDIT3_FILE_INFO.main_id, UUIDLEN) &&
-            !memcmp(expected_state.main_id, VEDIT3_BUFFER_STATE.main_id, UUIDLEN)) return S_OK;
+    if (!memcmp(expected_state.main_id, PTTUI_FILE_INFO.main_id, UUIDLEN) &&
+        !memcmp(expected_state.main_id, PTTUI_BUFFER_STATE.main_id, UUIDLEN)) return S_OK;
 
-    char *_uuid = display_uuid(expected_state.top_line_id);
-    fprintf(stderr, "vedit3.vedit3_init_disp_buffer: to resync all vedit3 buffer info: e: %d state: (content_type: %d, block_offset: %d, line_offset: %d, comment_offset: %d, n_window_line: %d top_line_id: %s)\n", error_code, expected_state.top_line_content_type, expected_state.top_line_block_offset, expected_state.top_line_line_offset, expected_state.top_line_comment_offset, expected_state.n_window_line, _uuid);
-    safe_free((void **)&_uuid);
-
-    error_code = resync_all_vedit3_buffer_info(&VEDIT3_BUFFER_INFO, &expected_state, &VEDIT3_FILE_INFO, &VEDIT3_DISP_TOP_LINE_BUFFER);
+    error_code = resync_all_vedit3_buffer_info(&PTTUI_BUFFER_INFO, &expected_state, &VEDIT3_FILE_INFO, &VEDIT3_DISP_TOP_LINE_BUFFER);
     fprintf(stderr, "vedit3.vedit3_init_disp_buffer: after resync all vedit3_buffer_info: e: %d\n", error_code);
     if (error_code) return error_code;
 
     error_code = _vedit3_set_buffer_current_state(&expected_state);
     fprintf(stderr, "vedit3.vedit3_init_disp_buffer: after vedit3_set_buffer_current_state: e: %d\n", error_code);
-    if (error_code) return error_code;
 
-    return S_OK;
+    return error_code;
 }
 
 Err
@@ -843,8 +775,6 @@ vedit3_disp_buffer()
     Err error_code = S_OK;
 
     VEdit3State expected_state = {};
-
-    //fprintf(stderr, "vedit3_disp_buffer: to get expected state\n");
 
     error_code = vedit3_get_expected_state(&expected_state);
     if (error_code) return error_code;
@@ -881,57 +811,9 @@ vedit3_disp_buffer()
  * @param e [description]
  */
 Err
-vedit3_lock_buffer_info()
-{
-    Err error_code = pttui_thread_lock_rdlock(LOCK_VEDIT3_BUFFER_INFO);
-    if (error_code) return error_code;
-
-    VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info = true;
-
-    return S_OK;
-}
-
-Err
-vedit3_unlock_buffer_info()
-{
-    pthread_rwlock_t *p_lock = NULL;
-
-    Err error_code = pttui_thread_lock_get_lock(LOCK_VEDIT3_BUFFER_INFO, &p_lock);
-
-    if (!error_code && p_lock->__data.__nr_readers == 1) {
-        VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info = false;
-    }
-
-    error_code = pttui_thread_lock_unlock(LOCK_VEDIT3_BUFFER_INFO);
-
-    return error_code;
-}
-
-Err
-vedit3_wrlock_buffer_info()
-{
-    Err error_code = pttui_thread_lock_wrlock(LOCK_VEDIT3_BUFFER_INFO);
-    if (error_code) return error_code;
-
-    VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info = true;
-
-    return S_OK;
-}
-
-Err
-vedit3_wrunlock_buffer_info()
-{
-    Err error_code = pttui_thread_lock_unlock(LOCK_VEDIT3_BUFFER_INFO);
-
-    VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info = false;
-
-    return error_code;
-}
-
-Err
 vedit3_wrlock_file_info()
 {
-    Err error_code = pttui_thread_lock_wrlock(LOCK_VEDIT3_FILE_INFO);
+    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_FILE_INFO);
     if (error_code) return error_code;
 
     return S_OK;
@@ -940,7 +822,7 @@ vedit3_wrlock_file_info()
 Err
 vedit3_wrunlock_file_info()
 {
-    Err error_code = pttui_thread_lock_unlock(LOCK_VEDIT3_FILE_INFO);
+    Err error_code = pttui_thread_lock_unlock(LOCK_PTTUI_FILE_INFO);
 
     return error_code;
 }
@@ -1011,162 +893,4 @@ _vedit3_loading_rotate_dots()
     _VEDIT3_LOADING_DOT1 = tmp;
 
     return S_OK;
-}
-
-/**
- * @brief
- * @details ref: detect_attr in edit.c
- *
- * @param ps [description]
- * @param len [description]
- * @param p_attr [description]
- */
-Err
-_vedit3_detect_attr(const char *ps, size_t len, int *p_attr)
-{
-    int attr = 0;
-#ifdef PMORE_USE_ASCII_MOVIE
-    if (mf_movieFrameHeader((unsigned char*)ps, (unsigned char*)ps + len)) attr |= EOATTR_MOVIECODE;
-#endif
-
-#ifdef USE_BBSLUA
-    if (bbslua_isHeader(ps, ps + len))
-    {
-        attr |= EOATTR_BBSLUA;
-        if (!curr_buf->synparser)
-        {
-            curr_buf->synparser = 1;
-            // if you need indent, toggle by hotkey.
-            // enabling indent by default may cause trouble to copy pasters
-            // curr_buf->indent_mode = 1;
-        }
-    }
-#endif
-    return attr;
-}
-
-int _vedit3_syn_lua_keyword(const char *text, int n, char *wlen)
-{
-    int i = 0;
-    const char * const *tbl = NULL;
-    if (*text >= 'A' && *text <= 'Z')
-    {
-        // normal identifier
-        while (n-- > 0 && (isalnum(*text) || *text == '_'))
-        {
-            text++;
-            (*wlen) ++;
-        }
-        return 0;
-    }
-    if (*text >= '0' && *text <= '9')
-    {
-        // digits
-        while (n-- > 0 && (isdigit(*text) || *text == '.' || *text == 'x'))
-        {
-            text++;
-            (*wlen) ++;
-        }
-        return 5;
-    }
-    if (*text == '#')
-    {
-        text++;
-        (*wlen) ++;
-        // length of identifier
-        while (n-- > 0 && (isalnum(*text) || *text == '_'))
-        {
-            text++;
-            (*wlen) ++;
-        }
-        return -2;
-    }
-
-    // ignore non-identifiers
-    if (!(*text >= 'a' && *text <= 'z'))
-        return 0;
-
-    // 1st, try keywords
-    for (i = 0; luaKeywords[i] && *text >= *luaKeywords[i]; i++)
-    {
-        int l = strlen(luaKeywords[i]);
-        if (n < l)
-            continue;
-        if (isalnum(text[l]))
-            continue;
-        if (strncmp(text, luaKeywords[i], l) == 0)
-        {
-            *wlen = l;
-            return 3;
-        }
-    }
-    for (i = 0; luaDataKeywords[i] && *text >= *luaDataKeywords[i]; i++)
-    {
-        int l = strlen(luaDataKeywords[i]);
-        if (n < l)
-            continue;
-        if (isalnum(text[l]))
-            continue;
-        if (strncmp(text, luaDataKeywords[i], l) == 0)
-        {
-            *wlen = l;
-            return 2;
-        }
-    }
-    for (i = 0; luaFunctions[i] && *text >= *luaFunctions[i]; i++)
-    {
-        int l = strlen(luaFunctions[i]);
-        if (n < l)
-            continue;
-        if (isalnum(text[l]))
-            continue;
-        if (strncmp(text, luaFunctions[i], l) == 0)
-        {
-            *wlen = l;
-            return 6;
-        }
-    }
-    for (i = 0; luaLibs[i]; i++)
-    {
-        int l = strlen(luaLibs[i]);
-        if (n < l)
-            continue;
-        if (text[l] != '.' && text[l] != ':')
-            continue;
-        if (strncmp(text, luaLibs[i], l) == 0)
-        {
-            *wlen = l + 1;
-            text += l; text ++;
-            n -= l; n--;
-            break;
-        }
-    }
-
-    tbl = luaLibAPI[i];
-    if (!tbl)
-    {
-        // calcualte wlen
-        while (n-- > 0 && (isalnum(*text) || *text == '_'))
-        {
-            text++;
-            (*wlen) ++;
-        }
-        return 0;
-    }
-
-    for (i = 0; tbl[i]; i++)
-    {
-        int l = strlen(tbl[i]);
-        if (n < l)
-            continue;
-        if (isalnum(text[l]))
-            continue;
-        if (strncmp(text, tbl[i], l) == 0)
-        {
-            *wlen += l;
-            return 6;
-        }
-    }
-    // luaLib. only
-    return -6;
 }

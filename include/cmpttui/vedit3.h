@@ -26,14 +26,6 @@ extern "C" {
 
 #define DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC 200
 
-enum VEdit3Attr {
-    VEDIT3_ATTR_NORMAL   = 0x00,
-    VEDIT3_ATTR_SELECTED = 0x01, // selected (reverse)
-    VEDIT3_ATTR_MOVIECODE= 0x02, // pmore movie
-    VEDIT3_ATTR_BBSLUA   = 0x04, // BBS Lua (header)
-    VEDIT3_ATTR_COMMENT  = 0x08, // comment syntax
-};
-
 typedef struct VEdit3EditorStatus {
     bool is_insert;
     bool is_ansi;
@@ -54,7 +46,7 @@ typedef struct VEdit3EditorStatus {
     bool is_own_wrlock_buffer_info;
     bool is_redraw_everything;
 
-    VEdit3Buffer *current_buffer;
+    PttUIBuffer *current_buffer;
 
     int mode0;
     int destuid0;
@@ -82,9 +74,6 @@ Err vedit3_wrunlock_buffer_info();
 Err vedit3_wrlock_file_info();
 
 Err vedit3_wrunlock_file_info();
-
-Err vedit3_set_expected_state(UUID main_id, enum PttDBContentType top_line_content_type, UUID top_line_id, int top_line_block_offset, int top_line_line_offset, int top_line_comment_offset, int n_window_line);
-Err vedit3_get_expected_state(VEdit3State *expected_state);
 
 Err vedit3_wait_buffer_state_sync(int n_iter);
 
