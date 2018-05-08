@@ -17,6 +17,7 @@ PttUIBuffer *
 pttui_buffer_next_ne(PttUIBuffer *buffer) {
     if (!buffer) return NULL;
 
+    // basic operation, use ->next directly
     PttUIBuffer *p_next = buffer->next;
     for (; p_next && p_next->is_to_delete; p_next = p_next->next);
 
@@ -27,6 +28,7 @@ PttUIBuffer *
 pttui_buffer_pre_ne(PttUIBuffer *buffer) {
     if(!buffer) return NULL;
 
+    // basic operation, use ->pre directly
     PttUIBuffer *p_pre = buffer->pre;
     for(; p_pre && p_pre->is_to_delete; p_pre = p_pre->pre);
 
@@ -39,6 +41,7 @@ safe_free_pttui_buffer(PttUIBuffer **buffer)
     PttUIBuffer *p_buffer = *buffer;
     if(!p_buffer) return S_OK;
 
+    // basic operation, use ->pre and ->next directly
     PttUIBuffer *p_pre_buffer = p_buffer->pre;
     PttUIBuffer *p_next_buffer = p_buffer->next;
     if(p_pre_buffer) p_pre_buffer->next = p_next_buffer;
@@ -58,6 +61,7 @@ destroy_pttui_buffer_info(PttUIBufferInfo *buffer_info)
     fprintf(stderr, "pttui_buffer.destroy_pttui_buffer_info: after wrlock: e: %d\n", error_code);
     if (error_code) return error_code;
 
+    // basic operation, use ->next directly
     PttUIBuffer *p_buffer = buffer_info->head;
     PttUIBuffer *tmp = NULL;
     while (p_buffer != NULL) {
@@ -219,7 +223,7 @@ _sync_pttui_buffer_info_get_buffer(PttUIState *state, PttUIBuffer *current_buffe
             break;
         }
 
-        p_buffer = is_pre ? pttui_buffer_pre_ne(p_buffer): pttui_buffer_next_ne(p_buffer);
+        p_buffer = is_pre ? pttui_buffer_pre_ne(p_buffer) : pttui_buffer_next_ne(p_buffer);
     }
 
     *new_buffer = p_buffer;
@@ -391,7 +395,7 @@ extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttU
         if(!error_code && error_code_lock) error_code = error_code_lock;
     }
 
-    if(!error_code) {
+    if(!error_code) { // basic operation, use ->pre and ->next directly
         buffer_info->head->pre = orig_head->pre;
         if(orig_head != new_head_buffer) {
             buffer_info->head = new_head_buffer;
@@ -466,7 +470,7 @@ _extend_pttui_buffer_count_extra_pre_range(PttUIBuffer *buffer, int *n_extra_ran
 {
     PttUIBuffer *p_buffer = NULL;
     int i = 0;
-    for (i = 0, p_buffer = buffer; i < SOFT_N_PTTUI_BUFFER && p_buffer; i++, p_buffer = p_buffer->pre);
+    for (i = 0, p_buffer = buffer; i < SOFT_N_PTTUI_BUFFER && p_buffer; i++, p_buffer = pttui_buffer_pre_ne(p_buffer));
 
     *n_extra_range = i == SOFT_N_PTTUI_BUFFER ? 0 : (HARD_N_PTTUI_BUFFER - i);
 
@@ -479,7 +483,7 @@ _extend_pttui_buffer_count_extra_next_range(PttUIBuffer *buffer, int *n_extra_ra
     PttUIBuffer *p_buffer = NULL;
 
     int i = 0;
-    for (i = 0, p_buffer = buffer; i < SOFT_N_PTTUI_BUFFER && p_buffer; i++, p_buffer = p_buffer->next);
+    for (i = 0, p_buffer = buffer; i < SOFT_N_PTTUI_BUFFER && p_buffer; i++, p_buffer = pttui_buffer_next_ne(p_buffer));
 
     *n_extra_range = i == SOFT_N_PTTUI_BUFFER ? 0 : (HARD_N_PTTUI_BUFFER - i);
 
@@ -514,14 +518,14 @@ _extend_pttui_buffer_extend_pre_buffer(FileInfo *file_info, PttUIBuffer *head_bu
 
     if (start_buffer->buf) start_buffer = start_buffer->pre;
 
-    error_code = _pttui_buffer_info_to_resource_info(start_buffer, &resource_info);
+    error_code = _pttui_buffer_info_to_resource_info(*new_head_buffer, start_buffer, &resource_info);
 
     if (!error_code) {
         error_code = pttui_resource_info_to_resource_dict(&resource_info, &resource_dict);
     }
 
     if (!error_code) {
-        error_code = _pttui_buffer_info_set_buf_from_resource_dict(start_buffer, &resource_dict);
+        error_code = _pttui_buffer_info_set_buf_from_resource_dict(*new_head_buffer, start_buffer, &resource_dict);
     }
 
     // free
@@ -757,16 +761,16 @@ _extend_pttui_buffer_extend_next_buffer(FileInfo *file_info, PttUIBuffer *tail_b
 
     if (error_code) return error_code;
 
-    if (start_buffer->buf) start_buffer = start_buffer->next;
+    if (start_buffer->buf) start_buffer = start_buffer->next; // basic operation, use ->next directly
 
-    error_code = _pttui_buffer_info_to_resource_info(start_buffer, &resource_info);
+    error_code = _pttui_buffer_info_to_resource_info(start_buffer, *new_tail_buffer, &resource_info);
 
     if (!error_code) {
         error_code = pttui_resource_info_to_resource_dict(&resource_info, &resource_dict);
     }
 
     if (!error_code) {
-        error_code = _pttui_buffer_info_set_buf_from_resource_dict(start_buffer, &resource_dict);
+        error_code = _pttui_buffer_info_set_buf_from_resource_dict(start_buffer, *new_tail_buffer, &resource_dict);
     }
 
     // free
@@ -1016,12 +1020,13 @@ _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(PttUIBuffer *curren
  * buffer-info to resource-info
  **********/
 Err
-_pttui_buffer_info_to_resource_info(PttUIBuffer *head, PttUIResourceInfo *resource_info)
+_pttui_buffer_info_to_resource_info(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceInfo *resource_info)
 {
     Err error_code = S_OK;
 
+    // basic operation, use ->next directly
     PttUIBuffer *pre_buffer = NULL;
-    for (PttUIBuffer *current_buffer = head; current_buffer; current_buffer = current_buffer->next) {
+    for (PttUIBuffer *current_buffer = head; current_buffer && current_buffer != tail->next; current_buffer = current_buffer->next) {
         if (pre_buffer &&
             current_buffer->content_type != PTTDB_CONTENT_TYPE_COMMENT &&
             pre_buffer->content_type == current_buffer->content_type &&
@@ -1040,7 +1045,7 @@ _pttui_buffer_info_to_resource_info(PttUIBuffer *head, PttUIResourceInfo *resour
  * resource-dict to buffer-info
  **********/
 Err
-_pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIResourceDict *resource_dict)
+_pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceDict *resource_dict)
 {
     Err error_code = S_OK;
 
@@ -1080,8 +1085,9 @@ _pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIResourceDi
         buf_offset = buf_next_offset;
     }
 
+    // basic operation, use ->next directly
     // start
-    for(; p_buffer && !p_buffer->buf; p_buffer = p_buffer->next, i++) {
+    for(; p_buffer && p_buffer != tail->next && !p_buffer->buf; p_buffer = p_buffer->next, i++) {
         if(memcmp(p_buffer->the_id, current_the_id, UUIDLEN) || current_block_id != p_buffer->block_offset) {
             error_code = pttui_resource_dict_get_data(resource_dict, p_buffer->the_id, p_buffer->block_offset, &len, &buf);
             fprintf(stderr, "pttui_buffer._pttui_buffer_info_set_buf_from_resource_dict: after get data: i: %d p_buffer: content-type: %d block_offset: %d comment_offset: %d len: %d e: %d\n", i, p_buffer->content_type, p_buffer->block_offset, p_buffer->comment_offset, len, error_code);

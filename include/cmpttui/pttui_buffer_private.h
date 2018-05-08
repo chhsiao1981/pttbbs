@@ -50,8 +50,8 @@ Err _extend_pttui_buffer_extend_next_buffer_no_buf_main(PttUIBuffer *current_buf
 Err _extend_pttui_buffer_extend_next_buffer_no_buf_comment(PttUIBuffer *current_buffer, FileInfo *file_info, PttUIBuffer **new_buffer);
 Err _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(PttUIBuffer *current_buffer, FileInfo *file_info, PttUIBuffer **new_buffer);
 
-Err _pttui_buffer_info_to_resource_info(PttUIBuffer *head, PttUIResourceInfo *resource_info);
-Err _pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIResourceDict *resource_dict);
+Err _pttui_buffer_info_to_resource_info(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceInfo *resource_info);
+Err _pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceDict *resource_dict);
 Err _pttui_buffer_info_set_buf_from_resource_dict_get_next_buf(char *p_buf, int buf_offset, int len, char **p_next_buf, int *buf_next_offset);
 
 /***

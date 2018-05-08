@@ -543,6 +543,9 @@ vedit3_buffer()
     // XXX may result in race-condition. need to bind with buffer-info.
     PTTUI_BUFFER_TOP_LINE = new_top_line_buffer;
 
+    error_code = extend_pttui_buffer_info(&PTTUI_FILE_INFO, &PTTUI_BUFFER_INFO, PTTUI_BUFFER_TOP_LINE);
+    if(error_code) return error_code;
+
     error_code = pttui_set_buffer_state(&expected_state);
 
     //fprintf(stderr, "vedit3_disp_buffer: end: e: %d\n", error_code);

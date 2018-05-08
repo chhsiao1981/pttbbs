@@ -36,7 +36,6 @@ Err _vedit3_action_ensure_current_col(int current_col);
 Err _vedit3_action_delete_char_core();
 Err _vedit3_action_concat_next_line();
 Err _vedit3_action_delete_line_core(PttUIBuffer **buffer);
-Err _vedit3_action_insert_new_line();
 
 #ifdef __cplusplus
 }
