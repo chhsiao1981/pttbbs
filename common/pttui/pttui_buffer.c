@@ -216,7 +216,7 @@ _sync_pttui_buffer_info_get_buffer(PttUIState *state, PttUIBuffer *current_buffe
     PttUIBuffer *p_buffer = current_buffer;
 
     while (p_buffer != NULL) {
-        if (state->top_line_content_type == p_buffer->content_type) &&
+        if (state->top_line_content_type == p_buffer->content_type &&
             state->top_line_block_offset == p_buffer->block_offset &&
             state->top_line_line_offset == p_buffer->line_offset &&
             state->top_line_comment_offset == p_buffer->comment_offset) {
