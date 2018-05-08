@@ -1279,7 +1279,7 @@ _vedit3_action_delete_line_core(PttUIBuffer *buffer)
         p_content_block->n_line--;
         break;
     case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
-        p_content_block = PTTUI_FILE_INFO.commens[buffer->comment_offset].comment_reply_blocks + buffer->block_offset;
+        p_content_block = PTTUI_FILE_INFO.comments[buffer->comment_offset].comment_reply_blocks + buffer->block_offset;
 
         p_content_block->n_to_delete_line++;
         p_content_block->n_line--;
