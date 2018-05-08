@@ -590,16 +590,16 @@ _vedit3_action_ensure_current_col(int current_col) {
 }
 
 Err
-_vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, VEdit3Buffer **new_buffer)
+_vedit3_action_buffer_split(PttUIBuffer *current_buffer, int pos, int indent, PttUIBuffer **new_buffer)
 {
     Err error_code = S_OK;
 
     // XXX should not happen.
     if(pos > current_buffer->len_no_nl) return S_OK;
 
-    *new_buffer = malloc(sizeof(VEdit3Buffer));
-    VEdit3Buffer *p_new_buffer = *new_buffer;
-    bzero(p_new_buffer, sizeof(VEdit3Buffer));
+    *new_buffer = malloc(sizeof(PttUIBuffer));
+    PttUIBuffer *p_new_buffer = *new_buffer;
+    bzero(p_new_buffer, sizeof(PttUIBuffer));
 
     memcpy(p_new_buffer->the_id, current_buffer->the_id, UUIDLEN);
     p_new_buffer->content_type = current_buffer->content_type;
@@ -631,10 +631,10 @@ _vedit3_action_buffer_split(VEdit3Buffer *current_buffer, int pos, int indent, V
     current_buffer->len_no_nl = pos;
     current_buffer->buf[current_buffer->len_no_nl] = 0;
 
-    error_code = vedit3_buffer_insert_buffer(current_buffer, p_new_buffer, &VEDIT3_BUFFER_INFO);
+    error_code = vedit3_buffer_insert_buffer(current_buffer, p_new_buffer, &PTTUI_BUFFER_INFO);
 
     // buffer after new_buffer
-    for(VEdit3Buffer *p_buffer2 = p_new_buffer->next; p_buffer2 && p_buffer2->content_type == p_new_buffer->content_type && p_buffer2->block_offset == p_new_buffer->block_offset && p_buffer2->comment_offset == p_new_buffer->comment_offset; p_buffer2->line_offset++, p_buffer2 = p_buffer2->next);    
+    for(PttUIBuffer *p_buffer2 = p_new_buffer->next; p_buffer2 && p_buffer2->content_type == p_new_buffer->content_type && p_buffer2->block_offset == p_new_buffer->block_offset && p_buffer2->comment_offset == p_new_buffer->comment_offset; p_buffer2->line_offset++, p_buffer2 = p_buffer2->next);    
 
     // file-info
     /*
