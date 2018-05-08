@@ -173,7 +173,7 @@ _vedit3_init_file_info(UUID main_id)
 
     error_code = construct_file_info(main_id, &PTTUI_FILE_INFO);
     fprintf(stderr, "_vedit3_init_file_info: after get_file_info: e: %d\n", error_code);
-    fprintf(stderr, "vedit3._vedit3_init_file_info: n_main_line: %d n_main_block: %d n_comment: %d\n", VEDIT3_FILE_INFO.n_main_line, VEDIT3_FILE_INFO.n_main_block, VEDIT3_FILE_INFO.n_comment);
+    fprintf(stderr, "vedit3._vedit3_init_file_info: n_main_line: %d n_main_block: %d n_comment: %d\n", PTTUI_FILE_INFO.n_main_line, PTTUI_FILE_INFO.n_main_block, PTTUI_FILE_INFO.n_comment);
 
     Err error_code_lock = pttui_thread_lock_unlock(LOCK_PTTUI_FILE_INFO);
     if(!error_code && error_code_lock) error_code = error_code_lock;
@@ -215,7 +215,7 @@ Err
 vedit3_wait_buffer_state_sync(int n_iter) {
     Err error_code = S_OK;
 
-    VEdit3State current_state = {};
+    PttUIState current_state = {};
 
     struct timespec req = {0, NS_DEFAULT_SLEEP_VEDIT3_WAIT_BUFFER_SYNC};
     struct timespec rem = {};
@@ -224,10 +224,10 @@ vedit3_wait_buffer_state_sync(int n_iter) {
     int ret_sleep = 0;
     Err error_code_get_current_state = S_OK;
     for(int i = 0; i < n_iter; i++){
-        error_code_get_current_state = _vedit3_get_buffer_current_state(&current_state);
+        error_code_get_current_state = pttui_get_buffer_state(&current_state);
         if(error_code_get_current_state) continue;
 
-        if(!memcmp(&current_state, &VEDIT3_STATE, sizeof(VEdit3State))) break;
+        if(!memcmp(&current_state, &PTTUI_STATE, sizeof(PttUIState))) break;
 
         ret_sleep = nanosleep(&req, &rem);
         if(ret_sleep) {
@@ -298,7 +298,7 @@ _vedit3_repl_init() {
     memcpy(&VEDIT3_EDITOR_STATUS, &DEFAULT_VEDIT3_EDITOR_STATUS, sizeof(VEdit3EditorStatus));
 
     error_code = vedit3_lock_buffer_info();
-    VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_DISP_TOP_LINE_BUFFER;
+    VEDIT3_EDITOR_STATUS.current_buffer = PTTUI_BUFFER_TOP_LINE;
 
     // disp-screen
     error_code = _vedit3_disp_screen(0, b_lines - 1);
@@ -379,7 +379,7 @@ _vedit3_disp_screen(int start_line, int end_line)
     if (error_code) return error_code;
 
     // assuming VEDIT3_DISP_TOP_LINE_BUFFER is within expectation, with lock
-    VEdit3Buffer *p_buffer = VEDIT3_DISP_TOP_LINE_BUFFER;
+    PttUIBuffer *p_buffer = PTTUI_BUFFER_TOP_LINE;
 
     // iterate to the start line
     int i = 0;
@@ -752,19 +752,19 @@ vedit3_init_buffer()
 {
     Err error_code = S_OK;
 
-    VEdit3State expected_state = {};
+    PttUIState expected_state = {};
     error_code = vedit3_get_expected_state(&expected_state);
     if (error_code) return error_code;
 
     if (!memcmp(expected_state.main_id, PTTUI_FILE_INFO.main_id, UUIDLEN) &&
         !memcmp(expected_state.main_id, PTTUI_BUFFER_STATE.main_id, UUIDLEN)) return S_OK;
 
-    error_code = resync_all_vedit3_buffer_info(&PTTUI_BUFFER_INFO, &expected_state, &VEDIT3_FILE_INFO, &VEDIT3_DISP_TOP_LINE_BUFFER);
-    fprintf(stderr, "vedit3.vedit3_init_disp_buffer: after resync all vedit3_buffer_info: e: %d\n", error_code);
+    error_code = resync_all_pttui_buffer_info(&PTTUI_BUFFER_INFO, &expected_state, &PTTUI_FILE_INFO, &PTTUI_BUFFER_TOP_LINE);
+    fprintf(stderr, "vedit3.vedit3_init_buffer: after resync all pttui_buffer_info: e: %d\n", error_code);
     if (error_code) return error_code;
 
-    error_code = _vedit3_set_buffer_current_state(&expected_state);
-    fprintf(stderr, "vedit3.vedit3_init_disp_buffer: after vedit3_set_buffer_current_state: e: %d\n", error_code);
+    error_code = pttui_set_buffer_state(&expected_state);
+    fprintf(stderr, "vedit3.vedit3_init_buffer: after pttui_set_buffer_state: e: %d\n", error_code);
 
     return error_code;
 }
@@ -774,22 +774,22 @@ vedit3_buffer()
 {
     Err error_code = S_OK;
 
-    VEdit3State expected_state = {};
+    PttUIState expected_state = {};
 
-    error_code = vedit3_get_expected_state(&expected_state);
+    error_code = pttui_get_expected_state(&expected_state);
     if (error_code) return error_code;
 
-    if (!memcmp(&expected_state, &VEDIT3_BUFFER_STATE, sizeof(VEdit3State))) return S_OK;
+    if (!memcmp(&expected_state, &PTTUI_BUFFER_STATE, sizeof(PttUIState))) return S_OK;
 
-    fprintf(stderr, "vedit3.vedit3_disp_buffer: to sync expected_state: content_type: %d block_offset: %d line_offset: %d comment_offset: %d buffer_state: content_type: %d block_offset: %d line_offset: %d comment_offset: %d\n", expected_state.top_line_content_type, expected_state.top_line_block_offset, expected_state.top_line_line_offset, expected_state.top_line_comment_offset, VEDIT3_BUFFER_STATE.top_line_content_type, VEDIT3_BUFFER_STATE.top_line_block_offset, VEDIT3_BUFFER_STATE.top_line_line_offset, VEDIT3_BUFFER_STATE.top_line_comment_offset);
+    fprintf(stderr, "vedit3.vedit3_buffer: to sync expected_state: content_type: %d block_offset: %d line_offset: %d comment_offset: %d buffer_state: content_type: %d block_offset: %d line_offset: %d comment_offset: %d\n", expected_state.top_line_content_type, expected_state.top_line_block_offset, expected_state.top_line_line_offset, expected_state.top_line_comment_offset, PTTUI_BUFFER_STATE.top_line_content_type, PTTUI_BUFFER_STATE.top_line_block_offset, PTTUI_BUFFER_STATE.top_line_line_offset, PTTUI_BUFFER_STATE.top_line_comment_offset);
 
     // sync disp buffer to tmp_disp_buffer while checking the alignment of orig_expected_state and new_expected_state
-    VEdit3Buffer *new_top_line_buffer = NULL;
-    error_code = sync_vedit3_buffer_info(&VEDIT3_BUFFER_INFO, VEDIT3_DISP_TOP_LINE_BUFFER, &VEDIT3_STATE, &VEDIT3_FILE_INFO, &new_top_line_buffer);
+    PttUIBuffer *new_top_line_buffer = NULL;
+    error_code = sync_pttui_buffer_info(&PTTUI_BUFFER_INFO, PTTUI_BUFFER_TOP_LINE, &expected_state, &PTTUI_FILE_INFO, &new_top_line_buffer);
     if(error_code) return error_code;
 
     // XXX may result in race-condition. need to bind with buffer-info.
-    VEDIT3_DISP_TOP_LINE_BUFFER = new_top_line_buffer;
+    PTTUI_BUFFER_TOP_LINE = new_top_line_buffer;
 
     error_code = _vedit3_set_buffer_current_state(&expected_state);
 

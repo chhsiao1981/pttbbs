@@ -16,7 +16,7 @@ extern PttUIState PTTUI_STATE;
 extern PttUIState PTTUI_BUFFER_STATE;
 extern FileInfo PTTUI_FILE_INFO;
 extern PttUIBufferInfo PTTUI_BUFFER_INFO;
-extern PttUIBuffer *PTTUI_DISP_TOP_LINE_BUFFER;
+extern PttUIBuffer *PTTUI_BUFFER_TOP_LINE;
 
 #ifdef __cplusplus
 }
