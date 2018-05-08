@@ -40,6 +40,97 @@ TEST(pttui_buffer, pttui_buffer_next_ne3)
     EXPECT_EQ(&next, next2);
 }
 
+TEST(pttui_buffer, pttui_buffer_next_ne4)
+{
+    PttUIBuffer buffer = {};
+    PttUIBuffer next = {};
+    PttUIBuffer next2 = {};
+    buffer.next = &next;
+    next.next = &next2;
+    PttUIBuffer *next3 = pttui_buffer_next_ne(&buffer);
+    EXPECT_EQ(&next, next3);
+}
+
+TEST(pttui_buffer, pttui_buffer_next_ne5)
+{
+    PttUIBuffer buffer = {};
+    PttUIBuffer next = {};
+    PttUIBuffer next2 = {};
+    buffer.next = &next;
+    next.next = &next2;
+    next.is_to_delete = true;
+    PttUIBuffer *next3 = pttui_buffer_next_ne(&buffer);
+    EXPECT_EQ(&next2, next3);
+}
+
+TEST(pttui_buffer, pttui_buffer_next_ne6)
+{
+    PttUIBuffer buffer = {};
+    PttUIBuffer next = {};
+    PttUIBuffer next2 = {};
+    PttUIBuffer next3 = {};
+    buffer.next = &next;
+    next.next = &next2;
+    next2.next = &next3;
+    next2.is_to_delete = true;
+    PttUIBuffer *next4 = pttui_buffer_next_ne(&buffer);
+    EXPECT_EQ(&next, next4);
+}
+
+TEST(pttui_buffer, pttui_buffer_next_ne7)
+{
+    PttUIBuffer buffer = {};
+    PttUIBuffer next = {};
+    PttUIBuffer next2 = {};
+    PttUIBuffer next3 = {};
+    buffer.next = &next;
+    next.next = &next2;
+    next2.next = &next3;
+    next.is_to_delete = true;
+    next2.is_to_delete = true;
+    PttUIBuffer *next4 = pttui_buffer_next_ne(&buffer);
+    EXPECT_EQ(&next3, next4);
+}
+
+TEST(pttui_buffer, pttui_buffer_next_ne8)
+{
+    PttUIBuffer buffer = {};
+    PttUIBuffer next = {};
+    PttUIBuffer next2 = {};
+    PttUIBuffer next3 = {};
+    buffer.next = &next;
+    next.next = &next2;
+    next2.next = &next3;
+    next.is_to_delete = true;
+    next2.is_to_delete = true;
+    next3.is_to_delete = true;
+    PttUIBuffer *next4 = pttui_buffer_next_ne(&buffer);
+    EXPECT_EQ(NULL, next4);
+}
+
+TEST(pttui_buffer, pttui_buffer_pre_ne)
+{
+    PttUIBuffer *buffer = NULL;
+    PttUIBuffer *pre = pttui_buffer_pre_ne(buffer);
+    EXPECT_EQ(NULL, pre);
+}
+
+TEST(pttui_buffer, pttui_buffer_pre_ne2)
+{
+    PttUIBuffer buffer = {};
+    PttUIBuffer *pre = pttui_buffer_next_ne(&buffer);
+    EXPECT_EQ(NULL, pre);
+}
+
+TEST(pttui_buffer, pttui_buffer_pre_ne3)
+{
+    PttUIBuffer buffer = {};
+    PttUIBuffer pre = {};
+    buffer.pre = &pre;
+    PttUIBuffer *pre2 = pttui_buffer_next_ne(&pre);
+    EXPECT_EQ(&next, next2);
+}
+
 TEST(pttui_buffer, sync_pttui_buffer_info_is_pre)
 {
 
