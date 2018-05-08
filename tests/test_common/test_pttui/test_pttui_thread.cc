@@ -13,12 +13,12 @@ TEST(pttui_thread, pttui_thread_set_expected_state) {
     EXPECT_EQ(PTTUI_THREAD_STATE_EDIT, thread_state);
 }
 
-TEST(pttui_thread, pttui_thread_set_current_state) {
-    Err error = pttui_thread_set_current_state(PTTUI_THREAD_DISP_BUFFER, PTTUI_THREAD_STATE_EDIT);
+TEST(pttui_thread, pttui_thread_set_buffer_state) {
+    Err error = pttui_thread_set_buffer_state(PTTUI_THREAD_STATE_EDIT);
     EXPECT_EQ(S_OK, error);
 
     enum PttUIThreadState thread_state = PTTUI_THREAD_STATE_START;
-    error = pttui_thread_get_current_state(PTTUI_THREAD_DISP_BUFFER, &thread_state);
+    error = pttui_thread_get_buffer_state(&thread_state);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(PTTUI_THREAD_STATE_EDIT, thread_state);
 }
