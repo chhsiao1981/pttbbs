@@ -141,6 +141,7 @@ sync_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIBuffer *current_buffer
 
     error_code = _sync_pttui_buffer_info_is_pre(state, current_buffer, &tmp_is_pre);
 
+    fprintf(stderr, "pttui_buffer.sync_pttui_buffer_info: to get buffer\n");
     if(!error_code) {
         error_code = _sync_pttui_buffer_info_get_buffer(state, current_buffer, tmp_is_pre, new_buffer, buffer_info);
     }
@@ -410,9 +411,11 @@ extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttU
     PttUIBuffer *new_tail_buffer = NULL;
     int n_new_buffer = 0;    
 
+    fprintf(stderr, "pttui_buffer.extend_pttui_buffer_info: to _extend_pttui_buffer: e: %d\n", error_code);
     if(!error_code) {
         error_code = _extend_pttui_buffer(file_info, orig_head, orig_tail, current_buffer, &new_head_buffer, &new_tail_buffer, &n_new_buffer, buffer_info);
     }
+    fprintf(stderr, "pttui_buffer.extend_pttui_buffer_info: after _extend_pttui_buffer: orig_head->pre: %lu orig_tail->next: %lu new_head_buffer: %lu new_tail_buffer: %lu n_new_buffer: %d e: %d\n", orig_head->pre, orig_tail->next, new_head_buffer, new_tail_buffer, n_new_buffer, error_code);
 
     if(!error_code) {
         error_code = pttui_buffer_wrlock_buffer_info(&is_lock_buffer_info);
@@ -420,12 +423,12 @@ extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttU
 
     if(!error_code) { // basic operation, use ->pre and ->next directly
         buffer_info->head->pre = orig_head->pre;
-        if(orig_head != new_head_buffer) {
+        if(new_head_buffer && orig_head != new_head_buffer) {
             buffer_info->head = new_head_buffer;
         }
 
         buffer_info->tail->next = orig_tail->next;
-        if(orig_tail != new_tail_buffer) {
+        if(new_tail_buffer && orig_tail != new_tail_buffer) {
             buffer_info->tail = new_tail_buffer;
         }
 
