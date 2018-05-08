@@ -59,9 +59,9 @@ int vedit3_wrapper(const char *fpath, int saveheader, char title[TTLEN + 1], int
 
 Err vedit3(UUID main_id, char *title, int edflags, int *money);
 
-Err vedit3_init_disp_buffer();
+Err vedit3_init_buffer();
 
-Err vedit3_disp_buffer();
+Err vedit3_buffer();
 
 Err vedit3_lock_buffer_info();
 

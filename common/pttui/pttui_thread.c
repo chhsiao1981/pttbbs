@@ -28,7 +28,6 @@ destroy_pttui_thread()
 
     fprintf(stderr, "pttui_thread.destroy_pttui_thread: start\n");
 
-    int ret = 0;
     int ret = pthread_cancel(PTTUI_THREAD_BUFFER);
     if(ret) error_code = S_ERR;
 
