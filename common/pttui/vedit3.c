@@ -220,7 +220,6 @@ vedit3_wait_buffer_state_sync(int n_iter) {
     struct timespec req = {0, NS_DEFAULT_SLEEP_VEDIT3_WAIT_BUFFER_SYNC};
     struct timespec rem = {};
 
-    int i = 0;
     int ret_sleep = 0;
     Err error_code_get_current_state = S_OK;
     for(int i = 0; i < n_iter; i++){
