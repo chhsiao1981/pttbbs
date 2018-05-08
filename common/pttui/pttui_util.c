@@ -11,7 +11,7 @@ pttui_set_expected_state(UUID main_id, enum PttDBContentType top_line_content_ty
     if (error_code) return error_code;
 
     memcpy(PTTUI_STATE.main_id, main_id, UUIDLEN);
-    VEDIT3_STATE.top_line_content_type = top_line_content_type;
+    PTTUI_STATE.top_line_content_type = top_line_content_type;
     memcpy(PTTUI_STATE.top_line_id, top_line_id, UUIDLEN);
     PTTUI_STATE.top_line_block_offset = top_line_block_offset;
     PTTUI_STATE.top_line_line_offset = top_line_line_offset;

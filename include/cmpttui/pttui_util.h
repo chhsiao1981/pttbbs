@@ -14,7 +14,12 @@ extern "C" {
 
 #include <ctype.h>
 #include <string.h>
+#include "common.h"
+#include "ansi.h"
+#include "vtuikit.h"
 #include "vtkbd.h"
+    
+#include "var.h"
 
 // XXX hack for DBCSAWARE in edit
 #ifndef IS_BIG5_HI
