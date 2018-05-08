@@ -1090,6 +1090,8 @@ _vedit3_action_move_up_ensure_top_of_window()
     // need to move down
     if (VEDIT3_EDITOR_STATUS.current_line != 0) return S_OK;
 
+    fprintf(stderr, "vedit3_action._vedit3_action_move_up_ensure_top_of_window: content_type: %d block_offset: %d line_offset: %d current_line: %d\n", VEDIT3_EDITOR_STATUS.current_buffer->content_type, VEDIT3_EDITOR_STATUS.current_buffer->block_offset, VEDIT3_EDITOR_STATUS.current_buffer->line_offset, VEDIT3_EDITOR_STATUS.current_line);
+
     UUID main_id = {};
     memcpy(main_id, PTTUI_STATE.main_id, UUIDLEN);
     int n_window_line = PTTUI_STATE.n_window_line;
