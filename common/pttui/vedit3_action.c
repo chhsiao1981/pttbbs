@@ -1097,8 +1097,8 @@ _vedit3_action_concat_next_line()
 {
     Err error_code = S_OK;
 
-    VEdit3Buffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
-    VEdit3Buffer *p_next_buffer = current_buffer->next;
+    PttUIBuffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
+    PttUIBuffer *p_next_buffer = current_buffer->next;
 
     // 1. if no next: return
     if(!p_next_buffer) return S_OK;
@@ -1173,11 +1173,11 @@ _vedit3_action_concat_next_line()
 }
 
 Err
-_vedit3_action_delete_line(VEdit3Buffer **buffer)
+_vedit3_action_delete_line(PttUIBuffer **buffer)
 {
-    VEdit3Buffer *p_buffer = *buffer;
-    VEdit3Buffer *p_pre_buffer = p_buffer->pre;
-    VEdit3Buffer *p_next_buffer = p_buffer->next;
+    PttUIBuffer *p_buffer = *buffer;
+    PttUIBuffer *p_pre_buffer = p_buffer->pre;
+    PttUIBuffer *p_next_buffer = p_buffer->next;
 
     if(p_pre_buffer) p_pre_buffer->next = p_next_buffer;
     if(p_next_buffer) p_next_buffer->pre = p_pre_buffer;
@@ -1192,7 +1192,7 @@ _vedit3_action_delete_line(VEdit3Buffer **buffer)
 Err
 _vedit3_action_insert_new_line()
 {
-    VEdit3Buffer *new_buffer = NULL;
+    PttUIBuffer *new_buffer = NULL;
 
     Err error_code = _vedit3_action_buffer_split(VEDIT3_EDITOR_STATUS.current_buffer, VEDIT3_EDITOR_STATUS.current_col, 0, &new_buffer);
     if(error_code) return error_code;
