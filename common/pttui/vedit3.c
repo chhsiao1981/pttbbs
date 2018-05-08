@@ -297,7 +297,7 @@ _vedit3_repl_init() {
     // init editor-status
     memcpy(&VEDIT3_EDITOR_STATUS, &DEFAULT_VEDIT3_EDITOR_STATUS, sizeof(VEdit3EditorStatus));
 
-    error_code = vedit3_lock_buffer_info();
+    error_code = vedit3_repl_lock_buffer_info();
     VEDIT3_EDITOR_STATUS.current_buffer = PTTUI_BUFFER_TOP_LINE;
 
     // disp-screen
@@ -309,7 +309,7 @@ _vedit3_repl_init() {
     }
 
     // free
-    Err error_code_lock = vedit3_unlock_buffer_info();
+    Err error_code_lock = vedit3_repl_unlock_buffer_info();
     if (error_code_lock) error_code = S_ERR_ABORT_BBS;
 
     return S_OK;
@@ -375,7 +375,7 @@ _vedit3_store_to_render()
 Err
 _vedit3_disp_screen(int start_line, int end_line)
 {
-    Err error_code = vedit3_lock_buffer_info();
+    Err error_code = vedit3_repl_lock_buffer_info();
     if (error_code) return error_code;
 
     // assuming VEDIT3_DISP_TOP_LINE_BUFFER is within expectation, with lock
@@ -417,7 +417,7 @@ _vedit3_disp_screen(int start_line, int end_line)
     }
 
     // free
-    Err error_code_lock = vedit3_unlock_buffer_info();
+    Err error_code_lock = vedit3_repl_unlock_buffer_info();
     if (error_code_lock) error_code = S_ERR_ABORT_BBS;
 
     return error_code;
@@ -555,31 +555,6 @@ vedit3_buffer()
  *********/
 
 /**
- * @brief [brief description]
- * @details no need to worry much about repeated lock because:
- *          1. it's read-lock, can be locked by vedit3-main multiple times
- *          2. is-own-lock-buffer-info is just for the flag to ensure that vedit3-main owns the lock.
- *
- * @param e [description]
- */
-Err
-vedit3_wrlock_file_info()
-{
-    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_FILE_INFO);
-    if (error_code) return error_code;
-
-    return S_OK;
-}
-
-Err
-vedit3_wrunlock_file_info()
-{
-    Err error_code = pttui_thread_lock_unlock(LOCK_PTTUI_FILE_INFO);
-
-    return error_code;
-}
-
-/**
  * @brief
  * @details ref: edit_msg in edit.c
  */
@@ -646,3 +621,83 @@ _vedit3_loading_rotate_dots()
 
     return S_OK;
 }
+
+/**********
+ * lock
+ **********/
+
+Err
+vedit3_repl_lock_wr_buffer_info()
+{
+    return pttui_thread_lock_wrlock(LOCK_PTTUI_WR_BUFFER_INFO);
+}
+
+Err
+vedit3_repl_unlock_wr_buffer_info()
+{
+    return pttui_thread_lock_unlock(LOCK_PTTUI_WR_BUFFER_INFO);
+}
+
+Err
+vedit3_repl_wrlock_buffer_info()
+{
+    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_BUFFER_INFO);
+    if (error_code) return error_code;
+
+    VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info = true;
+
+    return S_OK;
+}
+
+Err
+vedit3_repl_wrunlock_buffer_info()
+{
+    VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info = false;
+
+    return pttui_thread_lock_unlock(LOCK_PTTUI_BUFFER_INFO);
+}
+
+Err
+vedit3_repl_lock_buffer_info()
+{
+    Err error_code = pttui_thread_lock_rdlock(LOCK_PTTUI_BUFFER_INFO);
+    if (error_code) return error_code;
+
+    VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info = true;
+
+    return S_OK;
+}
+
+Err
+vedit3_repl_unlock_buffer_info()
+{
+    pthread_rwlock_t *p_lock = NULL;
+
+    Err error_code = pttui_thread_lock_get_lock(LOCK_PTTUI_BUFFER_INFO, &p_lock);
+
+    if (!error_code && p_lock->__data.__nr_readers == 1) {
+        VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info = false;
+    }
+
+    error_code = pttui_thread_lock_unlock(LOCK_PTTUI_BUFFER_INFO);
+
+    return error_code;
+}
+
+Err
+vedit3_repl_wrlock_file_info()
+{
+    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_FILE_INFO);
+    if (error_code) return error_code;
+
+    return S_OK;
+}
+
+Err
+vedit3_repl_wrunlock_file_info()
+{
+    Err error_code = pttui_thread_lock_unlock(LOCK_PTTUI_FILE_INFO);
+
+    return error_code;
+}
+

@@ -443,7 +443,7 @@ _vedit3_action_insert_ch(int ch)
     }   
     if(error_code) return error_code;
 
-    error_code = vedit3_wrlock_buffer_info();
+    error_code = vedit3_repl_wrlock_buffer_info();
 
     if(pstr) {
         error_code = _vedit3_action_insert_dchar(pstr);
@@ -452,7 +452,7 @@ _vedit3_action_insert_ch(int ch)
         error_code = _vedit3_action_insert_char(ch);
     }
 
-    Err error_code_lock = vedit3_wrunlock_buffer_info();
+    Err error_code_lock = vedit3_repl_wrunlock_buffer_info();
     if(!error_code && error_code_lock) error_code = S_ERR_EDIT_LOCK;
 
     if(error_code) return error_code;
@@ -759,12 +759,12 @@ _vedit3_action_move_up()
     if (error_code) return error_code;
 
     // move next
-    error_code = vedit3_lock_buffer_info();
+    error_code = vedit3_repl_lock_buffer_info();
     if (error_code) return error_code;
 
     if (VEDIT3_EDITOR_STATUS.current_buffer->pre) VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_EDITOR_STATUS.current_buffer->pre;
 
-    Err error_code_lock = vedit3_unlock_buffer_info();
+    Err error_code_lock = vedit3_repl_unlock_buffer_info();
     if (error_code_lock) error_code = S_ERR_EDIT_LOCK;
 
     if (VEDIT3_EDITOR_STATUS.current_line > 0) VEDIT3_EDITOR_STATUS.current_line--;
@@ -832,12 +832,12 @@ _vedit3_action_move_down()
     if (error_code) return error_code;
 
     // move next
-    error_code = vedit3_lock_buffer_info();
+    error_code = vedit3_repl_lock_buffer_info();
     if (error_code) return error_code;
 
     if (VEDIT3_EDITOR_STATUS.current_buffer->next) VEDIT3_EDITOR_STATUS.current_buffer = VEDIT3_EDITOR_STATUS.current_buffer->next;
 
-    Err error_code_lock = vedit3_unlock_buffer_info();
+    Err error_code_lock = vedit3_repl_unlock_buffer_info();
     if (error_code_lock) error_code = S_ERR_EDIT_LOCK;
 
     if (VEDIT3_EDITOR_STATUS.current_line < b_lines - 1) VEDIT3_EDITOR_STATUS.current_line++;
@@ -1204,68 +1204,6 @@ _vedit3_action_insert_new_line()
     if(error_code) return error_code;
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
-
-    return error_code;
-}
-
-/**********
- * lock
- **********/
-
-Err
-_vedit3_action_lock_wr_buffer_info()
-{
-    return pttui_thread_lock_wrlock(LOCK_PTTUI_WR_BUFFER_INFO);
-}
-
-Err
-_vedit3_action_unlock_wr_buffer_info()
-{
-    return pttui_thread_lock_unlock(LOCK_PTTUI_WR_BUFFER_INFO);
-}
-
-Err
-_vedit3_action_wrlock_buffer_info()
-{
-    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_BUFFER_INFO);
-    if (error_code) return error_code;
-
-    VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info = true;
-
-    return S_OK;
-}
-
-Err
-_vedit3_action_wrunlock_buffer_info()
-{
-    VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info = false;
-
-    return pttui_thread_lock_unlock(LOCK_PTTUI_BUFFER_INFO);
-}
-
-Err
-_vedit3_action_lock_buffer_info()
-{
-    Err error_code = pttui_thread_lock_rdlock(LOCK_PTTUI_BUFFER_INFO);
-    if (error_code) return error_code;
-
-    VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info = true;
-
-    return S_OK;
-}
-
-Err
-_vedit3_action_unlock_buffer_info()
-{
-    pthread_rwlock_t *p_lock = NULL;
-
-    Err error_code = pttui_thread_lock_get_lock(LOCK_PTTUI_BUFFER_INFO, &p_lock);
-
-    if (!error_code && p_lock->__data.__nr_readers == 1) {
-        VEDIT3_EDITOR_STATUS.is_own_lock_buffer_info = false;
-    }
-
-    error_code = pttui_thread_lock_unlock(LOCK_PTTUI_BUFFER_INFO);
 
     return error_code;
 }

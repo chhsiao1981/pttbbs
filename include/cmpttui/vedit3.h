@@ -63,19 +63,17 @@ Err vedit3_init_buffer();
 
 Err vedit3_buffer();
 
-Err vedit3_lock_buffer_info();
+Err vedit3_repl_lock_buffer_info();
 
-Err vedit3_unlock_buffer_info();
+Err vedit3_repl_unlock_buffer_info();
 
-Err vedit3_wrlock_buffer_info();
+Err vedit3_repl_wrlock_buffer_info();
 
-Err vedit3_wrunlock_buffer_info();
+Err vedit3_repl_wrunlock_buffer_info();
 
-Err vedit3_wrlock_file_info();
+Err vedit3_repl_wrlock_file_info();
 
-Err vedit3_wrunlock_file_info();
-
-Err vedit3_wait_buffer_state_sync(int n_iter);
+Err vedit3_repl_wrunlock_file_info();
 
 // wait-buffer
 Err vedit3_wait_buffer_init();
