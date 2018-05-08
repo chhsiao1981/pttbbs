@@ -1945,12 +1945,10 @@ edit_post(int ent, fileheader_t * fhdr, const char *direct)
 
 
 #ifdef MONGO_CLIENT_URL
-    /*
     if (vedit3_wrapper(fpath, 0, save_title, edflags, fhdr, bp) == EDIT_ABORTED) {
         unlink(fpath);
         return FULLUPDATE;
     }
-    */
 #else
     if (vedit2(fpath, 0, save_title, edflags) == EDIT_ABORTED) {
         unlink(fpath);
