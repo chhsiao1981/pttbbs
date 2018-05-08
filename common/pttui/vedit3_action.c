@@ -546,7 +546,7 @@ _vedit3_action_ensure_buffer_wrap()
 
     if (!VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info) return S_ERR_EDIT_LOCK;
 
-    VEdit3Buffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
+    PttUIBuffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
 
     fprintf(stderr, "vedit3_action._vedit3_action_ensure_buffer_wrap: len_no_nl: %d WRAPMARGIN: %d\n", current_buffer->len_no_nl, WRAPMARGIN);
     if (current_buffer->len_no_nl < WRAPMARGIN) {
