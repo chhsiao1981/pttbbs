@@ -78,6 +78,7 @@ Err pttui_raw_shift_left(char *s, int len);
 Err pttui_ansi2n(int ansix, char *buf, int *nx);
 Err pttui_n2ansi(int nx, char *buf, int *ansix);
 
+Err pttui_edit_outs_attr_n(const char *text, int n, int attr);
 
 #ifdef __cplusplus
 }

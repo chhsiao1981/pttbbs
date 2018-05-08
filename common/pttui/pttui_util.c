@@ -542,3 +542,255 @@ int pttui_syn_lua_keyword_ne(const char *text, int n, char *wlen)
     // luaLib. only
     return -6;
 }
+
+
+/**
+ * @brief [brief description]
+ * @details ref: edit_outs_attr_n in mbbsd/edit.c
+ *
+ * @param text [description]
+ * @param n [description]
+ * @param attr [description]
+ */
+Err
+pttui_edit_outs_attr_n(const char *text, int n, int attr)
+{
+    int    column = 0;
+    unsigned char inAnsi = 0;
+    unsigned char ch;
+    int doReset = 0;
+    const char *reset = ANSI_RESET;
+
+    // syntax attributes
+    char fComment = 0,
+         fSingleQuote = 0,
+         fDoubleQuote = 0,
+         fSquareQuote = 0,
+         fWord = 0;
+
+    // movie syntax rendering
+#ifdef ENABLE_PMORE_ASCII_MOVIE_SYNTAX
+    char movie_attrs[WRAPMARGIN + 10] = {0};
+    char *pmattr = movie_attrs, mattr = 0;
+#endif
+
+#ifdef COLORED_SELECTION
+    if ((attr & PTTUI_ATTR_SELECTED) &&
+            (attr & ~PTTUI_ATTR_SELECTED))
+    {
+        reset = ANSI_COLOR(0;7;36);
+        doReset = 1;
+        outs(reset);
+    }
+    else
+#endif // if not defined, color by  priority - selection first
+        if (attr & PTTUI_ATTR_SELECTED)
+        {
+            reset = ANSI_COLOR(0;7);
+            doReset = 1;
+            outs(reset);
+        }
+        else if (attr & PTTUI_ATTR_MOVIECODE)
+        {
+            reset = ANSI_COLOR(0;36);
+            doReset = 1;
+            outs(reset);
+#ifdef ENABLE_PMORE_ASCII_MOVIE_SYNTAX
+            syn_pmore_render((char*)text, n, movie_attrs);
+#endif
+        }
+        else if (attr & PTTUI_ATTR_BBSLUA)
+        {
+            reset = ANSI_COLOR(0;1;31);
+            doReset = 1;
+            outs(reset);
+        }
+        else if (attr & PTTUI_ATTR_COMMENT)
+        {
+            reset = ANSI_COLOR(0;1;34);
+            doReset = 1;
+            outs(reset);
+        }
+
+#ifdef DBCSAWARE
+    /* 0 = N/A, 1 = leading byte printed, 2 = ansi in middle */
+    unsigned char isDBCS = 0;
+#endif
+
+    while ((ch = *text++) && (++column < t_columns) && n-- > 0)
+    {
+#ifdef ENABLE_PMORE_ASCII_MOVIE_SYNTAX
+        mattr = *pmattr++;
+#endif
+
+        if (inAnsi == 1)
+        {
+            if (ch == ESC_CHR) {
+                outc('*');
+            }
+            else
+            {
+                outc(ch);
+
+                if (!ANSI_IN_ESCAPE(ch))
+                {
+                    inAnsi = 0;
+                    outs(reset);
+                }
+            }
+
+        }
+        else if (ch == ESC_CHR)
+        {
+            inAnsi = 1;
+#ifdef DBCSAWARE
+            if (isDBCS == 1)
+            {
+                isDBCS = 2;
+                outs(ANSI_COLOR(1;33) "?");
+                outs(reset);
+            }
+#endif
+            outs(ANSI_COLOR(1) "*");
+        }
+        else
+        {
+#ifdef DBCSAWARE
+            if (isDBCS == 1) {
+                isDBCS = 0;
+            }
+            else if (isDBCS == 2)
+            {
+                /* ansi in middle. */
+                outs(ANSI_COLOR(0;33) "?");
+                outs(reset);
+                isDBCS = 0;
+                continue;
+            }
+            else if (IS_BIG5_HI(ch))
+            {
+                isDBCS = 1;
+                // peak next char
+                if (n > 0 && *text == ESC_CHR) {
+                    continue;
+                }
+            }
+#endif
+
+            // XXX Lua Parser!
+            //if (!attr && curr_buf->synparser && !fComment)
+            if (!attr && false && !fComment)
+            {
+                // syntax highlight!
+                if (fSquareQuote) {
+                    if (ch == ']' && n > 0 && *(text) == ']')
+                    {
+                        fSquareQuote = 0;
+                        doReset = 0;
+                        // directly print quotes
+                        outc(ch); outc(ch);
+                        text++, n--;
+                        outs(ANSI_RESET);
+                        continue;
+                    }
+                } else if (fSingleQuote) {
+                    if (ch == '\'')
+                    {
+                        fSingleQuote = 0;
+                        doReset = 0;
+                        // directly print quotes
+                        outc(ch);
+                        outs(ANSI_RESET);
+                        continue;
+                    }
+                } else if (fDoubleQuote) {
+                    if (ch == '"')
+                    {
+                        fDoubleQuote = 0;
+                        doReset = 0;
+                        // directly print quotes
+                        outc(ch);
+                        outs(ANSI_RESET);
+                        continue;
+                    }
+                } else if (ch == '-' && n > 0 && *(text) == '-') {
+                    fComment = 1;
+                    doReset = 1;
+                    outs(ANSI_COLOR(0;1;34));
+                } else if (ch == '[' && n > 0 && *(text) == '[') {
+                    fSquareQuote = 1;
+                    doReset = 1;
+                    fWord = 0;
+                    outs(ANSI_COLOR(1;35));
+                } else if (ch == '\'' || ch == '"') {
+                    if (ch == '"') {
+                        fDoubleQuote = 1;
+                    }
+                    else {
+                        fSingleQuote = 1;
+                    }
+                    doReset = 1;
+                    fWord = 0;
+                    outs(ANSI_COLOR(1;35));
+                } else {
+                    // normal words
+                    if (fWord)
+                    {
+                        // inside a word.
+                        if (--fWord <= 0) {
+                            fWord = 0;
+                            doReset = 0;
+                            outc(ch);
+                            outs(ANSI_RESET);
+                            continue;
+                        }
+                    } else if (isalnum(tolower(ch)) || ch == '#') {
+                        char attr[] = ANSI_COLOR(0;1;37);
+                        int x = _vedit3_syn_lua_keyword(text - 1, n + 1, &fWord);
+                        if (fWord > 0) fWord --;
+                        if (x != 0)
+                        {
+                            // sorry, fixed string here.
+                            // 7 = *[0;1;3?
+                            if (x < 0) {  attr[4] = '0'; x = -x; }
+                            attr[7] = '0' + x;
+                            outs(attr);
+                            doReset = 1;
+                        }
+                        if (!fWord)
+                        {
+                            outc(ch);
+                            outs(ANSI_RESET);
+                            doReset = 0;
+                            continue;
+                        }
+                    }
+                }
+            }
+            outc(ch);
+
+#ifdef ENABLE_PMORE_ASCII_MOVIE_SYNTAX
+            // pmore Movie Parser!
+            if (attr & VEDIT3_ATTR_MOVIECODE)
+            {
+                // only render when attribute was changed.
+                if (mattr != *pmattr)
+                {
+                    if (*pmattr)
+                    {
+                        prints(ANSI_COLOR(1;3%d),
+                               8 - ((mattr - 1) % 7 + 1) );
+                    } else {
+                        outs(ANSI_RESET);
+                    }
+                }
+            }
+#endif // ENABLE_PMORE_ASCII_MOVIE_SYNTAX
+        }
+    }
+
+    // this must be ANSI_RESET, not "reset".
+    if (inAnsi || doReset) outs(ANSI_RESET);
+
+    return S_OK;
+}
