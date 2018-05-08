@@ -198,7 +198,7 @@ pttui_n2ansi(int nx, char *buf, int *ansix)
  * @return [description]
  */
 int
-pttui_mchar_len(unsigned char *str)
+pttui_mchar_len_ne(unsigned char *str)
 {
   return ((str[0] != '\0' && str[1] != '\0' && IS_BIG5(str[0], str[1])) ?
             2 :
