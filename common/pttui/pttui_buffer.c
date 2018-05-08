@@ -411,11 +411,9 @@ extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttU
     PttUIBuffer *new_tail_buffer = NULL;
     int n_new_buffer = 0;    
 
-    fprintf(stderr, "pttui_buffer.extend_pttui_buffer_info: to _extend_pttui_buffer: e: %d\n", error_code);
     if(!error_code) {
         error_code = _extend_pttui_buffer(file_info, orig_head, orig_tail, current_buffer, &new_head_buffer, &new_tail_buffer, &n_new_buffer, buffer_info);
     }
-    fprintf(stderr, "pttui_buffer.extend_pttui_buffer_info: after _extend_pttui_buffer: orig_head->pre: %lu orig_tail->next: %lu new_head_buffer: %lu new_tail_buffer: %lu n_new_buffer: %d e: %d\n", orig_head->pre, orig_tail->next, new_head_buffer, new_tail_buffer, n_new_buffer, error_code);
 
     if(!error_code) {
         error_code = pttui_buffer_wrlock_buffer_info(&is_lock_buffer_info);
