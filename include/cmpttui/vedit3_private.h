@@ -10,7 +10,6 @@
 #include "cmpttui/pttui_thread_lock.h"
 #include "cmpttui/pttui_state.h"
 #include "cmpttui/vedit3_action.h"
-#include "cmpttui/pttui_lua_bbs.h"
 #include "cmpttui/pttui_util.h"
 
 #ifdef __cplusplus

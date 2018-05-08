@@ -7,6 +7,7 @@
 #include "cmpttui/pttui_const.h"
 #include "cmpttui/pttui_var.h"
 #include "cmpttui/pttui_thread_lock.h"
+#include "cmpttui/pttui_lua_bbs.h"
 
 #ifdef __cplusplus
 extern "C" {
