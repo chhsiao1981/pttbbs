@@ -505,7 +505,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             if(current_dict) {
                 error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, len_dict_buf);
 
-                safe_free(&current_dict->buf);
+                safe_free((void **)&current_dict->buf);
                 current_dict->buf = malloc(len_tmp_buf + 1);
                 memcpy(current_dict->buf, tmp_buf, len_tmp_buf);
                 current_dict->buf[len_tmp_buf] = 0;
@@ -529,11 +529,11 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             dict_buf_next_offset = 0;
         }
 
-        start_i = current_buffer->is_new ? line_offset_tmp_buf : line_offset_dict_buf;
-        end_i = current_buffer->is_new ? current_buffer->line_offset : current_buffer->load_line_offset;
+        int start_i = current_buffer->is_new ? line_offset_tmp_buf : line_offset_dict_buf;
+        int end_i = current_buffer->is_new ? current_buffer->line_offset : current_buffer->load_line_offset;
 
         for(int i = start_i; i < end_i; i++, line_offset_dict_buf++, line_offset_tmp_buf++) {
-            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len, &p_next_dict_buf, &dict_buf_next_offset);                        
+            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);                        
             error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, p_next_dict_buf - p_dict_buf);
 
             p_dict_buf = p_next_dict_buf;
@@ -542,7 +542,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
         }
 
         if(current_buffer->is_to_delete) {
-            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len, &p_next_dict_buf, &dict_buf_next_offset);
+            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
             p_dict_buf = p_next_dict_buf;
             dict_buf_offset = dict_buf_next_offset;
             line_offset_dict_buf++;
@@ -557,7 +557,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, PTTUI_NEWLINE, LEN_PTTUI_NEWLINE);
             line_offset_tmp_buf++;
 
-            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len, &p_next_dict_buf, &dict_buf_next_offset);
+            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
             p_dict_buf = p_next_dict_buf;
             dict_buf_offset = dict_buf_next_offset;
             line_offset_dict_buf++;
@@ -569,7 +569,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
     if(current_dict) {
         error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, len_dict_buf);
 
-        safe_free(&current_dict->buf);
+        safe_free((void **)&current_dict->buf);
         current_dict->buf = malloc(len_tmp_buf + 1);
         memcpy(current_dict->buf, tmp_buf, len_tmp_buf);
         current_dict->buf[len_tmp_buf] = 0;
