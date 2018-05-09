@@ -178,14 +178,14 @@ _vedit3_init_file_info(UUID main_id)
 
     setuserfile(dir_prefix, PTTUI_EDIT_TMP_DIR);
     int ret = Mkdir(dir_prefix);
-    if(ret < 0 && ret != EEXIST) error_code = S_ERR;
+    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
 
     char *disp_uuid = display_uuid(main_id);
     strcat(dir_prefix, disp_uuid);
     free(disp_uuid);
 
     ret = Mkdir(dir_prefix);
-    if(ret < 0 && ret != EEXIST) error_code = S_ERR;
+    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
 
     error_code = destroy_file_info(&PTTUI_FILE_INFO);
     fprintf(stderr, "_vedit3_init_file_info: after destroy_file_info: e: %d\n", error_code);

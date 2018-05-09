@@ -454,15 +454,15 @@ _pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list
 
     sprintf(filename, "%s/%d", dir_prefix, content_type);
     int ret = Mkdir(filename);
-    if(ret < 0 && ret != EEXIST) error_code = S_ERR;
+    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
 
     sprintf(filename, "%s/%d/%s", dir_prefix, content_type, disp_uuid);
     ret = Mkdir(filename);
-    if(ret < 0 && ret != EEXIST) error_code = S_ERR;
+    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
 
     sprintf(filename, "%s/%d/%s/%d", dir_prefix, content_type, disp_uuid, dict_link_list->block_id);
     ret = Mkdir(filename);
-    if(ret < 0 && ret != EEXIST) error_code = S_ERR;
+    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
 
     sprintf(filename, "%s/%d/%s/%d/%d", dir_prefix, content_type, disp_uuid, dict_link_list->block_id, dict_link_list->file_id);
     fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_save_to_tmp_file: to save: filename: %s len: %d\n", filename, dict_link_list->len);
