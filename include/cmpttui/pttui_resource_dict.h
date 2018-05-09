@@ -25,7 +25,7 @@ typedef struct PttUIResourceDict {
     _PttUIResourceDictLinkList *data[N_PTTUI_RESOURCE_DICT_LINK_LIST];
 } PttUIResourceDict;
 
-Err safe_destroy_pttui_resource_dict(PttUIResourceDict *resource_dict, UUID main_id);
+Err safe_destroy_pttui_resource_dict(PttUIResourceDict *resource_dict);
 
 Err pttui_resource_dict_get_data(PttUIResourceDict *resource_dict, UUID the_id, int block_id, int *len, char **buf);
 
