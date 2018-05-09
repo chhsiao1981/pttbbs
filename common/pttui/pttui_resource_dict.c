@@ -465,7 +465,7 @@ _pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list
     if(ret < 0) error_code = S_ERR;
 
     sprintf(filename, "%s/%d/%s/%d/%d", dir_prefix, content_type, disp_uuid, dict_link_list->block_id, dict_link_list->file_id);
-    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_save_to_tmp_file: to save: filename: %s\n", filename);
+    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_save_to_tmp_file: to save: filename: %s len: %d\n", filename, dict_link_list->len);
 
     int fd = OpenCreate(filename, O_WRONLY);
     write(fd, dict_link_list->buf, dict_link_list->len);
@@ -507,12 +507,14 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
 
     char disp_buf[MAX_BUF_SIZE] = {};
 
+    int the_rest_len = 0;
     for (PttUIBuffer *current_buffer = head; current_buffer && current_buffer != tail->next; current_buffer = current_buffer->next) {
         if(!current_buffer->is_modified) continue;
 
         if(!current_dict || current_buffer->block_offset != current_dict->block_id || current_buffer->file_offset != current_dict->file_id || memcmp(current_buffer->the_id, current_dict->the_id, UUIDLEN)) {
             if(current_dict) {
-                error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, len_dict_buf);
+                the_rest_len = len_dict_buf - (p_dict_buf - current_dict->buf);
+                error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, the_rest_len);
 
                 safe_free((void **)&current_dict->buf);
                 current_dict->buf = malloc(len_tmp_buf + 1);
