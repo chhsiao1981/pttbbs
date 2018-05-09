@@ -18,6 +18,7 @@ extern "C" {
 #endif
 
 #include <time.h>
+#include <errno.h>
 #include "grayout.h"
 
 #define N_ITER_VEDIT3_WAIT_BUFFER_INIT 50

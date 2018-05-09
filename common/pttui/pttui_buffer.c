@@ -1440,7 +1440,7 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     }
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after save-to-tmp-file: e: %d\n", error_code);
 
-    //error_code = pttui_resource_dict_reset_file_info(&resource_dict, file_info);    
+    error_code = pttui_resource_dict_reset_file_info(&resource_dict, file_info);    
 
     if(!error_code) {
         error_code = pttui_buffer_wrlock_buffer_info(&is_lock_buffer_info);
@@ -1453,7 +1453,7 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     }
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after _remove-delted-pttui-buffer-in-buffer-info: e: %d\n", error_code);    
 
-    //error_code = pttui_resource_dict_reset_buffer_info(buffer_info, file_info);
+    error_code = pttui_resource_dict_reset_buffer_info(buffer_info, file_info);
 
     buffer_info->n_new = 0;
     buffer_info->n_to_delete = 0;
