@@ -1248,7 +1248,7 @@ _pttui_buffer_file_offset_next_from_content_block_info(PttUIBuffer *next_buffer,
         next_buffer->file_line_next_offset = next_buffer->file_line_offset < content_block->file_n_line[next_buffer->file_offset] - 1 ? next_buffer->file_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
     }
 
-    if(next_buffer->file_offset < 0 || next_buffer->file_offset >= content_block->n_file || next_buffer->file_line_offset < 0 || next_buffer->file_line_offset >= content_block->file_n_line[pre_buffer->file_offset]) return S_ERR;
+    if(next_buffer->file_offset < 0 || next_buffer->file_offset >= content_block->n_file || next_buffer->file_line_offset < 0 || next_buffer->file_line_offset >= content_block->file_n_line[next_buffer->file_offset]) return S_ERR;
 
     return S_OK;
 }
