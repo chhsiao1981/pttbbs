@@ -1246,9 +1246,9 @@ _remove_deleted_pttui_buffer_in_buffer_info(PttUIBufferInfo *buffer_info)
     PttUIBuffer *current_buffer = buffer_info->head;
     PttUIBuffer *tmp = NULL;
 
-    if(buffer_info->head->is_to_delete) buffer_info->head = pttui_buffer_next_ne(buffer_info->head);
+    if(buffer_info->head->is_to_delete) buffer_info->head = pttui_buffer_next_ne(buffer_info->head, buffer_info->tail);
 
-    if(buffer_info->tail->is_to_delete) buffer_info->tail = pttui_buffer_pre_ne(buffer_info->tail);
+    if(buffer_info->tail->is_to_delete) buffer_info->tail = pttui_buffer_pre_ne(buffer_info->tail, buffer_info->head);
 
     while(current_buffer) {
         tmp = current_buffer;
