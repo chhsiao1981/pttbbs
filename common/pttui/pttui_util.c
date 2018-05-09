@@ -746,7 +746,7 @@ pttui_edit_outs_attr_n(const char *text, int n, int attr)
                         }
                     } else if (isalnum(tolower(ch)) || ch == '#') {
                         char attr[] = ANSI_COLOR(0;1;37);
-                        int x = _vedit3_syn_lua_keyword(text - 1, n + 1, &fWord);
+                        int x = pttui_syn_lua_keyword_ne(text - 1, n + 1, &fWord);
                         if (fWord > 0) fWord --;
                         if (x != 0)
                         {

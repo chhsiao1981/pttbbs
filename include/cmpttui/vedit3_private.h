@@ -4,6 +4,7 @@
 
 #include "ptterr.h"
 #include "cmpttdb.h"
+#include "cmpttlib.h"
 #include "cmmigrate_pttdb.h"
 #include "cmpttui/pttui_const.h"
 #include "cmpttui/pttui_thread.h"

@@ -180,7 +180,7 @@ _vedit3_init_file_info(UUID main_id)
     int ret = Mkdir(dir_prefix);
     if(ret < 0) error_code = S_ERR;
 
-    char *disp_uuid = display_uuid(p_dict_link_list->the_id);
+    char *disp_uuid = display_uuid(main_id);
     strcat(dir_prefix, disp_uuid);
     free(disp_uuid);
 
@@ -523,7 +523,7 @@ vedit3_buffer()
     if (error_code) return error_code;
 
     if (!memcmp(&expected_state, &PTTUI_BUFFER_STATE, sizeof(PttUIState))) {
-        error_code = check_and_save_pttui_buffer_info_to_tmp_file(&PTTUI_BUFFER_INFO, &PTTUI_FILE_INFO);
+        error_code = check_and_save_pttui_buffer_info_to_tmp_file(&PTTUI_BUFFER_INFO, PTTUI_FILE_INFO.main_id);
         return S_OK;
     }
 
@@ -766,7 +766,7 @@ _vedit3_destroy_editor()
 
     char dir_prefix[MAX_FILENAME_SIZE] = {};
 
-    Err error_code = vedit3_repl_wrlock_file_info_buffer_info(bool *is_lock_file_info, bool *is_lock_wr_buffer_info, bool *is_lock_buffer_info);
+    Err error_code = vedit3_repl_wrlock_file_info_buffer_info(&is_lock_file_info, &is_lock_wr_buffer_info, &is_lock_buffer_info);
     if(error_code) return error_code;
 
     setuserfile(dir_prefix, PTTUI_EDIT_TMP_DIR);
@@ -782,7 +782,7 @@ _vedit3_destroy_editor()
     bzero(&PTTUI_STATE, sizeof(PttUIState));
     bzero(&PTTUI_BUFFER_STATE, sizeof(PttUIState));
 
-    memcpy(VEDIT3_EDITOR_STATUS, DEFAULT_VEDIT3_EDITOR_STATUS, sizeof(VEdit3EditorStatus));
+    memcpy(&VEDIT3_EDITOR_STATUS, &DEFAULT_VEDIT3_EDITOR_STATUS, sizeof(VEdit3EditorStatus));
 
     error_code = vedit3_repl_wrunlock_file_info_buffer_info(is_lock_file_info, is_lock_wr_buffer_info, is_lock_buffer_info);
 
