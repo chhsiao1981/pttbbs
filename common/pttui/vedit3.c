@@ -552,6 +552,31 @@ vedit3_buffer()
  * VEdit3 Misc
  *********/
 
+Err
+vedit3_wait_buffer_state_sync(int n_iter) {
+    Err error_code = S_OK;
+
+    PttUIState current_state = {};
+    struct timespec req = {0, NS_DEFAULT_SLEEP_VEDIT3_WAIT_BUFFER_SYNC};
+    struct timespec rem = {};
+
+    int ret_sleep = 0;
+    Err error_code_get_current_state = S_OK;
+    for(int i = 0; i < n_iter; i++){
+        error_code_get_current_state = pttui_get_buffer_state(&current_state);
+        if(error_code_get_current_state) continue;
+
+        if(!memcmp(&current_state, &PTTUI_STATE, sizeof(PttUIState))) break;
+        ret_sleep = nanosleep(&req, &rem);
+        if(ret_sleep) {
+            error_code = S_ERR_SLEEP;
+            break;
+        }
+    }
+
+    return error_code;
+}
+
 /**
  * @brief
  * @details ref: edit_msg in edit.c
