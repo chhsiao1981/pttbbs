@@ -516,6 +516,11 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
                 the_rest_len = len_dict_buf - (p_dict_buf - current_dict->buf);
                 error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, the_rest_len);
 
+
+                memcpy(disp_buf, p_dict_buf, the_rest_len);
+                disp_buf[the_rest_len] = 0;
+                fprintf(stderr, "pttui_resource_dict.integrate: the_rest: len_tmp_buf: %d len: %d buf: %s\n", len_tmp_buf, the_rest_len, disp_buf);
+
                 safe_free((void **)&current_dict->buf);
                 current_dict->buf = malloc(len_tmp_buf + 1);
                 memcpy(current_dict->buf, tmp_buf, len_tmp_buf);
