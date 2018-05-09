@@ -133,35 +133,35 @@ TEST(pttui_resource_info, pttui_resource_info_to_resource_dict)
     p = buffer_info.head;
     for(int i = 30; i < 41; i++, p = p->next) {
         memcpy(the_id, p->the_id, UUIDLEN);
-        error = pttui_resource_dict_get_data(&resource_dict, the_id, p->block_offset, &len, &buf);
+        error = pttui_resource_dict_get_data(&resource_dict, the_id, p->block_offset, INVALID_FILE_OFFSET, &len, &buf);
         EXPECT_EQ(S_OK, error);
         EXPECT_NE(0, len);
         EXPECT_NE((char *)NULL, (char *)buf);
     }
     for(int i = 0; i < 90; i++, p = p->next) {
         memcpy(the_id, p->the_id, UUIDLEN);
-        error = pttui_resource_dict_get_data(&resource_dict, the_id, p->block_offset, &len, &buf);
+        error = pttui_resource_dict_get_data(&resource_dict, the_id, p->block_offset, INVALID_FILE_OFFSET, &len, &buf);
         EXPECT_EQ(S_OK, error);
         EXPECT_NE(0, len);
         EXPECT_NE((char *)NULL, (char *)buf);
     }
     for(int i = 0; i < 80; i++, p = p->next) {
         memcpy(the_id, p->the_id, UUIDLEN);
-        error = pttui_resource_dict_get_data(&resource_dict, the_id, p->block_offset, &len, &buf);
+        error = pttui_resource_dict_get_data(&resource_dict, the_id, p->block_offset, INVALID_FILE_OFFSET, &len, &buf);
         EXPECT_EQ(S_OK, error);
         EXPECT_NE(0, len);
         EXPECT_NE((char *)NULL, (char *)buf);
     }
     for(int i = 0; i < 20; i++, p = p->next) {
         memcpy(the_id, p->the_id, UUIDLEN);
-        error = pttui_resource_dict_get_data(&resource_dict, the_id, p->block_offset, &len, &buf);
+        error = pttui_resource_dict_get_data(&resource_dict, the_id, p->block_offset, INVALID_FILE_OFFSET, &len, &buf);
         EXPECT_EQ(S_OK, error);
         EXPECT_NE(0, len);
         EXPECT_NE((char *)NULL, (char *)buf);
     }
     for(int i = 90; i < 103; i++, p = p->next) {
         memcpy(the_id, p->the_id, UUIDLEN);
-        error = pttui_resource_dict_get_data(&resource_dict, the_id, p->block_offset, &len, &buf);
+        error = pttui_resource_dict_get_data(&resource_dict, the_id, p->block_offset, INVALID_FILE_OFFSET, &len, &buf);
         EXPECT_EQ(S_OK, error);
         EXPECT_NE(0, len);
         EXPECT_NE((char *)NULL, (char *)buf);
