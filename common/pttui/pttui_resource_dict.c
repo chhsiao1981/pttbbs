@@ -417,14 +417,14 @@ log_pttui_resource_dict(PttUIResourceDict *resource_dict, char *prompt)
 }
 
 Err
-pttui_resource_dict_save_to_tmp_file(PttUIResourceDict *resource_dict, UUID main_id)
+pttui_resource_dict_save_to_tmp_file(PttUIResourceDict *resource_dict)
 {
     Err error_code = S_OK;
 
     char dir_prefix[MAX_FILENAME_SIZE] = {};
 
     setuserfile(dir_prefix, PTTUI_EDIT_TMP_DIR);    
-    char *disp_uuid = display_uuid(main_id);
+    char *disp_uuid = display_uuid(resource_dict->main_id);
     strcat(dir_prefix, disp_uuid);
     free(disp_uuid);
 
@@ -461,6 +461,10 @@ _pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list
     if(ret < 0) error_code = S_ERR;
 
     sprintf(filename, "%s/%d/%s/%d", dir_prefix, content_type, disp_uuid, dict_link_list->block_id);
+    ret = Mkdir(filename);
+    if(ret < 0) error_code = S_ERR;
+
+    sprintf(filename, "%s/%d/%s/%d/%d", dir_prefix, content_type, disp_uuid, dict_link_list->block_id, dict_link_list->file_id);
 
     int fd = OpenCreate(filename, O_WRONLY);
     write(fd, dict_link_list->buf, dict_link_list->len);
@@ -503,7 +507,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
     for (PttUIBuffer *current_buffer = head; current_buffer && current_buffer != tail->next; current_buffer = current_buffer->next) {
         if(!current_buffer->is_modified) continue;
 
-        if(!current_dict || current_buffer->block_offset != current_dict->block_id || memcmp(current_buffer->the_id, current_dict->the_id, UUIDLEN)) {
+        if(!current_dict || current_buffer->block_offset != current_dict->block_id || current_buffer->file_offset != current_dict->file_id || memcmp(current_buffer->the_id, current_dict->the_id, UUIDLEN)) {
             if(current_dict) {
                 error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, len_dict_buf);
 

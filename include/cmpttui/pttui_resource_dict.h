@@ -25,6 +25,7 @@ typedef struct _PttUIResourceDictLinkList {
 
 typedef struct PttUIResourceDict {
     _PttUIResourceDictLinkList *data[N_PTTUI_RESOURCE_DICT_LINK_LIST];
+    UUID main_id;
 } PttUIResourceDict;
 
 Err safe_destroy_pttui_resource_dict(PttUIResourceDict *resource_dict);
@@ -49,7 +50,7 @@ Err pttui_resource_dict_get_next_buf(char *p_buf, int buf_offset, int len, char 
 
 Err pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceDict *resource_dict);
 
-Err pttui_resource_dict_save_to_tmp_file(PttUIResourceDict *resource_dict, UUID main_id);
+Err pttui_resource_dict_save_to_tmp_file(PttUIResourceDict *resource_dict);
 
 Err log_pttui_resource_dict(PttUIResourceDict *resource_dict, char *prompt);
 

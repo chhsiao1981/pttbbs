@@ -550,6 +550,8 @@ _extend_pttui_buffer_extend_pre_buffer(FileInfo *file_info, PttUIBuffer *head_bu
     // 2. extend-pre-buffer-no-buf
     PttUIResourceInfo resource_info = {};
     PttUIResourceDict resource_dict = {};
+    memcpy(resource_dict->main_id, file_info->main_id, UUIDLEN);
+
     error_code = _extend_pttui_buffer_extend_pre_buffer_no_buf(start_buffer, file_info, n_buffer, new_head_buffer, ret_n_buffer);
 
     if (error_code) return error_code;
@@ -809,6 +811,8 @@ _extend_pttui_buffer_extend_next_buffer(FileInfo *file_info, PttUIBuffer *tail_b
     // 2. extend-next-buffer-no-buf
     PttUIResourceInfo resource_info = {};
     PttUIResourceDict resource_dict = {};
+    memcpy(resource_dict->main_id, file_info->main_id, UUIDLEN);
+
     error_code = _extend_pttui_buffer_extend_next_buffer_no_buf(start_buffer, file_info, n_buffer, new_tail_buffer, ret_n_buffer);
 
     if (error_code) return error_code;
@@ -1396,15 +1400,15 @@ _pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIBuffer *ta
  * save to tmp file
  **********/
 Err
-check_and_save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, UUID main_id)
+check_and_save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_info)
 {
     if(buffer_info->n_to_delete < N_TO_DELETE_SAVE_PTTUI_BUFFER_TO_TMP_FILE && buffer_info->n_new < N_NEW_SAVE_PTTUI_BUFFER_TO_TMP_FILE) return S_OK;
 
-    return save_pttui_buffer_info_to_tmp_file(buffer_info, main_id);
+    return save_pttui_buffer_info_to_tmp_file(buffer_info, file_info);
 }
 
 Err
-save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, UUID main_id)
+save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_info)
 {
     Err error_code = S_OK;
 
@@ -1413,6 +1417,7 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, UUID main_id)
 
     PttUIResourceInfo resource_info = {};
     PttUIResourceDict resource_dict = {};
+    memcpy(resource_dict->main_id, file_info->main_id, UUIDLEN);
 
     // XXX defensive programming for not-init-buffer-info
     if(!buffer_info->head) return S_OK;
@@ -1434,8 +1439,8 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, UUID main_id)
     }
 
     if(!error_code) {
-        error_code = pttui_resource_dict_save_to_tmp_file(&resource_dict, main_id);
-    }
+        error_code = pttui_resource_dict_save_to_tmp_file(&resource_dict);
+    }    
 
     if(!error_code) {
         error_code = pttui_buffer_wrlock_buffer_info(&is_lock_buffer_info);

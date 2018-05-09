@@ -22,7 +22,7 @@ extern "C" {
 #define INVALID_LINE_OFFSET_NEXT_END -3
 #define INVALID_LINE_OFFSET_NEW -4
 
-#define INVALID_FILE_OFFSET -1
+#define INVALID_FILE_OFFSET 0 // XXX hack for saving as file-name
 
 typedef struct PttUIBuffer {
     struct PttUIBuffer *next;
