@@ -13,8 +13,13 @@
 extern "C" {
 #endif
 
+#include <errno.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <dirent.h>    
 #include <string.h>
+#include <fcntl.h>    
+#include <unistd.h>    
 #include "common.h"
 #include "ansi.h"
 #include "vtuikit.h"
@@ -79,6 +84,10 @@ Err pttui_ansi2n(int ansix, char *buf, int *nx);
 Err pttui_n2ansi(int nx, char *buf, int *ansix);
 
 Err pttui_edit_outs_attr_n(const char *text, int n, int attr);
+
+Err safe_strcat(char **buf, int *max_buf_size, int alloc_size, int *len_buf, char *new_buf, int len_new_buf);
+
+int Rmdir(char *dir, char *dir_prefix);
 
 #ifdef __cplusplus
 }

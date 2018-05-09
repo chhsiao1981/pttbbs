@@ -26,15 +26,19 @@ Err _vedit3_action_to_store_main(int ch, bool *is_end);
 Err _vedit3_action_to_store_comment(int ch, bool *is_end);
 Err _vedit3_action_to_store_comment_reply(int ch, bool *is_end);
 
+Err _vedit3_action_ensure_current_col(int current_col);
+
 Err _vedit3_action_insert_dchar_core(const char *dchar);
 Err _vedit3_action_insert_char_core(int ch);
 Err _vedit3_action_ensure_buffer_wrap();
-Err _vedit3_action_buffer_split(PttUIBuffer *current_buffer, int pos, int indent, PttUIBuffer **new_buffer);
-
-Err _vedit3_action_ensure_current_col(int current_col);
 
 Err _vedit3_action_delete_char_core();
 Err _vedit3_action_concat_next_line();
+
+// function to new line
+Err _vedit3_action_buffer_split_core(PttUIBuffer *current_buffer, int pos, int indent, PttUIBuffer **new_buffer);
+
+// function to remove line
 Err _vedit3_action_delete_line_core(PttUIBuffer *buffer);
 
 #ifdef __cplusplus

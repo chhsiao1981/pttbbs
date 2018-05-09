@@ -32,6 +32,8 @@ Err _vedit3_init_user();
 Err _vedit3_init_editor(UUID main_id);
 Err _vedit3_init_file_info(UUID main_id);
 
+Err _vedit3_destroy_editor();
+
 Err _vedit3_set_buffer_current_state(PttUIState *state);
 Err _vedit3_get_buffer_current_state(PttUIState *state);
 

@@ -52,7 +52,10 @@ Err _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(PttUIBuffer *cu
 
 Err _pttui_buffer_info_to_resource_info(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceInfo *resource_info);
 Err _pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceDict *resource_dict);
-Err _pttui_buffer_info_set_buf_from_resource_dict_get_next_buf(char *p_buf, int buf_offset, int len, char **p_next_buf, int *buf_next_offset);
+
+Err _modified_pttui_buffer_info_to_resource_info(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceInfo *resource_info);
+
+Err _remove_deleted_pttui_buffer_in_buffer_info(PttUIBufferInfo *buffer_info);
 
 /***
  * shrink

@@ -309,6 +309,22 @@ pttui_resource_dict_get_data(PttUIResourceDict *resource_dict, UUID the_id, int 
 }
 
 Err
+pttui_resource_dict_get_link_list(PttUIResourceDict *resource_dict, UUID the_id, int block_id, _PttUIResourceDictLinkList **dict_link_list)
+{
+    int the_idx = ((int)the_id[0] + block_id) % N_PTTUI_RESOURCE_DICT_LINK_LIST;
+    _PttUIResourceDictLinkList *p = resource_dict->data[the_idx];
+    for(; p; p = p->next) {
+        if(!memcmp(the_id, p->the_id, UUIDLEN) && block_id == p->block_id) break;
+    }
+    *dict_link_list = p;
+
+    if(!p) return S_ERR_NOT_EXISTS;
+
+    return S_OK;
+}
+
+
+Err
 _pttui_resource_dict_get_content_block_from_db_core(UUID uuid, int min_block_id, int max_block_id, enum MongoDBId mongo_db_id, PttUIResourceDict *resource_dict)
 {    
     Err error_code = S_OK;
@@ -397,3 +413,188 @@ log_pttui_resource_dict(PttUIResourceDict *resource_dict, char *prompt)
 
     return S_OK;
 }
+
+Err
+pttui_resource_dict_save_to_tmp_file(PttUIResourceDict *resource_dict, UUID main_id)
+{
+    Err error_code = S_OK;
+
+    char dir_prefix[MAX_PTTUI_FILENAME_SIZE] = {};
+
+    setuserfile(dir_prefix, PTTUI_EDIT_TMP_DIR);    
+    char *disp_uuid = display_uuid(p_dict_link_list->the_id);
+    strcat(dir_prefix, disp_uuid);
+    free(disp_uuid);
+
+    _PttUIResourceDictLinkList *p_dict_link_list = NULL;
+    int j = 0;
+
+    for(int i = 0; i < N_PTTUI_RESOURCE_DICT_LINK_LIST; i++) {
+        if(!resource_dict->data[i]) continue;
+        for(j = 0, p_dict_link_list = resource_dict->data[i]; p_dict_link_list; j++, p_dict_link_list = p_dict_link_list->next) {
+            error_code = _pttui_resource_dict_save_to_tmp_file(p_dict_link_list, dir_prefix);
+            if(error_code) break;
+        }
+        if(error_code) break;
+    }
+
+    return error_code;
+}
+
+Err
+_pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list, char *dir_prefix)
+{
+    char filename[MAX_PTTUI_FILENAME_SIZE] = {};
+
+    char *disp_uuid = display_uuid(dict_link_list->the_id);
+    enum PttDBContentType content_type = dict_link_list->content_type;
+
+    sprintf(filename, "%s/%d", dir_prefix, content_type);
+    int ret = Mkdir(filename);
+    if(ret < 0) error_code = S_ERR;
+
+    sprintf(filename, "%s/%d/%s", dir_prefix, content_type, disp_uuid);
+    ret = Mkdir(filename);
+    if(ret < 0) error_code = S_ERR;
+
+    sprintf(filename, "%s/%d/%s/%d", dir_prefix, content_type, disp_uuid, dict_link_list->block_id);
+
+    int fd = OpenCreate(filename, O_WRONLY);
+    write(fd, dict_link_list->buf, dict_link_list->len);
+    close(fd);
+
+    free(disp_uuid);
+    return S_OK;
+}
+
+/**********
+ * buffer-info integrate to resource dict
+ **********/
+
+/**
+ * @brief [brief description]
+ * @details ref: _modified_pttui_buffer_info_to_resource_info in pttui_buffer.c
+ * 
+ * @param head [description]
+ * @param tail [description]
+ * @param resource_dict [description]
+ */ 
+Err
+pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceDict *resource_dict)
+{
+    int max_buf_size = 0;
+    char *tmp_buf = NULL;
+    int len_tmp_buf = 0;
+    int line_offset_tmp_buf = 0;
+
+    _PttUIResourceDictLinkList *dict_link_list = NULL;
+    char *p_dict_buf = NULL;
+    int len_dict_buf = 0;
+    int dict_buf_offset = 0;
+    int line_offset_dict_buf = 0;    
+
+    char *p_next_dict_buf = NULL;
+    int dict_buf_next_offset = 0;
+
+    for (PttUIBuffer *current_buffer = head; current_buffer && current_buffer != tail->next; current_buffer = current_buffer->next) {
+        if(!current_buffer->is_modified) continue;
+
+        if(!current_dict || current_buffer->block_id != current_dict->block_id || memcmp(current_buffer->the_id, current_dict->the_id, UUIDLEN)) {
+            if(current_dict) {
+                error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, len_dict_buf);
+
+                safe_free(&current_dict->buf);
+                current_dict->buf = malloc(len_tmp_buf + 1);
+                memcpy(current_dict->buf, tmp_buf, len_tmp_buf);
+                current_dict->buf[len_tmp_buf] = 0;
+                current_dict->len = len_tmp_buf;
+            }
+
+            max_buf_size = MAX_BUF_SIZE;
+            tmp_buf = realloc(tmp_buff, max_buf_size);
+            len_tmp_buf = 0;
+            line_offset_tmp_buf = 0;
+
+            error_code = pttui_resource_dict_get_link_list(resource_dict, current_buffer->the_id, current_buffer->block_id, &dict_link_list);
+            if(error_code) break;
+
+            p_dict_buf = dict_link_list->buf;
+            len_dict_buf = dict_link_list->len;
+            dict_buf_offset = 0;
+            line_offset_dict_buf = 0;
+
+            p_next_dict_buf = NULL;
+            dict_buf_next_offset = 0;
+        }
+
+        start_i = current_buffer->is_new ? line_offset_tmp_buf : line_offset_dict_buf;
+        end_i = current_buffer->is_new ? current_buffer->line_offset : current_buffer->load_line_offset;
+
+        for(int i = start_i; i < end_i; i++, line_offset_dict_buf++, line_offset_tmp_buf++) {
+            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len, &p_next_dict_buf, &dict_buf_next_offset);                        
+            error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, p_next_dict_buf - p_dict_buf);
+
+            p_dict_buf = p_next_dict_buf;
+            dict_buf_offset = dict_buf_next_offset;
+            line_offset_dict_buf++;            
+        }
+
+        if(current_buffer->is_to_delete) {
+            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len, &p_next_dict_buf, &dict_buf_next_offset);
+            p_dict_buf = p_next_dict_buf;
+            dict_buf_offset = dict_buf_next_offset;
+            line_offset_dict_buf++;
+        }
+        else if(current_buffer->is_new) {
+            error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, current_buffer->buf, current_buffer->len_no_nl);
+            error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, PTTUI_NEWLINE, LEN_PTTUI_NEWLINE);
+            line_offset_tmp_buf++;
+        }
+        else {
+            error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, current_buffer->buf, current_buffer->len_no_nl);
+            error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, PTTUI_NEWLINE, LEN_PTTUI_NEWLINE);
+            line_offset_tmp_buf++;
+
+            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len, &p_next_dict_buf, &dict_buf_next_offset);
+            p_dict_buf = p_next_dict_buf;
+            dict_buf_offset = dict_buf_next_offset;
+            line_offset_dict_buf++;
+        }
+
+        if (error_code) break;
+    }
+
+    if(current_dict) {
+        error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, len_dict_buf);
+
+        safe_free(&current_dict->buf);
+        current_dict->buf = malloc(len_tmp_buf + 1);
+        memcpy(current_dict->buf, tmp_buf, len_tmp_buf);
+        current_dict->buf[len_tmp_buf] = 0;
+        current_dict->len = len_tmp_buf;
+    }
+
+    // free
+    safe_free((void **)&tmp_buf);
+
+    return error_code;
+}
+
+Err
+pttui_resource_dict_get_next_buf(char *p_buf, int buf_offset, int len, char **p_next_buf, int *buf_next_offset)
+{
+    int tmp_next_offset = 0;
+    char *tmp_next_buf = NULL;
+    for(tmp_next_offset = buf_offset, tmp_next_buf = p_buf; tmp_next_offset < len && tmp_next_buf && *tmp_next_buf != '\n'; tmp_next_offset++, tmp_next_buf++);
+
+    if(tmp_next_offset != len) {
+        tmp_next_offset++;
+        tmp_next_buf++;
+    }
+
+    *p_next_buf = tmp_next_buf;
+    *buf_next_offset = tmp_next_offset;
+
+    return S_OK;
+}
+

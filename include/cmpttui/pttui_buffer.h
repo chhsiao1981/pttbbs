@@ -14,6 +14,8 @@ extern "C" {
 #define HARD_N_PTTUI_BUFFER 250
 #define N_SHRINK_PTTUI_BUFFER 600
 
+#define N_TO_DELETE_SAVE_PTTUI_BUFFER_TO_TMP_FILE 40
+
 #define INVALID_LINE_OFFSET_PRE_END -1
 #define INVALID_LINE_OFFSET_NEXT_END -2
 #define INVALID_LINE_OFFSET_NEW -3
@@ -46,6 +48,9 @@ typedef struct PttUIBufferInfo {
     PttUIBuffer *tail;
     int n_buffer;
 
+    int n_to_delete;
+    int n_new;
+
     UUID main_id;
 } PttUIBufferInfo;
 
@@ -69,7 +74,9 @@ Err extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, 
 
 Err pttui_buffer_insert_buffer(PttUIBuffer *current_buffer, PttUIBuffer *next_buffer);
 
-Err save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info);
+Err check_and_save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, UUID main_id);
+
+Err save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, UUID main_id);
 
 Err pttui_buffer_rdlock_file_info();
 Err pttui_buffer_unlock_file_info();

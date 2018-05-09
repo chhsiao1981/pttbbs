@@ -4,11 +4,15 @@
 
 #include "ptterr.h"
 #include "cmpttui/pttui_buffer.h"
+#include "cmpttui/pttui_const.h"
+#include "cmpttui/pttui_resource_dict.h"
 #include "cmpttdb.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include "proto.h"
 
 Err _pttui_resource_dict_get_content_block_from_db_core(UUID uuid, int min_block_id, int max_block_id, enum MongoDBId mongo_db_id, PttUIResourceDict *resource_dict);
 
@@ -19,6 +23,8 @@ Err _pttui_resource_dict_content_block_db_to_dict(bson_t **b_content_blocks, int
 Err _pttui_resource_dict_comment_db_to_dict(bson_t **b_comments, int n_comment, PttUIResourceDict *resource_dict);
 
 Err _pttui_resource_dict_add_data(UUID the_id, int block_id, int len, char *buf, PttUIResourceDict *resource_dict);
+
+Err _pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list, char *dir_prefix);
 
 #ifdef __cplusplus
 }
