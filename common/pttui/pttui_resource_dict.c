@@ -465,6 +465,7 @@ _pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list
     if(ret < 0) error_code = S_ERR;
 
     sprintf(filename, "%s/%d/%s/%d/%d", dir_prefix, content_type, disp_uuid, dict_link_list->block_id, dict_link_list->file_id);
+    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_save_to_tmp_file: to save: filename: %s\n", filename);
 
     int fd = OpenCreate(filename, O_WRONLY);
     write(fd, dict_link_list->buf, dict_link_list->len);
