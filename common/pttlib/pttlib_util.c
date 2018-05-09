@@ -33,6 +33,7 @@ Rmdir(char *dir, char *dir_prefix)
     struct dirent *d2;
 
     char new_dir_prefix[MAX_FILENAME_SIZE] = {};
+    char filename[MAX_FILENAME_SIZE] = {};
     sprintf(new_dir_prefix, "%s/%s", dir_prefix, dir);
 
     d = opendir(new_dir_prefix);
@@ -43,7 +44,7 @@ Rmdir(char *dir, char *dir_prefix)
     while((d2 = readdir(d)) != NULL) {
         switch(d2->d_type) {
         case DT_DIR:
-            if(strstr(d2->name, ".") == NULL) {
+            if(strstr(d2->d_name, ".") == NULL) {
                 ret = Rmdir(d2->d_name, new_dir_prefix);
             }
             break;

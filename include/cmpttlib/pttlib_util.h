@@ -16,7 +16,9 @@ extern "C" {
 #include <dirent.h>    
 #include <string.h>
 #include <fcntl.h>    
-#include <unistd.h>    
+#include <unistd.h>  
+#include <stdio.h>
+#include <stdlib.h>
 
 Err safe_strcat(char **buf, int *max_buf_size, int alloc_size, int *len_buf, char *new_buf, int len_new_buf);
 
