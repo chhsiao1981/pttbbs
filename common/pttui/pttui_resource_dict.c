@@ -18,7 +18,7 @@ pttui_resource_dict_get_main_from_db(PttQueue *queue, PttUIResourceDict *resourc
     fprintf(stderr, "pttui_resource_dict.get_content_block_from_db_core: the_id: %s min_block_id: %d max_block_id: %d\n", _uuid, min_block_id, max_block_id);
     safe_free((void **)&_uuid);
 
-    return _pttui_resource_dict_get_content_block_from_db_core(head_buffer->the_id, min_block_id, max_block_id, MONGO_MAIN_CONTENT, resource_dict);
+    return _pttui_resource_dict_get_content_block_from_db_core(head_buffer->the_id, min_block_id, max_block_id, MONGO_MAIN_CONTENT, PTTDB_CONTENT_TYPE_MAIN, resource_dict);
 }
 
 Err
@@ -44,7 +44,7 @@ safe_destroy_pttui_resource_dict(PttUIResourceDict *resource_dict)
 }
 
 Err
-_pttui_resource_dict_content_block_db_to_dict(bson_t **b_content_blocks, int n_content_block, PttUIResourceDict *resource_dict)
+_pttui_resource_dict_content_block_db_to_dict(bson_t **b_content_blocks, int n_content_block, enum PttDBContentType content_type, PttUIResourceDict *resource_dict)
 {
     Err error_code = S_OK;
 
@@ -67,7 +67,7 @@ _pttui_resource_dict_content_block_db_to_dict(bson_t **b_content_blocks, int n_c
         error_code = bson_get_value_bin_not_initialized(*p_content_block, "buf_block", &buf_block, &len);
         if(error_code) break;
 
-        error_code = _pttui_resource_dict_add_data(the_id, block_id, len_block, buf_block, resource_dict);
+        error_code = _pttui_resource_dict_add_data(the_id, block_id, INVALID_FILE_OFFSET, len_block, buf_block, content_type, resource_dict);
         if(error_code) break;
     }
 
@@ -161,7 +161,7 @@ _pttui_resource_dict_comment_db_to_dict(bson_t **b_comments, int n_comment, PttU
         error_code = bson_get_value_bin_not_initialized(*p_comment, "buf", &buf_block, &len);
         if(error_code) break;
 
-        error_code = _pttui_resource_dict_add_data(the_id, block_id, len_block, buf_block, resource_dict);
+        error_code = _pttui_resource_dict_add_data(the_id, block_id, INVALID_FILE_OFFSET, len_block, buf_block, PTTDB_CONTENT_TYPE_COMMENT, resource_dict);
         if(error_code) break;
     }
 
@@ -206,7 +206,7 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
     int min_block_id = p_head_buffer->block_offset;
     int max_block_id = p_pre_buffer->block_offset;
 
-    error_code = _pttui_resource_dict_get_content_block_from_db_core(head_uuid, min_block_id, max_block_id, MONGO_COMMENT_REPLY_BLOCK, resource_dict);
+    error_code = _pttui_resource_dict_get_content_block_from_db_core(head_uuid, min_block_id, max_block_id, MONGO_COMMENT_REPLY_BLOCK, PTTDB_CONTENT_TYPE_COMMENT_REPLY, resource_dict);
 
     if(error_code) return error_code;
 
@@ -240,7 +240,7 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
         q_middle = BCON_NEW(
             "the_id", BCON_DOCUMENT(q_array)
             );
-        error_code = _pttui_resource_dict_get_content_block_from_db_core2(q_middle, max_n_middle, MONGO_COMMENT_REPLY_BLOCK, resource_dict);
+        error_code = _pttui_resource_dict_get_content_block_from_db_core2(q_middle, max_n_middle, MONGO_COMMENT_REPLY_BLOCK, PTTDB_CONTENT_TYPE_COMMENT_REPLY, resource_dict);
     }
     fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_get_comment_reply_from_db: after middle: max_n_middle: %d e: %d\n", max_n_middle, error_code);
 
@@ -249,7 +249,7 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
         p_buffer = (PttUIBuffer *)p->val.p;
         min_block_id = p_buffer->block_offset;
         max_block_id = p_tail_buffer->block_offset;
-        error_code = _pttui_resource_dict_get_content_block_from_db_core(tail_uuid, min_block_id, max_block_id, MONGO_COMMENT_REPLY_BLOCK, resource_dict);
+        error_code = _pttui_resource_dict_get_content_block_from_db_core(tail_uuid, min_block_id, max_block_id, MONGO_COMMENT_REPLY_BLOCK, PTTDB_CONTENT_TYPE_COMMENT_REPLY, resource_dict);
         fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_get_comment_reply_from_db: after tail: min_block_id: %d max_block_id: %d e: %d\n", min_block_id, max_block_id, error_code);
     }
 
@@ -261,10 +261,10 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
 }
 
 Err
-_pttui_resource_dict_add_data(UUID the_id, int block_id, int len, char *buf, PttUIResourceDict *resource_dict)
+_pttui_resource_dict_add_data(UUID the_id, int block_id, int file_id, int len, char *buf, enum PttDBContentType content_type, PttUIResourceDict *resource_dict)
 {
     // XXX buf_block need to be freed after copy to pttui-buffer
-    int the_idx = ((int)the_id[0] + block_id) % N_PTTUI_RESOURCE_DICT_LINK_LIST;
+    int the_idx = ((int)the_id[0] + block_id + file_id + N_PTTUI_RESOURCE_DICT_LINK_LIST) % N_PTTUI_RESOURCE_DICT_LINK_LIST;
     _PttUIResourceDictLinkList *p = resource_dict->data[the_idx];
     if(!p) {
         resource_dict->data[the_idx] = malloc(sizeof(_PttUIResourceDictLinkList));
@@ -279,7 +279,9 @@ _pttui_resource_dict_add_data(UUID the_id, int block_id, int len, char *buf, Ptt
 
     p->next = NULL;
     memcpy(p->the_id, the_id, UUIDLEN);
+    p->content_type = content_type;
     p->block_id = block_id;
+    p->file_id = file_id;
     p->len = len;
     p->buf = buf;
 
@@ -287,12 +289,12 @@ _pttui_resource_dict_add_data(UUID the_id, int block_id, int len, char *buf, Ptt
 }
 
 Err
-pttui_resource_dict_get_data(PttUIResourceDict *resource_dict, UUID the_id, int block_id, int *len, char **buf)
+pttui_resource_dict_get_data(PttUIResourceDict *resource_dict, UUID the_id, int block_id, int file_id, int *len, char **buf)
 {
-    int the_idx = ((int)the_id[0] + block_id) % N_PTTUI_RESOURCE_DICT_LINK_LIST;
+    int the_idx = ((int)the_id[0] + block_id + file_id + N_PTTUI_RESOURCE_DICT_LINK_LIST) % N_PTTUI_RESOURCE_DICT_LINK_LIST;
     _PttUIResourceDictLinkList *p = resource_dict->data[the_idx];
     for(; p; p = p->next) {
-        if(!memcmp(the_id, p->the_id, UUIDLEN) && block_id == p->block_id) {
+        if(!memcmp(the_id, p->the_id, UUIDLEN) && block_id == p->block_id && file_id == p->file_id) {
             *len = p->len;
             *buf = p->buf;
             break;
@@ -309,12 +311,12 @@ pttui_resource_dict_get_data(PttUIResourceDict *resource_dict, UUID the_id, int 
 }
 
 Err
-pttui_resource_dict_get_link_list(PttUIResourceDict *resource_dict, UUID the_id, int block_id, _PttUIResourceDictLinkList **dict_link_list)
+pttui_resource_dict_get_link_list(PttUIResourceDict *resource_dict, UUID the_id, int block_id, int file_id, _PttUIResourceDictLinkList **dict_link_list)
 {
-    int the_idx = ((int)the_id[0] + block_id) % N_PTTUI_RESOURCE_DICT_LINK_LIST;
+    int the_idx = ((int)the_id[0] + block_id + file_id + N_PTTUI_RESOURCE_DICT_LINK_LIST) % N_PTTUI_RESOURCE_DICT_LINK_LIST;
     _PttUIResourceDictLinkList *p = resource_dict->data[the_idx];
     for(; p; p = p->next) {
-        if(!memcmp(the_id, p->the_id, UUIDLEN) && block_id == p->block_id) break;
+        if(!memcmp(the_id, p->the_id, UUIDLEN) && block_id == p->block_id && file_id == p->file_id) break;
     }
     *dict_link_list = p;
 
@@ -325,7 +327,7 @@ pttui_resource_dict_get_link_list(PttUIResourceDict *resource_dict, UUID the_id,
 
 
 Err
-_pttui_resource_dict_get_content_block_from_db_core(UUID uuid, int min_block_id, int max_block_id, enum MongoDBId mongo_db_id, PttUIResourceDict *resource_dict)
+_pttui_resource_dict_get_content_block_from_db_core(UUID uuid, int min_block_id, int max_block_id, enum MongoDBId mongo_db_id, enum PttDBContentType content_type, PttUIResourceDict *resource_dict)
 {    
     Err error_code = S_OK;
     bson_t *q = BCON_NEW(
@@ -338,7 +340,7 @@ _pttui_resource_dict_get_content_block_from_db_core(UUID uuid, int min_block_id,
 
     int max_n_content_block = max_block_id - min_block_id + 1;
 
-    error_code = _pttui_resource_dict_get_content_block_from_db_core2(q, max_n_content_block, mongo_db_id, resource_dict);
+    error_code = _pttui_resource_dict_get_content_block_from_db_core2(q, max_n_content_block, mongo_db_id, content_type, resource_dict);
 
     // free
 
@@ -348,7 +350,7 @@ _pttui_resource_dict_get_content_block_from_db_core(UUID uuid, int min_block_id,
 }
 
 Err
-_pttui_resource_dict_get_content_block_from_db_core2(bson_t *q, int max_n_content_block, enum MongoDBId mongo_db_id, PttUIResourceDict *resource_dict)
+_pttui_resource_dict_get_content_block_from_db_core2(bson_t *q, int max_n_content_block, enum MongoDBId mongo_db_id, enum PttDBContentType content_type, PttUIResourceDict *resource_dict)
 {
     Err error_code = S_OK;
 
@@ -367,7 +369,7 @@ _pttui_resource_dict_get_content_block_from_db_core2(bson_t *q, int max_n_conten
     error_code = read_content_blocks_by_query_to_bsons(q, fields, max_n_content_block, mongo_db_id, b_content_blocks, &n_content_block);
 
     if(!error_code) {
-        error_code = _pttui_resource_dict_content_block_db_to_dict(b_content_blocks, n_content_block, resource_dict);
+        error_code = _pttui_resource_dict_content_block_db_to_dict(b_content_blocks, n_content_block, content_type, resource_dict);
     }
 
     // free
@@ -517,7 +519,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             len_tmp_buf = 0;
             line_offset_tmp_buf = 0;
 
-            error_code = pttui_resource_dict_get_link_list(resource_dict, current_buffer->the_id, current_buffer->block_offset, &current_dict);
+            error_code = pttui_resource_dict_get_link_list(resource_dict, current_buffer->the_id, current_buffer->block_offset, current_buffer->file_offset, &current_dict);
             if(error_code) break;
 
             p_dict_buf = current_dict->buf;

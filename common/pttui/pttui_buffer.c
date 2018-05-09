@@ -1267,7 +1267,8 @@ _pttui_buffer_info_to_resource_info(PttUIBuffer *head, PttUIBuffer *tail, PttUIR
         if (pre_buffer &&
             current_buffer->content_type != PTTDB_CONTENT_TYPE_COMMENT &&
             pre_buffer->content_type == current_buffer->content_type &&
-            pre_buffer->block_offset == current_buffer->block_offset) continue;
+            pre_buffer->block_offset == current_buffer->block_offset &&
+            pre_buffer->file_offset == current_buffer->file_offset) continue;
 
         error_code = pttui_resource_info_push_queue(current_buffer, resource_info, current_buffer->content_type, current_buffer->storage_type);
         if (error_code) break;
@@ -1290,7 +1291,8 @@ _modified_pttui_buffer_info_to_resource_info(PttUIBuffer *head, PttUIBuffer *tai
         if (pre_buffer &&
             current_buffer->content_type != PTTDB_CONTENT_TYPE_COMMENT &&
             pre_buffer->content_type == current_buffer->content_type &&
-            pre_buffer->block_offset == current_buffer->block_offset) continue;
+            pre_buffer->block_offset == current_buffer->block_offset &&            
+            pre_buffer->file_offset == current_buffer->file_offset) continue;
 
         error_code = pttui_resource_info_push_queue(current_buffer, resource_info, current_buffer->content_type, current_buffer->storage_type);
         if (error_code) break;
@@ -1328,7 +1330,7 @@ _pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIBuffer *ta
     //log_pttui_resource_dict(resource_dict, "pttui_buffer._pttui_buffer_info_set_buf_from_resource_dict");
 
     // pre-head
-    error_code = pttui_resource_dict_get_data(resource_dict, p_buffer->the_id, p_buffer->block_offset, &len, &buf);
+    error_code = pttui_resource_dict_get_data(resource_dict, p_buffer->the_id, p_buffer->block_offset, p_buffer->file_offset, &len, &buf);
     if(error_code) return error_code;
 
     memcpy(current_the_id, p_buffer->the_id, UUIDLEN);
@@ -1350,7 +1352,7 @@ _pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIBuffer *ta
     // start
     for(; p_buffer && p_buffer != tail->next && !p_buffer->buf; p_buffer = p_buffer->next, i++) {
         if(memcmp(p_buffer->the_id, current_the_id, UUIDLEN) || current_block_id != p_buffer->block_offset) {
-            error_code = pttui_resource_dict_get_data(resource_dict, p_buffer->the_id, p_buffer->block_offset, &len, &buf);
+            error_code = pttui_resource_dict_get_data(resource_dict, p_buffer->the_id, p_buffer->block_offset, p_buffer->file_offset, &len, &buf);
             fprintf(stderr, "pttui_buffer._pttui_buffer_info_set_buf_from_resource_dict: after get data: i: %d p_buffer: content-type: %d block_offset: %d comment_offset: %d len: %d e: %d\n", i, p_buffer->content_type, p_buffer->block_offset, p_buffer->comment_offset, len, error_code);
 
             if(error_code) break;
@@ -1396,7 +1398,7 @@ _pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIBuffer *ta
 Err
 check_and_save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, UUID main_id)
 {
-    if(buffer_info->n_to_delete < N_TO_DELETE_SAVE_PTTUI_BUFFER_TO_TMP_FILE) return S_OK;
+    if(buffer_info->n_to_delete < N_TO_DELETE_SAVE_PTTUI_BUFFER_TO_TMP_FILE && buffer_info->n_new < N_NEW_SAVE_PTTUI_BUFFER_TO_TMP_FILE) return S_OK;
 
     return save_pttui_buffer_info_to_tmp_file(buffer_info, main_id);
 }

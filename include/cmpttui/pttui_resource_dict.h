@@ -18,6 +18,7 @@ typedef struct _PttUIResourceDictLinkList {
     enum PttDBContentType content_type;
     UUID the_id;
     int block_id;
+    int file_id;
     int len;
     char *buf;
 } _PttUIResourceDictLinkList;
@@ -28,9 +29,9 @@ typedef struct PttUIResourceDict {
 
 Err safe_destroy_pttui_resource_dict(PttUIResourceDict *resource_dict);
 
-Err pttui_resource_dict_get_data(PttUIResourceDict *resource_dict, UUID the_id, int block_id, int *len, char **buf);
+Err pttui_resource_dict_get_data(PttUIResourceDict *resource_dict, UUID the_id, int block_id, int file_id, int *len, char **buf);
 
-Err pttui_resource_dict_get_link_list(PttUIResourceDict *resource_dict, UUID the_id, int block_id, _PttUIResourceDictLinkList **dict_link_list);
+Err pttui_resource_dict_get_link_list(PttUIResourceDict *resource_dict, UUID the_id, int block_id, int file_id, _PttUIResourceDictLinkList **dict_link_list);
 
 Err pttui_resource_dict_get_main_from_db(PttQueue *queue, PttUIResourceDict *resource_dict);
 
