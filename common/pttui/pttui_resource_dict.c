@@ -422,7 +422,7 @@ pttui_resource_dict_save_to_tmp_file(PttUIResourceDict *resource_dict, UUID main
     char dir_prefix[MAX_PTTUI_FILENAME_SIZE] = {};
 
     setuserfile(dir_prefix, PTTUI_EDIT_TMP_DIR);    
-    char *disp_uuid = display_uuid(p_dict_link_list->the_id);
+    char *disp_uuid = display_uuid(main_id);
     strcat(dir_prefix, disp_uuid);
     free(disp_uuid);
 
@@ -444,6 +444,7 @@ pttui_resource_dict_save_to_tmp_file(PttUIResourceDict *resource_dict, UUID main
 Err
 _pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list, char *dir_prefix)
 {
+    Err error_code = S_OK;
     char filename[MAX_PTTUI_FILENAME_SIZE] = {};
 
     char *disp_uuid = display_uuid(dict_link_list->the_id);
@@ -464,7 +465,7 @@ _pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list
     close(fd);
 
     free(disp_uuid);
-    return S_OK;
+    return error_code;
 }
 
 /**********
@@ -482,12 +483,13 @@ _pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list
 Err
 pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceDict *resource_dict)
 {
+    Err error_code = S_OK;
     int max_buf_size = 0;
     char *tmp_buf = NULL;
     int len_tmp_buf = 0;
     int line_offset_tmp_buf = 0;
 
-    _PttUIResourceDictLinkList *dict_link_list = NULL;
+    _PttUIResourceDictLinkList *current_dict = NULL;
     char *p_dict_buf = NULL;
     int len_dict_buf = 0;
     int dict_buf_offset = 0;
@@ -499,7 +501,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
     for (PttUIBuffer *current_buffer = head; current_buffer && current_buffer != tail->next; current_buffer = current_buffer->next) {
         if(!current_buffer->is_modified) continue;
 
-        if(!current_dict || current_buffer->block_id != current_dict->block_id || memcmp(current_buffer->the_id, current_dict->the_id, UUIDLEN)) {
+        if(!current_dict || current_buffer->block_offset != current_dict->block_id || memcmp(current_buffer->the_id, current_dict->the_id, UUIDLEN)) {
             if(current_dict) {
                 error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, len_dict_buf);
 
@@ -511,15 +513,15 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             }
 
             max_buf_size = MAX_BUF_SIZE;
-            tmp_buf = realloc(tmp_buff, max_buf_size);
+            tmp_buf = realloc(tmp_buf, max_buf_size);
             len_tmp_buf = 0;
             line_offset_tmp_buf = 0;
 
-            error_code = pttui_resource_dict_get_link_list(resource_dict, current_buffer->the_id, current_buffer->block_id, &dict_link_list);
+            error_code = pttui_resource_dict_get_link_list(resource_dict, current_buffer->the_id, current_buffer->block_offset, &current_dict);
             if(error_code) break;
 
-            p_dict_buf = dict_link_list->buf;
-            len_dict_buf = dict_link_list->len;
+            p_dict_buf = current_dict->buf;
+            len_dict_buf = current_dict->len;
             dict_buf_offset = 0;
             line_offset_dict_buf = 0;
 
