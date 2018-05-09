@@ -796,7 +796,7 @@ _vedit3_destroy_editor()
 
     setuserfile(dir_prefix, PTTUI_EDIT_TMP_DIR);
 
-    int ret = Rmdir(dir_prefix, "");
+    int ret = Rmdir(dir_prefix, NULL);
     if(ret < 0) error_code = S_ERR;
 
     fprintf(stderr, "vedit3._vedit3_destroy_editor: after Rmdir\n");

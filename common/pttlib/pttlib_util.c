@@ -34,7 +34,8 @@ Rmdir(char *dir, char *dir_prefix)
 
     char new_dir_prefix[MAX_FILENAME_SIZE] = {};
     char filename[MAX_FILENAME_SIZE] = {};
-    sprintf(new_dir_prefix, "%s/%s", dir_prefix, dir);
+
+    dir_prefix ? sprintf(new_dir_prefix, "%s/%s", dir_prefix, dir) : sprintf(new_dir_prefix, "%s", dir);
 
     fprintf(stderr, "pttlib_util.Rmdir: to opendir: new_dir_prefix: %s\n", new_dir_prefix);
     d = opendir(new_dir_prefix);
