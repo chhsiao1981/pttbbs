@@ -1259,6 +1259,7 @@ _remove_deleted_pttui_buffer_in_buffer_info(PttUIBufferInfo *buffer_info)
 
         if(tmp->is_to_delete) {
             safe_free_pttui_buffer(&tmp);
+            buffer_info->n_buffer--;
         }
     }
 
