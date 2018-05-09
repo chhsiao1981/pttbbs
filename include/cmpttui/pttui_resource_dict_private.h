@@ -3,6 +3,7 @@
 #define PTTUI_RESOURCE_DICT_PRIVATE_H
 
 #include "ptterr.h"
+#include "cmpttlib.h"
 #include "cmpttui/pttui_buffer.h"
 #include "cmpttui/pttui_const.h"
 #include "cmpttui/pttui_resource_dict.h"

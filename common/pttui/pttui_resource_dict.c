@@ -419,7 +419,7 @@ pttui_resource_dict_save_to_tmp_file(PttUIResourceDict *resource_dict, UUID main
 {
     Err error_code = S_OK;
 
-    char dir_prefix[MAX_PTTUI_FILENAME_SIZE] = {};
+    char dir_prefix[MAX_FILENAME_SIZE] = {};
 
     setuserfile(dir_prefix, PTTUI_EDIT_TMP_DIR);    
     char *disp_uuid = display_uuid(main_id);
@@ -445,7 +445,7 @@ Err
 _pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list, char *dir_prefix)
 {
     Err error_code = S_OK;
-    char filename[MAX_PTTUI_FILENAME_SIZE] = {};
+    char filename[MAX_FILENAME_SIZE] = {};
 
     char *disp_uuid = display_uuid(dict_link_list->the_id);
     enum PttDBContentType content_type = dict_link_list->content_type;
