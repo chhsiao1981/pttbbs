@@ -170,7 +170,7 @@ _vedit3_init_user()
 Err
 _vedit3_init_file_info(UUID main_id)
 {
-    char dir_prefix[MAX_PTTUI_FILENAME_SIZE] = {};
+    char dir_prefix[MAX_FILENAME_SIZE] = {};
 
     // XXX disp-buffer and disp-screen may need old file-info?    
     Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_FILE_INFO);
@@ -764,7 +764,7 @@ _vedit3_destroy_editor()
     bool is_lock_wr_buffer_info = false;
     bool is_lock_buffer_info = false;
 
-    char dir_prefix[MAX_PTTUI_FILENAME_SIZE] = {};
+    char dir_prefix[MAX_FILENAME_SIZE] = {};
 
     Err error_code = vedit3_repl_wrlock_file_info_buffer_info(bool *is_lock_file_info, bool *is_lock_wr_buffer_info, bool *is_lock_buffer_info);
     if(error_code) return error_code;

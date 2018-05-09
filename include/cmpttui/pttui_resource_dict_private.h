@@ -6,6 +6,7 @@
 #include "cmpttui/pttui_buffer.h"
 #include "cmpttui/pttui_const.h"
 #include "cmpttui/pttui_resource_dict.h"
+#include "cmpttui/pttui_util.h"
 #include "cmpttdb.h"
 
 #ifdef __cplusplus

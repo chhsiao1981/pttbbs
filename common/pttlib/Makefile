@@ -15,7 +15,7 @@ CFLAGS+=	${MONGO_CFLAGS}
 LDFLAGS+=	${MONGO_LDFLAGS}
 LDLIBS+=	${MONGO_LIBS}
 
-SRCS+=	ptt_queue.c ptt_link_list.c
+SRCS+=	ptt_queue.c ptt_link_list.c pttlib_util.c
 
 .endif
 
