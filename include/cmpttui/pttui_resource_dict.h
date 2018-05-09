@@ -5,6 +5,7 @@
 #include "ptterr.h"
 #include "cmpttlib.h"
 #include "cmpttdb.h"
+#include "cmpttui/pttui_buffer.h"
 
 #ifdef __cplusplus
 extern "C" {
