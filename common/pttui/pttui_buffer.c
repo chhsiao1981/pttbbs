@@ -1198,6 +1198,9 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, UUID main_id)
 
     PttUIResourceInfo resource_info = {};
     PttUIResourceDict resource_dict = {};
+
+    // XXX defensive programming for not-init-buffer-info
+    if(!buffer_info->head) return S_OK;
         
     if(!error_code) {
         error_code = pttui_buffer_lock_wr_buffer_info(&is_lock_wr_buffer_info);
