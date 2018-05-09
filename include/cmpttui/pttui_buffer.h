@@ -84,9 +84,9 @@ Err extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, 
 
 Err pttui_buffer_insert_buffer(PttUIBuffer *current_buffer, PttUIBuffer *next_buffer);
 
-Err check_and_save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, UUID main_id);
+Err check_and_save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_info);
 
-Err save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, UUID main_id);
+Err save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_info);
 
 Err pttui_buffer_rdlock_file_info();
 Err pttui_buffer_unlock_file_info();
