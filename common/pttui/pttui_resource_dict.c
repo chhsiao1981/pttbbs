@@ -220,7 +220,7 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
     int i = 0;    
     int status = 0;
     for(; p; p = p->next, max_n_middle++, i++) {
-        PttUIBuffer *p_buffer = (PttUIBuffer *)p->val.p;
+        p_buffer = (PttUIBuffer *)p->val.p;
         if(!memcmp(p_buffer->the_id, tail_uuid, UUIDLEN)) break;
 
         if(!memcmp(p_buffer->the_id, pre_uuid, UUIDLEN)) continue;
