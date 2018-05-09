@@ -7,7 +7,7 @@ safe_strcat(char **buf, int *max_buf_size, int alloc_size, int *len_buf, char *n
     int tmp_max_buf_size = *max_buf_size;
     int factor = 0;
     if(tmp_len_buf + len_new_buf >= tmp_max_buf_size) {
-        factor = ((tmp_len_buf + len_new_buf - tmp_max_buf_size) / MAX_BUF_SIZE) + 1;
+        factor = ((tmp_len_buf + len_new_buf - tmp_max_buf_size) / alloc_size) + 1;
         tmp_max_buf_size += factor * alloc_size;
         *max_buf_size = tmp_max_buf_size;
         *buf = realloc(*buf, tmp_max_buf_size);
