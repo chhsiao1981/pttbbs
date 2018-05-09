@@ -16,9 +16,12 @@ extern "C" {
 
 #define N_TO_DELETE_SAVE_PTTUI_BUFFER_TO_TMP_FILE 40
 
-#define INVALID_LINE_OFFSET_PRE_END -1
-#define INVALID_LINE_OFFSET_NEXT_END -2
-#define INVALID_LINE_OFFSET_NEW -3
+#define INVALID_LINE_OFFSET -1
+#define INVALID_LINE_OFFSET_PRE_END -2
+#define INVALID_LINE_OFFSET_NEXT_END -3
+#define INVALID_LINE_OFFSET_NEW -4
+
+#define INVALID_FILE_OFFSET -1
 
 typedef struct PttUIBuffer {
     struct PttUIBuffer *next;
@@ -29,9 +32,15 @@ typedef struct PttUIBuffer {
     int block_offset;
     int line_offset;
     int comment_offset;
+    
     int load_line_offset;
     int load_line_pre_offset;
     int load_line_next_offset;
+
+    int file_offset;
+    int file_line_offset;
+    int file_line_pre_offset;
+    int file_line_next_offset;
     
     enum PttDBStorageType storage_type;
 

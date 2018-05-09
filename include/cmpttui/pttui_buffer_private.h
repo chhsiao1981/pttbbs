@@ -50,6 +50,27 @@ Err _extend_pttui_buffer_extend_next_buffer_no_buf_main(PttUIBuffer *current_buf
 Err _extend_pttui_buffer_extend_next_buffer_no_buf_comment(PttUIBuffer *current_buffer, FileInfo *file_info, PttUIBuffer **new_buffer);
 Err _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(PttUIBuffer *current_buffer, FileInfo *file_info, PttUIBuffer **new_buffer);
 
+
+/***
+ * load-line
+ ***/
+Err _pttui_buffer_default_load_line(PttUIBuffer *buffer);
+Err _pttui_buffer_set_load_line_from_content_block_info(PttUIBuffer *buffer, ContentBlockInfo *content_block);
+Err _pttui_buffer_load_line_pre_from_content_block_info(PttUIBuffer *pre_buffer, PttUIBuffer *current_buffer, ContentBlockInfo *content_block);
+Err _pttui_buffer_load_line_next_from_content_block_info(PttUIBuffer *next_buffer, PttUIBuffer *current_buffer, ContentBlockInfo *content_block);
+
+/***
+ * file-offset
+ ***/
+Err _pttui_buffer_default_file_offset(PttUIBuffer *buffer);
+Err _pttui_buffer_set_file_offset_from_content_block_info(PttUIBuffer *buffer, ContentBlockInfo *content_block);
+Err _pttui_buffer_file_offset_pre_from_content_block_info(PttUIBuffer *pre_buffer, PttUIBuffer *current_buffer, ContentBlockInfo *content_block);
+Err _pttui_buffer_file_offset_next_from_content_block_info(PttUIBuffer *next_buffer, PttUIBuffer *current_buffer, ContentBlockInfo *content_block);
+
+/***
+ * buffer-info / resource-info / resource-dict
+ ***/
+
 Err _pttui_buffer_info_to_resource_info(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceInfo *resource_info);
 Err _pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceDict *resource_dict);
 

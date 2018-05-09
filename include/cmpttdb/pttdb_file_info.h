@@ -18,6 +18,9 @@ typedef struct ContentBlockInfo {
     int n_new_line;
     int n_to_delete_line;
     enum PttDBStorageType storage_type;
+
+    int n_file;
+    int *file_n_line;
 } ContentBlockInfo;
 
 typedef struct CommentInfo {
