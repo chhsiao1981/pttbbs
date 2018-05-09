@@ -78,6 +78,8 @@ Err _modified_pttui_buffer_info_to_resource_info(PttUIBuffer *head, PttUIBuffer 
 
 Err _remove_deleted_pttui_buffer_in_buffer_info(PttUIBufferInfo *buffer_info);
 
+Err _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info);
+
 /***
  * shrink
  ***/

@@ -549,15 +549,18 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
 
         fprintf(stderr, "pttui_resource_dict.integrate: to for-loop-resource-dict: start-i: %d end_i: %d\n", start_i, end_i);
         for(int i = start_i; i < end_i; i++) {
+            // 1. get the next buf to know the len of current-buf
             error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
+
+            // 2. save to the tmp-buf
             error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, p_next_dict_buf - p_dict_buf);
-            
             line_offset_tmp_buf++;
 
             memcpy(disp_buf, p_dict_buf, p_next_dict_buf - p_dict_buf);
             disp_buf[p_next_dict_buf - p_dict_buf] = 0;
             fprintf(stderr, "pttui_resource_dict.integrate: (%d.%d.%d.%d/%d): line_offset_tmp_buf: %d line_offset_dict_buf: %d len_tmp_buf: %d len: %d buf: %s\n", current_buffer->content_type, current_buffer->block_offset, current_buffer->file_offset, i, end_i, line_offset_tmp_buf, line_offset_dict_buf, len_tmp_buf, p_next_dict_buf - p_dict_buf, disp_buf);
 
+            // 3. move the current-buf to the next-buf
             p_dict_buf = p_next_dict_buf;
             dict_buf_offset = dict_buf_next_offset;
             line_offset_dict_buf++;            
@@ -566,12 +569,14 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
         if(current_buffer->is_to_delete && current_buffer->is_new) {
         }
         else if(current_buffer->is_to_delete) {
+            // move the current-buf to the next-buf
             error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
             p_dict_buf = p_next_dict_buf;
             dict_buf_offset = dict_buf_next_offset;
             line_offset_dict_buf++;
         }
         else if(current_buffer->is_new) {
+            // save the current-buffer to the tmp-buf
             error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, current_buffer->buf, current_buffer->len_no_nl);
 
             memcpy(disp_buf, current_buffer->buf, current_buffer->len_no_nl);
@@ -587,6 +592,10 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             line_offset_tmp_buf++;
         }
         else {
+            // 1. get the next buf.
+            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
+
+            // 2. save the current-buffer (not current-buf) to the tmp-buf.
             error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, current_buffer->buf, current_buffer->len_no_nl);
 
             memcpy(disp_buf, current_buffer->buf, current_buffer->len_no_nl);
@@ -600,7 +609,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             disp_buf[LEN_PTTUI_NEWLINE] = 0;            
             fprintf(stderr, "pttui_resource_dict.integrate: (%d.%d.%d): (new) line_offset_tmp_buf: %d line_offset_dict_buf: %d len_tmp_buf: %d len: %d buf: %s\n", current_buffer->content_type, current_buffer->block_offset, current_buffer->file_offset, line_offset_tmp_buf, line_offset_dict_buf, len_tmp_buf, LEN_PTTUI_NEWLINE, disp_buf);
             
-            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
+            // 3. move the current-buf to the next-buf.
             p_dict_buf = p_next_dict_buf;
             dict_buf_offset = dict_buf_next_offset;
             line_offset_dict_buf++;
@@ -648,3 +657,47 @@ pttui_resource_dict_get_next_buf(char *p_buf, int buf_offset, int len, char **p_
     return S_OK;
 }
 
+Err
+pttui_resource_dict_reset_file_info(PttUIResourceDict *resource_dict, FileInfo *file_info)
+{
+    _PttUIResourceDictLinkList *p = NULL;
+    CommentInfo *p_comment = NULL;
+    ContentBlockInfo *p_content_block = NULL;
+
+    char *p_buf = NULL;
+    int buf_offset = 0;
+    int len_buf = 0;
+
+    int n_file = 0;
+    int orig_n_line = 0;
+    for(int i = 0; i < N_PTTUI_RESOURCE_DICT_LINK_LIST; i++) {
+        p = resource_dict->data[i];
+        for(; p; p = p->next) {
+            switch(p->content_type) {
+            case PTTDB_CONTENT_TYPE_MAIN:
+                p_content_block = file_info->main_blocks + p->block_id;
+                break;
+            case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
+                p_comment = file_info->comments + p->comment_id;
+                p_content_block = p_comment->comment_reply_blocks + p->block_id;
+                break;
+            default:
+                p_content_block = NULL;
+                break;
+            }
+        }
+
+        if(!p_content_block) continue;
+
+        p_content_block->n_line_in_db = p_content_block->n_line;
+        p_content_block->n_new_line = 0;
+        p_content_block->n_to_delete_line = 0;
+
+        // XXX not split file for now.
+        p_content_block->n_file = 1;
+        p_content_block->file_n_line = realloc(p_content_block->file_n_line, sizeof(int) * p_content_block->n_file);
+        p_content_block->file_n_line[p->file_id] = p_content_block->n_line_in_db;
+
+        p_content_block->storage_type = PTTDB_STORAGE_TYPE_FILE;
+    }
+}

@@ -54,6 +54,8 @@ Err pttui_resource_dict_save_to_tmp_file(PttUIResourceDict *resource_dict);
 
 Err log_pttui_resource_dict(PttUIResourceDict *resource_dict, char *prompt);
 
+Err pttui_resource_dict_reset_file_info(PttUIResourceDict *resource_dict, FileInfo *file_info);
+
 #ifdef __cplusplus
 }
 #endif

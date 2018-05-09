@@ -1408,9 +1408,11 @@ Err
 save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_info)
 {
     Err error_code = S_OK;
+    Err error_code_lock = S_OK;
 
     bool is_lock_wr_buffer_info = false;
     bool is_lock_buffer_info = false;
+    bool is_lock_file_info = false;
 
     PttUIResourceInfo resource_info = {};
     PttUIResourceDict resource_dict = {};
@@ -1440,23 +1442,31 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     }
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after save-to-tmp-file: e: %d\n", error_code);
 
-    //error_code = pttui_resource_dict_reset_file_info(&resource_dict, file_info);    
+    if(!error_code) {
+        error_code = pttui_buffer_wrlock_file_info(&is_lock_file_info);
+    }
+
+    if(!error_code) {
+        error_code = pttui_resource_dict_reset_file_info(&resource_dict, file_info);
+    }
+
+    error_code_lock = pttui_buffer_wrunlock_file_info(is_lock_file_info);
+    if(!error_code && error_code_lock) error_code = error_code_lock;
 
     if(!error_code) {
         error_code = pttui_buffer_wrlock_buffer_info(&is_lock_buffer_info);
     }
 
-    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after wrlock-buffer-info: e: %d\n", error_code);
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after wrlock-buffer-info: buffer_info->n_buffer: %d e: %d\n", buffer_info->n_buffer, error_code);
 
     if(!error_code) {
         error_code = _remove_deleted_pttui_buffer_in_buffer_info(buffer_info);
     }
-    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after _remove-delted-pttui-buffer-in-buffer-info: e: %d\n", error_code);    
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after _remove-delted-pttui-buffer-in-buffer-info: buffer_buffer->n_buffer: %d e: %d\n", buffer_info->n_buffer, error_code);    
 
-    //error_code = pttui_resource_dict_reset_buffer_info(buffer_info, file_info);
-
-    buffer_info->n_new = 0;
-    buffer_info->n_to_delete = 0;
+    if(!error_code) {
+        error_code = _reset_pttui_buffer_info(buffer_info, file_info);
+    }
 
     Err error_code_lock = pttui_buffer_wrunlock_buffer_info(is_lock_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
@@ -1495,6 +1505,80 @@ _remove_deleted_pttui_buffer_in_buffer_info(PttUIBufferInfo *buffer_info)
 
     return S_OK;
 }
+
+Err
+_reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
+{
+    Err error_code = S_OK;
+    Err error_code2 = S_OK;
+
+    PttUIBuffer *p_buffer = buffer_info->head;
+    PttUIBuffer *p_pre_buffer = NULL;
+
+    CommentInfo *p_comment = NULL;
+    ContentBlockInfo *p_content_block = NULL;
+
+    switch(p_buffer->content_type) {
+    case PTTDB_CONTENT_TYPE_MAIN:
+        p_content_block = file_info->main_blocks + p_buffer->block_offset;
+        break;
+    case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
+        p_comment = file_info->comments + p_buffer->comment_offset;
+        p_content_block = p_comment->comment_reply_blocks + p_buffer->block_offset;
+        break;
+    default:
+        p_content_block = NULL;
+        break;
+    }
+
+    if(p_content_block) {
+        error_code2 = _pttui_buffer_set_load_line_from_content_block_info(p_buffer p_content_block);
+        if(!error_code && error_code2) error_code = error_code2;
+        error_code2 = _pttui_buffer_set_file_offset_from_content_block_info(p_buffer p_content_block);
+        if(!error_code && error_code2) error_code = error_code2;        
+        if(error_code) return error_code;
+    }
+
+    p_buffer = p_buffer->next;
+    p_pre_buffer = p_buffer;
+
+    for(; p_buffer; p_buffer = p_buffer->next) {
+        switch(p_buffer->content_type) {
+        case PTTDB_CONTENT_TYPE_MAIN:
+            p_content_block = file_info->main_blocks + p_buffer->block_offset;
+            break;
+        case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
+            p_comment = file_info->comments + p_buffer->comment_offset;
+            p_content_block = p_comment->comment_reply_blocks + p_buffer->block_offset;
+            break;
+        default:
+            p_content_block = NULL;
+            break;
+        }
+
+        if(!p_content_block) continue;
+
+        error_code2 = _pttui_buffer_load_line_next_from_content_block_info(p_buffer, p_pre_buffer, p_content_block);
+        if(!error_code && error_code2) error_code = error_code2;
+        error_code2 = _pttui_buffer_file_offset_next_from_content_block_info(p_buffer, p_pre_buffer, p_content_block);
+        if(!error_code && error_code2) error_code = error_code2;
+        if(error_code) break;
+
+        p_buffer->storage_type = p_content_block->storage_type;
+
+        p_buffer->is_modified = false;
+        p_buffer->is_new = false;
+        p_buffer->is_to_delete = false;
+
+        p_pre_buffer = p_buffer;
+    }
+
+    buffer_info->n_new = 0;
+    buffer_info->n_to_delete = 0;
+
+    return error_code;
+}
+
 
 /**********
  * shrink
@@ -1589,6 +1673,24 @@ pttui_buffer_insert_buffer(PttUIBuffer *current_buffer, PttUIBuffer *next_buffer
     }
 
     return S_OK;
+}
+
+Err
+pttui_buffer_wrlock_file_info(bool *is_lock_file_info)
+{
+    Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_FILE_INFO);
+
+    *is_lock_file_info = error_code ? false : true
+
+    return error_code;
+}
+
+Err
+pttui_buffer_wrunlock_file_info(bool is_lock_file_info)
+{
+    if(!is_lock_file_info) return S_OK;
+
+    return pttui_thread_lock_unlock(LOCK_PTTUI_FILE_INFO);
 }
 
 Err
