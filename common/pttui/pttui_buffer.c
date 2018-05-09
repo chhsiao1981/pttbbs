@@ -362,7 +362,7 @@ _pttui_buffer_init_buffer_no_buf_from_file_info(PttUIState *state, FileInfo *fil
     Err error_code2 = S_OK;
     switch (p_buffer->content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
-        p_content_block_info = file_info->main_blocks + p_buffer->block_offset;
+        p_content_block = file_info->main_blocks + p_buffer->block_offset;
         p_buffer->storage_type = p_content_block->storage_type;
         p_buffer->load_line_next_offset = p_buffer->load_line_offset < p_content_block->n_line_in_db - 1 ? p_buffer->load_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
 
@@ -1053,7 +1053,7 @@ _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(PttUIBuffer *curren
 
         tmp->block_offset = current_buffer->block_offset + 1;
         tmp->line_offset = 0;
-        tmp->storage_type = p_comment_reply_block->storage_type;
+        tmp->storage_type = p_content_block->storage_type;
 
         error_code2 = _pttui_buffer_load_line_next_from_content_block_info(tmp, current_buffer, p_content_block);
         if(!error_code && error_code2) error_code = error_code2;
@@ -1115,7 +1115,7 @@ _pttui_buffer_load_line_pre_from_content_block_info(PttUIBuffer *pre_buffer, Ptt
     }
     else {
         // different-block
-        pre_sbuffer->load_line_offset = content_block->n_line - 1;
+        pre_buffer->load_line_offset = content_block->n_line - 1;
         pre_buffer->load_line_next_offset = INVALID_LINE_OFFSET_NEXT_END;
         pre_buffer->load_line_pre_offset = pre_buffer->load_line_offset ? pre_buffer->load_line_offset - 1 : INVALID_LINE_OFFSET_PRE_END;
     }
@@ -1237,7 +1237,7 @@ _pttui_buffer_file_offset_next_from_content_block_info(PttUIBuffer *next_buffer,
             next_buffer->file_offset = current_buffer->file_offset + 1;
             next_buffer->file_line_offset = 0;
             next_buffer->file_line_pre_offset = INVALID_LINE_OFFSET_PRE_END;
-            next_buffer->file_line_next_offset = next_buffer->file_line_offset < content_block->file_n_line[next_buffer->file_offset] - 1 ? pre_buffer->file_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
+            next_buffer->file_line_next_offset = next_buffer->file_line_offset < content_block->file_n_line[next_buffer->file_offset] - 1 ? next_buffer->file_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
         }
     }
     else {
@@ -1245,10 +1245,10 @@ _pttui_buffer_file_offset_next_from_content_block_info(PttUIBuffer *next_buffer,
         next_buffer->file_offset = 0;
         next_buffer->file_line_offset = 0;
         next_buffer->file_line_pre_offset = INVALID_LINE_OFFSET_PRE_END;
-        next_buffer->file_line_next_offset = next_buffer->file_line_offset < content_block->file_n_line[next_buffer->file_offset] - 1 ? pre_buffer->file_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
+        next_buffer->file_line_next_offset = next_buffer->file_line_offset < content_block->file_n_line[next_buffer->file_offset] - 1 ? next_buffer->file_line_offset + 1 : INVALID_LINE_OFFSET_NEXT_END;
     }
 
-    if(pre_buffer->file_offset < 0 || pre_buffer->file_offset >= content_block->n_file || pre_buffer->file_line_offset < 0 || pre_buffer->file_line_offset >= content_block->file_n_line[pre_buffer->file_offset]) return S_ERR;
+    if(next_buffer->file_offset < 0 || next_buffer->file_offset >= content_block->n_file || next_buffer->file_line_offset < 0 || next_buffer->file_line_offset >= content_block->file_n_line[pre_buffer->file_offset]) return S_ERR;
 
     return S_OK;
 }
