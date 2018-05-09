@@ -1440,21 +1440,30 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
 
     if(!error_code) {
         error_code = pttui_resource_dict_save_to_tmp_file(&resource_dict);
-    }    
+    }
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after save-to-tmp-file: e: %d\n", error_code);
 
     if(!error_code) {
         error_code = pttui_buffer_wrlock_buffer_info(&is_lock_buffer_info);
     }
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after wrlock-buffer-info: e: %d\n", error_code);
+
     if(!error_code) {
         error_code = _remove_deleted_pttui_buffer_in_buffer_info(buffer_info);
     }
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after _remove-delted-pttui-buffer-in-buffer-info: e: %d\n", error_code);
+
+    buffer_info->n_new = 0;
+    buffer_info->n_to_delete = 0;
 
     Err error_code_lock = pttui_buffer_wrunlock_buffer_info(is_lock_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after wrunlock-buffer-info: e: %d\n", error_code);
 
     error_code_lock = pttui_buffer_unlock_wr_buffer_info(is_lock_wr_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after unlock-wr-buffer-info: e: %d\n", error_code);
 
     // free
     destroy_pttui_resource_info(&resource_info);
