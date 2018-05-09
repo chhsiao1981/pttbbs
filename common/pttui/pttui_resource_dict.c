@@ -561,7 +561,9 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             line_offset_dict_buf++;            
         }
 
-        if(current_buffer->is_to_delete) {
+        if(current_buffer->is_to_delete && current_buffer->is_new) {
+        }
+        else if(current_buffer->is_to_delete) {
             error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
             p_dict_buf = p_next_dict_buf;
             dict_buf_offset = dict_buf_next_offset;

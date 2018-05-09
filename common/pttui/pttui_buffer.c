@@ -1357,7 +1357,6 @@ _pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIBuffer *ta
     for(; p_buffer && p_buffer != tail->next && !p_buffer->buf; p_buffer = p_buffer->next, i++) {
         if(memcmp(p_buffer->the_id, current_the_id, UUIDLEN) || current_block_id != p_buffer->block_offset) {
             error_code = pttui_resource_dict_get_data(resource_dict, p_buffer->the_id, p_buffer->block_offset, p_buffer->file_offset, &len, &buf);
-            fprintf(stderr, "pttui_buffer._pttui_buffer_info_set_buf_from_resource_dict: after get data: i: %d p_buffer: content-type: %d block_offset: %d comment_offset: %d len: %d e: %d\n", i, p_buffer->content_type, p_buffer->block_offset, p_buffer->comment_offset, len, error_code);
 
             if(error_code) break;
 
@@ -1372,8 +1371,6 @@ _pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIBuffer *ta
         }        
         error_code = pttui_resource_dict_get_next_buf(p_buf, buf_offset, len, &p_next_buf, &buf_next_offset);
         if(error_code) break;
-
-        fprintf(stderr, "pttui_buffer._pttui_buffer_info_set_buf_from_resource_dict: i: %d content_type: %d buf_offset: %d buf_next_offset: %d len: %d p_next: %lu\n", i, p_buffer->content_type, buf_offset, buf_next_offset, len, (unsigned long)p_buffer->next);
 
         p_buffer_len = buf_next_offset - buf_offset;
         p_buffer_len_no_nl = p_buffer_len;
@@ -1443,6 +1440,8 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     }
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after save-to-tmp-file: e: %d\n", error_code);
 
+    error_code = pttui_resource_dict_reset_file_info(&resource_dict, file_info);    
+
     if(!error_code) {
         error_code = pttui_buffer_wrlock_buffer_info(&is_lock_buffer_info);
     }
@@ -1452,7 +1451,9 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     if(!error_code) {
         error_code = _remove_deleted_pttui_buffer_in_buffer_info(buffer_info);
     }
-    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after _remove-delted-pttui-buffer-in-buffer-info: e: %d\n", error_code);
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after _remove-delted-pttui-buffer-in-buffer-info: e: %d\n", error_code);    
+
+    error_code = pttui_resource_dict_reset_buffer_info(buffer_info, file_info);
 
     buffer_info->n_new = 0;
     buffer_info->n_to_delete = 0;
