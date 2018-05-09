@@ -548,14 +548,15 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
         int end_i = current_buffer->is_new ? current_buffer->line_offset : current_buffer->load_line_offset;
 
         fprintf(stderr, "pttui_resource_dict.integrate: to for-loop-resource-dict: start-i: %d end_i: %d\n", start_i, end_i);
-        for(int i = start_i; i < end_i; i++, line_offset_dict_buf++, line_offset_tmp_buf++) {
-            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
+        for(int i = start_i; i < end_i; i++) {
             error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, p_next_dict_buf - p_dict_buf);
+            line_offset_tmp_buf++;
 
             memcpy(disp_buf, p_dict_buf, p_next_dict_buf - p_dict_buf);
             disp_buf[p_next_dict_buf - p_dict_buf] = 0;
             fprintf(stderr, "pttui_resource_dict.integrate: (%d.%d.%d.%d/%d): line_offset_tmp_buf: %d line_offset_dict_buf: %d len_tmp_buf: %d len: %d buf: %s\n", current_buffer->content_type, current_buffer->block_offset, current_buffer->file_offset, i, end_i, line_offset_tmp_buf, line_offset_dict_buf, len_tmp_buf, p_next_dict_buf - p_dict_buf, disp_buf);
 
+            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
             p_dict_buf = p_next_dict_buf;
             dict_buf_offset = dict_buf_next_offset;
             line_offset_dict_buf++;            
@@ -586,10 +587,10 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
         }
         else {
             error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, current_buffer->buf, current_buffer->len_no_nl);
+            
             memcpy(disp_buf, current_buffer->buf, current_buffer->len_no_nl);
             disp_buf[current_buffer->len_no_nl] = 0;
             fprintf(stderr, "pttui_resource_dict.integrate: (%d.%d.%d): line_offset_tmp_buf: %d line_offset_dict_buf: %d len_tmp_buf: %d len: %d buf: %s\n", current_buffer->content_type, current_buffer->block_offset, current_buffer->file_offset, line_offset_tmp_buf, line_offset_dict_buf, len_tmp_buf, current_buffer->len_no_nl, disp_buf);
-
 
             error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, PTTUI_NEWLINE, LEN_PTTUI_NEWLINE);
             line_offset_tmp_buf++;
