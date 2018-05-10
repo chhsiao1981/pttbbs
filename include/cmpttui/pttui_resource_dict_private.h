@@ -8,6 +8,7 @@
 #include "cmpttui/pttui_const.h"
 #include "cmpttui/pttui_resource_dict.h"
 #include "cmpttui/pttui_util.h"
+#include "cmpttui/pttui_id_comment_id_dict.h"
 #include "cmpttdb.h"
 
 #ifdef __cplusplus

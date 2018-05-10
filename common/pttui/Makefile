@@ -12,7 +12,7 @@ CFLAGS+=	${MONGO_CFLAGS}
 LDFLAGS+=	${MONGO_LDFLAGS}
 LDLIBS+=	${MONGO_LIBS}
 
-SRCS+=	pttui_thread_lock.c pttui_thread.c pttui_var.c pttui_buffer.c pttui_resource_info.c pttui_resource_dict.c pttui_lua_bbs.c pttui_util.c pttui_const.c vedit3.c vedit3_action.c
+SRCS+=	pttui_thread_lock.c pttui_thread.c pttui_var.c pttui_buffer.c pttui_resource_info.c pttui_resource_dict.c pttui_lua_bbs.c pttui_util.c pttui_const.c vedit3.c vedit3_action.c pttui_id_comment_id_dict.c
 
 .endif
 

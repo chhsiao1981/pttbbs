@@ -26,7 +26,7 @@ typedef struct _PttUIResourceDictLinkList {
 
 typedef struct PttUIResourceDict {
     _PttUIResourceDictLinkList *data[N_PTTUI_RESOURCE_DICT_LINK_LIST];
-    bson_t *b_the_id_comment_id_map;
+    PttUIIdCommentIdDict id_comment_id_dict;
     UUID main_id;
 } PttUIResourceDict;
 
