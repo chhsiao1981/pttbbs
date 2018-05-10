@@ -25,7 +25,7 @@ pttui_resource_dict_get_main_from_db(PttQueue *queue, PttUIResourceDict *resourc
     fprintf(stderr, "pttui_resource_dict.get_content_block_from_db_core: the_id: %s min_block_id: %d max_block_id: %d\n", _uuid, min_block_id, max_block_id);
     safe_free((void **)&_uuid);
 
-    pttui_id_comment_id_dict_add_data(head_buffer->the_id, 0, resource_dict->id_comment_id_dict);
+    pttui_id_comment_id_dict_add_data(head_buffer->the_id, 0, &resource_dict->id_comment_id_dict);
 
     return _pttui_resource_dict_get_content_block_from_db_core(head_buffer->the_id, min_block_id, max_block_id, MONGO_MAIN_CONTENT, PTTDB_CONTENT_TYPE_MAIN, resource_dict);
 }
@@ -112,7 +112,7 @@ pttui_resource_dict_get_comment_from_db(PttQueue *queue, PttUIResourceDict *reso
             break;
         }
 
-        pttui_id_comment_id_dict_add_data(p_buffer->the_id, p_buffer->comment_offset, resource_dict->id_comment_id_dict);
+        pttui_id_comment_id_dict_add_data(p_buffer->the_id, p_buffer->comment_offset, &resource_dict->id_comment_id_dict);
     }
     bson_append_array_end(q_array, &child);
 
@@ -202,15 +202,13 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
     PttUIBuffer *p_head_buffer = (PttUIBuffer *)queue->head->val.p;
     UUID head_uuid = {};
     memcpy(head_uuid, p_head_buffer->the_id, UUIDLEN);
-    pttui_id_comment_id_dict_add_data(p_head_buffer->the_id, p_head_buffer->comment_offset, resource_dict->id_comment_id_dict);
+    pttui_id_comment_id_dict_add_data(p_head_buffer->the_id, p_head_buffer->comment_offset, &resource_dict->id_comment_id_dict);
 
     // init-tail
     PttUIBuffer *p_tail_buffer = (PttUIBuffer *)queue->tail->val.p;
     UUID tail_uuid = {};
     memcpy(tail_uuid, p_tail_buffer->the_id, UUIDLEN);
-    pttui_id_comment_id_dict_add_data(p_head_buffer->the_id, p_head_buffer->comment_offset, resource_dict->id_comment_id_dict);
-
-    //_pttui_resource_dict_add_the_id_comment_id_map(p_tail_buffer->the_id, p_tail_buffer->comment_offset, resource_dict);
+    pttui_id_comment_id_dict_add_data(p_head_buffer->the_id, p_head_buffer->comment_offset, &resource_dict->id_comment_id_dict);
 
     // head
     p_pre_buffer = p_head_buffer;
