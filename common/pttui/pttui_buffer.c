@@ -1467,7 +1467,7 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
         error_code = pttui_buffer_wrlock_file_info(&is_lock_file_info);
     }
 
-    log_pttui_resource_dict(&resource_dict, "pttui_buffer._extend_pre_buffer: to reset-file-info");
+    log_pttui_resource_dict(&resource_dict, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: to reset-file-info");
 
     if(!error_code) {
         error_code = pttui_resource_dict_reset_file_info(&resource_dict, file_info);

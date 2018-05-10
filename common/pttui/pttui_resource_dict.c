@@ -486,7 +486,7 @@ _pttui_resource_dict_get_content_block_from_file_core(PttUIBuffer *buffer, PttUI
 
     error_code = _pttui_resource_dict_add_data(buffer->the_id, buffer->block_offset, buffer->file_offset, len, buf, buffer->content_type, resource_dict);
 
-    // do not free buf because buf is used in resource_dict.
+    // do not free buf because buf is used in resource_dict and freed in safe_destroy_resource_dict .
     //safe_free((void **)&buf); 
 
     return error_code;
@@ -788,6 +788,8 @@ log_pttui_resource_dict(PttUIResourceDict *resource_dict, char *prompt)
             free(_disp_uuid);
         }
     }
+
+    fprintf(stderr, "%s: done\n", prompt);
 
     return S_OK;
 }
