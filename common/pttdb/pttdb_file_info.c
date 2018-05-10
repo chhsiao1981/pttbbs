@@ -700,9 +700,10 @@ log_file_info(FileInfo *file_info, char *prompt)
             fprintf(stderr, "%s: comment-reply-block: (%d%d.%d/%d): (n-line: %d n-line-in-db: %d n-new-line: %d n-to-delete-line: %d storage-type: %d, n-file: %d\n", prompt, k, file_info->n_comment, i, p_comment->n_comment_reply_block, p_content_block->n_line, p_content_block->n_line_in_db, p_content_block->n_new_line, p_content_block->n_to_delete_line, p_content_block->storage_type, p_content_block->n_file);
             for(int j = 0; j < p_content_block->n_file; j++) {
                 fprintf(stderr, "%s: comment-reply-block: file: (%d/%d.%d/%d.%d/%d): %d\n", prompt, k, file_info->n_comment, i, p_comment->n_comment_reply_block, j, p_content_block->n_file, p_content_block->file_n_line[j]);
+            }
         }
-    }
-
 
     }
+
+    return S_OK;
 }
