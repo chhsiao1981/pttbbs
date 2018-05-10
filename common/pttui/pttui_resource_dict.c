@@ -438,7 +438,7 @@ pttui_resource_dict_get_comment_reply_from_file(PttQueue *queue, PttUIResourceDi
     Err error_code = S_OK;
     PttLinkList *p = queue->head;
     PttUIBuffer *p_buffer = NULL;
-    for(; p; p = p->next, i++) {
+    for(; p; p = p->next) {
         p_buffer = (PttUIBuffer *)p->val.p;
         error_code = _pttui_resource_dict_get_content_block_from_file_core(p_buffer, resource_dict);
         if(error_code) break;
@@ -472,6 +472,7 @@ _pttui_resource_dict_get_content_block_from_file_core(PttUIBuffer *buffer, PttUI
 
     int max_buf_size = MAX_BUF_SIZE;
     char *buf = malloc(max_buf_size);
+    int bytes = 0;
     while(bytes = read(fd, buf + len, MAX_BUF_SIZE) > 0) {
         buf = realloc(buf, max_buf_size + MAX_BUF_SIZE);
         len += bytes;
@@ -481,7 +482,7 @@ _pttui_resource_dict_get_content_block_from_file_core(PttUIBuffer *buffer, PttUI
 
     error_code = _pttui_resource_dict_add_data(buffer->the_id, buffer->block_offset, buffer->file_offset, len, buf, buffer->content_type, resource_dict);
 
-    safe_free(&buf);
+    safe_free((void **)&buf);
 
     return error_code;
 }
