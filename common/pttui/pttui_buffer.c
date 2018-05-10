@@ -576,6 +576,8 @@ _extend_pttui_buffer_extend_pre_buffer(FileInfo *file_info, PttUIBuffer *head_bu
     destroy_pttui_resource_info(&resource_info);
     fprintf(stderr, "pttui_buffer._extend_pttui_buffer_extend_pre_buffer: after destroy pttui_resource_info\n");
 
+    log_pttui_resource_dict(&resource_dict, "pttui_buffer._extend_pre_buffer: to destroy pttui_resource_dict");
+
     safe_destroy_pttui_resource_dict(&resource_dict);
     fprintf(stderr, "pttui_buffer._extend_pttui_buffer_extend_pre_buffer: after destroy pttui_resource_dict\n");
 
