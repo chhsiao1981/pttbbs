@@ -1468,7 +1468,7 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
         error_code = _reset_pttui_buffer_info(buffer_info, file_info);
     }
 
-    Err error_code_lock = pttui_buffer_wrunlock_buffer_info(is_lock_buffer_info);
+    error_code_lock = pttui_buffer_wrunlock_buffer_info(is_lock_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after wrunlock-buffer-info: e: %d\n", error_code);
 
@@ -1532,9 +1532,9 @@ _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
     }
 
     if(p_content_block) {
-        error_code2 = _pttui_buffer_set_load_line_from_content_block_info(p_buffer p_content_block);
+        error_code2 = _pttui_buffer_set_load_line_from_content_block_info(p_buffer, p_content_block);
         if(!error_code && error_code2) error_code = error_code2;
-        error_code2 = _pttui_buffer_set_file_offset_from_content_block_info(p_buffer p_content_block);
+        error_code2 = _pttui_buffer_set_file_offset_from_content_block_info(p_buffer, p_content_block);
         if(!error_code && error_code2) error_code = error_code2;        
         if(error_code) return error_code;
     }
@@ -1680,7 +1680,7 @@ pttui_buffer_wrlock_file_info(bool *is_lock_file_info)
 {
     Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_FILE_INFO);
 
-    *is_lock_file_info = error_code ? false : true
+    *is_lock_file_info = error_code ? false : true;
 
     return error_code;
 }
