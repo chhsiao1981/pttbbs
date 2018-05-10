@@ -1473,6 +1473,8 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
         error_code = pttui_resource_dict_reset_file_info(&resource_dict, file_info);
     }
 
+    log_file_info(file_info, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after reset-file-info");
+
     error_code_lock = pttui_buffer_wrunlock_file_info(is_lock_file_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
 
@@ -1564,6 +1566,9 @@ _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
     }
 
     fprintf(stderr, "pttui_buffer._reset_pttui_buffer_info: after set_load_line and set_file_offset: error_code: %d\n", error_code);
+
+    fprintf(stderr, "pttui_buffer._reset_pttui_buffer_info: (content-type: %d, comment-id: %d block-id: %d line-id: %d): load-line: (%d, %d, %d) file: (%d, %d, %d, %d)\n", p_buffer->content_type, p_buffer->comment_offset, p_buffer->block_offset, p_buffer->line_offset, p_buffer->load_line_offset, p_buffer->load_line_pre_offset, p_buffer->load_line_next_offset, p_buffer->file_offset, p_buffer->file_line_offset, p_buffer->file_line_pre_offset, p_buffer->file_line_next_offset);
+
 
     p_buffer = p_buffer->next;
     p_pre_buffer = p_buffer;

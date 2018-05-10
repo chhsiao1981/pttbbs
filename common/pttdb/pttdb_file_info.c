@@ -677,3 +677,32 @@ _file_info_get_next_line_comment_reply(FileInfo *file_info, UUID orig_id GCC_UNU
     }
     return S_OK;
 }
+
+Err
+log_file_info(FileInfo *file_info, char *prompt)
+{
+    fprintf(stderr, "%s: main: (n_line: %d n_block: %d n_comment: %d)\n", prompt, file_info->n_main_line, file_info->n_main_block, file_info->n_comment);
+
+    ContentBlockInfo *p_content_block = file_info->main_blocks;
+    for(int i = 0; i < file_info->n_main_block; i++, p_content_block++) {
+        fprintf(stderr, "%s: main-block: (%d/%d): (n-line: %d n-line-in-db: %d n-new-line: %d n-to-delete-line: %d storage-type: %d, n-file: %d\n", prompt, i, file_info->n_main_block, p_content_block->n_line, p_content_block->n_line_in_db, p_content_block->n_new_line, p_content_block->n_to_delete_line, p_content_block->storage_type, p_content_block->n_file);
+        for(int j = 0; j < p_content_block->n_file; j++) {
+            fprintf(stderr, "%s: main-block: file: (%d/%d.%d/%d): %d\n", prompt, i, file_info->n_main_block, j, p_content_block->n_file, p_content_block->file_n_line[j]);
+        }
+    }
+
+    CommentInfo *p_comment = file_info->comments;
+    for(int k = 0; k < file_info->n_comment; k++, p_comment++) {
+        fprintf(stderr, "%s: comment: (%d/%d) n_comment_reply_block: %d n_comment_reply_total_line: %d\n", k, file_info->n_comment, p_comment->n_comment_reply_block, p_comment->n_comment_reply_total_line);
+        p_content_block = p_comment->comment_reply_blocks;
+
+        for(int i = 0; i < p_comment->n_comment_reply_block; i++, p_content_block++) {
+            fprintf(stderr, "%s: comment-reply-block: (%d%d.%d/%d): (n-line: %d n-line-in-db: %d n-new-line: %d n-to-delete-line: %d storage-type: %d, n-file: %d\n", prompt, k, file_info->n_comment, i, p_comment->n_comment_reply_block, p_content_block->n_line, p_content_block->n_line_in_db, p_content_block->n_new_line, p_content_block->n_to_delete_line, p_content_block->storage_type, p_content_block->n_file);
+            for(int j = 0; j < p_content_block->n_file; j++) {
+                fprintf(stderr, "%s: comment-reply-block: file: (%d/%d.%d/%d.%d/%d): %d\n", prompt, k, file_info->n_comment, i, p_comment->n_comment_reply_block, j, p_content_block->n_file, p_content_block->file_n_line[j]);
+        }
+    }
+
+
+    }
+}
