@@ -285,7 +285,7 @@ _pttui_resource_dict_add_data(UUID the_id, int block_id, int file_id, int len, c
     // XXX buf_block need to be freed after copy to pttui-buffer
     int comment_id = 0;
     char *disp_uuid = display_uuid(the_id);
-    error_code = bson_get_value_int32(resource_dict->b_the_id_comment_id_map, disp_uuid, &comment_id);
+    Err error_code = bson_get_value_int32(resource_dict->b_the_id_comment_id_map, disp_uuid, &comment_id);
     free(disp_uuid);
     if(error_code) return error_code;
 
@@ -411,6 +411,8 @@ pttui_resource_dict_get_main_from_file(PttQueue *queue, PttUIResourceDict *resou
     if(!queue->n_queue) return S_OK;
 
     Err error_code = S_OK;
+    _PttUIResourceDictLinkList *p = queue->head;
+    PttUIBuffer *p_buffer = NULL;
     for(; p; p = p->next, i++) {
         p_buffer = (PttUIBuffer *)p->val.p;
         error_code = _pttui_resource_dict_get_content_block_from_file_core(p_buffer, resource_dict);
@@ -421,7 +423,7 @@ pttui_resource_dict_get_main_from_file(PttQueue *queue, PttUIResourceDict *resou
 }
 
 Err
-pttui_resource_dict_get_comment_from_file(PttQueue *queue, PttUIResourceDict *resource_dict)
+pttui_resource_dict_get_comment_from_file(PttQueue *queue, PttUIResourceDict *resource_dict GCC_UNUSED)
 {    
     if(!queue->n_queue) return S_OK;
 
@@ -434,6 +436,8 @@ pttui_resource_dict_get_comment_reply_from_file(PttQueue *queue, PttUIResourceDi
     if(!queue->n_queue) return S_OK;
 
     Err error_code = S_OK;
+    _PttUIResourceDictLinkList *p = queue->head;
+    PttUIBuffer *p_buffer = NULL;
     for(; p; p = p->next, i++) {
         p_buffer = (PttUIBuffer *)p->val.p;
         error_code = _pttui_resource_dict_get_content_block_from_file_core(p_buffer, resource_dict);
@@ -463,16 +467,21 @@ _pttui_resource_dict_get_content_block_from_file_core(PttUIBuffer *buffer, PttUI
 
     fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_get_content_block_from_file_core: to get: filename: %s\n", filename);
 
-    buffer->len = 0;
-    if(buffer->buf) free(buffer->buf);
-
+    int len = 0;
     int fd = open(filename, O_RDONLY);
-    while(bytes = read(fd_content, tmp_buf, MAX_BUF_SIZE) > 0) {
-        buffer->buf = realloc(buffer->buf, buffer->len + bytes);
-        memcpy(buffer->buf + buffer->len, tmp_buf, bytes);
-        buffer->len += bytes;
+
+    int max_buf_size = MAX_BUF_SIZE;
+    char *buf = malloc(max_buf_size);
+    while(bytes = read(fd, buf + len, MAX_BUF_SIZE) > 0) {
+        buf = realloc(buf, max_buf_size + MAX_BUF_SIZE);
+        len += bytes;
+        max_buf_size += MAX_BUF_SIZE;
     }
     close(fd);
+
+    error_code = _pttui_resource_dict_add_data(buffer->the_id, buffer->block_offset, buffer->file_offset, len, buf, buffer->content_type, resource_dict);
+
+    safe_free(&buf);
 
     return error_code;
 }
