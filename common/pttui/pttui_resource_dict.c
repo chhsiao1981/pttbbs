@@ -4,7 +4,7 @@
 Err
 init_pttui_resource_dict(UUID main_id, PttUIResourceDict *resource_dict){
     memcpy(resource_dict, main_id, UUIDLEN);
-    resource_dict->b_the_id_comment_id_map = BCON_NEW();
+    resource_dict->b_the_id_comment_id_map = bson_new();
 
     return S_OK;
 }
