@@ -791,15 +791,3 @@ log_pttui_resource_dict(PttUIResourceDict *resource_dict, char *prompt)
 
     return S_OK;
 }
-
-Err
-_pttui_resource_dict_add_the_id_comment_id_map(UUID the_id, int comment_id, PttUIResourceDict *resource_dict)
-{
-    /*
-    char *disp_uuid = display_uuid(the_id);
-    BSON_APPEND_INT32(resource_dict->b_the_id_comment_id_map, disp_uuid, comment_id);
-    free(disp_uuid);
-    */
-
-    return S_OK;
-}

@@ -25,8 +25,6 @@ Err _pttui_resource_dict_content_block_db_to_dict(bson_t **b_content_blocks, int
 
 Err _pttui_resource_dict_comment_db_to_dict(bson_t **b_comments, int n_comment, PttUIResourceDict *resource_dict);
 
-Err _pttui_resource_dict_add_the_id_comment_id_map(UUID the_id, int comment_id, PttUIResourceDict *resource_dict);
-
 Err _pttui_resource_dict_add_data(UUID the_id, int block_id, int file_id, int len, char *buf, enum PttDBContentType content_type, PttUIResourceDict *resource_dict);
 
 Err _pttui_resource_dict_get_content_block_from_file_core(PttUIBuffer *buffer, PttUIResourceDict *resource_dict);
