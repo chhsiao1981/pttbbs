@@ -282,6 +282,7 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
 Err
 _pttui_resource_dict_add_data(UUID the_id, int block_id, int file_id, int len, char *buf, enum PttDBContentType content_type, PttUIResourceDict *resource_dict)
 {
+    Err error_code = S_OK;
     // XXX buf_block need to be freed after copy to pttui-buffer
     int comment_id = 0;
     char *disp_uuid = display_uuid(the_id);
