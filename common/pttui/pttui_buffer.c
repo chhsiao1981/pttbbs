@@ -552,6 +552,8 @@ _extend_pttui_buffer_extend_pre_buffer(FileInfo *file_info, PttUIBuffer *head_bu
     PttUIResourceDict resource_dict = {};
     init_pttui_resource_dict(file_info->main_id, &resource_dict);
 
+    log_pttui_resource_dict(&resource_dict, "pttui_buffer._extend_pre_buffer: after init resource_dict");
+
     error_code = _extend_pttui_buffer_extend_pre_buffer_no_buf(start_buffer, file_info, n_buffer, new_head_buffer, ret_n_buffer);
 
     if (error_code) return error_code;

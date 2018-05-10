@@ -27,6 +27,8 @@ pttui_resource_dict_get_main_from_db(PttQueue *queue, PttUIResourceDict *resourc
 
     pttui_id_comment_id_dict_add_data(head_buffer->the_id, 0, &resource_dict->id_comment_id_dict);
 
+    return S_OK;
+
     return _pttui_resource_dict_get_content_block_from_db_core(head_buffer->the_id, min_block_id, max_block_id, MONGO_MAIN_CONTENT, PTTDB_CONTENT_TYPE_MAIN, resource_dict);
 }
 
