@@ -473,7 +473,7 @@ _pttui_resource_dict_get_content_block_from_file_core(PttUIBuffer *buffer, PttUI
     int max_buf_size = MAX_BUF_SIZE;
     char *buf = malloc(max_buf_size);
     int bytes = 0;
-    while(bytes = read(fd, buf + len, MAX_BUF_SIZE) > 0) {
+    while((bytes = read(fd, buf + len, MAX_BUF_SIZE)) > 0) {
         buf = realloc(buf, max_buf_size + MAX_BUF_SIZE);
         len += bytes;
         max_buf_size += MAX_BUF_SIZE;
@@ -765,6 +765,8 @@ pttui_resource_dict_reset_file_info(PttUIResourceDict *resource_dict, FileInfo *
 
         p_content_block->storage_type = PTTDB_STORAGE_TYPE_FILE;
     }
+
+    return S_OK;
 }
 
 Err
