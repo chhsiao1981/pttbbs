@@ -482,7 +482,8 @@ _pttui_resource_dict_get_content_block_from_file_core(PttUIBuffer *buffer, PttUI
 
     error_code = _pttui_resource_dict_add_data(buffer->the_id, buffer->block_offset, buffer->file_offset, len, buf, buffer->content_type, resource_dict);
 
-    safe_free((void **)&buf);
+    // do not free buf because buf is used in resource_dict.
+    //safe_free((void **)&buf); 
 
     return error_code;
 }
