@@ -11,7 +11,6 @@ safe_destroy_pttui_id_comment_id_dict(PttUIIdCommentIdDict *id_comment_id_dict)
 
         while(p) {
             tmp = p->next;
-            if(p->buf) free(p->buf);
             free(p);
             p = tmp;
         }
