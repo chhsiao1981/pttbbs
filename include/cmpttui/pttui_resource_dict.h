@@ -6,6 +6,7 @@
 #include "cmpttlib.h"
 #include "cmpttdb.h"
 #include "cmpttui/pttui_buffer.h"
+#include "cmpttui/pttui_id_comment_id_dict.h"
 
 #ifdef __cplusplus
 extern "C" {
