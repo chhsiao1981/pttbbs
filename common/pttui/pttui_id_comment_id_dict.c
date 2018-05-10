@@ -34,7 +34,7 @@ pttui_id_comment_id_dict_add_data(UUID the_id, int comment_id, PttUIIdCommentIdD
     }
     else {
         for(; p->next; p = p->next) {
-            if(!memcmp(p->the_id, the_id)) return S_OK;
+            if(!memcmp(p->the_id, the_id, UUIDLEN)) return S_OK;
         }
         if(!p->next) {
             p->next = malloc(sizeof(_PttUIIdCommentIdDict));
