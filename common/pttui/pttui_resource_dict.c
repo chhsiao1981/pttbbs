@@ -760,6 +760,12 @@ pttui_resource_dict_reset_file_info(PttUIResourceDict *resource_dict, FileInfo *
 
             fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_reset_file_info: (%d/%d.%d): (content-type: %d comment-id: %d block-id: %d file-id: %d) content-block: (n_line: %d n_line_in_db: %d n_new_line: %d n_to_delete_line: %d storage_type: %d n_file: %d)\n", i, N_PTTUI_RESOURCE_DICT_LINK_LIST, j, p->content_type, p->comment_id, p->block_id, p->file_id, p_content_block->n_line, p_content_block->n_line_in_db, p_content_block->n_new_line, p_content_block->n_to_delete_line, p_content_block->storage_type, p_content_block->n_file);
 
+            // comment->n-comment-reply-line
+            if(p->content_type == PTTDB_CONTENT_TYPE_COMMENT_REPLY) {
+                p_comment->n_comment_reply_total_line += (p_content_block->n_line - p_content_block->n_line_in_db);
+            }
+
+            // p-content-block
             p_content_block->n_line_in_db = p_content_block->n_line;
             p_content_block->n_new_line = 0;
             p_content_block->n_to_delete_line = 0;
