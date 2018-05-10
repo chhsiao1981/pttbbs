@@ -410,8 +410,14 @@ pttui_resource_dict_get_main_from_file(PttQueue *queue, PttUIResourceDict *resou
 {
     if(!queue->n_queue) return S_OK;
 
+    Err error_code = S_OK;
+    for(; p; p = p->next, i++) {
+        p_buffer = (PttUIBuffer *)p->val.p;
+        error_code = _pttui_resource_dict_get_content_block_from_file_core(p_buffer, resource_dict);
+        if(error_code) break;
+    }
 
-    return S_OK;
+    return error_code;
 }
 
 Err
@@ -425,26 +431,50 @@ pttui_resource_dict_get_comment_from_file(PttQueue *queue, PttUIResourceDict *re
 Err
 pttui_resource_dict_get_comment_reply_from_file(PttQueue *queue, PttUIResourceDict *resource_dict)
 {
-    return S_OK;
-}
+    if(!queue->n_queue) return S_OK;
 
-
-Err
-log_pttui_resource_dict(PttUIResourceDict *resource_dict, char *prompt)
-{
-    char *_disp_uuid = NULL;
-    _PttUIResourceDictLinkList *p_dict_link_list = NULL;
-    int j = 0;
-    for(int i = 0; i < N_PTTUI_RESOURCE_DICT_LINK_LIST; i++) {
-        if(!resource_dict->data[i]) continue;
-        for(j = 0, p_dict_link_list = resource_dict->data[i]; p_dict_link_list; j++, p_dict_link_list = p_dict_link_list->next) {
-            _disp_uuid = display_uuid(p_dict_link_list->the_id);
-            fprintf(stderr, "%s: (%d/%d): (%s, %d)\n", prompt, i, j, _disp_uuid, p_dict_link_list->block_id);
-            free(_disp_uuid);
-        }
+    Err error_code = S_OK;
+    for(; p; p = p->next, i++) {
+        p_buffer = (PttUIBuffer *)p->val.p;
+        error_code = _pttui_resource_dict_get_content_block_from_file_core(p_buffer, resource_dict);
+        if(error_code) break;
     }
 
-    return S_OK;
+    return error_code;
+}
+
+Err
+_pttui_resource_dict_get_content_block_from_file_core(PttUIBuffer *buffer, PttUIResourceDict *resource_dict)
+{
+    Err error_code = S_OK;
+    char dir_prefix[MAX_FILENAME_SIZE] = {};
+    char filename[MAX_FILENAME_SIZE] = {};
+
+    setuserfile(dir_prefix, PTTUI_EDIT_TMP_DIR);    
+    char *disp_uuid = display_uuid(resource_dict->main_id);
+    strcat(dir_prefix, disp_uuid);
+    free(disp_uuid);
+
+    disp_uuid = display_uuid(buffer->the_id);
+
+    sprintf(filename, "%s/%d/%s/%d/%d", dir_prefix, buffer->content_type, disp_uuid, buffer->block_offset, buffer->file_offset);
+
+    free(disp_uuid);
+
+    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_get_content_block_from_file_core: to get: filename: %s\n", filename);
+
+    buffer->len = 0;
+    if(buffer->buf) free(buffer->buf);
+
+    int fd = open(filename, O_RDONLY);
+    while(bytes = read(fd_content, tmp_buf, MAX_BUF_SIZE) > 0) {
+        buffer->buf = realloc(buffer->buf, buffer->len + bytes);
+        memcpy(buffer->buf + buffer->len, tmp_buf, bytes);
+        buffer->len += bytes;
+    }
+    close(fd);
+
+    return error_code;
 }
 
 Err
@@ -731,6 +761,24 @@ pttui_resource_dict_reset_file_info(PttUIResourceDict *resource_dict, FileInfo *
 
         p_content_block->storage_type = PTTDB_STORAGE_TYPE_FILE;
     }
+}
+
+Err
+log_pttui_resource_dict(PttUIResourceDict *resource_dict, char *prompt)
+{
+    char *_disp_uuid = NULL;
+    _PttUIResourceDictLinkList *p_dict_link_list = NULL;
+    int j = 0;
+    for(int i = 0; i < N_PTTUI_RESOURCE_DICT_LINK_LIST; i++) {
+        if(!resource_dict->data[i]) continue;
+        for(j = 0, p_dict_link_list = resource_dict->data[i]; p_dict_link_list; j++, p_dict_link_list = p_dict_link_list->next) {
+            _disp_uuid = display_uuid(p_dict_link_list->the_id);
+            fprintf(stderr, "%s: (%d/%d): (%s, %d)\n", prompt, i, j, _disp_uuid, p_dict_link_list->block_id);
+            free(_disp_uuid);
+        }
+    }
+
+    return S_OK;
 }
 
 Err
