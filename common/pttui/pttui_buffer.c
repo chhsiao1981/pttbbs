@@ -567,6 +567,8 @@ _extend_pttui_buffer_extend_pre_buffer(FileInfo *file_info, PttUIBuffer *head_bu
     }
     fprintf(stderr, "pttui_buffer._extend_pttui_buffer_extend_pre_buffer: after resource_info to resource_dict: e: %d\n", error_code);
 
+    log_pttui_resource_dict(&resource_dict, "pttui_buffer._extend_pre_buffer: after resource_info to resource_dict");
+
     if (!error_code) {
         error_code = _pttui_buffer_info_set_buf_from_resource_dict(*new_head_buffer, start_buffer, &resource_dict);
     }
