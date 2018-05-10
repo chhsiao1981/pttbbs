@@ -1567,9 +1567,7 @@ _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
         if(error_code) return error_code;
     }
 
-    fprintf(stderr, "pttui_buffer._reset_pttui_buffer_info: after set_load_line and set_file_offset: error_code: %d\n", error_code);
-
-    fprintf(stderr, "pttui_buffer._reset_pttui_buffer_info: (content-type: %d, comment-id: %d block-id: %d line-id: %d): load-line: (%d, %d, %d) file: (%d, %d, %d, %d) \n", p_buffer->content_type, p_buffer->comment_offset, p_buffer->block_offset, p_buffer->line_offset, p_buffer->load_line_offset, p_buffer->load_line_pre_offset, p_buffer->load_line_next_offset, p_buffer->file_offset, p_buffer->file_line_offset, p_buffer->file_line_pre_offset, p_buffer->file_line_next_offset);
+    fprintf(stderr, "pttui_buffer._reset_pttui_buffer_info: (content-type: %d, comment-id: %d block-id: %d line-id: %d): load-line: (%d, %d, %d) file: (%d, %d, %d, %d) e: %d\n", p_buffer->content_type, p_buffer->comment_offset, p_buffer->block_offset, p_buffer->line_offset, p_buffer->load_line_offset, p_buffer->load_line_pre_offset, p_buffer->load_line_next_offset, p_buffer->file_offset, p_buffer->file_line_offset, p_buffer->file_line_pre_offset, p_buffer->file_line_next_offset, error_code);
 
     p_pre_buffer = p_buffer;
     p_buffer = p_buffer->next;
@@ -1597,7 +1595,7 @@ _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
         error_code2 = _pttui_buffer_file_offset_next_from_content_block_info(p_buffer, p_pre_buffer, p_content_block);
         if(!error_code && error_code2) error_code = error_code2;
 
-        fprintf(stderr, "pttui_buffer._reset_pttui_buffer_info: (content-type: %d, comment-id: %d block-id: %d line-id: %d): load-line: (%d, %d, %d) file: (%d, %d, %d, %d)\n", p_buffer->content_type, p_buffer->comment_offset, p_buffer->block_offset, p_buffer->line_offset, p_buffer->load_line_offset, p_buffer->load_line_pre_offset, p_buffer->load_line_next_offset, p_buffer->file_offset, p_buffer->file_line_offset, p_buffer->file_line_pre_offset, p_buffer->file_line_next_offset);
+        fprintf(stderr, "pttui_buffer._reset_pttui_buffer_info: (content-type: %d, comment-id: %d block-id: %d line-id: %d): load-line: (%d, %d, %d) file: (%d, %d, %d, %d) e: %d\n", p_buffer->content_type, p_buffer->comment_offset, p_buffer->block_offset, p_buffer->line_offset, p_buffer->load_line_offset, p_buffer->load_line_pre_offset, p_buffer->load_line_next_offset, p_buffer->file_offset, p_buffer->file_line_offset, p_buffer->file_line_pre_offset, p_buffer->file_line_next_offset, error_code);
 
         if(error_code) break;
 
