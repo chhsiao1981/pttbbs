@@ -735,12 +735,6 @@ pttui_resource_dict_reset_file_info(PttUIResourceDict *resource_dict, FileInfo *
     CommentInfo *p_comment = NULL;
     ContentBlockInfo *p_content_block = NULL;
 
-    char *p_buf = NULL;
-    int buf_offset = 0;
-    int len_buf = 0;
-
-    int n_file = 0;
-    int orig_n_line = 0;
     for(int i = 0; i < N_PTTUI_RESOURCE_DICT_LINK_LIST; i++) {
         p = resource_dict->data[i];
         for(; p; p = p->next) {
