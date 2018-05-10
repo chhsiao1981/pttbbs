@@ -14,6 +14,7 @@ extern "C" {
 #define N_PTTUI_ID_COMMENT_ID_DICT_LINK_LIST 256
 
 typedef struct _PttUIIdCommentIdDict {
+    _PttUIIdCommentIdDict *next;
     UUID the_id;
     int comment_id;
 } _PttUIIdCommentIdDict;

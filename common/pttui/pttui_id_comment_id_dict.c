@@ -7,7 +7,7 @@ safe_destroy_pttui_id_comment_id_dict(PttUIIdCommentIdDict *id_comment_id_dict)
     _PttUIIdCommentIdDict *tmp = NULL;
 
     for(int i = 0; i < N_PTTUI_ID_COMMENT_ID_DICT_LINK_LIST; i++) {
-        p = resource_dict->data[i];
+        p = id_comment_id_dict->data[i];
 
         while(p) {
             tmp = p->next;
@@ -16,7 +16,7 @@ safe_destroy_pttui_id_comment_id_dict(PttUIIdCommentIdDict *id_comment_id_dict)
             p = tmp;
         }
 
-        resource_dict->data[i] = NULL;
+        id_comment_id_dict->data[i] = NULL;
     }
 
     return S_OK;
