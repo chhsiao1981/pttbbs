@@ -411,9 +411,9 @@ pttui_resource_dict_get_main_from_file(PttQueue *queue, PttUIResourceDict *resou
     if(!queue->n_queue) return S_OK;
 
     Err error_code = S_OK;
-    _PttUIResourceDictLinkList *p = queue->head;
+    PttLinkList *p = queue->head;
     PttUIBuffer *p_buffer = NULL;
-    for(; p; p = p->next, i++) {
+    for(; p; p = p->next) {
         p_buffer = (PttUIBuffer *)p->val.p;
         error_code = _pttui_resource_dict_get_content_block_from_file_core(p_buffer, resource_dict);
         if(error_code) break;
@@ -436,7 +436,7 @@ pttui_resource_dict_get_comment_reply_from_file(PttQueue *queue, PttUIResourceDi
     if(!queue->n_queue) return S_OK;
 
     Err error_code = S_OK;
-    _PttUIResourceDictLinkList *p = queue->head;
+    PttLinkList *p = queue->head;
     PttUIBuffer *p_buffer = NULL;
     for(; p; p = p->next, i++) {
         p_buffer = (PttUIBuffer *)p->val.p;
