@@ -739,9 +739,10 @@ pttui_resource_dict_reset_file_info(PttUIResourceDict *resource_dict, FileInfo *
     CommentInfo *p_comment = NULL;
     ContentBlockInfo *p_content_block = NULL;
 
+    int j = 0;
     for(int i = 0; i < N_PTTUI_RESOURCE_DICT_LINK_LIST; i++) {
         p = resource_dict->data[i];
-        for(; p; p = p->next) {
+        for(j = 0; p; p = p->next, j++) {
             switch(p->content_type) {
             case PTTDB_CONTENT_TYPE_MAIN:
                 p_content_block = file_info->main_blocks + p->block_id;
@@ -754,20 +755,22 @@ pttui_resource_dict_reset_file_info(PttUIResourceDict *resource_dict, FileInfo *
                 p_content_block = NULL;
                 break;
             }
+
+            if(!p_content_block) continue;
+
+            fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_reset_file_info: (%d/%d.%d): (content-type: %d comment-id: %d block-id: %d file-id: %d) content-block: (n_line: %d n_line_in_db: %d n_new_line: %d n_to_delete_line: %d storage_type: %d n_file: %d)\n", i, N_PTTUI_RESOURCE_DICT_LINK_LIST, j, p->content_type, p->comment_id, p->block_id, p->file_id, p_content_block->n_line, p_content_block->n_line_in_db, p_content_block->n_new_line, p_content_block->n_to_delete_line, p_content_block->storage_type, p_content_block->n_file);
+
+            p_content_block->n_line_in_db = p_content_block->n_line;
+            p_content_block->n_new_line = 0;
+            p_content_block->n_to_delete_line = 0;
+
+            // XXX not split file for now.
+            p_content_block->n_file = 1;
+            p_content_block->file_n_line = realloc(p_content_block->file_n_line, sizeof(int) * p_content_block->n_file);
+            p_content_block->file_n_line[p->file_id] = p_content_block->n_line_in_db;
+
+            p_content_block->storage_type = PTTDB_STORAGE_TYPE_FILE;
         }
-
-        if(!p_content_block) continue;
-
-        p_content_block->n_line_in_db = p_content_block->n_line;
-        p_content_block->n_new_line = 0;
-        p_content_block->n_to_delete_line = 0;
-
-        // XXX not split file for now.
-        p_content_block->n_file = 1;
-        p_content_block->file_n_line = realloc(p_content_block->file_n_line, sizeof(int) * p_content_block->n_file);
-        p_content_block->file_n_line[p->file_id] = p_content_block->n_line_in_db;
-
-        p_content_block->storage_type = PTTDB_STORAGE_TYPE_FILE;
     }
 
     return S_OK;
