@@ -693,7 +693,7 @@ log_file_info(FileInfo *file_info, char *prompt)
 
     CommentInfo *p_comment = file_info->comments;
     for(int k = 0; k < file_info->n_comment; k++, p_comment++) {
-        fprintf(stderr, "%s: comment: (%d/%d) n_comment_reply_block: %d n_comment_reply_total_line: %d\n", k, file_info->n_comment, p_comment->n_comment_reply_block, p_comment->n_comment_reply_total_line);
+        fprintf(stderr, "%s: comment: (%d/%d) n_comment_reply_block: %d n_comment_reply_total_line: %d\n", prompt, k, file_info->n_comment, p_comment->n_comment_reply_block, p_comment->n_comment_reply_total_line);
         p_content_block = p_comment->comment_reply_blocks;
 
         for(int i = 0; i < p_comment->n_comment_reply_block; i++, p_content_block++) {
