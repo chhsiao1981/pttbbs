@@ -1291,6 +1291,8 @@ _pttui_buffer_info_to_resource_info(PttUIBuffer *head, PttUIBuffer *tail, PttUIR
             pre_buffer->block_offset == current_buffer->block_offset &&
             pre_buffer->file_offset == current_buffer->file_offset) continue;
 
+        fprintf(stderr, "pttui_buffer._pttui_buffer_info_to_resource_info: to push_queue: content_type: %d comment_offset: %d block_offset: %d file_offset: %d storage_type: %d\n", current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset, current_buffer->file_offset, current_buffer->storage_type);
+
         error_code = pttui_resource_info_push_queue(current_buffer, resource_info, current_buffer->content_type, current_buffer->storage_type);
         if (error_code) break;
 
