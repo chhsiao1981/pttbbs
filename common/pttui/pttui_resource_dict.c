@@ -311,7 +311,7 @@ _pttui_resource_dict_add_data(UUID the_id, int block_id, int file_id, int len, c
     p->len = len;
     p->buf = buf;
 
-    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_add_data: content_type: %d comment_id: %d block_id: %d file_id: %d len: %d\n", content_type, comment_id, block_id, file_id, len);
+    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_add_data: the_idx: %d content_type: %d comment_id: %d block_id: %d file_id: %d len: %d\n", the_idx, content_type, comment_id, block_id, file_id, len);
 
     return S_OK;
 }
