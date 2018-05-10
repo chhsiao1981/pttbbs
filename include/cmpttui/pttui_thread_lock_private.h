@@ -12,9 +12,9 @@ extern "C" {
 #include <time.h>
 #include <pthread.h>
 
-#define NS_DEFAULT_SLEEP_LOCK 1000000 // 1ms
-#define N_ITER_PTTUI_WRITE_LOCK 10 // write lock waits up to 10 ms
-#define N_ITER_PTTUI_READ_LOCK 5 // read lock waits up to 5 ms
+#define NS_DEFAULT_SLEEP_LOCK 10000000 // 10ms
+#define N_ITER_PTTUI_WRITE_LOCK 10 // write lock waits up to 100 ms
+#define N_ITER_PTTUI_READ_LOCK 5 // read lock waits up to 50 ms
 
 #ifdef __cplusplus
 }

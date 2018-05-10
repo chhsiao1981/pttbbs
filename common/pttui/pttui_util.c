@@ -796,9 +796,8 @@ pttui_edit_outs_attr_n(const char *text, int n, int attr)
 }
 
 int
-pttui_ctrl_key_ne()
+pttui_ctrl_key_ne(int ch)
 {
-    int ch = 0;
     switch(KEY_ESC_arg) {
     case ',':
         ch = Ctrl(']');

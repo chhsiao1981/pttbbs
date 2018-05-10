@@ -43,59 +43,54 @@ _vedit3_action_to_store_main(int ch, bool *is_end) {
     // if(ch == KEY_ESC && KEY_ESC_arg == 'S') VEDIT3_EDITOR_STATUS.is_syntax_parser = !VEDIT3_EDITOR_STATUS.is_syntax_parser;
 
     // ch as ctrl
-    if(ch == KEY_ESC) ch = pttui_ctrl_key_ne();
+    if(ch == KEY_ESC) ch = pttui_ctrl_key_ne(ch);
 
     // ctrl-command
     switch (ch) {
     case KEY_F10:
     case Ctrl('X'): // save and exit
-        *is_end = true;
+        error_code = vedit3_action_save_and_exit(is_end);
         break;
     case KEY_F5:    // goto-line
+        error_code = vedit3_action_goto();
         break;
-
     case KEY_F8:    // users
         error_code = vedit3_action_t_users();
         break;
     case Ctrl('W'):
+        error_code = vedit3_action_block_cut();
         break;
-
     case Ctrl('Q'): // quit
+        error_code = vedit3_action_exit(is_end);
         break;
     case Ctrl('C'): // ansi-code
+        error_code = vedit3_action_insert_ansi_code();
         break;
-
-    case KEY_ESC:   // escape
-            break;
-
+    case KEY_ESC: // escape
+        error_code = vedit3_action_escape();
+        break;
     case Ctrl('S'): // search-str
     case KEY_F3:
+        error_code = vedit3_action_search();
         break;
-
-    /*
     case Ctrl('U'): // insert-esc
         error_code = vedit3_action_insert_char(ESC_CHR);
         break;
-    */
     case Ctrl('V'): // toggle ansi-color
         error_code = vedit3_action_toggle_ansi();
         break;
-    /*
     case Ctrl('I'): // insert-tab
         error_code = vedit3_action_insert_tab();
         break;
-    */
     case KEY_ENTER: // new-line
         error_code = vedit3_action_insert_new_line();
         break;
-    /*
     case Ctrl('G'): // edit-assistant
+        error_code = vedit3_action_edit_assist();
         break;
-    
     case Ctrl('P'): // toogle-phone-mode
         error_code = vedit3_action_toggle_phone_mode();
         break;
-    */
     case KEY_F1:
     case Ctrl('Z'): // help
         error_code = vedit3_action_show_help();
@@ -131,7 +126,6 @@ _vedit3_action_to_store_main(int ch, bool *is_end) {
     case Ctrl('A'):
         error_code = vedit3_action_move_begin_line();
         break;
-    /*
     case Ctrl(']'):
         error_code = vedit3_action_move_start_file();
         break;
@@ -142,7 +136,6 @@ _vedit3_action_to_store_main(int ch, bool *is_end) {
         case KEY_INS:
         error_code = vedit3_action_toggle_insert();
         break;
-    */
     case KEY_BS:
         error_code = vedit3_action_backspace();
         break;
@@ -150,14 +143,12 @@ _vedit3_action_to_store_main(int ch, bool *is_end) {
     case KEY_DEL:
         error_code = vedit3_action_delete_char();
         break;
-    /*
     case Ctrl('Y'):
         error_code = vedit3_action_delete_line();
         break;
     case Ctrl('K'):
         error_code = vedit3_action_delete_end_of_line();
         break;
-    */
     default:
         break;
     }
@@ -202,7 +193,6 @@ _vedit3_action_to_store_comment(int ch, bool *is_end) {
     case KEY_UP:
         error_code = vedit3_action_move_up();
         break;
-    case KEY_ENTER:
     case KEY_RIGHT:
     case KEY_DOWN:
         error_code = vedit3_action_move_down();
@@ -215,18 +205,26 @@ _vedit3_action_to_store_comment(int ch, bool *is_end) {
     case KEY_PGDN:
         error_code = vedit3_action_move_pgdn();
         break;
-    /*
-        case Ctrl(']'):
+    case Ctrl(']'):
         error_code = vedit3_action_move_start_file();
         break;
-        case Ctrl('T'):
+    case Ctrl('T'):
         error_code = vedit3_action_move_tail_file();
         break;
-        case Ctrl('O'):
-        case KEY_INS:
+    case Ctrl('O'):
+    case KEY_INS:
         error_code = vedit3_action_toggle_insert();
         break;
-    */
+    case KEY_ENTER:
+    case Ctrl('R'):
+        error_code = vedit3_action_comment_init_comment_reply();
+        break;
+    case Ctrl('D'):
+    case KEY_DEL:
+    case Ctrl('Y'):
+    case Ctrl('K'):
+        error_code = vedit3_action_comment_delete_comment();
+        break;
     default:
         break;
     }
@@ -392,6 +390,87 @@ _vedit3_action_get_key(int *ch)
  * action-command
  ********************/
 
+Err
+vedit3_action_save_and_exit(bool *is_end)
+{
+    *is_end = true;
+
+    return S_OK;
+}
+
+Err
+vedit3_action_goto()
+{
+    return S_OK;
+}
+
+Err
+vedit3_action_block_cut()
+{
+    return S_OK;
+}
+
+Err
+vedit3_action_exit(bool *is_end)
+{
+    *is_end = true;
+
+    return S_OK;
+}
+
+Err
+vedit3_action_insert_ansi_code()
+{
+    return S_OK;
+}
+
+Err
+vedit3_action_escape()
+{
+    return S_OK;
+}
+
+Err
+vedit3_action_search()
+{
+    return S_OK;
+}
+
+Err
+vedit3_action_toggle_insert()
+{
+    return S_OK;    
+}
+
+Err
+vedit3_action_insert_tab()
+{
+    return S_OK;
+}
+
+Err
+vedit3_action_edit_assist()
+{
+    return S_OK;
+}
+
+Err
+vedit3_action_toggle_phone_mode()
+{
+    return S_OK;
+}
+
+Err
+vedit3_action_comment_init_comment_reply()
+{
+    return S_OK;
+}
+
+Err
+vedit3_action_comment_delete_comment()
+{
+    return S_OK;
+}
 
 /**
  * @brief [brief description]
@@ -733,6 +812,18 @@ vedit3_action_move_pgdn()
 }
 
 Err
+vedit3_action_move_start_file()
+{
+    return S_OK;
+}
+
+Err
+vedit3_action_move_tail_file()
+{
+    return S_OK;
+}
+
+Err
 vedit3_action_redraw()
 {
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
@@ -853,6 +944,23 @@ vedit3_action_delete_char()
 
     return S_OK;
 }
+
+Err
+vedit3_action_delete_line()
+{
+    VEDIT3_EDITOR_STATUS.current_col = 0;
+    
+    return vedit3_action_delete_end_of_line();
+}
+
+Err
+vedit3_action_delete_end_of_line()
+{
+    VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl = VEDIT3_EDITOR_STATUS.current_col;
+    VEDIT3_EDITOR_STATUS.current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col] = 0;
+    return S_OK;
+}
+
 
 /********************
  * action-util

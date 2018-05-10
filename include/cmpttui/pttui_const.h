@@ -15,7 +15,7 @@ extern const char *table[8];
 extern const char *table_mode[6];
 
 #define MAX_TEXTLINE_SIZE WRAPMARGIN
-#define PTTUI_EDIT_TMP_DIR "pttui_edit/"
+#define PTTUI_EDIT_TMP_DIR "pttui_edit/M"
 #define PTTUI_NEWLINE "\n"
 #define LEN_PTTUI_NEWLINE 1
 

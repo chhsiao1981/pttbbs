@@ -85,7 +85,7 @@ Err pttui_n2ansi(int nx, char *buf, int *ansix);
 
 Err pttui_edit_outs_attr_n(const char *text, int n, int attr);
 
-int pttui_ctrl_key_ne();
+int pttui_ctrl_key_ne(int ch);
 
 #ifdef __cplusplus
 }
