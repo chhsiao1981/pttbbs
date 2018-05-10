@@ -3,7 +3,7 @@
 
 Err
 init_pttui_resource_dict(UUID main_id, PttUIResourceDict *resource_dict){
-    memcpy(resource_dict, main_id, UUIDLEN);
+    memcpy(resource_dict->main_id, main_id, UUIDLEN);
 
     return S_OK;
 }
