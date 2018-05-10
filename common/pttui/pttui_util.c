@@ -794,3 +794,45 @@ pttui_edit_outs_attr_n(const char *text, int n, int attr)
 
     return S_OK;
 }
+
+int
+pttui_ctrl_key_ne()
+{
+    int ch = 0;
+    switch(KEY_ESC_arg) {
+    case ',':
+        ch = Ctrl(']');
+        break;
+    case '.':
+        ch = Ctrl('T');
+        break;
+    case 'v':
+        ch = KEY_PGUP;
+        break;
+    case 'a':
+    case 'A':
+        ch = Ctrl('V');
+        break;
+    case 'X':
+        ch = Ctrl('X');
+        break;
+    case 'q':
+        ch = Ctrl('Q');
+        break;
+    case 'o':
+        ch = Ctrl('O');
+        break;
+    case 's':
+        ch = Ctrl('S');
+        break;
+    case 'S':
+        // XXX remove lua-parser for now
+        //curr_buf->synparser = !curr_buf->synparser;
+        break;
+    default:
+        break;
+    }
+
+    return ch;
+
+}

@@ -39,14 +39,11 @@ _vedit3_action_to_store_main(int ch, bool *is_end) {
         return error_code;
     }
 
+    // XXX remove lua-parser for now
+    // if(ch == KEY_ESC && KEY_ESC_arg == 'S') VEDIT3_EDITOR_STATUS.is_syntax_parser = !VEDIT3_EDITOR_STATUS.is_syntax_parser;
+
     // ch as ctrl
-    switch (ch) {
-    case KEY_UP:
-    case KEY_DOWN:
-        break;
-    case KEY_ESC:
-        break;
-    }
+    if(ch == KEY_ESC) ch = pttui_ctrl_key_ne();
 
     // ctrl-command
     switch (ch) {
@@ -65,7 +62,6 @@ _vedit3_action_to_store_main(int ch, bool *is_end) {
 
     case Ctrl('Q'): // quit
         break;
-
     case Ctrl('C'): // ansi-code
         break;
 
