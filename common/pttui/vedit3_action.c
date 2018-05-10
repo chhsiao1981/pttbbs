@@ -776,8 +776,8 @@ vedit3_action_backspace()
         return S_OK;
     }
 
-    // current-line == 0 and current-col == 0: no change
-    if(VEDIT3_EDITOR_STATUS.current_line == 0 && VEDIT3_EDITOR_STATUS.current_col == 0) return S_OK;
+    // current-buffer-line == 0 and current-col == 0: no change
+    if(VEDIT3_EDITOR_STATUS.current_buffer_line == 0 && VEDIT3_EDITOR_STATUS.current_col == 0) return S_OK;
 
     // current-col == 0: move to previous-line, try to concat the next line.s
     bool is_lock_file_info = false;
