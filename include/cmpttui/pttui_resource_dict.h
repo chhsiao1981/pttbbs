@@ -17,6 +17,7 @@ typedef struct _PttUIResourceDictLinkList {
     struct _PttUIResourceDictLinkList *next;
     enum PttDBContentType content_type;
     UUID the_id;
+    int comment_id;
     int block_id;
     int file_id;
     int len;
@@ -25,8 +26,11 @@ typedef struct _PttUIResourceDictLinkList {
 
 typedef struct PttUIResourceDict {
     _PttUIResourceDictLinkList *data[N_PTTUI_RESOURCE_DICT_LINK_LIST];
+    bson_t *b_the_id_comment_id_map;
     UUID main_id;
 } PttUIResourceDict;
+
+Err init_pttui_resource_dict(UUID main_id, PttUIResourceDict *resource_dict);
 
 Err safe_destroy_pttui_resource_dict(PttUIResourceDict *resource_dict);
 

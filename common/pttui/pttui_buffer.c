@@ -550,7 +550,7 @@ _extend_pttui_buffer_extend_pre_buffer(FileInfo *file_info, PttUIBuffer *head_bu
     // 2. extend-pre-buffer-no-buf
     PttUIResourceInfo resource_info = {};
     PttUIResourceDict resource_dict = {};
-    memcpy(resource_dict.main_id, file_info->main_id, UUIDLEN);
+    init_pttui_resource_dict(file_info->main_id, &resource_dict);
 
     error_code = _extend_pttui_buffer_extend_pre_buffer_no_buf(start_buffer, file_info, n_buffer, new_head_buffer, ret_n_buffer);
 
@@ -811,7 +811,7 @@ _extend_pttui_buffer_extend_next_buffer(FileInfo *file_info, PttUIBuffer *tail_b
     // 2. extend-next-buffer-no-buf
     PttUIResourceInfo resource_info = {};
     PttUIResourceDict resource_dict = {};
-    memcpy(resource_dict.main_id, file_info->main_id, UUIDLEN);
+    init_pttui_resource_dict(file_info->main_id, &resource_dict);
 
     error_code = _extend_pttui_buffer_extend_next_buffer_no_buf(start_buffer, file_info, n_buffer, new_tail_buffer, ret_n_buffer);
 
@@ -1416,7 +1416,7 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
 
     PttUIResourceInfo resource_info = {};
     PttUIResourceDict resource_dict = {};
-    memcpy(resource_dict.main_id, file_info->main_id, UUIDLEN);
+    init_pttui_resource_dict(file_info->main_id, &resource_dict);
 
     // XXX defensive programming for not-init-buffer-info
     if(!buffer_info->head) return S_OK;

@@ -2,6 +2,14 @@
 #include "cmpttui/pttui_resource_dict_private.h"
 
 Err
+init_pttui_resource_dict(UUID main_id, PttUIResourceDict *resource_dict){
+    memcpy(resource_dict, main_id, UUIDLEN);
+    resource_dict->b_the_id_comment_id_map = bson_new();
+
+    return S_OK;
+}
+
+Err
 pttui_resource_dict_get_main_from_db(PttQueue *queue, PttUIResourceDict *resource_dict)
 {
     fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_get_main_from_db: n_queue: %d\n", queue->n_queue);
@@ -17,6 +25,8 @@ pttui_resource_dict_get_main_from_db(PttQueue *queue, PttUIResourceDict *resourc
     char *_uuid = display_uuid(head_buffer->the_id);
     fprintf(stderr, "pttui_resource_dict.get_content_block_from_db_core: the_id: %s min_block_id: %d max_block_id: %d\n", _uuid, min_block_id, max_block_id);
     safe_free((void **)&_uuid);
+
+    _pttui_resource_dict_add_the_id_comment_id_map(head_buffer->the_id, 0, resource_dict);
 
     return _pttui_resource_dict_get_content_block_from_db_core(head_buffer->the_id, min_block_id, max_block_id, MONGO_MAIN_CONTENT, PTTDB_CONTENT_TYPE_MAIN, resource_dict);
 }
@@ -39,6 +49,8 @@ safe_destroy_pttui_resource_dict(PttUIResourceDict *resource_dict)
 
         resource_dict->data[i] = NULL;
     }
+
+    bson_safe_destroy(&resource_dict->b_the_id_comment_id_map);
 
     return S_OK;
 }
@@ -100,6 +112,8 @@ pttui_resource_dict_get_comment_from_db(PttQueue *queue, PttUIResourceDict *reso
             error_code = S_ERR;
             break;
         }
+
+        _pttui_resource_dict_add_the_id_comment_id_map(p_buffer->the_id, p_buffer->comment_offset, resource_dict);
     }
     bson_append_array_end(q_array, &child);
 
@@ -189,11 +203,13 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
     PttUIBuffer *p_head_buffer = (PttUIBuffer *)queue->head->val.p;
     UUID head_uuid = {};
     memcpy(head_uuid, p_head_buffer->the_id, UUIDLEN);
+    _pttui_resource_dict_add_the_id_comment_id_map(p_head_buffer->the_id, p_head_buffer->comment_offset, resource_dict);
 
     // init-tail
     PttUIBuffer *p_tail_buffer = (PttUIBuffer *)queue->tail->val.p;
     UUID tail_uuid = {};
     memcpy(tail_uuid, p_tail_buffer->the_id, UUIDLEN);
+    _pttui_resource_dict_add_the_id_comment_id_map(p_tail_buffer->the_id, p_tail_buffer->comment_offset, resource_dict);
 
     // head
     p_pre_buffer = p_head_buffer;
@@ -201,6 +217,7 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
         p_buffer = (PttUIBuffer *)p->val.p;
         if(memcmp(head_uuid, p_buffer->the_id, UUIDLEN)) break;
         p_pre_buffer = p_buffer;
+
     }    
 
     int min_block_id = p_head_buffer->block_offset;
@@ -225,6 +242,8 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
 
         if(!memcmp(p_buffer->the_id, pre_uuid, UUIDLEN)) continue;
         memcpy(pre_uuid, p_buffer->the_id, UUIDLEN);
+
+        _pttui_resource_dict_add_the_id_comment_id_map(p_buffer->the_id, p_buffer->comment_offset, resource_dict);
 
         array_keylen = bson_uint32_to_string(i, &array_key, buf, sizeof(buf));
         status = bson_append_bin(&child, array_key, (int)array_keylen, p_buffer->the_id, UUIDLEN);
@@ -264,6 +283,12 @@ Err
 _pttui_resource_dict_add_data(UUID the_id, int block_id, int file_id, int len, char *buf, enum PttDBContentType content_type, PttUIResourceDict *resource_dict)
 {
     // XXX buf_block need to be freed after copy to pttui-buffer
+    int comment_id = 0;
+    char *disp_uuid = display_uuid(the_id);
+    error_code = bson_get_value_int32(resource_dict->b_the_id_comment_id_map, disp_uuid, &comment_id);
+    free(disp_uuid);
+    if(error_code) return error_code;
+
     int the_idx = ((int)the_id[0] + block_id + file_id + N_PTTUI_RESOURCE_DICT_LINK_LIST) % N_PTTUI_RESOURCE_DICT_LINK_LIST;
     _PttUIResourceDictLinkList *p = resource_dict->data[the_idx];
     if(!p) {
@@ -280,6 +305,7 @@ _pttui_resource_dict_add_data(UUID the_id, int block_id, int file_id, int len, c
     p->next = NULL;
     memcpy(p->the_id, the_id, UUIDLEN);
     p->content_type = content_type;
+    p->comment_id = comment_id;
     p->block_id = block_id;
     p->file_id = file_id;
     p->len = len;
@@ -382,13 +408,18 @@ _pttui_resource_dict_get_content_block_from_db_core2(bson_t *q, int max_n_conten
 Err
 pttui_resource_dict_get_main_from_file(PttQueue *queue, PttUIResourceDict *resource_dict)
 {
+    if(!queue->n_queue) return S_OK;
+
+
     return S_OK;
 }
 
 Err
 pttui_resource_dict_get_comment_from_file(PttQueue *queue, PttUIResourceDict *resource_dict)
-{
-    return S_OK;
+{    
+    if(!queue->n_queue) return S_OK;
+
+    return S_ERR;
 }
 
 Err
@@ -700,4 +731,14 @@ pttui_resource_dict_reset_file_info(PttUIResourceDict *resource_dict, FileInfo *
 
         p_content_block->storage_type = PTTDB_STORAGE_TYPE_FILE;
     }
+}
+
+Err
+_pttui_resource_dict_add_the_id_comment_id_map(UUID the_id, int comment_id, PttUIResourceDict *resource_dict)
+{
+    char *disp_uuid = disp_uuid(the_id);
+    BSON_APPEND_INT32(resource_dict->b_the_id_comment_id_map, disp_uuid, comment_id);
+    free(disp_uuid);
+
+    return S_OK;
 }
