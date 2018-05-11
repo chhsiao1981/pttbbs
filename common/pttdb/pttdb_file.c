@@ -24,7 +24,7 @@ Err
 pttdb_file_attach_main_dir(UUID main_id, char *dirname)
 {
     char *disp_uuid = display_uuid(main_id);
-    strcat(dirname, "/M%s", disp_uuid[0]);
+    sprintf(dirname, "/M%c", disp_uuid[0]);
     free(disp_uuid);
 
     return S_OK;
@@ -51,7 +51,7 @@ pttdb_file_get_data(UUID main_id, enum PttDBContentType content_type, UUID conte
     if(error_code) return error_code;
 
     char *disp_uuid = display_uuid(content_id);
-    sprintf(filename, "%s/T%d/U%s/B%d/F%d", dir_prefix, content_type, disp_uuid);
+    sprintf(filename, "%s/T%d/U%s/B%d/F%d", dir_prefix, content_type, disp_uuid, block_id, file_id);
     free(disp_uuid);
 
     int tmp_len = 0;
@@ -67,12 +67,15 @@ pttdb_file_get_data(UUID main_id, enum PttDBContentType content_type, UUID conte
     }
     close(fd);
 
+    *len = tmp_len;
+
     return S_OK;
 }
 
 Err
 pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID content_id, int block_id, int file_id, char *buf, int len)
 {
+    char dir_prefix[MAX_FILENAME_SIZE] = {};
     char filename[MAX_FILENAME_SIZE] = {};
     char *p_filename = filename;
 
@@ -116,7 +119,7 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
     sprintf(filename, "/F%d", file_id);
 
     int fd = OpenCreate(filename, O_WRONLY);
-    write(fd, dict_link_list->buf, dict_link_list->len);
+    write(fd, buf, len);
     close(fd);
 
     return error_code;
