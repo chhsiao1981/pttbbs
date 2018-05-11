@@ -17,8 +17,8 @@ extern "C" {
 #include "proto.h"
 
 #define VEDIT3_ACTION_N_GET_KEY 10
-#define NS_SLEEP_WAIT_BUFFER_SAVE 100000000 // 100 ms
-#define N_ITER_WAIT_BUFFER_SAVE 100         // wait for 10 secs
+#define NS_SLEEP_WAIT_BUFFER_SAVE 50000000 // 50 ms
+#define N_ITER_WAIT_BUFFER_SAVE 100         // wait for 5 secs
 
 Err _vedit3_action_get_key(int *ch);
 
