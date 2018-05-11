@@ -81,6 +81,8 @@ pttdb_file_get_data(UUID main_id, enum PttDBContentType content_type, UUID conte
     Err error_code = pttdb_file_get_main_dir_name(main_id, dir_prefix);
     if(error_code) return error_code;
 
+    fprintf(stderr, "pttdb_file.pttdb_file_get_data: dir_prefix: %s\n", dir_prefix);
+
     char *disp_uuid = display_uuid(content_id);
     sprintf(filename, "%s/T%d/U%s/B%d/F%d", dir_prefix, content_type, disp_uuid, block_id, file_id);
     free(disp_uuid);
