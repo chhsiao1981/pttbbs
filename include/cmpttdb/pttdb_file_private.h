@@ -10,8 +10,10 @@ extern "C" {
 #endif
 
 #include <errno.h>
+#include "var.h"
 #include "config.h"
 #include "cmsys.h"
+#include "pttstruct.h"
 #include "proto.h"
 
 #define MAX_FILENAME_SIZE 256
