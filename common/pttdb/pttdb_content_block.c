@@ -723,7 +723,7 @@ _split_contents_deal_with_last_line_block(int bytes_in_line, char *line, UUID re
  *****/
 
 Err
-_construct_contents_from_content_block_infos_mongo_core(UUID orig_content_id, int orig_block_id, UUID new_content_id, enum MongoDBId, mongo_db_id, int *n_line, int *n_block, int *len, char *line, int line_size, int *bytes_in_line, ContentBlock *content_block)
+_construct_contents_from_content_block_infos_mongo_core(UUID orig_content_id, int orig_block_id, UUID new_content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block, int *len, char *line, int line_size, int *bytes_in_line, ContentBlock *content_block)
 {
     Err error_code = S_OK;
     ContentBlock tmp_content_block = {};
@@ -745,7 +745,7 @@ _construct_contents_from_content_block_infos_mongo_core(UUID orig_content_id, in
 }
 
 Err
-_construct_contents_from_content_block_infos_file_core(UUID main_id, PttDBContentType content_type, UUID ref_id, UUID orig_id, int orig_block_id, int file_id, UUID new_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block, int *len, char *line, int line_size, int *bytes_in_line, ContentBlock *content_block)
+_construct_contents_from_content_block_infos_file_core(UUID main_id, enum PttDBContentType content_type, UUID ref_id, UUID orig_id, int orig_block_id, int file_id, UUID new_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block, int *len, char *line, int line_size, int *bytes_in_line, ContentBlock *content_block)
 {
     Err error_code = S_OK;
     char *tmp_buf = NULL;
