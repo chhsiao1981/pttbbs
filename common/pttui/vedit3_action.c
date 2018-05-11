@@ -418,7 +418,7 @@ vedit3_action_save_and_exit(bool *is_end)
 
     if(i == N_ITER_WAIT_BUFFER_SAVE) error_code = S_ERR_SAVE;
 
-    *is_end = true;
+    //*is_end = true;
 
     fprintf(stderr, "vedit3_action.vedit3_action_save_and_exit: e: %d\n", error_code);
 
