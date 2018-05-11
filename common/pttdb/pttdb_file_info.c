@@ -711,11 +711,11 @@ _save_file_info_to_db_main(FileInfo *file_info, char *user, char *ip)
         file_info->main_id,
         user,
         ip,
-        PTTDB_CONTENT_TYPE_COMMENT_REPLY,
-        p_comment->comment_id,
-        p_comment->comment_reply_id,
-        PTTDB_MONGO_COMMENT_REPLY_BLOCK,
-        p_comment->n_comment_reply_block, p_content_blocks, 0, &n_total_line, &n_total_block, &total_len);
+        PTTDB_CONTENT_TYPE_MAIN,
+        file_info->main_id,
+        file_info->main_content_id,
+        PTTDB_MONGO_MAIN_CONTENT,
+        file_info->n_main_block, file_info->main_blocks, 0, &n_total_line, &n_total_block, &total_len);
 
     error_code = _save_file_info_to_db_content_blocks_to_db(file_info->main_id, file_info->main_content_id, file_info->n_main_block, file_info->main_blocks);
 
