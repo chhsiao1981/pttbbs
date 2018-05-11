@@ -7,7 +7,7 @@ vedit3_action_to_store(bool *is_end)
     Err error_code = S_OK;
     int ch;
 
-    while (true) {
+    for(int i = 0; i < VEDIT3_ACTION_N_GET_KEY; i++) {
         error_code = _vedit3_action_get_key(&ch);
         if (error_code) break;
 
@@ -393,9 +393,30 @@ _vedit3_action_get_key(int *ch)
 Err
 vedit3_action_save_and_exit(bool *is_end)
 {
+    PTTUI_BUFFER_INFO.is_to_save = true;
+
+    bool tmp_is_end = false;
+    struct timespec req = {0, NS_SLEEP_WAIT_BUFFER_SAVE};
+    struct timespec rem = {};
+
+    int ret_sleep = 0;
+    for(int i = 0; i < N_ITER_WAIT_BUFFER_SAVE; i++) {
+        if(PTTUI_BUFFER_INFO.is_saved) tmp_is_end = true;
+
+        if(tmp_is_end) break;
+
+        ret_sleep = nanosleep(&req, &rem);
+        if(ret_sleep) {
+            error_code = S_ERR;
+            break;
+        }
+    }
+
+    if(i == N_ITER_WAIT_BUFFER_SAVE) error_code = S_ERR_SAVE;
+
     *is_end = true;
 
-    return S_OK;
+    return error_code;
 }
 
 Err
@@ -949,7 +970,7 @@ Err
 vedit3_action_delete_line()
 {
     VEDIT3_EDITOR_STATUS.current_col = 0;
-    
+
     return vedit3_action_delete_end_of_line();
 }
 
@@ -1419,5 +1440,11 @@ _vedit3_action_delete_line_core(PttUIBuffer *buffer)
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
+    return S_OK;
+}
+
+Err
+_vedit3_action_save()
+{
     return S_OK;
 }

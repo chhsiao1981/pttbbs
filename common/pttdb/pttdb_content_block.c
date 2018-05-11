@@ -73,6 +73,60 @@ split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, en
 }
 
 Err
+construct_contents_from_content_block_infos(UUID main_id, char *updater, char *update_ip, enum PttDBContentType content_type, UUID ref_id, UUID orig_content_id, enum MongoDBId mongo_db_id, int n_content_block_info, ContentBlockInfo *content_blocks, time64_t create_milli_timestamp, int *n_line, int *n_block, int *len)
+{
+    Err error_code = S_OK;
+
+    UUID new_content_id = {};
+
+    if (!create_milli_timestamp) {
+        error_code = get_milli_timestamp(&create_milli_timestamp);
+        if (error_code) return error_code;
+    }
+
+    error_code = gen_content_uuid_with_db(MONGO_MAIN_CONTENT, new_id, create_milli_timestamp);
+    if (error_code) return error_code;
+
+    ContentBlockInfo *p_content_block = content_blocks;
+    ContentBlock content_block = {};
+    char line[MAX_BUF_SIZE];
+    int bytes_in_line = 0;
+
+    for (int i = 0; i < n_content_block; i++, p_content_block++) {
+        for (int j = 0; j < p_content_block->n_file; j++) {
+
+            switch(p_content_block->storage_type) {
+            case PTTDB_STORAGE_TYPE_MONGO:
+                break;
+                error_code = _construct_contents_from_content_block_infos_mongo_core(orig_content_id, i, new_content_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
+            case PTTDB_STORAGE_TYPE_FILE:
+                error_code = _construct_contents_from_content_block_infos_file_core(main_id, content_type, ref_id, orig_id, i, j, new_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
+                break;
+            default:
+                break;
+            }
+            if (error_code) break;
+        }
+
+        if (error_code) break;
+    }
+    if (error_code) return error_code;
+
+    if (bytes_in_line) { // last block
+        error_code = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, new_id, mongo_db_id, &content_block, n_line, n_block);
+    }
+
+    if(!error_code) {
+        error_code = update_main(main_id, new_id, updater, update_ip, create_milli_timestamp, *n_line, *n_block, *len);
+    }
+
+    // free
+    destroy_content_block(&content_block);
+
+    return S_OK;
+}
+
+Err
 delete_content(UUID content_id, enum MongoDBId mongo_db_id)
 {
     Err error_code = S_OK;
@@ -662,6 +716,55 @@ _split_contents_deal_with_last_line_block(int bytes_in_line, char *line, UUID re
     }
 
     return S_OK;
+}
+
+/*****
+ * construct-contents-from-content-blocks
+ *****/
+
+Err
+_construct_contents_from_content_block_infos_mongo_core(UUID orig_content_id, int orig_block_id, UUID new_content_id, enum MongoDBId, mongo_db_id, int *n_line, int *n_block, int *len, char *line, int line_size, int *bytes_in_line, ContentBlock *content_block)
+{
+    Err error_code = S_OK;
+    ContentBlock tmp_content_block = {};
+
+    error_code = read_content_block(orig_content_id, orig_block_id, mongo_db_id, &tmp_content_block);
+
+    if(!error_code) {
+        error_code = _split_contents_core(tmp_content_block->buf_block, tmp_content_block->len_block, ref_id, new_content_id, mongo_db_id, n_line, n_block, line, line_size, bytes_in_line, content_block);
+    }
+
+    if(!error_code) {
+        *len += n_tmp_buf;
+    }
+
+    // free
+    destroy_content_block(&tmp_content_block);
+
+    return error_code;
+}
+
+Err
+_construct_contents_from_content_block_infos_file_core(UUID main_id, PttDBContentType content_type, UUID ref_id, UUID orig_id, int orig_block_id, int file_id, UUID new_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block, int *len, char *line, int line_size, int *bytes_in_line, ContentBlock *content_block)
+{
+    Err error_code = S_OK;
+    char *tmp_buf = NULL;
+    int n_tmp_buf = 0;
+
+    error_code = pttdb_file_get_data(main_id, content_type, orig_id, content_block_id, file_id, &tmp_buf, &n_tmp_buf);
+
+    if(!error_code) {
+        error_code = _split_contents_core(tmp_buf, n_tmp_buf, ref_id, new_id, mongo_db_id, n_line, n_block, line, line_size, bytes_in_line, content_block);
+    }
+
+    if(!error_code) {
+        *len += n_tmp_buf;
+    }
+
+    // free
+    safe_free(&tmp_buf);
+
+    return error_code;
 }
 
 /**

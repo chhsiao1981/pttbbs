@@ -23,6 +23,7 @@ typedef char Err;
 #define S_ERR_EDIT_LOCK -12         // 244
 #define S_ERR_EXTEND -13            // 243
 #define S_ERR_NOT_INIT -14          // 242
+#define S_ERR_SAVE                  // 241
 
 #ifdef __cplusplus
 }

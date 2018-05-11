@@ -405,6 +405,9 @@ update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int f
 }
 
 Err
+update_main(UUID main_id, UUID content_id, char *)
+
+Err
 read_main_header_to_bson(UUID main_id, bson_t *fields, bson_t **b_main)
 {
     Err error_code = S_OK;

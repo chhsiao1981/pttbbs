@@ -25,6 +25,10 @@ typedef struct ContentBlock {
 
     int max_buf_len;                                 // max buf len (not in db)
     char *buf_block;                                 // buf
+
+    // TODO: line-info
+    // char **lines; 
+    // int *len_lines;
 } ContentBlock;
 
 Err split_contents(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);

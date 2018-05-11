@@ -65,6 +65,8 @@ Err file_info_is_next_line(FileInfo *file_info, enum PttDBContentType content_ty
 
 Err file_info_get_next_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum PttDBStorageType *new_storage_type);
 
+Err save_file_info_to_db(FileInfo *file_info);
+
 Err log_file_info(FileInfo *file_info, char *prompt);
 
 #ifdef __cplusplus

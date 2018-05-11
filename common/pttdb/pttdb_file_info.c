@@ -678,6 +678,90 @@ _file_info_get_next_line_comment_reply(FileInfo *file_info, UUID orig_id GCC_UNU
     return S_OK;
 }
 
+/**********
+ * save to db
+ **********/
+Err
+save_file_info_to_db(FileInfo *file_info)
+{
+    Err error_code = _save_file_info_to_db_main(file_info);
+    if(error_code) return error_code;
+
+    error_code = _save_file_info_to_db_comment(file_info);
+    if(error_code) return error_code;
+
+    error_code = _save_file_info_to_db_comment_reply(file_info);
+    if(error_code) return error_code;
+
+    return S_OK;
+}
+
+Err
+_save_file_info_to_db_main(FileInfo *file_info)
+{
+    bool is_modified = false;
+    Err error_code = _save_file_info_to_db_is_modified(file_info->main_blocks, file_info->n_main_block, &is_modified);
+    if(error_code) return error_code;
+    if(!is_modified) return S_OK;
+
+    error_code = _save_file_info_to_db_content_blocks_to_db(file_info->main_id, file_info->main_content_id, file_info->n_main_block, file_info->main_blocks);
+
+    return error_code;
+}
+
+Err
+_save_file_info_to_db_comment(FileInfo *file_info)
+{
+    return S_OK;
+}
+
+Err
+_save_file_info_to_db_comment_reply(FileInfo *file_info)
+{
+    Err error_code = S_OK;
+    CommentInfo *p_comment = file_info->comments;
+    ContentBlockInfo *p_content_blocks = NULL;
+    bool is_modified = false;    
+    for(int i = 0; i < file_info->n_comment; i++, p_comment++) {
+        p_content_blocks = p_comment->comment_reply_blocks;
+        error_code = _save_file_info_to_db_is_modified(p_content_blocks, p_comment->n_comment_reply_block, &is_modified);
+        if(error_code) break;
+        if(!is_modified) continue;
+
+        error_code = _save_file_info_to_db_content_blocks_to_db(p_comment->comment_id, p_comment->comment_reply_id, p_comment->n_comment_reply_block, p_content_blocks);
+
+        return error_code;
+    }
+    return S_OK;
+}
+
+Err
+_save_file_info_to_db_is_modified(ContentBlockInfo *content_blocks, int n_content_block, bool *is_modified)
+{
+    ContentBlockInfo *p_content_block = content_blocks;
+    int i = 0;
+    for(i = 0; i < n_content_block; i++, p_content_block++) {
+        if(p_content_block->storage_type == PTTDB_STORAGE_TYPE_FILE) break;
+    }
+    *is_modified = i == n_content_block ? false : true;
+
+    return S_OK;
+}
+
+Err
+_save_file_info_to_db_content_blocks_to_db(UUID main_id, UUID ref_id, UUID orig_id, enum PttDBContentType content_type, enum MongoDBId mongo_id, int n_content_block, ContentBlockInfo *content_blocks)
+{
+    char buf[MAX_BUF_SIZE] = {};
+    char tmp_buf[MAX_BUF_SIZE] = {};
+
+    ContentBlockInfo *p_content_block = content_blocks;
+    for(int i = 0; i < n_content_block; i++, p_content_block++) {
+        for(int j = 0; j < p_content_block)
+        error_code = pttdb_file_get(main_id, content_type, orig_id, i, )
+    }
+}
+
+
 Err
 log_file_info(FileInfo *file_info, char *prompt)
 {

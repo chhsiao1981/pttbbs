@@ -1,0 +1,122 @@
+#include "cmpttdb/pttdb_file.h"
+
+Err
+init_pttdb_file()
+{
+    int ret = Mkdir(PTTDB_FILE_PREFIX_DIR);
+    if(ret < 0 && errno != EEXIST) return S_ERR;
+
+    return S_OK;
+}
+
+Err
+pttdb_file_get_main_dir_prefix_name(UUID main_id, char *dirname)
+{
+    char *disp_uuid = display_uuid(main_id);
+    sprintf(dirname, "%s/m%c", PTTDB_FILE_PREFIX_DIR, disp_uuid[0]);
+    free(disp_uuid);
+
+    return S_OK;
+}
+
+Err
+pttdb_file_attach_main_dir(UUID main_id, char *dirname)
+{
+    char *disp_uuid = display_uuid(main_id);
+    strcat(dirname, "/M%s", disp_uuid[0]);
+    free(disp_uuid);
+
+    return S_OK;
+}
+
+Err
+pttdb_file_get_main_dir_name(UUID main_id, char *dirname)
+{
+    Err error_code = pttdb_file_get_main_dir_prefix_name(main_id, dirname);
+    if(error_code) return error_code;
+
+    error_code = pttdb_file_attach_main_dir(main_id, dirname);
+
+    return error_code;
+}
+
+Err
+pttdb_file_get_data(UUID main_id, PttDBContentType content_type, UUID content_id, int block_id, int file_id, char **buf, int *len)
+{
+    char filename[MAX_FILENAME_SIZE] = {};
+    char dir_prefix[MAX_FILENAME_SIZE] = {};
+
+    Err error_code = pttdb_file_get_main_dir_name(main_id, dir_prefix);
+    if(error_code) return error_code;
+
+    char *disp_uuid = display_uuid(content_id);
+    sprintf(filename, "%s/T%d/U%s/B%d/F%d", dir_prefix, content_type, disp_uuid);
+    free(disp_uuid);
+
+    int tmp_len = 0;
+    int fd = open(filename, O_RDONLY);
+
+    int max_buf_size = MAX_BUF_SIZE;
+    int bytes = 0;
+    *buf = malloc(max_buf_size);
+    while((bytes = read(fd, *buf + tmp_len, MAX_BUF_SIZE)) > 0) {
+        *buf = realloc(buf, max_buf_size + MAX_BUF_SIZE);
+        tmp_len += bytes;
+        max_buf_size += MAX_BUF_SIZE;
+    }
+    close(fd);
+
+    return S_OK;
+}
+
+Err
+pttdb_file_save_data(UUID main_id, PttDBContentType content_type, UUID content_id, int block_id, int file_id, char *buf, int len)
+{
+    char filename[MAX_FILENAME_SIZE] = {};
+    char *p_filename = filename;
+
+    Err error_code = pttdb_file_get_main_dir_prefix_name(main_id, p_filename);
+    if(error_code) return error_code;
+    int ret = Mkdir(filename);
+    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
+    if(error_code) return error_code;
+
+    error_code = pttdb_file_attach_main_dir(main_id, p_filename);
+    if(error_code) return error_code;
+    ret = Mkdir(filename);
+    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
+    if(error_code) return error_code;
+
+    while(*p_filename) p_filename++;
+
+    sprintf(p_filename, "/T%d", dir_prefix, content_type);
+    ret = Mkdir(filename);
+    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
+    if(error_code) return error_code;
+
+    while(*p_filename) p_filename++;
+
+    char *disp_uuid = display_uuid(content_id);
+    sprintf(p_filename, "/U%s", disp_uuid);
+    free(disp_uuid);
+    ret = Mkdir(filename);
+    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
+    if(error_code) return error_code;
+
+    while(*p_filename) p_filename++;
+
+    sprintf(p_filename, "/B%d", block_id);
+    ret = Mkdir(filename);
+    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
+    if(error_code) return error_code;
+
+    while(*p_filename) p_filename++;
+
+    sprintf(filename, "/F%d", file_id);
+
+    int fd = OpenCreate(filename, O_WRONLY);
+    write(fd, dict_link_list->buf, dict_link_list->len);
+    close(fd);
+
+    return error_code;
+}

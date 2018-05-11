@@ -61,6 +61,9 @@ typedef struct PttUIBufferInfo {
     int n_to_delete;
     int n_new;
 
+    bool is_to_save;
+    bool is_saved;
+
     UUID main_id;
 } PttUIBufferInfo;
 

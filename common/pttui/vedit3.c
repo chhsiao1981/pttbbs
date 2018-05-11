@@ -17,6 +17,9 @@ VEdit3EditorStatus DEFAULT_VEDIT3_EDITOR_STATUS = {
     false,               // is own lock buffer info
     false,               // is redraw everything
 
+    false,               // is save
+    false,               // is end
+
     NULL,                // current-buffer
 
     0,                   // mode0
@@ -516,6 +519,10 @@ Err
 vedit3_buffer()
 {
     Err error_code = S_OK;
+
+    if(PTTUI_BUFFER_INFO.is_saved) return S_OK;
+
+    if(PTTUI_BUFFER_INFO.is_to_save) return save_pttui_buffer_info_to_db();
 
     PttUIState expected_state = {};
 
