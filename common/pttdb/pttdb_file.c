@@ -21,7 +21,7 @@ destroy_pttdb_file()
     Err error_code = pttdb_file_get_dir_prefix_name(dir_prefix);
     if (error_code) return error_code;
 
-    Rmdir(dir_prefix);    
+    Rmdir(dir_prefix, NULL);    
 
     return S_OK;
 }
@@ -119,6 +119,7 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
     if(ret < 0 && errno != EEXIST) error_code = S_ERR;
     if(error_code) return error_code;
 
+    // no need to do p_filename because attach_main_dir take care of it.
     error_code = pttdb_file_attach_main_dir(main_id, p_filename);
     if(error_code) return error_code;
     ret = Mkdir(filename);
