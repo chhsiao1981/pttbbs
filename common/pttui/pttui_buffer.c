@@ -1457,6 +1457,7 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     if(!error_code) {
         error_code = pttui_resource_dict_integrate_with_modified_pttui_buffer_info(buffer_info->head, buffer_info->tail, &resource_dict);
     }
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after integrate: e: %d\n", error_code);
 
     if(!error_code) {
         error_code = pttui_resource_dict_save_to_tmp_file(&resource_dict);

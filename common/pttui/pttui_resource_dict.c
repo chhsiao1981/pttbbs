@@ -518,9 +518,6 @@ _pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list
 {
     char filename[MAX_FILENAME_SIZE] = {};
 
-    char *disp_uuid = display_uuid(dict_link_list->the_id);
-    enum PttDBContentType content_type = dict_link_list->content_type;
-
     Err error_code = pttdb_file_save_data(
         main_id,
         dict_link_list->content_type,
