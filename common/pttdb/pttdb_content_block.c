@@ -749,6 +749,11 @@ _construct_contents_from_content_block_infos_file_core(UUID main_id, enum PttDBC
     int n_tmp_buf = 0;
 
     error_code = pttdb_file_get_data(main_id, content_type, orig_content_id, orig_block_id, file_id, &tmp_buf, &n_tmp_buf);
+    char *disp_uuid = display_uuid(main_id);
+    char *disp_uuid2 = display_uuid2(orig_content_id);
+    fprintf(stderr, "pttdb_content_block._construct_contents_from_content_block_infos_file_core: main_id: %s orig_content_id: %s content_type: %d orig_block_id: %d file_id: %d n_tmp_buf: %d tmp_buf: %s\n", disp_uuid2, disp_uuid2, content_type, orig_block_id, file_id, n_tmp_buf, tmp_buf);
+    free(disp_uuid2);
+    free(disp_uuid);
 
     if(!error_code) {
         error_code = _split_contents_core(tmp_buf, n_tmp_buf, ref_id, new_content_id, mongo_db_id, n_line, n_block, line, line_size, bytes_in_line, content_block);
