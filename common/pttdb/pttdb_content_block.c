@@ -830,6 +830,42 @@ deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *content
     error_code = bson_get_value_bin(content_block_bson, "buf_block", content_block->max_buf_len, content_block->buf_block, &len);
     if (error_code) return error_code;
 
+    error_code = deserialize_content_block_lines(content_block);
 
-    return S_OK;
+    return error_code;
+}
+
+Err
+deserialize_content_block_lines(ContentBlock *content_block)
+{
+    Err error_code = S_OK;
+    
+    char *p_buf = content_block->buf_block;
+    char *pre_buf = NULL;
+
+    int n_line = content_block->n_line;
+    content_block->lines = malloc(sizeof(char *) * n_line);
+    content_block->len_lines = malloc(sizeof(int) * n_line);
+
+    int len = content_block->len_block;
+
+    char **p_line = content_block->lines;
+    int *p_len_line = content_block->len_lines;
+
+    for(int i = 0; i < n_line; i++, p_line++, p_len_line++) {
+        if(len <= 0) {
+            error_code = S_ERR;
+            break;
+        }
+
+        pre_buf = p_buf;
+        for(; len && *p_buf && *p_buf != '\r' && *p_buf != '\n'; len--, p_buf++);
+        for(; *p_buf && (*p_buf == '\r' || *p_buf == '\n'); len--, p_buf++);
+
+        *p_line = pre_buf;
+        *p_len_line = p_buf - pre_buf;
+    }
+    if(i != n_line || len != 0) error_code = S_ERR;
+
+    return error_code;
 }

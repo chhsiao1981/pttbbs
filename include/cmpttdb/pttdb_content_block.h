@@ -26,9 +26,9 @@ typedef struct ContentBlock {
     int max_buf_len;                                 // max buf len (not in db)
     char *buf_block;                                 // buf
 
-    // TODO: line-info
-    // char **lines; 
-    // int *len_lines;
+    // available only with read-content-block series
+    char **lines; 
+    int *len_lines;
 } ContentBlock;
 
 Err split_contents(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);
@@ -59,6 +59,7 @@ Err read_content_blocks_by_query_to_bsons(bson_t *query, bson_t *fields, int max
 
 Err serialize_content_block_bson(ContentBlock *content_block, bson_t **content_block_bson);
 Err deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *content_block);
+Err deserialize_content_block_lines(ContentBlock *content_block);
 
 Err sort_b_content_blocks_by_block_id(bson_t **b_content_blocks, int n_block);
 Err ensure_b_content_blocks_block_ids(bson_t **b_content_blocks, int start_block_id, int n_block);
