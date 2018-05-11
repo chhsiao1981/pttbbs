@@ -12,6 +12,7 @@ extern "C" {
 #include <errno.h>
 #include "config.h"
 #include "cmsys.h"
+#include "proto.h"
 
 #define MAX_FILENAME_SIZE 256
 

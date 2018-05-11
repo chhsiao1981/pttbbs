@@ -6,7 +6,8 @@ init_pttdb_file()
 {
     char dir_prefix[MAX_FILENAME_SIZE] = {};
     Err error_code = pttdb_file_get_dir_prefix_name(dir_prefix);
-    
+    if(error_code) return error_code;
+
     int ret = Mkdir(dir_prefix);
     if(ret < 0 && errno != EEXIST) return S_ERR;
 
