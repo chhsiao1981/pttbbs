@@ -377,7 +377,7 @@ TEST(pttdb_content_block, read_content_blocks)
     for (int i = 0; i < 10; i++) {
         EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_blocks[i].the_id, UUIDLEN));
         EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_blocks[i].ref_id, UUIDLEN));
-        EXPECT_EQ(5, content_blocks[i].len_block);
+        EXPECT_EQ(6, content_blocks[i].len_block);
         EXPECT_EQ(0, content_blocks[i].n_line);
         EXPECT_EQ(0, strncmp((char *)"test1\n", content_blocks[i].buf_block, 6));
         EXPECT_EQ(i, content_blocks[i].block_id);
