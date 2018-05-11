@@ -861,10 +861,11 @@ deserialize_content_block_lines(ContentBlock *content_block)
         for(; len && *p_buf && *p_buf != '\r' && *p_buf != '\n'; len--, p_buf++);
         for(; *p_buf && (*p_buf == '\r' || *p_buf == '\n'); len--, p_buf++);
 
+        fprintf(stderr, "pttdb_content_block.deserialize_content_block_lines: pre_buf: %s p_buf: %s\n", pre_buf, p_buf);
+
         *p_line = pre_buf;
         *p_len_line = p_buf - pre_buf;
     }
-    if(i != n_line || len != 0) error_code = S_ERR;
 
     return error_code;
 }
