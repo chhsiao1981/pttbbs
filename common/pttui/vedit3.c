@@ -522,7 +522,7 @@ vedit3_buffer()
 
     if(PTTUI_BUFFER_INFO.is_saved) return S_OK;
 
-    if(PTTUI_BUFFER_INFO.is_to_save) return save_pttui_buffer_info_to_db(&PTTUI_BUFFER_INFO, cuser.userid, fromhost);
+    if(PTTUI_BUFFER_INFO.is_to_save) return save_pttui_buffer_info_to_db(&PTTUI_BUFFER_INFO, &PTTUI_FILE_INFO, cuser.userid, fromhost);
 
     PttUIState expected_state = {};
 
