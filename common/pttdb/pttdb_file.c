@@ -102,6 +102,8 @@ pttdb_file_get_data(UUID main_id, enum PttDBContentType content_type, UUID conte
     }
     close(fd);
 
+    fprintf(stderr, "pttdb_file.pttdb_file_get_data: max_buf_size: %d tmp_len: %d\n", max_buf_size, tmp_len);
+    p_buf[tmp_len] = 0;
     *buf = p_buf;
     *len = tmp_len;
 
