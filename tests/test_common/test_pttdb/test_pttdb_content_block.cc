@@ -277,7 +277,7 @@ TEST(pttdb_content_block, dynamic_read_content_blocks)
     for (int i = 0; i < 10; i++) {
         EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_blocks[i].the_id, UUIDLEN));
         EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_blocks[i].ref_id, UUIDLEN));
-        EXPECT_EQ(5, content_blocks[i].len_block);
+        EXPECT_EQ(6, content_blocks[i].len_block);
         EXPECT_EQ(0, content_blocks[i].n_line);
         EXPECT_EQ(0, strncmp((char *)"test1\n", content_blocks[i].buf_block, 6));
         EXPECT_EQ(i, content_blocks[i].block_id);
@@ -321,7 +321,7 @@ TEST(pttdb_content_block, dynamic_read_content_blocks2)
     char buf[41] = {};
     Err error = dynamic_read_content_blocks(content_id, 10, 0, MONGO_MAIN_CONTENT, buf, 40, content_blocks, &n_block, &len);
     EXPECT_EQ(S_ERR_BUFFER_LEN, error);
-    EXPECT_EQ(7, n_block);
+    EXPECT_EQ(6, n_block);
     EXPECT_EQ(36, len);
     for (int i = 0; i < 6; i++) {
         EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_blocks[i].the_id, UUIDLEN));
@@ -373,7 +373,7 @@ TEST(pttdb_content_block, read_content_blocks)
     Err error = read_content_blocks(content_id, 10, 0, MONGO_MAIN_CONTENT, content_blocks, &n_block, &len);
     EXPECT_EQ(S_OK, error);
     EXPECT_EQ(10, n_block);
-    EXPECT_EQ(50, len);
+    EXPECT_EQ(60, len);
     for (int i = 0; i < 10; i++) {
         EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_blocks[i].the_id, UUIDLEN));
         EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_blocks[i].ref_id, UUIDLEN));
