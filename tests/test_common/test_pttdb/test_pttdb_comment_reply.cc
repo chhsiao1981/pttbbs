@@ -300,11 +300,11 @@ TEST(pttdb_comment_reply, delete_comment_reply) {
     UUID main_id;
     char poster[IDLEN + 1] = {};
     char ip[IPV4LEN + 1] = {};
-    char content[] = "temp_content";
+    char content[] = "temp_content\n";
     int len = strlen(content);
 
-    UUID comment_reply_id;
-    UUID comment_id;    
+    UUID comment_reply_id = {};
+    UUID comment_id = {};    
 
     gen_uuid(main_id, 0);
     gen_uuid(comment_id, 0);
