@@ -46,6 +46,8 @@ pttdb_file_get_main_dir_prefix_name(UUID main_id, char *dirname)
     sprintf(p_dirname, "/m%c", disp_uuid[0]);
     free(disp_uuid);
 
+    fprintf(stderr, "ptdb_file.pttdb_file_get_main_dir_prefix_name: dirname: %s\n", dirname);
+
     return S_OK;
 }
 
@@ -148,8 +150,9 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
 
     while(*p_filename) p_filename++;
 
-    sprintf(filename, "/F%d", file_id);
+    sprintf(p_filename, "/F%d", file_id);
 
+    fprintf(stderr, "pttdb_file_save_data: to open-create: filename: %s\n", filename);
     int fd = OpenCreate(filename, O_WRONLY);
     write(fd, buf, len);
     close(fd);
