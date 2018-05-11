@@ -55,7 +55,8 @@ Err
 pttdb_file_attach_main_dir(UUID main_id, char *dirname)
 {
     char *disp_uuid = display_uuid(main_id);
-    sprintf(dirname, "/M%s", disp_uuid);
+    char *p_dirname = dirname + strlen(dirname);
+    sprintf(p_dirname, "/M%s", disp_uuid);
     free(disp_uuid);
 
     return S_OK;
