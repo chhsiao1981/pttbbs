@@ -29,7 +29,7 @@ Err _pttui_resource_dict_add_data(UUID the_id, int block_id, int file_id, int le
 
 Err _pttui_resource_dict_get_content_block_from_file_core(PttUIBuffer *buffer, PttUIResourceDict *resource_dict);
 
-Err _pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list, char *dir_prefix);
+Err _pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list, UUID main_id);
 
 #ifdef __cplusplus
 }

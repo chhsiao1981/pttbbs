@@ -498,18 +498,13 @@ pttui_resource_dict_save_to_tmp_file(PttUIResourceDict *resource_dict)
 
     char dir_prefix[MAX_FILENAME_SIZE] = {};
 
-    setuserfile(dir_prefix, PTTUI_EDIT_TMP_DIR);    
-    char *disp_uuid = display_uuid(resource_dict->main_id);
-    strcat(dir_prefix, disp_uuid);
-    free(disp_uuid);
-
     _PttUIResourceDictLinkList *p_dict_link_list = NULL;
     int j = 0;
 
     for(int i = 0; i < N_PTTUI_RESOURCE_DICT_LINK_LIST; i++) {
         if(!resource_dict->data[i]) continue;
         for(j = 0, p_dict_link_list = resource_dict->data[i]; p_dict_link_list; j++, p_dict_link_list = p_dict_link_list->next) {
-            error_code = _pttui_resource_dict_save_to_tmp_file(p_dict_link_list, dir_prefix);
+            error_code = _pttui_resource_dict_save_to_tmp_file(p_dict_link_list, resource_dict->main_id);
             if(error_code) break;
         }
         if(error_code) break;
@@ -519,34 +514,23 @@ pttui_resource_dict_save_to_tmp_file(PttUIResourceDict *resource_dict)
 }
 
 Err
-_pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list, char *dir_prefix)
+_pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list, UUID main_id)
 {
-    Err error_code = S_OK;
     char filename[MAX_FILENAME_SIZE] = {};
 
     char *disp_uuid = display_uuid(dict_link_list->the_id);
     enum PttDBContentType content_type = dict_link_list->content_type;
 
-    sprintf(filename, "%s/T%d", dir_prefix, content_type);
-    int ret = Mkdir(filename);
-    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
+    Err error_code = pttdb_file_save_data(
+        main_id,
+        dict_link_list->content_type,
+        dict_link_list->the_id,
+        dict_link_list->block_id,
+        dict_link_list->file_id,
+        dict_link_list->buf,
+        dict_link_list->len
+        );
 
-    sprintf(filename, "%s/T%d/U%s", dir_prefix, content_type, disp_uuid);
-    ret = Mkdir(filename);
-    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
-
-    sprintf(filename, "%s/T%d/U%s/B%d", dir_prefix, content_type, disp_uuid, dict_link_list->block_id);
-    ret = Mkdir(filename);
-    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
-
-    sprintf(filename, "%s/T%d/U%s/B%d/F%d", dir_prefix, content_type, disp_uuid, dict_link_list->block_id, dict_link_list->file_id);
-    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_save_to_tmp_file: to save: filename: %s len: %d\n", filename, dict_link_list->len);
-
-    int fd = OpenCreate(filename, O_WRONLY);
-    write(fd, dict_link_list->buf, dict_link_list->len);
-    close(fd);
-
-    free(disp_uuid);
     return error_code;
 }
 
