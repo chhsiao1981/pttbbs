@@ -21,7 +21,7 @@ TEST(pttdb_content_block, save_content_block) {
     error = reset_content_block(&content_block, ref_id, content_id, 3);
     EXPECT_EQ(S_OK, error);
 
-    char buf[] = "test_buf\r\ntest2";
+    char buf[] = "test_buf\r\ntest2\n";
     int len_buf = strlen(buf);
     associate_content_block(&content_block, buf, len_buf);
     content_block.len_block = len_buf;
@@ -64,7 +64,7 @@ TEST(pttdb_content_block, save_content_block_n_only) {
     error = reset_content_block(&content_block, ref_id, content_id, 3);
     EXPECT_EQ(S_OK, error);
 
-    char buf[] = "test_buf\ntest2";
+    char buf[] = "test_buf\ntest2\n";
     int len_buf = strlen(buf);
     associate_content_block(&content_block, buf, len_buf);
     content_block.len_block = len_buf;
@@ -259,7 +259,7 @@ TEST(pttdb_content_block, dynamic_read_content_blocks)
                    "ref_id", BCON_BINARY(ref_id, UUIDLEN),
                    "len_block", BCON_INT32(5),
                    "n_line", BCON_INT32(0),
-                   "buf_block", BCON_BINARY((unsigned char *)"test1", 5)
+                   "buf_block", BCON_BINARY((unsigned char *)"test1\n", 5)
                );
         db_update_one(MONGO_MAIN_CONTENT, b[i], b[i], true);
     }
@@ -279,11 +279,11 @@ TEST(pttdb_content_block, dynamic_read_content_blocks)
         EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_blocks[i].ref_id, UUIDLEN));
         EXPECT_EQ(5, content_blocks[i].len_block);
         EXPECT_EQ(0, content_blocks[i].n_line);
-        EXPECT_EQ(0, strncmp((char *)"test1", content_blocks[i].buf_block, 5));
+        EXPECT_EQ(0, strncmp((char *)"test1\n", content_blocks[i].buf_block, 6));
         EXPECT_EQ(i, content_blocks[i].block_id);
     }
 
-    EXPECT_STREQ("test1test1test1test1test1test1test1test1test1test1", buf);
+    EXPECT_STREQ("test1\ntest1\ntest1\ntest1\ntest1\ntest1\ntest1\ntest1\ntest1\ntest1\n", buf);
 
     for (int i = 0; i < 10; i++) {
         dissociate_content_block(&content_blocks[i]);
@@ -308,7 +308,7 @@ TEST(pttdb_content_block, dynamic_read_content_blocks2)
                    "ref_id", BCON_BINARY(ref_id, UUIDLEN),
                    "len_block", BCON_INT32(5),
                    "n_line", BCON_INT32(0),
-                   "buf_block", BCON_BINARY((unsigned char *)"test1", 5)
+                   "buf_block", BCON_BINARY((unsigned char *)"test1\n", 6)
                );
         db_update_one(MONGO_MAIN_CONTENT, b[i], b[i], true);
     }
@@ -328,11 +328,11 @@ TEST(pttdb_content_block, dynamic_read_content_blocks2)
         EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_blocks[i].ref_id, UUIDLEN));
         EXPECT_EQ(5, content_blocks[i].len_block);
         EXPECT_EQ(0, content_blocks[i].n_line);
-        EXPECT_EQ(0, strncmp((char *)"test1", content_blocks[i].buf_block, 5));
+        EXPECT_EQ(0, strncmp((char *)"test1\n", content_blocks[i].buf_block, 6));
         EXPECT_EQ(i, content_blocks[i].block_id);
     }
 
-    EXPECT_STREQ("test1test1test1test1test1test1test1test1", buf);
+    EXPECT_STREQ("test1\ntest1\ntest1\ntest1\ntest1\ntest1\ntest1\ntest1\n", buf);
 
     for (int i = 0; i < 10; i++) {
         dissociate_content_block(&content_blocks[i]);
@@ -357,7 +357,7 @@ TEST(pttdb_content_block, read_content_blocks)
                    "ref_id", BCON_BINARY(ref_id, UUIDLEN),
                    "len_block", BCON_INT32(5),
                    "n_line", BCON_INT32(0),
-                   "buf_block", BCON_BINARY((unsigned char *)"test1", 5)
+                   "buf_block", BCON_BINARY((unsigned char *)"test1\n", 6)
                );
         db_update_one(MONGO_MAIN_CONTENT, b[i], b[i], true);
     }
@@ -379,7 +379,7 @@ TEST(pttdb_content_block, read_content_blocks)
         EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_blocks[i].ref_id, UUIDLEN));
         EXPECT_EQ(5, content_blocks[i].len_block);
         EXPECT_EQ(0, content_blocks[i].n_line);
-        EXPECT_EQ(0, strncmp((char *)"test1", content_blocks[i].buf_block, 5));
+        EXPECT_EQ(0, strncmp((char *)"test1\n", content_blocks[i].buf_block, 6));
         EXPECT_EQ(i, content_blocks[i].block_id);
     }
 
@@ -406,7 +406,7 @@ TEST(pttdb_content_block, read_content_blocks_get_b_content_blocks)
                    "ref_id", BCON_BINARY(ref_id, UUIDLEN),
                    "len_block", BCON_INT32(5),
                    "n_line", BCON_INT32(0),
-                   "buf_block", BCON_BINARY((unsigned char *)"test1", 5)
+                   "buf_block", BCON_BINARY((unsigned char *)"test1\n", 6)
                );
         db_update_one(MONGO_MAIN_CONTENT, b[i], b[i], true);
     }
