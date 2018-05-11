@@ -119,8 +119,6 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
     if(ret < 0 && errno != EEXIST) error_code = S_ERR;
     if(error_code) return error_code;
 
-    while(*p_filename) p_filename++;
-
     error_code = pttdb_file_attach_main_dir(main_id, p_filename);
     if(error_code) return error_code;
     ret = Mkdir(filename);
