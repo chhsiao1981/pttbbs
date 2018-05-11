@@ -6,6 +6,7 @@
 #include "cmpttdb/pttdb_const.h"
 #include "cmpttdb/pttdb_uuid.h"
 #include "cmpttdb/pttdb_main.h"
+#include "cmpttdb/pttdb_file.h"
 
 #ifdef __cplusplus
 extern "C" {
