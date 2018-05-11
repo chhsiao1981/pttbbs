@@ -66,6 +66,8 @@ Err delete_main(UUID main_id, char *updater, char *ip);
 Err delete_main_by_aid(aidu_t aid, char *updater, char *ip);
 
 Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content, UUID content_id);
+Err update_main(UUID main_id, UUID content_id, char *updater, char *update_ip, time64_t update_milli_timestamp, int n_line, int n_block, int len);
+
 
 Err read_main_header_to_bson(UUID main_id, bson_t *fields, bson_t **b_main);
 
