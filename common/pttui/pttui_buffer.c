@@ -1618,7 +1618,7 @@ _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
  * save to db
  **********/
  
-Err save_pttui_buffer_info_to_db(PttUIBufferInfo *buffer_info, FileInfo *file_info)
+Err save_pttui_buffer_info_to_db(PttUIBufferInfo *buffer_info, FileInfo *file_info, char *user, char *ip)
 {
     Err error_code = save_pttui_buffer_info_to_tmp_file(buffer_info, file_info);
     if(error_code) return error_code;
@@ -1626,7 +1626,7 @@ Err save_pttui_buffer_info_to_db(PttUIBufferInfo *buffer_info, FileInfo *file_in
     error_code = pttui_buffer_rdlock_file_info();
     if(error_code) return error_code;
 
-    error_code = file_info_save_to_db(file_info);
+    error_code = save_file_info_to_db(file_info, user, ip);
 
     Err error_code_lock = pttui_buffer_unlock_file_info();
     if(!error_code && error_code_lock) error_code = error_code_lock;
@@ -1635,8 +1635,6 @@ Err save_pttui_buffer_info_to_db(PttUIBufferInfo *buffer_info, FileInfo *file_in
 
     return error_code;    
 }
-
-error_code
 
 /**********
  * shrink
