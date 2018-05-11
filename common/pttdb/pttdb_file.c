@@ -42,7 +42,7 @@ pttdb_file_get_main_dir_name(UUID main_id, char *dirname)
 }
 
 Err
-pttdb_file_get_data(UUID main_id, PttDBContentType content_type, UUID content_id, int block_id, int file_id, char **buf, int *len)
+pttdb_file_get_data(UUID main_id, enum PttDBContentType content_type, UUID content_id, int block_id, int file_id, char **buf, int *len)
 {
     char filename[MAX_FILENAME_SIZE] = {};
     char dir_prefix[MAX_FILENAME_SIZE] = {};
@@ -71,7 +71,7 @@ pttdb_file_get_data(UUID main_id, PttDBContentType content_type, UUID content_id
 }
 
 Err
-pttdb_file_save_data(UUID main_id, PttDBContentType content_type, UUID content_id, int block_id, int file_id, char *buf, int len)
+pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID content_id, int block_id, int file_id, char *buf, int len)
 {
     char filename[MAX_FILENAME_SIZE] = {};
     char *p_filename = filename;

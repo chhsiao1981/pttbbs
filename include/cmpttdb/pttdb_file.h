@@ -14,8 +14,8 @@ Err init_pttdb_file();
 Err pttdb_file_get_main_dir_prefix_name(UUID main_id, char *dirname);
 Err pttdb_file_attach_main_dir(UUID main_id, char *dirname);
 Err pttdb_file_get_main_dir_name(UUID main_id, char *dirname);
-Err pttdb_file_get_data(UUID main_id, PttDBContentType content_type, UUID content_id, int block_id, int file_id, char **buf, int *len);
-Err pttdb_file_save_data(UUID main_id, PttDBContentType content_type, UUID content_id, int block_id, int file_id, char *buf, int len);
+Err pttdb_file_get_data(UUID main_id, enum PttDBContentType content_type, UUID content_id, int block_id, int file_id, char **buf, int *len);
+Err pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID content_id, int block_id, int file_id, char *buf, int len);
 
 #ifdef __cplusplus
 }
