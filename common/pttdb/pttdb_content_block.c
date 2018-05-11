@@ -98,7 +98,7 @@ construct_contents_from_content_block_infos(UUID main_id, char *updater, char *u
             switch(p_content_block_info->storage_type) {
             case PTTDB_STORAGE_TYPE_MONGO:
                 break;
-                error_code = _construct_contents_from_content_block_infos_mongo_core(orig_content_id, i, new_content_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
+                error_code = _construct_contents_from_content_block_infos_mongo_core(ref_id, orig_content_id, i, new_content_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
             case PTTDB_STORAGE_TYPE_FILE:
                 error_code = _construct_contents_from_content_block_infos_file_core(main_id, content_type, ref_id, orig_content_id, i, j, new_content_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
                 break;
@@ -723,7 +723,7 @@ _split_contents_deal_with_last_line_block(int bytes_in_line, char *line, UUID re
  *****/
 
 Err
-_construct_contents_from_content_block_infos_mongo_core(UUID orig_content_id, int orig_block_id, UUID new_content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block, int *len, char *line, int line_size, int *bytes_in_line, ContentBlock *content_block)
+_construct_contents_from_content_block_infos_mongo_core(UUID ref_id, UUID orig_content_id, int orig_block_id, UUID new_content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block, int *len, char *line, int line_size, int *bytes_in_line, ContentBlock *content_block)
 {
     Err error_code = S_OK;
     ContentBlock tmp_content_block = {};
@@ -745,16 +745,16 @@ _construct_contents_from_content_block_infos_mongo_core(UUID orig_content_id, in
 }
 
 Err
-_construct_contents_from_content_block_infos_file_core(UUID main_id, enum PttDBContentType content_type, UUID ref_id, UUID orig_id, int orig_block_id, int file_id, UUID new_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block, int *len, char *line, int line_size, int *bytes_in_line, ContentBlock *content_block)
+_construct_contents_from_content_block_infos_file_core(UUID main_id, enum PttDBContentType content_type, UUID ref_id, UUID orig_content_id, int orig_block_id, int file_id, UUID new_content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block, int *len, char *line, int line_size, int *bytes_in_line, ContentBlock *content_block)
 {
     Err error_code = S_OK;
     char *tmp_buf = NULL;
     int n_tmp_buf = 0;
 
-    error_code = pttdb_file_get_data(main_id, content_type, orig_id, content_block_id, file_id, &tmp_buf, &n_tmp_buf);
+    error_code = pttdb_file_get_data(main_id, content_type, orig_content_id, orig_block_id, file_id, &tmp_buf, &n_tmp_buf);
 
     if(!error_code) {
-        error_code = _split_contents_core(tmp_buf, n_tmp_buf, ref_id, new_id, mongo_db_id, n_line, n_block, line, line_size, bytes_in_line, content_block);
+        error_code = _split_contents_core(tmp_buf, n_tmp_buf, ref_id, new_content_id, mongo_db_id, n_line, n_block, line, line_size, bytes_in_line, content_block);
     }
 
     if(!error_code) {
@@ -762,7 +762,7 @@ _construct_contents_from_content_block_infos_file_core(UUID main_id, enum PttDBC
     }
 
     // free
-    safe_free(&tmp_buf);
+    safe_free((void **)&tmp_buf);
 
     return error_code;
 }
@@ -852,7 +852,8 @@ deserialize_content_block_lines(ContentBlock *content_block)
     char **p_line = content_block->lines;
     int *p_len_line = content_block->len_lines;
 
-    for(int i = 0; i < n_line; i++, p_line++, p_len_line++) {
+    int i = 0;
+    for(i = 0; i < n_line; i++, p_line++, p_len_line++) {
         if(len <= 0) {
             error_code = S_ERR;
             break;
