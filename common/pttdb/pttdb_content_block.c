@@ -731,7 +731,7 @@ _construct_contents_from_content_block_infos_mongo_core(UUID orig_content_id, in
     error_code = read_content_block(orig_content_id, orig_block_id, mongo_db_id, &tmp_content_block);
 
     if(!error_code) {
-        error_code = _split_contents_core(tmp_content_block->buf_block, tmp_content_block->len_block, ref_id, new_content_id, mongo_db_id, n_line, n_block, line, line_size, bytes_in_line, content_block);
+        error_code = _split_contents_core(tmp_content_block.buf_block, tmp_content_block.len_block, ref_id, new_content_id, mongo_db_id, n_line, n_block, line, line_size, bytes_in_line, content_block);
     }
 
     if(!error_code) {
