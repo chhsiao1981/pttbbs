@@ -769,7 +769,7 @@ _construct_contents_from_content_block_infos_file_core(UUID main_id, enum PttDBC
     }
     disp_uuid = display_uuid(ref_id);
     disp_uuid2 = display_uuid(new_content_id);
-    fprintf(stderr, "pttdb_content_block._split_contents_core: ref_id: %s new_content_id: %s mongo_db_id: %d n_line: %d n_block: %d line: %s line_size: %d bytes_in_line: %s", disp_uuid, disp_uuid2, mongo_db_id, n_line, n_block, line, line_size, *bytes_in_line);
+    fprintf(stderr, "pttdb_content_block._split_contents_core: ref_id: %s new_content_id: %s mongo_db_id: %d n_line: %d n_block: %d line: %s line_size: %d bytes_in_line: %s", disp_uuid, disp_uuid2, mongo_db_id, *n_line, *n_block, line, line_size, *bytes_in_line);
     free(disp_uuid2);
     free(disp_uuid);
 
