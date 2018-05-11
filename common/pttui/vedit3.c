@@ -787,17 +787,10 @@ _vedit3_destroy_editor()
     bool is_lock_wr_buffer_info = false;
     bool is_lock_buffer_info = false;
 
-    char dir_prefix[MAX_FILENAME_SIZE] = {};
-
     Err error_code = vedit3_repl_wrlock_file_info_buffer_info(&is_lock_file_info, &is_lock_wr_buffer_info, &is_lock_buffer_info);
     if(error_code) return error_code;
 
-    setuserfile(dir_prefix, PTTUI_EDIT_TMP_DIR);
-
-    int ret = Rmdir(dir_prefix, NULL);
-    if(ret < 0) error_code = S_ERR;
-
-    fprintf(stderr, "vedit3._vedit3_destroy_editor: after Rmdir\n");
+    destroy_pttdb_file();
 
     PTTUI_BUFFER_TOP_LINE = NULL;
     error_code = destroy_file_info(&PTTUI_FILE_INFO);
