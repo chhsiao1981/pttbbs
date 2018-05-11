@@ -530,7 +530,7 @@ vedit3_buffer()
     if (error_code) return error_code;
 
     if (!memcmp(&expected_state, &PTTUI_BUFFER_STATE, sizeof(PttUIState))) {
-        error_code = check_and_save_pttui_buffer_info_to_tmp_file(&PTTUI_BUFFER_INFO, PTTUI_FILE_INFO.main_id);
+        error_code = check_and_save_pttui_buffer_info_to_tmp_file(&PTTUI_BUFFER_INFO, &PTTUI_FILE_INFO);
         return S_OK;
     }
 
