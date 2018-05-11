@@ -93,32 +93,31 @@ construct_contents_from_content_block_infos(UUID main_id, char *updater, char *u
     int bytes_in_line = 0;
 
     for (int i = 0; i < n_content_block_info; i++, p_content_block_info++) {
-        for (int j = 0; j < p_content_block_info->n_file; j++) {
+        if(p_content_block_info->storage_type == PTTDB_STORAGE_TYPE_MONGO) {
+            error_code = _construct_contents_from_content_block_infos_mongo_core(ref_id, orig_content_id, i, new_content_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
 
-            switch(p_content_block_info->storage_type) {
-            case PTTDB_STORAGE_TYPE_MONGO:
-                break;
-                error_code = _construct_contents_from_content_block_infos_mongo_core(ref_id, orig_content_id, i, new_content_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
-            case PTTDB_STORAGE_TYPE_FILE:
+        }
+        else {
+            for (int j = 0; j < p_content_block_info->n_file; j++) {
                 error_code = _construct_contents_from_content_block_infos_file_core(main_id, content_type, ref_id, orig_content_id, i, j, new_content_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
-                break;
-            default:
-                break;
+                if (error_code) break;
             }
-            if (error_code) break;
         }
 
         if (error_code) break;
     }
+    fprintf(stderr, "pttdb_content_block.construct_contents_from_contet_block_infos: after for-loop: e: %d\n", error_code);
     if (error_code) return error_code;
 
     if (bytes_in_line) { // last block
         error_code = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, new_content_id, mongo_db_id, &content_block, n_line, n_block);
     }
+    fprintf(stderr, "pttdb_content_block.construct_contents_from_contet_block_infos: after deal with last line: e: %d\n", error_code);
 
     if(!error_code) {
         error_code = update_main(main_id, new_content_id, updater, update_ip, create_milli_timestamp, *n_line, *n_block, *len);
     }
+    fprintf(stderr, "pttdb_content_block.construct_contents_from_contet_block_infos: after update-main: e: %d\n", error_code);
 
     // free
     destroy_content_block(&content_block);
