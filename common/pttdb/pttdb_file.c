@@ -4,7 +4,16 @@
 Err
 init_pttdb_file()
 {
-    int ret = Mkdir(PTTDB_FILE_PREFIX_DIR);
+    char dir_prefix[MAX_FILENAME_SIZE] = {};
+
+    return S_OK;
+}
+
+Err
+pttdb_file_get_dir_prefix_name(char *dir_prefix)
+{
+    setuserfiles(dir_prefix, PTTDB_FILE_PREFIX_DIR);
+    int ret = Mkdir(dir_prefix);
     if(ret < 0 && errno != EEXIST) return S_ERR;
 
     return S_OK;
@@ -13,8 +22,12 @@ init_pttdb_file()
 Err
 pttdb_file_get_main_dir_prefix_name(UUID main_id, char *dirname)
 {
+    Err error_code = pttdb_file_get_dir_prefix_name(dirname);
+    if(error_code) return error_code;
+
     char *disp_uuid = display_uuid(main_id);
-    sprintf(dirname, "%s/m%c", PTTDB_FILE_PREFIX_DIR, disp_uuid[0]);
+    char *p_dirname = dirname + strlen(dirname);
+    sprintf(p_dirname, "/m%c", disp_uuid[0]);
     free(disp_uuid);
 
     return S_OK;
@@ -24,7 +37,7 @@ Err
 pttdb_file_attach_main_dir(UUID main_id, char *dirname)
 {
     char *disp_uuid = display_uuid(main_id);
-    sprintf(dirname, "/M%c", disp_uuid[0]);
+    sprintf(dirname, "/M%s", disp_uuid);
     free(disp_uuid);
 
     return S_OK;
