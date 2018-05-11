@@ -36,6 +36,12 @@ Err _file_info_get_next_line_comment(FileInfo *file_info, UUID orig_id, enum Ptt
 
 Err _file_info_get_next_line_comment_reply(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum PttDBStorageType *new_storage_type);
 
+Err _save_file_info_to_db_main(FileInfo *file_info);
+Err _save_file_info_to_db_comment(FileInfo *file_info);
+Err _save_file_info_to_db_comment_reply(FileInfo *file_info);
+Err _save_file_info_to_db_is_modified(ContentBlockInfo *content_blocks, int n_content_block, bool *is_modified);
+Err _save_file_info_to_db_content_blocks_to_db(UUID main_id, UUID ref_id, UUID orig_id, enum PttDBContentType content_type, enum MongoDBId mongo_id, int n_content_block, ContentBlockInfo *content_blocks);
+
 #ifdef __cplusplus
 }
 #endif

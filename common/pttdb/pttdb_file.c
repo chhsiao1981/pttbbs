@@ -93,7 +93,7 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
 
     while(*p_filename) p_filename++;
 
-    sprintf(p_filename, "/T%d", dir_prefix, content_type);
+    sprintf(p_filename, "/T%d", content_type);
     ret = Mkdir(filename);
     if(ret < 0 && errno != EEXIST) error_code = S_ERR;
     if(error_code) return error_code;

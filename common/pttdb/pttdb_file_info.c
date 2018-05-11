@@ -751,14 +751,6 @@ _save_file_info_to_db_is_modified(ContentBlockInfo *content_blocks, int n_conten
 Err
 _save_file_info_to_db_content_blocks_to_db(UUID main_id, UUID ref_id, UUID orig_id, enum PttDBContentType content_type, enum MongoDBId mongo_id, int n_content_block, ContentBlockInfo *content_blocks)
 {
-    char buf[MAX_BUF_SIZE] = {};
-    char tmp_buf[MAX_BUF_SIZE] = {};
-
-    ContentBlockInfo *p_content_block = content_blocks;
-    for(int i = 0; i < n_content_block; i++, p_content_block++) {
-        for(int j = 0; j < p_content_block)
-        error_code = pttdb_file_get(main_id, content_type, orig_id, i, )
-    }
 }
 
 
