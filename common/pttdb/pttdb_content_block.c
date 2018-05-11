@@ -853,7 +853,6 @@ deserialize_content_block_lines(ContentBlock *content_block)
     int i = 0;
     for(i = 0; i < n_line; i++, p_line++, p_len_line++) {
         if(len <= 0) {
-            error_code = S_ERR;
             break;
         }
 
