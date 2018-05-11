@@ -682,15 +682,15 @@ _file_info_get_next_line_comment_reply(FileInfo *file_info, UUID orig_id GCC_UNU
  * save to db
  **********/
 Err
-save_file_info_to_db(FileInfo *file_info)
+save_file_info_to_db(FileInfo *file_info, char *user, char *ip)
 {
-    Err error_code = _save_file_info_to_db_main(file_info);
+    Err error_code = _save_file_info_to_db_main(file_info, user, ip);
     if(error_code) return error_code;
 
-    error_code = _save_file_info_to_db_comment(file_info);
+    error_code = _save_file_info_to_db_comment(file_info, user, ip);
     if(error_code) return error_code;
 
-    error_code = _save_file_info_to_db_comment_reply(file_info);
+    error_code = _save_file_info_to_db_comment_reply(file_info, user, ip);
     if(error_code) return error_code;
 
     return S_OK;
@@ -723,7 +723,7 @@ _save_file_info_to_db_main(FileInfo *file_info, char *user, char *ip)
 }
 
 Err
-_save_file_info_to_db_comment(FileInfo *file_info)
+_save_file_info_to_db_comment(FileInfo *file_info GCC_UNUSED, char *user GCC_UNUSED, char *ip GCC_UNUSED)
 {
     return S_OK;
 }
