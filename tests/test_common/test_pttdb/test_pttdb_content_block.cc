@@ -25,7 +25,7 @@ TEST(pttdb_content_block, save_content_block) {
     int len_buf = strlen(buf);
     associate_content_block(&content_block, buf, len_buf);
     content_block.len_block = len_buf;
-    content_block.n_line = 1;
+    content_block.n_line = 2;
 
     // init content-block2
     error = init_content_block_buf_block(&content_block2);
@@ -41,7 +41,7 @@ TEST(pttdb_content_block, save_content_block) {
     EXPECT_EQ(0, strncmp(content_block2.buf_block, buf, len_buf));
     EXPECT_EQ(MAX_BUF_SIZE, content_block2.max_buf_len);
     EXPECT_EQ(len_buf, content_block2.len_block);
-    EXPECT_EQ(1, content_block2.n_line);
+    EXPECT_EQ(2, content_block2.n_line);
 
     dissociate_content_block(&content_block);
     destroy_content_block(&content_block2);
@@ -68,7 +68,7 @@ TEST(pttdb_content_block, save_content_block_n_only) {
     int len_buf = strlen(buf);
     associate_content_block(&content_block, buf, len_buf);
     content_block.len_block = len_buf;
-    content_block.n_line = 1;
+    content_block.n_line = 2;
 
     // init content-block2
     error = init_content_block_buf_block(&content_block2);
@@ -259,7 +259,7 @@ TEST(pttdb_content_block, dynamic_read_content_blocks)
                    "ref_id", BCON_BINARY(ref_id, UUIDLEN),
                    "len_block", BCON_INT32(5),
                    "n_line", BCON_INT32(0),
-                   "buf_block", BCON_BINARY((unsigned char *)"test1\n", 5)
+                   "buf_block", BCON_BINARY((unsigned char *)"test1\n", 6)
                );
         db_update_one(MONGO_MAIN_CONTENT, b[i], b[i], true);
     }
@@ -321,18 +321,18 @@ TEST(pttdb_content_block, dynamic_read_content_blocks2)
     char buf[41] = {};
     Err error = dynamic_read_content_blocks(content_id, 10, 0, MONGO_MAIN_CONTENT, buf, 40, content_blocks, &n_block, &len);
     EXPECT_EQ(S_ERR_BUFFER_LEN, error);
-    EXPECT_EQ(8, n_block);
-    EXPECT_EQ(40, len);
-    for (int i = 0; i < 8; i++) {
+    EXPECT_EQ(7, n_block);
+    EXPECT_EQ(36, len);
+    for (int i = 0; i < 6; i++) {
         EXPECT_EQ(0, strncmp((char *)content_id, (char *)content_blocks[i].the_id, UUIDLEN));
         EXPECT_EQ(0, strncmp((char *)ref_id, (char *)content_blocks[i].ref_id, UUIDLEN));
-        EXPECT_EQ(5, content_blocks[i].len_block);
-        EXPECT_EQ(0, content_blocks[i].n_line);
+        EXPECT_EQ(6, content_blocks[i].len_block);
+        EXPECT_EQ(1, content_blocks[i].n_line);
         EXPECT_EQ(0, strncmp((char *)"test1\n", content_blocks[i].buf_block, 6));
         EXPECT_EQ(i, content_blocks[i].block_id);
     }
 
-    EXPECT_STREQ("test1\ntest1\ntest1\ntest1\ntest1\ntest1\ntest1\ntest1\n", buf);
+    EXPECT_STREQ("test1\ntest1\ntest1\ntest1\ntest1\ntest1\n", buf);
 
     for (int i = 0; i < 10; i++) {
         dissociate_content_block(&content_blocks[i]);
