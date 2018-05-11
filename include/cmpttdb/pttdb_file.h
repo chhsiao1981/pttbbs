@@ -3,15 +3,11 @@
 #define PTTDB_FILE_H
 
 #include "ptterr.h"
+#include "cmpttdb/pttdb_uuid.h"
+#include "cmpttdb/pttdb_const.h"
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-#include "config.h"
-
-#ifndef PTTDB_FILE_PREFIX_DIR
-#define PTTDB_FILE_PREFIX_DIR "storage"
 #endif
 
 Err init_pttdb_file();
