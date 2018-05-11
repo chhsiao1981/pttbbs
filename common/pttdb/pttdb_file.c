@@ -109,7 +109,6 @@ pttdb_file_get_data(UUID main_id, enum PttDBContentType content_type, UUID conte
 Err
 pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID content_id, int block_id, int file_id, char *buf, int len)
 {
-    char dir_prefix[MAX_FILENAME_SIZE] = {};
     char filename[MAX_FILENAME_SIZE] = {};
     char *p_filename = filename;
 

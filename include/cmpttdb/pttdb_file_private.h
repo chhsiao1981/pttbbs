@@ -4,6 +4,7 @@
 
 #include "ptterr.h"
 #include "cmpttdb/pttdb_const.h"
+#include "cmpttlib.h"
 
 #ifdef __cplusplus
 extern "C" {
