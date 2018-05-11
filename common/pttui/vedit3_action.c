@@ -393,6 +393,8 @@ _vedit3_action_get_key(int *ch)
 Err
 vedit3_action_save_and_exit(bool *is_end)
 {
+    Err error_code = S_OK;
+
     PTTUI_BUFFER_INFO.is_to_save = true;
 
     bool tmp_is_end = false;
@@ -400,7 +402,8 @@ vedit3_action_save_and_exit(bool *is_end)
     struct timespec rem = {};
 
     int ret_sleep = 0;
-    for(int i = 0; i < N_ITER_WAIT_BUFFER_SAVE; i++) {
+    int i = 0;
+    for(i = 0; i < N_ITER_WAIT_BUFFER_SAVE; i++) {
         if(PTTUI_BUFFER_INFO.is_saved) tmp_is_end = true;
 
         if(tmp_is_end) break;
