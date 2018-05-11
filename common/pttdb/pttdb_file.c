@@ -1,4 +1,5 @@
 #include "cmpttdb/pttdb_file.h"
+#include "cmpttdb/pttdb_file_private.h"
 
 Err
 init_pttdb_file()
