@@ -40,7 +40,6 @@ Err _save_file_info_to_db_main(FileInfo *file_info, char *user, char *ip);
 Err _save_file_info_to_db_comment(FileInfo *file_info, char *user, char *ip);
 Err _save_file_info_to_db_comment_reply(FileInfo *file_info, char *user, char *ip);
 Err _save_file_info_to_db_is_modified(ContentBlockInfo *content_blocks, int n_content_block, bool *is_modified);
-Err _save_file_info_to_db_content_blocks_to_db(UUID main_id, UUID ref_id, UUID orig_id, enum PttDBContentType content_type, enum MongoDBId mongo_id, int n_content_block, ContentBlockInfo *content_blocks);
 
 #ifdef __cplusplus
 }

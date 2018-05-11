@@ -717,8 +717,6 @@ _save_file_info_to_db_main(FileInfo *file_info, char *user, char *ip)
         MONGO_MAIN_CONTENT,
         file_info->n_main_block, file_info->main_blocks, 0, &n_total_line, &n_total_block, &total_len);
 
-    error_code = _save_file_info_to_db_content_blocks_to_db(file_info->main_id, file_info->main_content_id, file_info->n_main_block, file_info->main_blocks);
-
     return error_code;
 }
 
@@ -735,6 +733,10 @@ _save_file_info_to_db_comment_reply(FileInfo *file_info, char *user, char *ip)
     CommentInfo *p_comment = file_info->comments;
     ContentBlockInfo *p_content_blocks = NULL;
     bool is_modified = false;    
+
+    int n_total_line = 0;
+    int n_total_block = 0;
+    int total_len = 0;
     for(int i = 0; i < file_info->n_comment; i++, p_comment++) {
         p_content_blocks = p_comment->comment_reply_blocks;
         error_code = _save_file_info_to_db_is_modified(p_content_blocks, p_comment->n_comment_reply_block, &is_modified);
@@ -768,12 +770,6 @@ _save_file_info_to_db_is_modified(ContentBlockInfo *content_blocks, int n_conten
 
     return S_OK;
 }
-
-Err
-_save_file_info_to_db_content_blocks_to_db(UUID main_id, UUID ref_id, UUID orig_id, enum PttDBContentType content_type, enum MongoDBId mongo_id, int n_content_block, ContentBlockInfo *content_blocks)
-{
-}
-
 
 Err
 log_file_info(FileInfo *file_info, char *prompt)
