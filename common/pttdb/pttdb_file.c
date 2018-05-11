@@ -94,14 +94,15 @@ pttdb_file_get_data(UUID main_id, enum PttDBContentType content_type, UUID conte
 
     int max_buf_size = MAX_BUF_SIZE;
     int bytes = 0;
-    *buf = malloc(max_buf_size);
-    while((bytes = read(fd, *buf + tmp_len, MAX_BUF_SIZE)) > 0) {
-        *buf = realloc(*buf, max_buf_size + MAX_BUF_SIZE);
+    char *p_buf = malloc(max_buf_size);
+    while((bytes = read(fd, p_buf + tmp_len, MAX_BUF_SIZE)) > 0) {
+        p_buf = realloc(p_buf, max_buf_size + MAX_BUF_SIZE);
         tmp_len += bytes;
         max_buf_size += MAX_BUF_SIZE;
     }
     close(fd);
 
+    *buf = p_buf;
     *len = tmp_len;
 
     return S_OK;
