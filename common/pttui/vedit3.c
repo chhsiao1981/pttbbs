@@ -179,7 +179,7 @@ _vedit3_init_file_info(UUID main_id)
     Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_FILE_INFO);
     if(error_code) return error_code;
 
-    ini_pttdb_file();
+    init_pttdb_file();
 
     error_code = destroy_file_info(&PTTUI_FILE_INFO);
     fprintf(stderr, "_vedit3_init_file_info: after destroy_file_info: e: %d\n", error_code);

@@ -17,7 +17,7 @@ init_pttdb_file()
 Err
 pttdb_file_get_dir_prefix_name(char *dir_prefix)
 {
-    setuserfiles(dir_prefix, PTTDB_FILE_PREFIX_DIR);
+    setuserfile(dir_prefix, PTTDB_FILE_PREFIX_DIR);
 
     return S_OK;
 }
