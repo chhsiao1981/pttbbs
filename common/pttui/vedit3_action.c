@@ -406,6 +406,7 @@ vedit3_action_save_and_exit(bool *is_end)
     for(i = 0; i < N_ITER_WAIT_BUFFER_SAVE; i++) {
         if(PTTUI_BUFFER_INFO.is_saved) tmp_is_end = true;
 
+        fprintf(stderr, "vedit3_action.vedit3_action_save_and_exit: (%d/%d) is_end: %d\n", i, N_ITER_WAIT_BUFFER_SAVE, tmp_is_end);
         if(tmp_is_end) break;
 
         ret_sleep = nanosleep(&req, &rem);
@@ -413,11 +414,13 @@ vedit3_action_save_and_exit(bool *is_end)
             error_code = S_ERR;
             break;
         }
-    }
+    }    
 
     if(i == N_ITER_WAIT_BUFFER_SAVE) error_code = S_ERR_SAVE;
 
     *is_end = true;
+
+    fprintf(stderr, "vedit3_action.vedit3_action_save_and_exit: e: %d\n", error_code);
 
     return error_code;
 }
