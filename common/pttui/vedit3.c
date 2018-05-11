@@ -179,16 +179,7 @@ _vedit3_init_file_info(UUID main_id)
     Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_FILE_INFO);
     if(error_code) return error_code;
 
-    setuserfile(dir_prefix, PTTUI_EDIT_TMP_DIR);
-    int ret = Mkdir(dir_prefix);
-    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
-
-    char *disp_uuid = display_uuid(main_id);
-    strcat(dir_prefix, disp_uuid);
-    free(disp_uuid);
-
-    ret = Mkdir(dir_prefix);
-    if(ret < 0 && errno != EEXIST) error_code = S_ERR;
+    ini_pttdb_file();
 
     error_code = destroy_file_info(&PTTUI_FILE_INFO);
     fprintf(stderr, "_vedit3_init_file_info: after destroy_file_info: e: %d\n", error_code);
