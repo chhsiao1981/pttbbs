@@ -383,13 +383,20 @@ update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int f
     error_code = split_contents_from_fd(fd_content, len, main_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block);
     if (error_code) return error_code;
 
+    error_code = update_main(main_id, content_id, updater, update_ip, update_milli_timestamp, n_line, n_block, len);
+
+    return error_code;
+}
+
+Err
+update_main(UUID main_id, UUID content_id, char *updater, char *update_ip, time64_t update_milli_timestamp, int n_line, int n_block, int len)
+{
     // db-main
     bson_t *main_id_bson = NULL;
     bson_t *main_bson = NULL;
 
-    error_code = serialize_uuid_bson(main_id, &main_id_bson);
+    Err error_code = serialize_uuid_bson(main_id, &main_id_bson);
 
-    // update: content_id, update_content_id, updater, update_ip, update_milli_timestamp, n_total_line, n_total_block, len_total
     if(!error_code) {
         error_code = serialize_update_main_bson(content_id, updater, update_ip, update_milli_timestamp, n_line, n_block, len, &main_bson);
     }
@@ -403,9 +410,6 @@ update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int f
 
     return error_code;
 }
-
-Err
-update_main(UUID main_id, UUID content_id, char *)
 
 Err
 read_main_header_to_bson(UUID main_id, bson_t *fields, bson_t **b_main)
