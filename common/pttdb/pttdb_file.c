@@ -41,7 +41,7 @@ pttdb_file_get_main_dir_prefix_name(UUID main_id, char *dirname)
     Err error_code = pttdb_file_get_dir_prefix_name(dirname);
     if(error_code) return error_code;
 
-    char *disp_uuid = display_uuid(main_id);
+    char *disp_uuid = display_urlsafe_uuid(main_id);
     char *p_dirname = dirname + strlen(dirname);
     sprintf(p_dirname, "/m%c", disp_uuid[0]);
     free(disp_uuid);
@@ -54,7 +54,7 @@ pttdb_file_get_main_dir_prefix_name(UUID main_id, char *dirname)
 Err
 pttdb_file_attach_main_dir(UUID main_id, char *dirname)
 {
-    char *disp_uuid = display_uuid(main_id);
+    char *disp_uuid = display_urlsafe_uuid(main_id);
     char *p_dirname = dirname + strlen(dirname);
     sprintf(p_dirname, "/M%s", disp_uuid);
     free(disp_uuid);
@@ -84,7 +84,7 @@ pttdb_file_get_data(UUID main_id, enum PttDBContentType content_type, UUID conte
 
     fprintf(stderr, "pttdb_file.pttdb_file_get_data: dir_prefix: %s\n", dir_prefix);
 
-    char *disp_uuid = display_uuid(content_id);
+    char *disp_uuid = display_urlsafe_uuid(content_id);
     sprintf(filename, "%s/T%d/U%s/B%d/F%d", dir_prefix, content_type, disp_uuid, block_id, file_id);
     free(disp_uuid);
 
@@ -141,7 +141,7 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
 
     while(*p_filename) p_filename++;
 
-    char *disp_uuid = display_uuid(content_id);
+    char *disp_uuid = display_urlsafe_uuid(content_id);
     sprintf(p_filename, "/U%s", disp_uuid);
     free(disp_uuid);
     fprintf(stderr, "pttdb_file_save_data: to mkdir: filename: %s\n", filename);
