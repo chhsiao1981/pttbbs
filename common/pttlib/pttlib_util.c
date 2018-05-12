@@ -37,7 +37,6 @@ Rmdir(char *dir, char *dir_prefix)
 
     dir_prefix ? sprintf(new_dir_prefix, "%s/%s", dir_prefix, dir) : sprintf(new_dir_prefix, "%s", dir);
 
-    fprintf(stderr, "pttlib_util.Rmdir: to opendir: new_dir_prefix: %s\n", new_dir_prefix);
     d = opendir(new_dir_prefix);
     if(!d) return errno;
 
@@ -52,14 +51,12 @@ Rmdir(char *dir, char *dir_prefix)
             break;
         default:
             sprintf(filename, "%s/%s", new_dir_prefix, d2->d_name);
-            fprintf(stderr, "pttlib_util.Rmdir: to remove: filename: %s\n", filename);
             unlink(filename);
             break;
         }
     }
     closedir(d);
 
-    fprintf(stderr, "pttlib_util.Rmdir: to rmdir: new_dir_prefix: %s\n", new_dir_prefix);
     rmdir(new_dir_prefix);
 
     return 0;
