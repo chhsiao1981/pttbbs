@@ -395,7 +395,7 @@ update_main_from_content_block_infos(UUID main_id, char *updater, char *update_i
     if(!update_milli_timestamp) {
         error_code = get_milli_timestamp(&update_milli_timestamp);
     }
-    if(error_code return error_code);
+    if(error_code) return error_code;
 
     error_code = gen_content_uuid_with_db(MONGO_MAIN_CONTENT, content_id, update_milli_timestamp);
     if (error_code) return error_code;
@@ -418,7 +418,7 @@ update_main_from_content_block_infos(UUID main_id, char *updater, char *update_i
         &n_total_line,
         &n_block,
         &len);
-    
+
     if(error_code) return error_code;
 
     error_code = update_main(main_id, content_id, updater, update_ip, update_milli_timestamp, n_total_line, n_block, len);
