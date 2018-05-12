@@ -541,7 +541,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
         if (!query_comment_reply) error_code = S_ERR;
     }
 
-    str = bson_as_canonical_extended_json(b_comment_replys, NULL);
+    str = bson_as_canonical_extended_json(query_comment_reply, NULL);
     fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: query_comment_reply: %s\n", str);
     bson_free(str);
 
