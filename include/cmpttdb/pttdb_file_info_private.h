@@ -6,6 +6,7 @@
 #include "cmpttdb/pttdb_main.h"
 #include "cmpttdb/pttdb_content_block.h"
 #include "cmpttdb/pttdb_comment.h"
+#include "cmpttdb/pttdb_comment_reply.h"
 #include "cmpttdb/pttdb_dict_idx_by_uu.h"
 
 #ifdef __cplusplus
