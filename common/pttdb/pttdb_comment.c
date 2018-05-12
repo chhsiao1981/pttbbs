@@ -532,6 +532,8 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
         error_code = extract_b_comments_comment_reply_id_to_bsons(b_comments, n_comment, "$in", &q_b_comment_reply_ids, &n_expected_comment_reply, &n_expected_comment_reply_block);
     }
 
+    fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: to extract b_comments_comment_reply_id_to_bson: n_expected_comment_reply: %d n_expected_comment_reply_block\n", n_comment, n_expected_comment_reply, n_expected_comment_reply_block);
+
     if (!error_code) {
         query_comment_reply = BCON_NEW(
             "the_id", BCON_DOCUMENT(q_b_comment_reply_ids),
@@ -557,6 +559,8 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
         error_code = read_comment_replys_by_query_to_bsons(query_comment_reply, comment_reply_fields, n_expected_comment_reply, b_comment_replys, &n_comment_reply);
         if (n_expected_comment_reply != n_comment_reply) error_code = S_ERR;
     }
+
+    fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: after read_comemnt_replys_by_query_to_bsons: n_comment_reply: %d e: %ds\n", n_comment_reply, error_code);
 
     // to dict
     if (!error_code) {
