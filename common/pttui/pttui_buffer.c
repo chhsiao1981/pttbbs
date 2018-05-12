@@ -663,9 +663,9 @@ _extend_pttui_buffer_extend_pre_buffer_no_buf_main(PttUIBuffer *current_buffer, 
         tmp->storage_type = current_buffer->storage_type;
     }
     else { // new block, referring to file-info
+        tmp->block_offset = current_buffer->block_offset - 1;
         p_content_block--;
 
-        tmp->block_offset = current_buffer->block_offset - 1;
         tmp->line_offset = p_content_block->n_line - 1;
         tmp->storage_type = p_content_block->storage_type;
     }
@@ -696,9 +696,9 @@ _extend_pttui_buffer_extend_pre_buffer_no_buf_comment(PttUIBuffer *current_buffe
         memcpy(tmp->the_id, file_info->main_content_id, UUIDLEN);
         tmp->comment_offset = 0;
 
+        tmp->block_offset = file_info->n_main_block - 1;
         p_content_block = file_info->main_blocks + tmp->block_offset;
 
-        tmp->block_offset = file_info->n_main_block - 1;
         tmp->line_offset = p_content_block->n_line - 1;
         tmp->storage_type = p_content_block->storage_type;
 
@@ -715,9 +715,9 @@ _extend_pttui_buffer_extend_pre_buffer_no_buf_comment(PttUIBuffer *current_buffe
             tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;
             memcpy(tmp->the_id, p_comment->comment_reply_id, UUIDLEN);
 
-            p_content_block = p_comment->comment_reply_blocks + tmp->block_offset;
-
             tmp->block_offset = p_comment->n_comment_reply_block - 1;
+            p_content_block--;
+
             tmp->line_offset = p_content_block->n_line - 1;
             tmp->storage_type = p_content_block->storage_type;
 
@@ -788,9 +788,9 @@ _extend_pttui_buffer_extend_pre_buffer_no_buf_comment_reply(PttUIBuffer *current
             if(!error_code && error_code2) error_code = error_code2;
         }
         else { // different block. referring to file-info
+            tmp->block_offset = current_buffer->block_offset - 1;
             p_content_block--;
 
-            tmp->block_offset = current_buffer->block_offset - 1;
             tmp->line_offset = p_content_block->n_line - 1;
             tmp->storage_type = p_content_block->storage_type;
 
@@ -958,9 +958,9 @@ _extend_pttui_buffer_extend_next_buffer_no_buf_main(PttUIBuffer *current_buffer,
     }
     else {
         // last-line, but not the last block, referring from file-info
+        tmp->block_offset = current_buffer->block_offset + 1;
         p_content_block++;
 
-        tmp->block_offset = current_buffer->block_offset + 1;
         tmp->line_offset = 0;
         tmp->storage_type = p_content_block->storage_type;
 
@@ -993,13 +993,14 @@ _extend_pttui_buffer_extend_next_buffer_no_buf_comment(PttUIBuffer *current_buff
     Err error_code2 = S_OK;
     if (p_comment->n_comment_reply_block) {
         // with comment-reply // referring from file-info
-        p_content_block = p_comment->comment_reply_blocks;
 
         tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;
         memcpy(tmp->the_id, p_comment->comment_reply_id, UUIDLEN);
         tmp->comment_offset = current_buffer_comment_offset;
 
         tmp->block_offset = 0;
+        p_content_block = p_comment->comment_reply_blocks;
+        
         tmp->line_offset = 0;
         tmp->storage_type = p_content_block->storage_type;
 
@@ -1072,9 +1073,9 @@ _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(PttUIBuffer *curren
         memcpy(tmp->the_id, p_comment->comment_reply_id, UUIDLEN);
         tmp->comment_offset = current_buffer->comment_offset;
 
+        tmp->block_offset = current_buffer->block_offset + 1;
         p_content_block++;
 
-        tmp->block_offset = current_buffer->block_offset + 1;
         tmp->line_offset = 0;
         tmp->storage_type = p_content_block->storage_type;
 
