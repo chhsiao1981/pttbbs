@@ -2609,6 +2609,7 @@ TEST(pttdb_comment, extract_b_comments_comment_reply_id_to_bsons_some_comment_re
 TEST(pttdb_comment, dynamic_read_b_comment_comment_reply_by_ids_to_buf) {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
 
     Err error = S_OK;
     UUID main_id = {};
