@@ -73,18 +73,16 @@ split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, en
 }
 
 Err
-construct_contents_from_content_block_infos(UUID main_id, char *updater, char *update_ip, enum PttDBContentType content_type, UUID ref_id, UUID orig_content_id, enum MongoDBId mongo_db_id, int n_content_block_info, ContentBlockInfo *content_block_infos, time64_t create_milli_timestamp, int *n_line, int *n_block, int *len)
+construct_contents_from_content_block_infos(UUID main_id, char *updater, char *update_ip, enum PttDBContentType content_type, UUID ref_id, UUID orig_content_id, enum MongoDBId mongo_db_id, int n_content_block_info, ContentBlockInfo *content_block_infos, time64_t create_milli_timestamp, UUID content_id, int *n_line, int *n_block, int *len)
 {
     Err error_code = S_OK;
-
-    UUID new_content_id = {};
 
     if (!create_milli_timestamp) {
         error_code = get_milli_timestamp(&create_milli_timestamp);
         if (error_code) return error_code;
     }
 
-    error_code = gen_content_uuid_with_db(MONGO_MAIN_CONTENT, new_content_id, create_milli_timestamp);
+    error_code = gen_content_uuid_with_db(MONGO_MAIN_CONTENT, content_id, create_milli_timestamp);
     if (error_code) return error_code;
 
     ContentBlockInfo *p_content_block_info = content_block_infos;
@@ -94,18 +92,18 @@ construct_contents_from_content_block_infos(UUID main_id, char *updater, char *u
 
     // init-content-block
     (*n_block) = 0;
-    error_code = init_content_block_with_buf_block(&content_block, ref_id, new_content_id, *n_block);
+    error_code = init_content_block_with_buf_block(&content_block, ref_id, content_id, *n_block);
     (*n_block)++;
 
     for (int i = 0; i < n_content_block_info; i++, p_content_block_info++) {
         if(p_content_block_info->storage_type == PTTDB_STORAGE_TYPE_MONGO) {
-            error_code = _construct_contents_from_content_block_infos_mongo_core(ref_id, orig_content_id, i, new_content_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
+            error_code = _construct_contents_from_content_block_infos_mongo_core(ref_id, orig_content_id, i, content_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
             fprintf(stderr, "pttdb_content_block.construct_contents_from_content_block_infos: after _construct_contents_from_content_block_infos_mongo_core: e: %d\n", error_code);
 
         }
         else {
             for (int j = 0; j < p_content_block_info->n_file; j++) {
-                error_code = _construct_contents_from_content_block_infos_file_core(main_id, content_type, ref_id, orig_content_id, i, j, new_content_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
+                error_code = _construct_contents_from_content_block_infos_file_core(main_id, content_type, ref_id, orig_content_id, i, j, content_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
                 fprintf(stderr, "pttdb_content_block.construct_contents_from_content_block_infos: after _construct_contents_from_content_block_infos_file_core: e: %d\n", error_code);
                 if (error_code) break;
             }
@@ -117,7 +115,7 @@ construct_contents_from_content_block_infos(UUID main_id, char *updater, char *u
 
     // last block
     if(!error_code) {
-        error_code = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, new_content_id, mongo_db_id, &content_block, n_line, n_block);
+        error_code = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, content_id, mongo_db_id, &content_block, n_line, n_block);
     }
 
     fprintf(stderr, "pttdb_content_block.construct_contents_from_contet_block_infos: after deal with last line: e: %d\n", error_code);
