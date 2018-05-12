@@ -415,6 +415,7 @@ update_main_from_content_block_infos(UUID main_id, char *updater, char *update_i
         n_orig_content_block,
         content_blocks,
         update_milli_timestamp,
+        content_id,
         &n_total_line,
         &n_block,
         &len);
