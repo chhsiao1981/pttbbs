@@ -378,7 +378,6 @@ _vedit3_action_get_key(int *ch)
     if (!is_available) return S_ERR_NO_KEY;
 
     int tmp = vkey();
-    fprintf(stderr, "_vedit3_action_get_key: ch: %d\n", tmp);
 
     *ch = tmp;
 
@@ -406,7 +405,6 @@ vedit3_action_save_and_exit(bool *is_end)
     for(i = 0; i < N_ITER_WAIT_BUFFER_SAVE; i++) {
         if(PTTUI_BUFFER_INFO.is_saved) tmp_is_end = true;
 
-        fprintf(stderr, "vedit3_action.vedit3_action_save_and_exit: (%d/%d) is_end: %d\n", i, N_ITER_WAIT_BUFFER_SAVE, tmp_is_end);
         if(tmp_is_end) break;
 
         ret_sleep = nanosleep(&req, &rem);
@@ -419,8 +417,6 @@ vedit3_action_save_and_exit(bool *is_end)
     if(i == N_ITER_WAIT_BUFFER_SAVE) error_code = S_ERR_SAVE;
 
     *is_end = true;
-
-    fprintf(stderr, "vedit3_action.vedit3_action_save_and_exit: e: %d\n", error_code);
 
     return error_code;
 }
@@ -576,7 +572,6 @@ vedit3_action_insert_new_line()
 
     if(!error_code) {
         error_code = _vedit3_action_buffer_split_core(VEDIT3_EDITOR_STATUS.current_buffer, VEDIT3_EDITOR_STATUS.current_col, 0, &new_buffer);
-        fprintf(stderr, "vedit3_action.vedit3_action_insert_new_line: after buffer_split: e: %d\n", error_code);
     }
 
     Err error_code_lock = vedit3_repl_wrunlock_file_info_buffer_info(is_lock_file_info, is_lock_wr_buffer_info, is_lock_buffer_info);
@@ -619,8 +614,6 @@ vedit3_action_move_right()
             VEDIT3_EDITOR_STATUS.current_col = mbcs_current_col;
         }
 
-        fprintf(stderr, "vedit3_action._vedit3_action_move_right: within same line: orig_current_col: %d is_ansi: %d is_mbcs: %d new_current_col: %d\n", orig_current_col, VEDIT3_EDITOR_STATUS.is_ansi, VEDIT3_EDITOR_STATUS.is_mbcs, VEDIT3_EDITOR_STATUS.current_col);
-
         return S_OK;
     }
 
@@ -659,8 +652,6 @@ vedit3_action_move_left()
             error_code = pttui_fix_cursor(VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_col, PTTUI_FIX_CURSOR_DIR_LEFT, &mbcs_current_col);
             VEDIT3_EDITOR_STATUS.current_col = mbcs_current_col;
         }
-
-        fprintf(stderr, "vedit3_action._vedit3_action_move_left: within same line: orig_current_col: %d is_ansi: %d is_mbcs: %d new_current_col: %d\n", orig_current_col, VEDIT3_EDITOR_STATUS.is_ansi, VEDIT3_EDITOR_STATUS.is_mbcs, VEDIT3_EDITOR_STATUS.current_col);
 
         return S_OK;
     }
@@ -1076,12 +1067,9 @@ _vedit3_action_ensure_buffer_wrap()
 
     PttUIBuffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
 
-    fprintf(stderr, "vedit3_action._vedit3_action_ensure_buffer_wrap: len_no_nl: %d WRAPMARGIN: %d\n", current_buffer->len_no_nl, WRAPMARGIN);
     if (current_buffer->len_no_nl < WRAPMARGIN) {
         return S_OK;
     }
-
-    fprintf(stderr, "vedit3_action._vedit3_action_ensure_buffer_wrap: buf: %s len_no_nl: %d\n", current_buffer->buf, current_buffer->len_no_nl);
 
     bool is_wordwrap = true;
     char *s = current_buffer->buf + current_buffer->len_no_nl - 1;
@@ -1222,8 +1210,6 @@ _vedit3_action_move_up_ensure_top_of_window()
     // need to move down
     if (VEDIT3_EDITOR_STATUS.current_line != 0) return S_OK;
 
-    fprintf(stderr, "vedit3_action._vedit3_action_move_up_ensure_top_of_window: content_type: %d block_offset: %d line_offset: %d current_line: %d\n", VEDIT3_EDITOR_STATUS.current_buffer->content_type, VEDIT3_EDITOR_STATUS.current_buffer->block_offset, VEDIT3_EDITOR_STATUS.current_buffer->line_offset, VEDIT3_EDITOR_STATUS.current_line);
-
     UUID main_id = {};
     memcpy(main_id, PTTUI_STATE.main_id, UUIDLEN);
     int n_window_line = PTTUI_STATE.n_window_line;
@@ -1238,16 +1224,10 @@ _vedit3_action_move_up_ensure_top_of_window()
     Err error_code = file_info_get_pre_line(&PTTUI_FILE_INFO, PTTUI_STATE.top_line_id, PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset, PTTUI_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
     if (error_code) return error_code;
 
-    fprintf(stderr, "vedit3_action._vedit3_action_move_up_ensure_top_of_window: orig_content_type: %d orig_block_offset: %d orig_line_offset: %d orig_comment_offset: %d new_content_type: %d new_block_offset: %d new_line_offset: %d new_comment_offset: %d\n", PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset, PTTUI_STATE.top_line_comment_offset, new_content_type, new_block_offset, new_line_offset, new_comment_offset);
-
     error_code = pttui_set_expected_state(main_id, new_content_type, new_id, new_block_offset, new_line_offset, new_comment_offset, n_window_line);
     if (error_code) return error_code;
 
-    fprintf(stderr, "vedit3_action._vedit3_action_move_down_ensure_end_of_window: to wait buffer state sync\n");
-
     error_code = vedit3_wait_buffer_state_sync(DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC);
-
-    fprintf(stderr, "vedit3_action._vedit3_action_move_down_ensure_end_of_window: after wait buffer state sync: e: %d\n", error_code);
 
     return error_code;
 }
@@ -1277,12 +1257,8 @@ _vedit3_action_move_down_ensure_end_of_window()
     Err error_code = file_info_get_next_line(&PTTUI_FILE_INFO, PTTUI_STATE.top_line_id, PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset, PTTUI_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
     if (error_code) return error_code;
 
-    fprintf(stderr, "vedit3_action._vedit3_action_move_down_ensure_end_of_window: orig_content_type: %d orig_block_offset: %d orig_line_offset: %d orig_comment_offset: %d new_content_type: %d new_block_offset: %d new_line_offset: %d new_comment_offset: %d\n", PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset, PTTUI_STATE.top_line_comment_offset, new_content_type, new_block_offset, new_line_offset, new_comment_offset);
-
     error_code = pttui_set_expected_state(main_id, new_content_type, new_id, new_block_offset, new_line_offset, new_comment_offset, n_window_line);
     if (error_code) return error_code;
-
-    fprintf(stderr, "vedit3_action._vedit3_action_move_down_ensure_end_of_window: to wait buffer state sync\n");
 
     error_code = vedit3_wait_buffer_state_sync(DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC);
     if (error_code) return error_code;
@@ -1362,8 +1338,6 @@ _vedit3_action_concat_next_line()
     // 4. get first word
     error_code = pttui_first_word(p_non_space_buf, p_next_buffer->len_no_nl - non_space_offset, &len_word);
     if(error_code) return error_code;
-
-    fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: after pttui_first_word: current_len_no_nl: %d non_space_offset: %d len_word: %d\n", current_buffer->len_no_nl, non_space_offset, len_word);
 
     len_word += non_space_offset;
 

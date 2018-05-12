@@ -59,7 +59,6 @@ pttui_thread_lock_wrlock(enum PttUIThreadLock thread_lock)
 
     int ret_sleep = 0;
     int ret_lock = pthread_rwlock_trywrlock(&PTTUI_RWLOCKS[thread_lock]);
-    if(thread_lock != LOCK_PTTUI_THREAD_BUFFER_STATE) fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_wrlock: to for-loop: thread_lock: %d IS_WR_PTTUI_RWLOCKS: %d\n", thread_lock, _IS_WR_PTTUI_RWLOCKS[thread_lock]);
 
     for(int i = 0; i < N_ITER_PTTUI_WRITE_LOCK; i++) {
         if(!ret_lock) break;
@@ -67,8 +66,6 @@ pttui_thread_lock_wrlock(enum PttUIThreadLock thread_lock)
             error_code = S_ERR;
             break;
         }
-
-        //fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_wrlock: (%d/%d) to trywrlock: ret_lock: %d\n", i, N_ITER_PTTUI_WRITE_LOCK, ret_lock);
 
         ret_sleep = nanosleep(&req, &rem);
         if(ret_sleep) {
@@ -84,7 +81,6 @@ pttui_thread_lock_wrlock(enum PttUIThreadLock thread_lock)
     if(ret_lock && !error_code) error_code = S_ERR_BUSY;
 
     _IS_WR_PTTUI_RWLOCKS[thread_lock] = false;
-    if(thread_lock != LOCK_PTTUI_THREAD_BUFFER_STATE) fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_wrlock: to return: thread_lock: %d IS_WR_PTTUI_RWLOCKS: %d\n", thread_lock, _IS_WR_PTTUI_RWLOCKS[thread_lock]);
 
     return error_code;
 }
@@ -102,8 +98,6 @@ pttui_thread_lock_rdlock(enum PttUIThreadLock thread_lock)
     for(i = 0; i < N_ITER_PTTUI_READ_LOCK; i++) {
         if(!_IS_WR_PTTUI_RWLOCKS[thread_lock]) break;
 
-        fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_rdlock: (%d/%d) IS_WR_PTTUI_RWLOCKS thread_lock: %d\n", i, N_ITER_PTTUI_READ_LOCK, thread_lock);
-
         ret_sleep = nanosleep(&req, &rem);
         if(ret_sleep) {
             error_code = S_ERR;
@@ -115,7 +109,6 @@ pttui_thread_lock_rdlock(enum PttUIThreadLock thread_lock)
     if(error_code) return error_code;
 
     int ret_lock = pthread_rwlock_tryrdlock(&PTTUI_RWLOCKS[thread_lock]);
-    //fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_rdlock: after tryrdlock: ret_lock: %d EBUSY: %d\n", ret_lock, EBUSY);
 
     for(i = 0; i < N_ITER_PTTUI_READ_LOCK; i++) {
         if(!ret_lock) break;
@@ -123,8 +116,6 @@ pttui_thread_lock_rdlock(enum PttUIThreadLock thread_lock)
             error_code = S_ERR;
             break;
         }
-
-        //fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_rdlock: (%d/%d) to retry: ret_lock: %d\n", i, N_ITER_PTTUI_WRITE_LOCK, ret_lock);
 
         ret_sleep = nanosleep(&req, &rem);
         if(ret_sleep) {
@@ -139,12 +130,6 @@ pttui_thread_lock_rdlock(enum PttUIThreadLock thread_lock)
 
     if(ret_lock && !error_code) error_code = S_ERR_BUSY;
 
-    if(error_code == S_ERR_BUSY) {
-        pthread_rwlock_t *p_lock = &PTTUI_RWLOCKS[thread_lock];
-        fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_rdlock: S_ERR_BUSY: thread_lock: %d lock: (lock: %d nr_readers: %u readers_wakeup: %u writer_wakeup: %u nr_readers_queued: %u nr_writers_queued: %u writer: %d shared: %d rwelision: %d flags: %u)\n", thread_lock, p_lock->__data.__lock, p_lock->__data.__nr_readers, p_lock->__data.__readers_wakeup, p_lock->__data.__writer_wakeup, p_lock->__data.__nr_readers_queued, p_lock->__data.__nr_writers_queued, p_lock->__data.__writer, p_lock->__data.__shared, p_lock->__data.__rwelision, p_lock->__data.__flags);
-
-    }
-
     return error_code;
 }
 
@@ -152,8 +137,6 @@ Err
 pttui_thread_lock_unlock(enum PttUIThreadLock thread_lock)
 {
     int ret = pthread_rwlock_unlock(&PTTUI_RWLOCKS[thread_lock]);
-
-    //fprintf(stderr, "pttui_thread_lock.pttui_thread_lock_unlock: after unlock: ret: %d\n", ret);
 
     if (ret) return S_ERR;
 

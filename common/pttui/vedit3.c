@@ -60,20 +60,12 @@ vedit3_wrapper(const char *fpath, int saveheader, char title[TTLEN + 1], int fla
     Err error_code = migrate_get_file_info(fhdr, bp, poster, board, title_d, origin, &aid, web_link, &create_milli_timestamp);
     if (error_code) return EDIT_ABORTED;
 
-    fprintf(stderr, "vedit3.vedit3_wrapper: poster: %s board: %s title: %s title_d: %s origin: %s aid: %lu web_link: %s create_milli_timestamp: %lu\n", poster, board, title, title_d, origin, aid, web_link, create_milli_timestamp);
-
     error_code = migrate_file_to_pttdb(fpath, poster, board, title, origin, aid, web_link, create_milli_timestamp, main_id);
 
     error_code = vedit3(main_id, title, flags, &money);
-    fprintf(stderr, "vedit3.vedit3_wrapper: after vedit3: e: %d\n", error_code);
     if (error_code) return EDIT_ABORTED;
 
-    char *disp_uuid = display_uuid(main_id);
-    fprintf(stderr, "vedit3.vedit3_wrapper: to migrate_pttdb_to_file: main_id: %s fpath: %s\n", disp_uuid, fpath);
-    free(disp_uuid);
-
     error_code = migrate_pttdb_to_file(main_id, fpath);
-    fprintf(stderr, "vedit3.vedit3_wrapper: after migrate_pttdb_to_file: e: %d\n", error_code);
     if (error_code) return EDIT_ABORTED;
 
     return money;
@@ -100,7 +92,6 @@ vedit3(UUID main_id, char *title, int edflags, int *money)
 
     // init
     error_code = _vedit3_init_editor(main_id);
-    fprintf(stderr, "vedit3.vedit3: after init editor: e: %d\n", error_code);
 
     // edit
     if (!error_code) {
@@ -147,15 +138,12 @@ _vedit3_init_editor(UUID main_id)
     if (error_code) return error_code;
 
     error_code = _vedit3_init_file_info(main_id); // XXX may result in race-condition
-    fprintf(stderr, "vedit3._vedit3_init_editor: after init file_info: e: %d\n", error_code);
     if (error_code) return error_code;
 
     error_code = pttui_set_expected_state(main_id, PTTDB_CONTENT_TYPE_MAIN, PTTUI_FILE_INFO.main_content_id, 0, 0, 0, b_lines);
-    fprintf(stderr, "vedit3._vedit3_init_editor: after vedit3 set expected state: e: %d\n", error_code);
     if (error_code) return error_code;
 
     error_code = pttui_thread_set_expected_state(PTTUI_THREAD_STATE_INIT_EDIT);
-    fprintf(stderr, "vedit3._vedit3_init_editor: after pttui set expected state: e: %d\n", error_code);
     if (error_code) return error_code;
 
     error_code = vedit3_wait_buffer_init();
@@ -188,12 +176,9 @@ _vedit3_init_file_info(UUID main_id)
     init_pttdb_file();
 
     error_code = destroy_file_info(&PTTUI_FILE_INFO);
-    fprintf(stderr, "_vedit3_init_file_info: after destroy_file_info: e: %d\n", error_code);
     if (error_code) return error_code;
 
     error_code = construct_file_info(main_id, &PTTUI_FILE_INFO);
-    fprintf(stderr, "_vedit3_init_file_info: after get_file_info: e: %d\n", error_code);
-    fprintf(stderr, "vedit3._vedit3_init_file_info: n_main_line: %d n_main_block: %d n_comment: %d\n", PTTUI_FILE_INFO.n_main_line, PTTUI_FILE_INFO.n_main_block, PTTUI_FILE_INFO.n_comment);
 
     Err error_code_lock = pttui_thread_lock_unlock(LOCK_PTTUI_FILE_INFO);
     if(!error_code && error_code_lock) error_code = error_code_lock;
@@ -216,8 +201,6 @@ vedit3_wait_buffer_init()
         error_code = pttui_get_buffer_state(&current_state);
         if (error_code) break;
 
-        fprintf(stderr, "vedit3._vedit3_wait_buffer_init: PTTUI_STATE: (%d, %d, %d, %d) current_state: (%d, %d, %d, %d)\n", PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset, PTTUI_STATE.n_window_line, current_state.top_line_content_type, current_state.top_line_block_offset, current_state.top_line_line_offset, current_state.n_window_line);
-
         if (!memcmp(&PTTUI_STATE, &current_state, sizeof(PttUIState))) break; // XXX maybe re-edit too quickly
 
         ret_sleep = nanosleep(&req, &rem);
@@ -239,8 +222,6 @@ _vedit3_repl(int *money)
 {
     Err error_code = S_OK;
     *money = 0;
-
-    fprintf(stderr, "vedit3._vedit3_repl: start\n");
 
     // repl init
 
@@ -391,8 +372,6 @@ _vedit3_disp_screen(int start_line, int end_line)
         }
     }
 
-    fprintf(stderr, "vedit3._vedit3_disp_screen: after for-loop: i: %d start_line: %d end_line: %d e: %d\n", i, start_line, end_line, error_code);
-
     // disp
     if (!error_code) {
         for (; i <= end_line; i++) {
@@ -503,11 +482,9 @@ vedit3_init_buffer()
         !memcmp(expected_state.main_id, PTTUI_BUFFER_STATE.main_id, UUIDLEN)) return S_OK;
 
     error_code = resync_all_pttui_buffer_info(&PTTUI_BUFFER_INFO, &expected_state, &PTTUI_FILE_INFO, &PTTUI_BUFFER_TOP_LINE);
-    fprintf(stderr, "vedit3.vedit3_init_buffer: after resync all pttui_buffer_info: e: %d\n", error_code);
     if (error_code) return error_code;
 
     error_code = pttui_set_buffer_state(&expected_state);
-    fprintf(stderr, "vedit3.vedit3_init_buffer: after pttui_set_buffer_state: e: %d\n", error_code);
 
     return error_code;
 }
@@ -531,8 +508,6 @@ vedit3_buffer()
         return S_OK;
     }
 
-    fprintf(stderr, "vedit3.vedit3_buffer: to sync expected_state: content_type: %d block_offset: %d line_offset: %d comment_offset: %d buffer_state: content_type: %d block_offset: %d line_offset: %d comment_offset: %d\n", expected_state.top_line_content_type, expected_state.top_line_block_offset, expected_state.top_line_line_offset, expected_state.top_line_comment_offset, PTTUI_BUFFER_STATE.top_line_content_type, PTTUI_BUFFER_STATE.top_line_block_offset, PTTUI_BUFFER_STATE.top_line_line_offset, PTTUI_BUFFER_STATE.top_line_comment_offset);
-
     // sync disp buffer to tmp_disp_buffer while checking the alignment of orig_expected_state and new_expected_state
     PttUIBuffer *new_top_line_buffer = NULL;
     error_code = sync_pttui_buffer_info(&PTTUI_BUFFER_INFO, PTTUI_BUFFER_TOP_LINE, &expected_state, &PTTUI_FILE_INFO, &new_top_line_buffer);
@@ -546,8 +521,6 @@ vedit3_buffer()
 
     error_code = extend_pttui_buffer_info(&PTTUI_FILE_INFO, &PTTUI_BUFFER_INFO, PTTUI_BUFFER_TOP_LINE);
     if(error_code) return error_code;
-
-    //fprintf(stderr, "vedit3_disp_buffer: end: e: %d\n", error_code);
 
     return S_OK;
 }
@@ -632,8 +605,6 @@ _vedit3_loading()
     mvouts(b_lines - 1, 0, buf);
     refresh();
     _vedit3_loading_rotate_dots();
-
-    fprintf(stderr, "vedit3._vedit3_loading: buf: %s b_lines: %d t_lines: %d\n", buf, b_lines, t_lines);
 
     return S_OK;
 }

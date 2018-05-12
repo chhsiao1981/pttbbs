@@ -11,12 +11,8 @@ init_pttui_thread()
 {
     Err error_code = S_OK;
 
-    fprintf(stderr, "pttui_thread.init_pttui_thread: start\n");
-
     int ret = pthread_create(&PTTUI_THREAD_BUFFER, NULL, pttui_thread_buffer, NULL);
     if(ret) error_code = S_ERR;
-
-    fprintf(stderr, "pttui_thread.init_pttui_thread: after for-loop: e: %d\n", error_code);
 
     return error_code;
 }
@@ -28,8 +24,6 @@ destroy_pttui_thread()
 
     int ret = pthread_cancel(PTTUI_THREAD_BUFFER);
     if(ret) error_code = S_ERR;
-
-    fprintf(stderr, "pttui_thread.destroy_pttui_thread: after cancel: e: %d\n", error_code);
 
     return error_code;
 }
@@ -48,7 +42,6 @@ pttui_thread_buffer(void *a GCC_UNUSED)
     struct timespec rem = {};
     int ret = 0;
 
-    fprintf(stderr, "pttui_thread.pttui_thread_disp_buffer: to while-loop: a: %lu\n", (unsigned long)a);
     while (1) {
         error_code = _pttui_thread_is_end(&is_end);
         if (error_code) break;
@@ -73,14 +66,13 @@ pttui_thread_buffer(void *a GCC_UNUSED)
         }
 
         if (error_code) {
-            fprintf(stderr, "pttui_thread.pttui_thread_disp_buffer: expected_state: %d e: %d\n", expected_state, error_code);
+            fprintf(stderr, "pttui_thread.pttui_thread_disp_buffer: pid: %d user: %s expected_state: %d e: %d\n", expected_state, error_code);
             break;
         }
 
         ret = nanosleep(&req, &rem);
         if(ret) break;
     }
-    fprintf(stderr, "pttui_thread.pttui_thread_disp_buffer: end while-loop\n");
 
     Err error_code_set_state = pttui_thread_set_buffer_state(PTTUI_THREAD_STATE_END);
     if (!error_code && error_code_set_state) error_code = error_code_set_state;
