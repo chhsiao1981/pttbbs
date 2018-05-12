@@ -870,6 +870,8 @@ deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *content
     error_code = bson_get_value_bin(content_block_bson, "buf_block", content_block->max_buf_len, content_block->buf_block, &len);
     if (error_code) return error_code;
 
+    error_code = deserialize_content_block_lines(content_block);
+
     return error_code;
 }
 
@@ -883,6 +885,9 @@ deserialize_content_block_lines(ContentBlock *content_block)
 
     int n_line = content_block->n_line;
     if(!n_line) return S_OK;
+
+    if(content_block->lines) free(content_block->lines);
+    if(content_block->len_lines) free(content_block->len_lines);
 
     content_block->lines = malloc(sizeof(char *) * n_line);
     content_block->len_lines = malloc(sizeof(int) * n_line);
