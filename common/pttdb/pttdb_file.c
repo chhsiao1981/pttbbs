@@ -118,6 +118,7 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
 
     Err error_code = pttdb_file_get_main_dir_prefix_name(main_id, p_filename);
     if(error_code) return error_code;
+    fprintf(stderr, "pttdb_file_save_data: to mkdir: filename: %s\n", filename);
     int ret = Mkdir(filename);
     if(ret < 0 && errno != EEXIST) error_code = S_ERR;
     if(error_code) return error_code;
@@ -125,13 +126,15 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
     // no need to do p_filename because attach_main_dir take care of it.
     error_code = pttdb_file_attach_main_dir(main_id, p_filename);
     if(error_code) return error_code;
-    ret = Mkdir(filename);
+    fprintf(stderr, "pttdb_file_save_data: to mkdir: filename: %s\n", filename);
+    ret = Mkdir(filename);    
     if(ret < 0 && errno != EEXIST) error_code = S_ERR;
     if(error_code) return error_code;
 
     while(*p_filename) p_filename++;
 
     sprintf(p_filename, "/T%d", content_type);
+    fprintf(stderr, "pttdb_file_save_data: to mkdir: filename: %s\n", filename);
     ret = Mkdir(filename);
     if(ret < 0 && errno != EEXIST) error_code = S_ERR;
     if(error_code) return error_code;
@@ -141,6 +144,7 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
     char *disp_uuid = display_uuid(content_id);
     sprintf(p_filename, "/U%s", disp_uuid);
     free(disp_uuid);
+    fprintf(stderr, "pttdb_file_save_data: to mkdir: filename: %s\n", filename);
     ret = Mkdir(filename);
     if(ret < 0 && errno != EEXIST) error_code = S_ERR;
     if(error_code) return error_code;
@@ -148,6 +152,7 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
     while(*p_filename) p_filename++;
 
     sprintf(p_filename, "/B%d", block_id);
+    fprintf(stderr, "pttdb_file_save_data: to mkdir: filename: %s\n", filename);
     ret = Mkdir(filename);
     if(ret < 0 && errno != EEXIST) error_code = S_ERR;
     if(error_code) return error_code;
