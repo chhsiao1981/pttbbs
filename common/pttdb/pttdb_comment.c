@@ -863,6 +863,9 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(bson_t **b_comments, in
 
         // get comment-reply
         if (!error_code && strncmp((char *)comment_reply_id, (char *)empty_id, UUIDLEN)) {
+            char *disp_uuid = display_uuid("pttdb_comment._dynamic_read_b_comment_comment_reply_by_ids_to_buf_core: comment_reply_id: %s\n", disp_uuid);
+            free(disp_uuid);
+            
             error_code_b_comment_reply = get_bson_from_dict_bson_by_uu(dict_comment_reply, comment_id, &b_comment_reply);
         }
 

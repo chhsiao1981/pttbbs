@@ -18,6 +18,8 @@ init_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu, int n_dict)
 Err 
 add_to_dict_bson_by_uu(UUID uuid, bson_t *b, DictBsonByUU *dict_bson_by_uu)
 {    
+    if(!dict_bson_by_uu->n_dict) return S_ERR;
+
     int n_dict = dict_bson_by_uu->n_dict;
     int idx = uuid[0] % n_dict;
     _DictBsonByUU *p_dict = dict_bson_by_uu->dicts[idx];
@@ -49,6 +51,8 @@ add_to_dict_bson_by_uu(UUID uuid, bson_t *b, DictBsonByUU *dict_bson_by_uu)
 Err
 get_bson_from_dict_bson_by_uu(DictBsonByUU *dict_bson_by_uu, UUID uuid, bson_t **b)
 {
+    if(!dict_bson_by_uu->n_dict) return S_ERR;
+
     int idx = uuid[0] % dict_bson_by_uu->n_dict;
     _DictBsonByUU *p_dict = dict_bson_by_uu->dicts[idx];
 
