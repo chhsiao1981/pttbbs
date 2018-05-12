@@ -557,7 +557,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
         if (n_comment != n_comment_content) error_code = S_ERR;
     }
 
-    if (!error_code && n_comment_reply) {
+    if (!error_code && n_expected_comment_reply) {
         error_code = read_comment_replys_by_query_to_bsons(query_comment_reply, comment_reply_fields, n_expected_comment_reply, b_comment_replys, &n_comment_reply);
         if (n_expected_comment_reply != n_comment_reply) error_code = S_ERR;
     }
@@ -690,7 +690,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_file(bson_t **b_comments, int n_c
     bson_free(str);
     */
 
-    if (!error_code && n_comment_reply) {
+    if (!error_code && n_expected_comment_reply) {
         error_code = read_comment_replys_by_query_to_bsons(query_comment_reply, comment_reply_fields, n_expected_comment_reply, b_comment_replys, &n_comment_reply);
         fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_file: after read_comment_replys_by_query_to_bsons: n_expected_comment_reply: %d n_comment_reply: %d e: %d\n", n_expected_comment_reply, n_comment_reply, error_code);
         if (n_expected_comment_reply != n_comment_reply) error_code = S_ERR;
