@@ -122,11 +122,6 @@ construct_contents_from_content_block_infos(UUID main_id, char *updater, char *u
 
     fprintf(stderr, "pttdb_content_block.construct_contents_from_contet_block_infos: after deal with last line: e: %d\n", error_code);
 
-    if(!error_code) {
-        error_code = update_main(main_id, new_content_id, updater, update_ip, create_milli_timestamp, *n_line, *n_block, *len);
-    }
-    fprintf(stderr, "pttdb_content_block.construct_contents_from_contet_block_infos: after update-main: e: %d\n", error_code);
-
     // free
     destroy_content_block(&content_block);
 

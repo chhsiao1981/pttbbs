@@ -704,18 +704,16 @@ _save_file_info_to_db_main(FileInfo *file_info, char *user, char *ip)
     if(error_code) return error_code;
     if(!is_modified) return S_OK;
 
-    int n_total_line = 0;
-    int n_total_block = 0;
-    int total_len = 0;
-    error_code = construct_contents_from_content_block_infos(
+    UUID content_id = {};
+    error_code = update_main_from_content_block_infos(
         file_info->main_id,
         user,
         ip,
-        PTTDB_CONTENT_TYPE_MAIN,
-        file_info->main_id,
         file_info->main_content_id,
-        MONGO_MAIN_CONTENT,
-        file_info->n_main_block, file_info->main_blocks, 0, &n_total_line, &n_total_block, &total_len);
+        file_info->n_main_block,
+        file_info->main_blocks,
+        content_id,
+        0);
 
     return error_code;
 }
@@ -734,26 +732,29 @@ _save_file_info_to_db_comment_reply(FileInfo *file_info, char *user, char *ip)
     ContentBlockInfo *p_content_blocks = NULL;
     bool is_modified = false;    
 
-    int n_total_line = 0;
-    int n_total_block = 0;
-    int total_len = 0;
+    UUID new_comment_reply_id = {};
     for(int i = 0; i < file_info->n_comment; i++, p_comment++) {
         p_content_blocks = p_comment->comment_reply_blocks;
         error_code = _save_file_info_to_db_is_modified(p_content_blocks, p_comment->n_comment_reply_block, &is_modified);
         if(error_code) break;
         if(!is_modified) continue;
 
-        error_code = construct_contents_from_content_block_infos(
+        bzero(new_comment_reply_id, sizeof(UUID));
+        n_line = 0;
+        n_total_line
+        error_code = create_comment_reply_from_content_block_infos(
             file_info->main_id,
+            p_comment->comment_id,
             user,
             ip,
-            PTTDB_CONTENT_TYPE_COMMENT_REPLY,
-            p_comment->comment_id,
             p_comment->comment_reply_id,
-            MONGO_COMMENT_REPLY_BLOCK,
-            p_comment->n_comment_reply_block, p_content_blocks, 0, &n_total_line, &n_total_block, &total_len);
+            p_comment->n_comment_reply_block,
+            p_content_blocks,
+            new_comment_reply_id,
+            0);
 
-        return error_code;
+        if(error_code) break;
+
     }
     return S_OK;
 }

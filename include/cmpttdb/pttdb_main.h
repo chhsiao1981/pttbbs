@@ -66,6 +66,9 @@ Err delete_main(UUID main_id, char *updater, char *ip);
 Err delete_main_by_aid(aidu_t aid, char *updater, char *ip);
 
 Err update_main_from_fd(UUID main_id, char *updater, char *update_ip, int len, int fd_content, UUID content_id);
+
+Err update_main_from_content_block_infos(UUID main_id, char *updater, char *update_ip, UUID orig_content_id, int n_orig_content_block, ContentBlockInfo *content_blocks, UUID content_id, time64_t update_milli_timestamp);
+
 Err update_main(UUID main_id, UUID content_id, char *updater, char *update_ip, time64_t update_milli_timestamp, int n_line, int n_block, int len);
 
 
