@@ -567,14 +567,14 @@ dynamic_read_b_comment_comment_reply_by_ids_to_buf(bson_t **b_comments, int n_co
         error_code = bsons_to_dict_bson_by_uu(b_comment_replys, n_comment_reply, "comment_id", &dict_comment_reply);
     }
 
-    fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: to core: e: %d\n", error_code)
+    fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: to core: e: %d\n", error_code);
 
     // read to buf
     if (!error_code) {
         error_code = _dynamic_read_b_comment_comment_reply_by_ids_to_buf_core(b_comments, n_comment, &dict_comment_content, &dict_comment_reply, buf, max_buf_size, n_read_comment, n_read_comment_reply, len_buf);
     }
 
-    fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: after core: e: %d\n", error_code)
+    fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_buf: after core: e: %d\n", error_code);
 
     // free
     safe_destroy_dict_bson_by_uu(&dict_comment_reply);
@@ -699,7 +699,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_file(bson_t **b_comments, int n_c
         error_code = bsons_to_dict_bson_by_uu(b_comment_replys, n_comment_reply, "comment_id", &dict_comment_reply);
     }
 
-    fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_file: to core: e: %d\n", error_code)
+    fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_file: to core: e: %d\n", error_code);
 
 
     // read to buf
@@ -707,7 +707,7 @@ dynamic_read_b_comment_comment_reply_by_ids_to_file(bson_t **b_comments, int n_c
         error_code = _dynamic_read_b_comment_comment_reply_by_ids_to_file_core(b_comments, n_comment, &dict_comment_content, &dict_comment_reply, f, n_read_comment, n_read_comment_reply);
     }
 
-    fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_file: after core: e: %d\n", error_code)
+    fprintf(stderr, "pttdb_comment.dynamic_read_b_comment_comment_reply_by_ids_to_file: after core: e: %d\n", error_code);
 
     // free
     safe_destroy_dict_bson_by_uu(&dict_comment_reply);
