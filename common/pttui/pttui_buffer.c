@@ -1440,6 +1440,8 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     PttUIResourceDict resource_dict = {};
     init_pttui_resource_dict(file_info->main_id, &resource_dict);
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after init resource-dict: head: %lu\n", buffer_info->head);
+
     // XXX defensive programming for not-init-buffer-info
     if(!buffer_info->head) return S_OK;
         
@@ -1447,13 +1449,19 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
         error_code = pttui_buffer_lock_wr_buffer_info(&is_lock_wr_buffer_info);
     }
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after lock-wr-buffer-info: head: (content-type: %d comment-offset: %d block-offset: %d line-offset: %d) tail: (content-type: %d comment-offset: %d block-offset: %d line-offset: %d) e: %d\n", buffer_info->head->content_type, buffer_info->head->comment_offset, buffer_info->head->block_offset, buffer_info->head->line_offset, buffer_info->tail->content_type, buffer_info->tail->comment_offset, buffer_info->tail->block_offset, buffer_info->tail->line_offset, error_code);
+
     if(!error_code) {
         error_code = _modified_pttui_buffer_info_to_resource_info(buffer_info->head, buffer_info->tail, &resource_info);
     }
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after _modified-pttui-buffer-info to resource-info: e: %d\n", error_code);
+
     if(!error_code) {
         error_code = pttui_resource_info_to_resource_dict(&resource_info, &resource_dict);
     }
+
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after rsource-info to resource-dict: e: %d\n", error_code);
 
     if(!error_code) {
         error_code = pttui_resource_dict_integrate_with_modified_pttui_buffer_info(buffer_info->head, buffer_info->tail, &resource_dict);
