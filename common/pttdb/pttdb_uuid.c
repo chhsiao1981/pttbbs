@@ -197,8 +197,8 @@ display_uuid(UUID uuid)
     b64_ntop(uuid, UUIDLEN, (char *)result, DISPLAY_UUIDLEN);
     char *p_result = result;
     for(int i = 0; i < DISPLAY_UUIDLEN; i++, p_result++) {
-        if(*i == '+') *i = '-';
-        if(*i == '/') *i = '_';
+        if(*p_result == '+') *p_result = '-';
+        if(*p_result == '/') *p_result = '_';
     }
 
     return result;
