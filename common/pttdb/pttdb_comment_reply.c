@@ -347,7 +347,7 @@ read_comment_replys_by_query_to_bsons(bson_t *query, bson_t *fields, int max_n_c
     char *str = bson_as_canonical_extended_json(query, NULL);
     char *str2 = bson_as_canonical_extended_json(fields, NULL);
 
-    fprintf(stderr, "pttdb_comment_reply.read_comment_replys_by_query_to_bsons: query: %s fields: %s max_n_comment_replys: %d n_comment_reply: %d e: %d\n", str, str2, max_n_comment_replys, *n_comment_reply, error_code)
+    fprintf(stderr, "pttdb_comment_reply.read_comment_replys_by_query_to_bsons: query: %s fields: %s max_n_comment_replys: %d n_comment_reply: %d e: %d\n", str, str2, max_n_comment_replys, *n_comment_reply, error_code);
 
     bson_free(str2);
     bson_free(str);
