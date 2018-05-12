@@ -67,6 +67,10 @@ vedit3_wrapper(const char *fpath, int saveheader, char title[TTLEN + 1], int fla
     error_code = vedit3(main_id, title, flags, &money);
     if (error_code) return EDIT_ABORTED;
 
+    char *disp_uuid = display_uuid(main_id);
+    fprintf(stderr, "vedit3.vedit3_wrapper: migrate_pttdb_to_file: main_id: %s fpath: %s\n", main_id, fpath);
+    free(disp_uuid);
+
     error_code = migrate_pttdb_to_file(main_id, fpath);
     if (error_code) return EDIT_ABORTED;
 
