@@ -37,14 +37,11 @@ construct_file_info(UUID main_id, FileInfo *file_info)
 
     // main-blocks
     error_code = _get_file_info_set_content_block_info(file_info->main_content_id, main_header.n_total_block, file_info);
-    fprintf(stderr, "pttdb_file_info.construct_file_info: after set content block info: e: %d\n", error_code);
 
     // comment
     if(!error_code) {
         error_code = _get_file_info_set_comment_info(main_id, file_info);
     }
-
-    fprintf(stderr, "pttdb_file_info.construct_file_info: after set comment info: e: %d\n", error_code);
 
     return error_code;
 }
@@ -115,9 +112,6 @@ _get_file_info_set_comment_info(UUID main_id, FileInfo *file_info)
         );
 
     Err error_code = get_newest_comment(main_id, comment_id, &create_milli_timestamp, poster, &max_n_comment);
-
-    fprintf(stderr, "pttdb_file_info._get_file_info_set_comment_info: after get_newest_comment; create_milli_timestamp: %lu poster: %s max_n_comment: %d e: %d\n", create_milli_timestamp, poster, max_n_comment, error_code);
-
     if(error_code == S_ERR_NOT_EXISTS && !max_n_comment) error_code = S_OK;
 
     if(!error_code && max_n_comment) {
@@ -131,8 +125,6 @@ _get_file_info_set_comment_info(UUID main_id, FileInfo *file_info)
     if(!error_code && max_n_comment) {
         error_code = read_comments_until_newest_to_bsons(main_id, create_milli_timestamp, poster, fields, max_n_comment, b_comments, &n_comment);
     }
-
-    fprintf(stderr, "pttdb_file_info._get_file_info_set_comment_info: after read_comments_until_newest_to_bsons: n_comment: %d e: %d\n", n_comment, error_code);
 
     if(!error_code && max_n_comment) {
         error_code = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
@@ -157,13 +149,10 @@ _get_file_info_set_comment_info(UUID main_id, FileInfo *file_info)
             end_i = n_comment < (i + N_FILE_INFO_SET_COMMENT_INFO_BLOCK) ? n_comment : (i + N_FILE_INFO_SET_COMMENT_INFO_BLOCK);
             each_n_comment = end_i - i;
 
-            fprintf(stderr, "pttdb_file_info._get_file_info_set_comment_info: start_i: %d end_i: %d each_n_comment: %d\n", i, end_i, each_n_comment);
             error_code = _get_file_info_set_comment_to_comment_info(p_b_comments, each_n_comment, p_comments, &n_read_comment);
-            fprintf(stderr, "pttdb_file_info._get_file_info_set_comment_info: after set comment: e: %d\n", error_code);
             if(error_code) break;
 
             error_code = _get_file_info_set_comment_replys_to_comment_info(p_b_comments, each_n_comment, p_comments);
-            fprintf(stderr, "pttdb_file_info._get_file_info_set_comment_info: after set comment reply: e: %d\n", error_code);
             if(error_code) break;
         }
     }
@@ -271,8 +260,6 @@ _get_file_info_set_comment_replys_to_comment_info(bson_t **b_comments, int n_com
     if (!error_code) {
         error_code = extract_b_comments_comment_reply_id_to_bsons(b_comments, n_comment, "$in", &q_b_comment_reply_ids, &n_expected_comment_reply, &n_expected_comment_reply_block);
     }
-
-    fprintf(stderr, "pttdb_file_info._get_file_info_set_comment_replys_to_comment_info: after extract_b_comments_comment_reply_id_to_bsons: e: %d n_expected_comment_reply: %d n_expected_comment_reply_block: %d\n", error_code, n_expected_comment_reply, n_expected_comment_reply_block);
 
     if (!error_code && n_expected_comment_reply) {
         query_comment_reply_block = BCON_NEW(
@@ -773,8 +760,6 @@ _save_file_info_to_db_is_modified(ContentBlockInfo *content_blocks, int n_conten
 Err
 log_file_info(FileInfo *file_info, char *prompt)
 {
-    fprintf(stderr, "%s: main: (n_line: %d n_block: %d n_comment: %d)\n", prompt, file_info->n_main_line, file_info->n_main_block, file_info->n_comment);
-
     ContentBlockInfo *p_content_block = file_info->main_blocks;
     for(int i = 0; i < file_info->n_main_block; i++, p_content_block++) {
         fprintf(stderr, "%s: main-block: (%d/%d): (n-line: %d n-line-in-db: %d n-new-line: %d n-to-delete-line: %d storage-type: %d, n-file: %d\n", prompt, i, file_info->n_main_block, p_content_block->n_line, p_content_block->n_line_in_db, p_content_block->n_new_line, p_content_block->n_to_delete_line, p_content_block->storage_type, p_content_block->n_file);

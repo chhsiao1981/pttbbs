@@ -113,16 +113,9 @@ _safe_destroy_dict_idx_by_uu_core(_DictIdxByUU *dict_idx_by_uu)
 
     _DictIdxByUU *pre_p = NULL;
     _DictIdxByUU *current_p = NULL;
-    //char *disp_uu = NULL;
     for(current_p = dict_idx_by_uu->next, pre_p = dict_idx_by_uu; current_p != NULL; pre_p = current_p, current_p = current_p->next) {
-        //disp_uu = display_uuid(pre_p->uuid);
-        //fprintf(stderr, "pttdb_dict_idx_by_uu._safe_destroy_dict_idx_by_uu_core: to free (inside for): %s\n", disp_uu);
-        //free(disp_uu);
         free(pre_p);        
     }
-    //disp_uu = display_uuid(pre_p->uuid);
-    //fprintf(stderr, "pttdb_dict_idx_by_uu._safe_destroy_dict_idx_by_uu_core: to free (outside for): %s\n", disp_uu);
-    //free(disp_uu);
     free(pre_p);
     return S_OK;
 }
