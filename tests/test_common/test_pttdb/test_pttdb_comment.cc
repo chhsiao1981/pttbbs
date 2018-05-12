@@ -7,6 +7,8 @@
 
 TEST(pttdb_comment, create_comment) {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
 
     UUID main_id;
     char poster[IDLEN + 1] = {};
@@ -61,6 +63,8 @@ TEST(pttdb_comment, create_comment) {
 
 TEST(pttdb_comment, delete_comment) {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
 
     UUID main_id;
     char poster[IDLEN + 1] = {};
@@ -112,6 +116,10 @@ TEST(pttdb_comment, delete_comment) {
 
 
 TEST(pttdb_comment, serialize_comment_bson) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
+
     Comment comment = {};
     Comment comment2 = {};
 
@@ -180,6 +188,8 @@ TEST(pttdb_comment, serialize_comment_bson) {
 
 TEST(pttdb_comment, get_comment_info_by_main) {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
 
     UUID main_id;
     UUID comment_id;
@@ -264,6 +274,10 @@ TEST(pttdb_comment, ensure_b_comments_order) {
 }
 
 TEST(pttdb_comment, is_b_comments_order2) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
+
     int n_comment = 100;
     bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
 
@@ -289,6 +303,10 @@ TEST(pttdb_comment, is_b_comments_order2) {
 
 
 TEST(pttdb_comment, ensure_b_comments_order2) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
+
     int n_comment = 100;
     bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
 
@@ -310,6 +328,10 @@ TEST(pttdb_comment, ensure_b_comments_order2) {
 }
 
 TEST(pttdb_comment, ensure_b_comments_order3) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
+
     int n_comment = 100;
     bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
 
@@ -331,6 +353,10 @@ TEST(pttdb_comment, ensure_b_comments_order3) {
 }
 
 TEST(pttdb_comment, is_b_comments_order3) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
+
     int n_comment = 100;
     bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
 
@@ -355,6 +381,10 @@ TEST(pttdb_comment, is_b_comments_order3) {
 }
 
 TEST(pttdb_comment, is_b_comments_order4) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
+
     int n_comment = 100;
     bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
 
@@ -381,6 +411,10 @@ TEST(pttdb_comment, is_b_comments_order4) {
 }
 
 TEST(pttdb_comment, ensure_b_comments_order4) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
+
     int n_comment = 100;
     bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
 
@@ -404,6 +438,10 @@ TEST(pttdb_comment, ensure_b_comments_order4) {
 }
 
 TEST(pttdb_comment, ensure_b_comments_order5) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
+
     int n_comment = 100;
     bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
 
@@ -427,6 +465,10 @@ TEST(pttdb_comment, ensure_b_comments_order5) {
 }
 
 TEST(pttdb_comment, sort_b_comments_order) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
+
     int n_comment = 100;
     bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
     long int rand_int = 0;
@@ -497,6 +539,10 @@ TEST(pttdb_comment, sort_b_comments_order) {
 }
 
 TEST(pttdb_comment, sort_b_comments_order2) {
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
+
     int n_comment = 100;
     bson_t **b_comments = (bson_t **)malloc(sizeof(bson_t *) * n_comment);
     long int rand_int = 0;
@@ -598,6 +644,8 @@ TEST(pttdb_comment, sort_b_comments_order2) {
 TEST(pttdb_comment, read_comments_by_main)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
 
     Err error = S_OK;
     UUID main_id = {};
@@ -635,6 +683,8 @@ TEST(pttdb_comment, read_comments_by_main)
 TEST(pttdb_comment, read_comments_by_main2)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
 
     Err error = S_OK;
     UUID main_id = {};
@@ -716,6 +766,8 @@ TEST(pttdb_comment, read_comments_by_main3)
 TEST(pttdb_comment, read_comments_by_main4)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
 
     Err error = S_OK;
     UUID main_id = {};
@@ -811,6 +863,8 @@ TEST(pttdb_comment, read_comments_by_main4)
 TEST(pttdb_comment, read_comments_by_main5_GT)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
 
     Err error = S_OK;
     UUID main_id = {};
@@ -923,6 +977,8 @@ TEST(pttdb_comment, read_comments_by_main5_GT)
 TEST(pttdb_comment, read_comments_by_main5_GTE)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
 
     Err error = S_OK;
     UUID main_id = {};
@@ -1038,6 +1094,8 @@ TEST(pttdb_comment, read_comments_by_main5_GTE)
 TEST(pttdb_comment, read_comments_by_main5_LT)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
 
     Err error = S_OK;
     UUID main_id = {};
@@ -1174,6 +1232,8 @@ TEST(pttdb_comment, read_comments_by_main5_LT)
 TEST(pttdb_comment, read_comments_by_main5_LTE)
 {
     _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY);
+    _DB_FORCE_DROP_COLLECTION(MONGO_COMMENT_REPLY_BLOCK);
 
     Err error = S_OK;
     UUID main_id = {};
