@@ -740,8 +740,6 @@ _save_file_info_to_db_comment_reply(FileInfo *file_info, char *user, char *ip)
         if(!is_modified) continue;
 
         bzero(new_comment_reply_id, sizeof(UUID));
-        n_line = 0;
-        n_total_line
         error_code = create_comment_reply_from_content_block_infos(
             file_info->main_id,
             p_comment->comment_id,
