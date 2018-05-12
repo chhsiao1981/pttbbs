@@ -100,6 +100,7 @@ construct_contents_from_content_block_infos(UUID main_id, char *updater, char *u
         else {
             for (int j = 0; j < p_content_block_info->n_file; j++) {
                 error_code = _construct_contents_from_content_block_infos_file_core(main_id, content_type, ref_id, orig_content_id, i, j, new_content_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
+                fprintf(stderr, "pttdb_content_block.construct_contents_from_content_block_infos: after _construct_contents_from_content_block_infos_file_core: e: %d\n", error_code);
                 if (error_code) break;
             }
         }
@@ -649,7 +650,7 @@ _split_contents_core(char *buf, int bytes, UUID ref_id, UUID content_id, enum Mo
     for (int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
         error_code = get_line_from_buf(buf, offset_buf, bytes, line, *bytes_in_line, line_size, &bytes_in_new_line);
         *bytes_in_line += bytes_in_new_line;
-        fprintf(stderr, "pttdb_content_block._split_contents_core: after get_line_from_buf: line: %s bytes_in_new_line: %d\n", line, bytes_in_line);
+        fprintf(stderr, "pttdb_content_block._split_contents_core: after get_line_from_buf: offset_buf: %d bytes: %d line: %s line_size: %d bytes_in_new_line: %d\n", offset_buf, bytes, line, line_size, bytes_in_new_line);
         // unable to get more lines from buf
         if (error_code) break;
 
