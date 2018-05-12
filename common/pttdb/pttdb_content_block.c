@@ -164,6 +164,12 @@ reset_content_block_buf_block(ContentBlock *content_block)
     content_block->len_block = 0;
     content_block->n_line = 0;
 
+    if(content_block->lines) free(content_block->lines);
+    if(content_block->len_lines) free(content_block->len_lines);
+
+    content_block->lines = NULL;
+    content_block->len_lines = NULL;
+
     return S_OK;
 }
 
