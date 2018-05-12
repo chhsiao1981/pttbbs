@@ -716,7 +716,7 @@ _extend_pttui_buffer_extend_pre_buffer_no_buf_comment(PttUIBuffer *current_buffe
             memcpy(tmp->the_id, p_comment->comment_reply_id, UUIDLEN);
 
             tmp->block_offset = p_comment->n_comment_reply_block - 1;
-            p_content_block = file_info->main_blocks + tmp->block_offset;
+            p_content_block = p_comment->comment_reply_blocks + tmp->block_offset;
 
             tmp->line_offset = p_content_block->n_line - 1;
             tmp->storage_type = p_content_block->storage_type;
