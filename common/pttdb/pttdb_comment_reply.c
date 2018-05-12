@@ -79,7 +79,13 @@ create_comment_reply_from_content_block_infos(UUID main_id, UUID comment_id, cha
         comment_id,
         orig_comment_reply_id,
         MONGO_COMMENT_REPLY_BLOCK,
-        n_comment_reply_block, content_blocks, create_milli_timestamp, comment_reply_id, &n_total_line, &n_block, &len);
+        n_orig_comment_reply_block,
+        content_blocks,
+        create_milli_timestamp,
+        comment_reply_id,
+        &n_total_line,
+        &n_block,
+        &len);
 
     if(!error_code) {
         error_code = _create_comment_reply_core(main_id, comment_id, poster, ip, len, comment_reply_id, create_milli_timestamp, n_total_line, n_block);

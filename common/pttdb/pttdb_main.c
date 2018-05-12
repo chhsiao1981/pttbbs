@@ -412,7 +412,13 @@ update_main_from_content_block_infos(UUID main_id, char *updater, char *update_i
         main_id,
         orig_content_id,
         MONGO_MAIN_CONTENT,
-        n_orig_content_block, content_blocks, update_milli_timestamp, &n_total_line, &n_block, &len);
+        n_orig_content_block,
+        content_blocks,
+        update_milli_timestamp,
+        &n_total_line,
+        &n_block,
+        &len);
+    
     if(error_code) return error_code;
 
     error_code = update_main(main_id, content_id, updater, update_ip, update_milli_timestamp, n_total_line, n_block, len);
