@@ -260,8 +260,8 @@ save_content_block(ContentBlock *content_block, enum MongoDBId mongo_db_id)
     memcpy(tmp_ref_id, content_block->ref_id, UUIDLEN);
     memcpy(tmp_the_id, content_block->the_id, UUIDLEN);
 
-    char *disp_uuid = display_uuid(ref_id);
-    char *disp_uuid2 = display_uuid(the_id);
+    char *disp_uuid = display_uuid(tmp_ref_id);
+    char *disp_uuid2 = display_uuid(tmp_the_id);
     fprintf(stderr, "pttdb_content_block.save_content_block: to save content_block: ref_id: %s the_id: %s\n", disp_uuid, disp_uuid2);
     free(disp_uuid);
     free(disp_uuid2);
