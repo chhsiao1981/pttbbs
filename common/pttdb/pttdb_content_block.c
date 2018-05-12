@@ -650,12 +650,13 @@ _split_contents_core(char *buf, int bytes, UUID ref_id, UUID content_id, enum Mo
     for (int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
         error_code = get_line_from_buf(buf, offset_buf, bytes, line, *bytes_in_line, line_size, &bytes_in_new_line);
         *bytes_in_line += bytes_in_new_line;
-        fprintf(stderr, "pttdb_content_block._split_contents_core: after get_line_from_buf: offset_buf: %d bytes: %d line: %s line_size: %d bytes_in_new_line: %d\n", offset_buf, bytes, line, line_size, bytes_in_new_line);
+        fprintf(stderr, "pttdb_content_block._split_contents_core: after get_line_from_buf: offset_buf: %d bytes: %d line: %s line_size: %d bytes_in_line: %d bytes_in_new_line: %d\n", offset_buf, bytes, line, line_size, *bytes_in_line, bytes_in_new_line);
         // unable to get more lines from buf
         if (error_code) break;
 
         // Main-op
         error_code = _split_contents_core_one_line(line, *bytes_in_line, ref_id, content_id, mongo_db_id, content_block, n_line, n_block);
+        fprintf(stderr, "pttdb_content_block._split_contents_core: after _split_contents_core_one_line: e: %d\n", error_code);
         if (error_code) return error_code;
 
         // reset line
@@ -674,12 +675,16 @@ _split_contents_core_one_line(char *line, int bytes_in_line, UUID ref_id, UUID c
     // check for max-lines in block-buf
     // check for max-buf in block-buf
     if (content_block->n_line >= MAX_BUF_LINES ||
-            content_block->len_block + bytes_in_line > MAX_BUF_SIZE) {
+        content_block->len_block + bytes_in_line > MAX_BUF_SIZE) {
 
+        fprintf(stderr, "pttdb_content_block._split_contents_core_one_line: to save_content_block\n");
         error_code = save_content_block(content_block, mongo_db_id);
+        fprintf(stderr, "pttdb_content_block._split_contents_core_one_line: after save_content_block: e: %d\n", error_code);
         if (error_code) return error_code;
 
+        fprintf(stderr, "pttdb_content_block._split_contents_core_one_line: to reset-content-block\n");
         error_code = reset_content_block(content_block, ref_id, content_id, *n_block);
+        fprintf(stderr, "pttdb_content_block._split_contents_core_one_line: after reset-content-block: e: %d\n", error_code);
         (*n_block)++;
         if (error_code) return error_code;
     }
