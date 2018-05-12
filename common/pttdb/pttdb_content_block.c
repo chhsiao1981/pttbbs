@@ -694,7 +694,6 @@ _split_contents_core_one_line(char *line, int bytes_in_line, UUID ref_id, UUID c
         if (error_code) return error_code;
     }
 
-    fprintf(stderr, "pttdb_content_block._split_contents_core_one_line: to memcpy: len_block: %d bytes_in_line: %d\n", error_code);
     memcpy(content_block->buf_block + content_block->len_block, line, bytes_in_line);
     content_block->len_block += bytes_in_line;
 
