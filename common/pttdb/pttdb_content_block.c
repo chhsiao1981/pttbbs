@@ -744,7 +744,7 @@ _construct_contents_from_content_block_infos_mongo_core(UUID ref_id, UUID orig_c
 {
     Err error_code = S_OK;
     ContentBlock tmp_content_block = {};
-    error = init_content_block_buf_block(&tmp_content_block);
+    error_code = init_content_block_buf_block(&tmp_content_block);
 
     if(!error_code){
         error_code = read_content_block(orig_content_id, orig_block_id, mongo_db_id, &tmp_content_block);
