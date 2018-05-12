@@ -207,12 +207,11 @@ init_content_block_buf_block(ContentBlock *content_block)
 Err
 destroy_content_block(ContentBlock *content_block)
 {
-    if (content_block->buf_block == NULL) return S_OK;
+    if (content_block->buf_block) free(content_block->buf_block);
+    if(content_block->lines) free(content_block->lines);
+    if(content_block-len_lines) free(content_block->len_lines);
 
-    free(content_block->buf_block);
-    content_block->buf_block = NULL;
-    content_block->max_buf_len = 0;
-    content_block->len_block = 0;
+    bzero(content_block, sizeof(ContentBlock));
 
     return S_OK;
 }
@@ -232,9 +231,11 @@ associate_content_block(ContentBlock *content_block, char *buf_block, int max_bu
 Err
 dissociate_content_block(ContentBlock *content_block)
 {
-    if (content_block->buf_block == NULL) return S_OK;
-
     content_block->buf_block = NULL;
+
+    if(content_block->lines) free(content_block->lines);
+    if(content_block-len_lines) free(content_block->len_lines);
+
     content_block->max_buf_len = 0;
     content_block->len_block = 0;
 
