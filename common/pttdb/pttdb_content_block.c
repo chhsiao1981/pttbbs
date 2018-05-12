@@ -92,6 +92,11 @@ construct_contents_from_content_block_infos(UUID main_id, char *updater, char *u
     char line[MAX_BUF_SIZE];
     int bytes_in_line = 0;
 
+    // init-content-block
+    (*n_block) = 0;
+    error_code = init_content_block_with_buf_block(&content_block, ref_id, new_content_id, *n_block);
+    (*n_block)++;
+
     for (int i = 0; i < n_content_block_info; i++, p_content_block_info++) {
         if(p_content_block_info->storage_type == PTTDB_STORAGE_TYPE_MONGO) {
             error_code = _construct_contents_from_content_block_infos_mongo_core(ref_id, orig_content_id, i, new_content_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
@@ -689,6 +694,7 @@ _split_contents_core_one_line(char *line, int bytes_in_line, UUID ref_id, UUID c
         if (error_code) return error_code;
     }
 
+    fprintf(stderr, "pttdb_content_block._split_contents_core_one_line: to memcpy: len_block: %d bytes_in_line: %d\n", error_code);
     memcpy(content_block->buf_block + content_block->len_block, line, bytes_in_line);
     content_block->len_block += bytes_in_line;
 
