@@ -870,8 +870,6 @@ deserialize_content_block_bson(bson_t *content_block_bson, ContentBlock *content
     error_code = bson_get_value_bin(content_block_bson, "buf_block", content_block->max_buf_len, content_block->buf_block, &len);
     if (error_code) return error_code;
 
-    error_code = deserialize_content_block_lines(content_block);
-
     return error_code;
 }
 
