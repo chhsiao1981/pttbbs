@@ -46,8 +46,6 @@ pttdb_file_get_main_dir_prefix_name(UUID main_id, char *dirname)
     sprintf(p_dirname, "/m%c", disp_uuid[0]);
     free(disp_uuid);
 
-    fprintf(stderr, "ptdb_file.pttdb_file_get_main_dir_prefix_name: dirname: %s\n", dirname);
-
     return S_OK;
 }
 
@@ -82,13 +80,10 @@ pttdb_file_get_data(UUID main_id, enum PttDBContentType content_type, UUID conte
     Err error_code = pttdb_file_get_main_dir_name(main_id, dir_prefix);
     if(error_code) return error_code;
 
-    fprintf(stderr, "pttdb_file.pttdb_file_get_data: dir_prefix: %s\n", dir_prefix);
-
     char *disp_uuid = display_urlsafe_uuid(content_id);
     sprintf(filename, "%s/T%d/U%s/B%d/F%d", dir_prefix, content_type, disp_uuid, block_id, file_id);
     free(disp_uuid);
 
-    fprintf(stderr, "pttdb_file.pttdb_file_get_data: filename: %s\n", filename);
     int tmp_len = 0;
     int fd = open(filename, O_RDONLY);
 
@@ -102,7 +97,6 @@ pttdb_file_get_data(UUID main_id, enum PttDBContentType content_type, UUID conte
     }
     close(fd);
 
-    fprintf(stderr, "pttdb_file.pttdb_file_get_data: max_buf_size: %d tmp_len: %d\n", max_buf_size, tmp_len);
     p_buf[tmp_len] = 0;
     *buf = p_buf;
     *len = tmp_len;
@@ -118,7 +112,6 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
 
     Err error_code = pttdb_file_get_main_dir_prefix_name(main_id, p_filename);
     if(error_code) return error_code;
-    fprintf(stderr, "pttdb_file_save_data: to mkdir: filename: %s\n", filename);
     int ret = Mkdir(filename);
     if(ret < 0 && errno != EEXIST) error_code = S_ERR;
     if(error_code) return error_code;
@@ -126,7 +119,6 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
     // no need to do p_filename because attach_main_dir take care of it.
     error_code = pttdb_file_attach_main_dir(main_id, p_filename);
     if(error_code) return error_code;
-    fprintf(stderr, "pttdb_file_save_data: to mkdir: filename: %s\n", filename);
     ret = Mkdir(filename);    
     if(ret < 0 && errno != EEXIST) error_code = S_ERR;
     if(error_code) return error_code;
@@ -134,7 +126,6 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
     while(*p_filename) p_filename++;
 
     sprintf(p_filename, "/T%d", content_type);
-    fprintf(stderr, "pttdb_file_save_data: to mkdir: filename: %s\n", filename);
     ret = Mkdir(filename);
     if(ret < 0 && errno != EEXIST) error_code = S_ERR;
     if(error_code) return error_code;
@@ -144,7 +135,6 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
     char *disp_uuid = display_urlsafe_uuid(content_id);
     sprintf(p_filename, "/U%s", disp_uuid);
     free(disp_uuid);
-    fprintf(stderr, "pttdb_file_save_data: to mkdir: filename: %s\n", filename);
     ret = Mkdir(filename);
     if(ret < 0 && errno != EEXIST) error_code = S_ERR;
     if(error_code) return error_code;
@@ -152,7 +142,6 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
     while(*p_filename) p_filename++;
 
     sprintf(p_filename, "/B%d", block_id);
-    fprintf(stderr, "pttdb_file_save_data: to mkdir: filename: %s\n", filename);
     ret = Mkdir(filename);
     if(ret < 0 && errno != EEXIST) error_code = S_ERR;
     if(error_code) return error_code;
@@ -161,7 +150,6 @@ pttdb_file_save_data(UUID main_id, enum PttDBContentType content_type, UUID cont
 
     sprintf(p_filename, "/F%d", file_id);
 
-    fprintf(stderr, "pttdb_file_save_data: to open-create: filename: %s\n", filename);
     int fd = OpenCreate(filename, O_WRONLY);
     write(fd, buf, len);
     close(fd);
