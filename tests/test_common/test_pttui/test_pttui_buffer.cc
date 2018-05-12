@@ -788,7 +788,7 @@ TEST(pttui_buffer, extend_pttui_buffer_extend_pre_buffer_no_buf_comment)
     error = _extend_pttui_buffer_extend_pre_buffer_no_buf_comment(&current_buffer, &file_info, &new_buffer);
     EXPECT_EQ(S_OK, error);
 
-    log_file_info(file_info, "test_pttui_buffer.extend_pttui_buffer_extend_pre_buffer_no_buf_comment");
+    log_file_info(&file_info, "test_pttui_buffer.extend_pttui_buffer_extend_pre_buffer_no_buf_comment");
 
     EXPECT_EQ(0, memcmp(new_buffer->the_id, file_info.main_content_id, UUIDLEN));
     EXPECT_EQ(15, new_buffer->block_offset);
