@@ -521,7 +521,7 @@ TEST(pttdb_content_block, split_contents_core)
     n_block++;
 
     int n_line = 0;
-    char line[MAX_BUF_SIZE];
+    char line[MAX_BUF_SIZE] = {};
     int bytes_in_line = 0;
     Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
     EXPECT_EQ(S_OK, error);
@@ -673,7 +673,7 @@ TEST(pttdb_content_block, split_contents_core3)
     n_block++;
 
     int n_line = 0;
-    char line[MAX_BUF_SIZE];
+    char line[MAX_BUF_SIZE] = {};
     int bytes_in_line = 0;
     Err error = _split_contents_core(buf, bytes, ref_id, content_id, MONGO_MAIN_CONTENT, &n_line, &n_block, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
     EXPECT_EQ(S_OK, error);
@@ -1126,8 +1126,8 @@ TEST(pttdb_content_block, split_contents_deal_with_last_line_block)
     _DB_FORCE_DROP_COLLECTION(MONGO_MAIN_CONTENT);
 
     ContentBlock content_block = {};
-    UUID the_id;
-    UUID ref_id;
+    UUID the_id = {};
+    UUID ref_id = {};
     gen_uuid(the_id, 0);
     gen_uuid(ref_id, 0);
     init_content_block_with_buf_block(&content_block, ref_id, the_id, 0);
@@ -1135,7 +1135,7 @@ TEST(pttdb_content_block, split_contents_deal_with_last_line_block)
 
     int bytes_in_line = 10;
     char line[] = "test1test1";
-    int n_line;
+    int n_line = 0;
     int n_block = 1;
 
     Err error = _split_contents_deal_with_last_line_block(bytes_in_line, line, ref_id, the_id, MONGO_MAIN_CONTENT, &content_block, &n_line, &n_block);

@@ -649,7 +649,7 @@ ensure_b_content_blocks_block_ids(bson_t **b_content_blocks, int start_block_id,
 Err
 _split_contents_core(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block, char *line, int line_size, int *bytes_in_line, ContentBlock *content_block)
 {
-    Err error_code;
+    Err error_code = S_OK;
 
     int bytes_in_new_line = 0;
     for (int offset_buf = 0; offset_buf < bytes; offset_buf += bytes_in_new_line) {
@@ -878,6 +878,8 @@ deserialize_content_block_lines(ContentBlock *content_block)
     char *pre_buf = NULL;
 
     int n_line = content_block->n_line;
+    if(!n_line) return S_OK;
+
     content_block->lines = malloc(sizeof(char *) * n_line);
     content_block->len_lines = malloc(sizeof(int) * n_line);
 
