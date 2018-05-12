@@ -30,9 +30,12 @@ migrate_pttdb_to_file(UUID main_id, const char *fpath)
     if(!error_code) {
         error_code = _migrate_main_content_to_file(&main_header, fp);
     }
+
+    fprintf(stderr, "migrate_pttdb_to_file: after _migrate_main_content_to_file: e: %d\n", error_code);
     if(!error_code) {
         error_code = _migrate_comment_comment_reply_by_main_to_file(main_header.the_id, fp);
     }
+    fprintf(stderr, "migrate_pttdb_to_file: after _migrate_comment_comment_reply_by_main_to_file: e: %d\n", error_code);
 
     // free
     fclose(fp);
@@ -121,7 +124,7 @@ _migrate_comment_comment_reply_by_main_to_file(UUID main_id, FILE *fp)
         error_code = read_comments_until_newest_to_bsons(main_id, create_milli_timestamp, poster, fields, n_expected_comment, b_comments, &n_comment);
     }
 
-    //fprintf(stderr, "migrate_pttdb_to_file._migrate_comment_coment_reply_by_main_to_file: after read comments until newest to bsons: create_milli_timestamp: %lu poster: %s n_comment: %d\n", create_milli_timestamp, poster, n_comment);
+    fprintf(stderr, "migrate_pttdb_to_file._migrate_comment_coment_reply_by_main_to_file: after read comments until newest to bsons: create_milli_timestamp: %lu poster: %s n_comment: %d\n", create_milli_timestamp, poster, n_comment);
 
     if(!error_code) {
         error_code = ensure_b_comments_order(b_comments, n_comment, READ_COMMENTS_ORDER_TYPE_ASC);
@@ -141,7 +144,7 @@ _migrate_comment_comment_reply_by_main_to_file(UUID main_id, FILE *fp)
     if(!error_code) {
         for(int i = 0; i < n_comment; i += N_MIGRATE_COMMENT_COMMENT_REPLY_TO_FILE_BLOCK, p_b_comments += N_MIGRATE_COMMENT_COMMENT_REPLY_TO_FILE_BLOCK) {
             next_i = (i + N_MIGRATE_COMMENT_COMMENT_REPLY_TO_FILE_BLOCK) < n_comment ? (i + N_MIGRATE_COMMENT_COMMENT_REPLY_TO_FILE_BLOCK) : n_comment;
-            //fprintf(stderr, "migrate_pttdb_to_file._migrate_comment_comment_reply_by_main_to_file: to core: (%d/%d/%d)\n", i, next_i, n_comment);
+            fprintf(stderr, "migrate_pttdb_to_file._migrate_comment_comment_reply_by_main_to_file: to core: (%d/%d/%d)\n", i, next_i, n_comment);
             error_code = _migrate_comment_comment_reply_by_main_to_file_core(p_b_comments, next_i - i, fp);
             if(error_code) break;
         }
