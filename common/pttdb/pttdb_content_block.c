@@ -73,7 +73,7 @@ split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, en
 }
 
 Err
-construct_contents_from_content_block_infos(UUID main_id, char *updater, char *update_ip, enum PttDBContentType content_type, UUID ref_id, UUID orig_content_id, enum MongoDBId mongo_db_id, int n_content_block_info, ContentBlockInfo *content_block_infos, time64_t create_milli_timestamp, UUID content_id, int *n_line, int *n_block, int *len)
+construct_contents_from_content_block_infos(UUID main_id, enum PttDBContentType content_type, UUID ref_id, UUID orig_content_id, enum MongoDBId mongo_db_id, int n_content_block_info, ContentBlockInfo *content_block_infos, time64_t create_milli_timestamp, UUID content_id, int *n_line, int *n_block, int *len)
 {
     Err error_code = S_OK;
 
@@ -209,7 +209,7 @@ destroy_content_block(ContentBlock *content_block)
 {
     if (content_block->buf_block) free(content_block->buf_block);
     if(content_block->lines) free(content_block->lines);
-    if(content_block-len_lines) free(content_block->len_lines);
+    if(content_block->len_lines) free(content_block->len_lines);
 
     bzero(content_block, sizeof(ContentBlock));
 
@@ -234,7 +234,10 @@ dissociate_content_block(ContentBlock *content_block)
     content_block->buf_block = NULL;
 
     if(content_block->lines) free(content_block->lines);
-    if(content_block-len_lines) free(content_block->len_lines);
+    if(content_block->len_lines) free(content_block->len_lines);
+
+    content_block->lines = NULL;
+    content_block->len_lines = NULL;
 
     content_block->max_buf_len = 0;
     content_block->len_block = 0;

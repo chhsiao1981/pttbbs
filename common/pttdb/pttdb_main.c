@@ -406,8 +406,6 @@ update_main_from_content_block_infos(UUID main_id, char *updater, char *update_i
     int len = 0;
     error_code = construct_contents_from_content_block_infos(
         main_id,
-        updater,
-        update_ip,
         PTTDB_CONTENT_TYPE_MAIN,
         main_id,
         orig_content_id,

@@ -73,8 +73,6 @@ create_comment_reply_from_content_block_infos(UUID main_id, UUID comment_id, cha
     int n_block = 0;
     error_code = construct_contents_from_content_block_infos(
         main_id,
-        poster,
-        ip,
         PTTDB_CONTENT_TYPE_COMMENT_REPLY,
         comment_id,
         orig_comment_reply_id,

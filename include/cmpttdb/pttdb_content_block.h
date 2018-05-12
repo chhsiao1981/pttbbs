@@ -34,7 +34,7 @@ typedef struct ContentBlock {
 
 Err split_contents(char *buf, int bytes, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);
 Err split_contents_from_fd(int fd_content, int len, UUID ref_id, UUID content_id, enum MongoDBId mongo_db_id, int *n_line, int *n_block);
-Err construct_contents_from_content_block_infos(UUID main_id, char *updater, char *update_ip, enum PttDBContentType content_type, UUID ref_id, UUID orig_content_id, enum MongoDBId mongo_db_id, int n_content_block_info, ContentBlockInfo *content_block_infos, time64_t create_milli_timestamp, UUID content_id, int *n_line, int *n_block, int *len);
+Err construct_contents_from_content_block_infos(UUID main_id, enum PttDBContentType content_type, UUID ref_id, UUID orig_content_id, enum MongoDBId mongo_db_id, int n_content_block_info, ContentBlockInfo *content_block_infos, time64_t create_milli_timestamp, UUID content_id, int *n_line, int *n_block, int *len);
 
 
 Err delete_content(UUID content_id, enum MongoDBId mongo_db_id);
