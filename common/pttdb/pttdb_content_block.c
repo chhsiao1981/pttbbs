@@ -112,7 +112,7 @@ construct_contents_from_content_block_infos(UUID main_id, char *updater, char *u
 
         if (error_code) break;
     }
-    fprintf(stderr, "pttdb_content_block.construct_contents_from_contet_block_infos: after for-loop: e: %d bytes_in_line: %d content_block: %d\n", error_code, bytes_in_line, content_block->len_block);
+    fprintf(stderr, "pttdb_content_block.construct_contents_from_contet_block_infos: after for-loop: e: %d bytes_in_line: %d content_block: %d\n", error_code, bytes_in_line, content_block.len_block);
     if (error_code) return error_code;
 
     if (bytes_in_line) { // last block
