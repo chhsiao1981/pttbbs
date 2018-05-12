@@ -702,9 +702,9 @@ _extend_pttui_buffer_extend_pre_buffer_no_buf_comment(PttUIBuffer *current_buffe
         tmp->line_offset = p_content_block->n_line - 1;
         tmp->storage_type = p_content_block->storage_type;
 
-        error_code = _pttui_buffer_load_line_pre_from_content_block_info(tmp, current_buffer, p_content_block);
+        error_code2 = _pttui_buffer_load_line_pre_from_content_block_info(tmp, current_buffer, p_content_block);
         if(!error_code && error_code2) error_code = error_code2;
-        error_code = _pttui_buffer_file_offset_pre_from_content_block_info(tmp, current_buffer, p_content_block);
+        error_code2 = _pttui_buffer_file_offset_pre_from_content_block_info(tmp, current_buffer, p_content_block);
         if(!error_code && error_code2) error_code = error_code2;
     }
     else {
@@ -716,14 +716,14 @@ _extend_pttui_buffer_extend_pre_buffer_no_buf_comment(PttUIBuffer *current_buffe
             memcpy(tmp->the_id, p_comment->comment_reply_id, UUIDLEN);
 
             tmp->block_offset = p_comment->n_comment_reply_block - 1;
-            p_content_block--;
+            p_content_block = file_info->main_blocks + tmp->block_offset;
 
             tmp->line_offset = p_content_block->n_line - 1;
             tmp->storage_type = p_content_block->storage_type;
 
-            error_code = _pttui_buffer_load_line_pre_from_content_block_info(tmp, current_buffer, p_content_block);
+            error_code2 = _pttui_buffer_load_line_pre_from_content_block_info(tmp, current_buffer, p_content_block);
             if(!error_code && error_code2) error_code = error_code2;
-            error_code = _pttui_buffer_file_offset_pre_from_content_block_info(tmp, current_buffer, p_content_block);
+            error_code2 = _pttui_buffer_file_offset_pre_from_content_block_info(tmp, current_buffer, p_content_block);
             if(!error_code && error_code2) error_code = error_code2;
         }
         else {
@@ -734,9 +734,9 @@ _extend_pttui_buffer_extend_pre_buffer_no_buf_comment(PttUIBuffer *current_buffe
             tmp->line_offset = 0;
             tmp->storage_type = PTTDB_STORAGE_TYPE_MONGO;
 
-            error_code = _pttui_buffer_default_load_line(tmp);
+            error_code2 = _pttui_buffer_default_load_line(tmp);
             if(!error_code && error_code2) error_code = error_code2;
-            error_code = _pttui_buffer_default_file_offset(tmp);
+            error_code2 = _pttui_buffer_default_file_offset(tmp);
             if(!error_code && error_code2) error_code = error_code2;
         }
     }
@@ -1000,7 +1000,7 @@ _extend_pttui_buffer_extend_next_buffer_no_buf_comment(PttUIBuffer *current_buff
 
         tmp->block_offset = 0;
         p_content_block = p_comment->comment_reply_blocks;
-        
+
         tmp->line_offset = 0;
         tmp->storage_type = p_content_block->storage_type;
 
