@@ -100,6 +100,7 @@ construct_contents_from_content_block_infos(UUID main_id, char *updater, char *u
     for (int i = 0; i < n_content_block_info; i++, p_content_block_info++) {
         if(p_content_block_info->storage_type == PTTDB_STORAGE_TYPE_MONGO) {
             error_code = _construct_contents_from_content_block_infos_mongo_core(ref_id, orig_content_id, i, new_content_id, mongo_db_id, n_line, n_block, len, line, MAX_BUF_SIZE, &bytes_in_line, &content_block);
+            fprintf(stderr, "pttdb_content_block.construct_contents_from_content_block_infos: after _construct_contents_from_content_block_infos_mongo_core: e: %d\n", error_code);
 
         }
         else {
@@ -743,8 +744,11 @@ _construct_contents_from_content_block_infos_mongo_core(UUID ref_id, UUID orig_c
 {
     Err error_code = S_OK;
     ContentBlock tmp_content_block = {};
+    error = init_content_block_buf_block(&tmp_content_block);
 
-    error_code = read_content_block(orig_content_id, orig_block_id, mongo_db_id, &tmp_content_block);
+    if(!error_code){
+        error_code = read_content_block(orig_content_id, orig_block_id, mongo_db_id, &tmp_content_block);
+    }
 
     if(!error_code) {
         error_code = _split_contents_core(tmp_content_block.buf_block, tmp_content_block.len_block, ref_id, new_content_id, mongo_db_id, n_line, n_block, line, line_size, bytes_in_line, content_block);
