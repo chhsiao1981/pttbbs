@@ -9,15 +9,17 @@ VEdit3EditorStatus DEFAULT_VEDIT3_EDITOR_STATUS = {
     false,               // is-raw
     true,                // is-mbcs
 
-    0,                   // current-line
+    0,                   // phone-mode
+    0,                   // current-buffer-line
     0,                   // current-col
     0,                   // edit_margin
     0,                   // last-margin
 
     false,               // is own lock buffer info
     false,               // is redraw everything
+    false,               // is-scroll-up
+    false,               // is-scroll-down
 
-    false,               // is save
     false,               // is end
 
     NULL,                // current-buffer
@@ -314,7 +316,25 @@ _vedit3_store_to_render()
 
     if (VEDIT3_EDITOR_STATUS.is_redraw_everything) {
         VEDIT3_EDITOR_STATUS.is_redraw_everything = false;
+        VEDIT3_EDITOR_STATUS.is_scroll_up = false;
+        VEDIT3_EDITOR_STATUS.is_scroll_down = false;
         error_code = _vedit3_disp_screen(0, b_lines - 1);
+    }
+    else if(VEDIT3_EDITOR_STATUS.is_scroll_up) {
+        VEDIT3_EDITOR_STATUS.is_scroll_up = false;
+
+        move(pttui_visible_window_height(VEDIT3_EDITOR_STATUS.is_phone), 0);
+        clrtoeol();
+        scroll();
+
+        error_code = _vedit3_disp_line(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl, VEDIT3_EDITOR_STATUS.current_buffer->content_type);
+        outs(ANSI_RESET ANSI_CLRTOEND);
+    }
+    else if(VEDIT3_EDITOR_STATUS.is_scroll_down) {
+        rscroll();
+
+        error_code = _vedit3_disp_line(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl, VEDIT3_EDITOR_STATUS.current_buffer->content_type);
+        outs(ANSI_RESET ANSI_CLRTOEND);
     }
     else {
         error_code = _vedit3_disp_line(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl, VEDIT3_EDITOR_STATUS.current_buffer->content_type);

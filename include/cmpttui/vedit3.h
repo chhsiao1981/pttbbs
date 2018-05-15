@@ -45,6 +45,8 @@ typedef struct VEdit3EditorStatus {
     bool is_own_lock_buffer_info;
     bool is_own_wrlock_buffer_info;
     bool is_redraw_everything;
+    bool is_scroll_up;
+    bool is_scroll_down;
 
     bool is_end;
 

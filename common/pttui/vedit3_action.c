@@ -698,7 +698,7 @@ vedit3_action_move_up()
     Err error_code2 = _vedit3_action_ensure_current_col(VEDIT3_EDITOR_STATUS.current_col);
     if(!error_code && error_code2) error_code = error_code2;
 
-    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+    VEDIT3_EDITOR_STATUS.is_scroll_down = true;
 
     return error_code;
 }
@@ -736,7 +736,7 @@ vedit3_action_move_down()
     Err error_code2 = _vedit3_action_ensure_current_col(VEDIT3_EDITOR_STATUS.current_col);
     if(!error_code && error_code2) error_code = error_code2;
 
-    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+    VEDIT3_EDITOR_STATUS.is_scroll_up = true;
 
     return error_code;
 }
