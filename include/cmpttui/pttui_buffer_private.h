@@ -83,12 +83,12 @@ Err _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info);
 /***
  * shrink
  ***/
-Err _sync_pttui_buffer_info_count_shrink_range(PttUIBufferInfo *buffer_info, int *n_shrink_range);
+Err _sync_pttui_buffer_info_is_to_shrink(PttUIBufferInfo *buffer_info, bool *is_to_shrink);
 
-Err _sync_pttui_buffer_info_shrink_head(PttUIBufferInfo *buffer_info, int n_shrink_range);
+Err
+_sync_pttui_buffer_info_shrink_head(PttUIBufferInfo *buffer_info);
 
-Err _sync_pttui_buffer_info_shrink_tail(PttUIBufferInfo *buffer_info, int n_shrink_range);
-
+Err _sync_pttui_buffer_info_shrink_tail(PttUIBufferInfo *buffer_info);
 
 #ifdef __cplusplus
 }

@@ -522,6 +522,11 @@ vedit3_buffer()
     error_code = extend_pttui_buffer_info(&PTTUI_FILE_INFO, &PTTUI_BUFFER_INFO, PTTUI_BUFFER_TOP_LINE);
     if(error_code) return error_code;
 
+    error_code = check_and_save_pttui_buffer_info_to_tmp_file(&PTTUI_BUFFER_INFO, &PTTUI_FILE_INFO);
+    if(error_code) return error_code;
+
+    error_code = check_and_shrink_pttui_buffer_info(&PTTUI_BUFFER_INFO);
+
     return S_OK;
 }
 
