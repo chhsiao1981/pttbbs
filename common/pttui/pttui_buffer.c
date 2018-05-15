@@ -1606,6 +1606,9 @@ check_and_shrink_pttui_buffer_info(PttUIBufferInfo *buffer_info)
     if(error_code) return error_code;
     if(!is_to_shrink) return S_OK;
 
+    error_code = save_pttui_buffer_info_to_tmp_file(buffer_info, file_info);
+    if(error_code) return error_code;
+
     error_code = _sync_pttui_buffer_info_shrink_head(buffer_info);
     if(error_code) return error_code;
 
