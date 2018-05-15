@@ -692,13 +692,16 @@ vedit3_action_move_up()
     Err error_code_lock = vedit3_repl_unlock_buffer_info();
     if (!error_code && error_code_lock) error_code = S_ERR_EDIT_LOCK;
 
-    if (VEDIT3_EDITOR_STATUS.current_line > 0) VEDIT3_EDITOR_STATUS.current_line--;
+    if (VEDIT3_EDITOR_STATUS.current_line > 0) {
+        VEDIT3_EDITOR_STATUS.current_line--;
+    }
+    else {
+        VEDIT3_EDITOR_STATUS.is_scroll_down = true;
+    }
     VEDIT3_EDITOR_STATUS.current_buffer_line--;
 
     Err error_code2 = _vedit3_action_ensure_current_col(VEDIT3_EDITOR_STATUS.current_col);
     if(!error_code && error_code2) error_code = error_code2;
-
-    VEDIT3_EDITOR_STATUS.is_scroll_down = true;
 
     return error_code;
 }
@@ -730,13 +733,16 @@ vedit3_action_move_down()
     Err error_code_lock = vedit3_repl_unlock_buffer_info();
     if (error_code_lock) error_code = S_ERR_EDIT_LOCK;
 
-    if (VEDIT3_EDITOR_STATUS.current_line < b_lines - 1) VEDIT3_EDITOR_STATUS.current_line++;
+    if (VEDIT3_EDITOR_STATUS.current_line < b_lines - 1) {
+        VEDIT3_EDITOR_STATUS.current_line++;
+    }
+    else {
+        VEDIT3_EDITOR_STATUS.is_scroll_up = true;
+    }
     VEDIT3_EDITOR_STATUS.current_buffer_line++;
 
     Err error_code2 = _vedit3_action_ensure_current_col(VEDIT3_EDITOR_STATUS.current_col);
     if(!error_code && error_code2) error_code = error_code2;
-
-    VEDIT3_EDITOR_STATUS.is_scroll_up = true;
 
     return error_code;
 }
