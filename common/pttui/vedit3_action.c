@@ -795,6 +795,8 @@ vedit3_action_move_pgup()
 
     error_code = _vedit3_action_ensure_current_col(current_col);
 
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
     return error_code;
 }
 
@@ -829,6 +831,8 @@ vedit3_action_move_pgdn()
     }
 
     error_code = _vedit3_action_ensure_current_col(current_col);
+
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
     return error_code;
 }
