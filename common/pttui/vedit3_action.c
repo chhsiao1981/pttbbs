@@ -1210,7 +1210,7 @@ _vedit3_action_move_up_ensure_top_of_window()
 
     UUID main_id = {};
     memcpy(main_id, PTTUI_STATE.main_id, UUIDLEN);
-    int n_window_line = PTTUI_STATE.n_window_line;
+    int n_window_line = b_lines;
 
     UUID new_id = {};
     enum PttDBContentType new_content_type = PTTDB_CONTENT_TYPE_MAIN;
@@ -1243,7 +1243,7 @@ _vedit3_action_move_down_ensure_end_of_window()
 
     UUID main_id = {};
     memcpy(main_id, PTTUI_STATE.main_id, UUIDLEN);
-    int n_window_line = PTTUI_STATE.n_window_line;
+    int n_window_line = b_lines;
 
     UUID new_id = {};
     enum PttDBContentType new_content_type = PTTDB_CONTENT_TYPE_MAIN;

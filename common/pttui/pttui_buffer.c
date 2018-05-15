@@ -1604,12 +1604,12 @@ check_and_shrink_pttui_buffer_info(PttUIBufferInfo *buffer_info)
     bool is_to_shrink = false;
     Err error_code = _sync_pttui_buffer_info_is_to_shrink(buffer_info, &is_to_shrink);
     if(error_code) return error_code;
-    if(!n_shrink_range) return S_OK;
+    if(!is_to_shrink) return S_OK;
 
-    error_code = _sync_pttui_buffer_info_shrink_head(buffer_info, n_shrink_range);
+    error_code = _sync_pttui_buffer_info_shrink_head(buffer_info);
     if(error_code) return error_code;
 
-    error_code = _sync_pttui_buffer_info_shrink_tail(buffer_info, n_shrink_range);
+    error_code = _sync_pttui_buffer_info_shrink_tail(buffer_info);
     if(error_code) return error_code;
 
     return S_OK;
@@ -1665,7 +1665,7 @@ _sync_pttui_buffer_info_shrink_tail(PttUIBufferInfo *buffer_info)
     PttUIBuffer *p_orig_tail = buffer_info->tail;
     PttUIBuffer *p_end_line_next = PTTUI_BUFFER_TOP_LINE;
     int i = 0;
-    for(i = 0; i < b_lines - 1 && p_end_line_next; i++, p_end_line_next = p_end_line_next->next);
+    for(i = 0; i <  - 1 && p_end_line_next; i++, p_end_line_next = p_end_line_next->next);
     if(!p_end_line_next) return S_OK;
     for(i = 0; i < HARD_N_PTTUI_BUFFER && p_end_line_next; i++, p_end_line_next = p_end_line_next->next);
     if(!p_end_line_next) return S_OK;
@@ -1673,7 +1673,7 @@ _sync_pttui_buffer_info_shrink_tail(PttUIBufferInfo *buffer_info)
     PttUIBuffer *p_buffer = buffer_info->tail;
 
     int tmp_n_shrink_range = *n_shrink_range;
-    int i = 0;
+    i = 0;
     for (i = 0; p_buffer && p_buffer != p_end_line_next; i++, p_buffer = p_buffer->pre);
 
     error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_BUFFER_INFO);
