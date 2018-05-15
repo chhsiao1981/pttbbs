@@ -1672,7 +1672,6 @@ _sync_pttui_buffer_info_shrink_tail(PttUIBufferInfo *buffer_info)
 
     PttUIBuffer *p_buffer = buffer_info->tail;
 
-    int tmp_n_shrink_range = *n_shrink_range;
     i = 0;
     for (i = 0; p_buffer && p_buffer != p_end_line_next; i++, p_buffer = p_buffer->pre);
 
