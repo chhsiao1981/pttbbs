@@ -1599,7 +1599,7 @@ Err save_pttui_buffer_info_to_db(PttUIBufferInfo *buffer_info, FileInfo *file_in
  **********/
 
 Err
-check_and_shrink_pttui_buffer_info(PttUIBufferInfo *buffer_info)
+check_and_shrink_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
 {
     bool is_to_shrink = false;
     Err error_code = _sync_pttui_buffer_info_is_to_shrink(buffer_info, &is_to_shrink);

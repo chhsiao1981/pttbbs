@@ -93,7 +93,7 @@ Err save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *f
 
 Err save_pttui_buffer_info_to_db(PttUIBufferInfo *buffer_info, FileInfo *file_info, char *user, char *ip);
 
-Err check_and_shrink_pttui_buffer_info(PttUIBufferInfo *buffer_info);
+Err check_and_shrink_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info);
 
 Err pttui_buffer_wrlock_file_info(bool *is_lock_file_info);
 Err pttui_buffer_wrunlock_file_info(bool is_lock_file_info);
