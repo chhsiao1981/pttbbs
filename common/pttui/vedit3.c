@@ -167,8 +167,6 @@ _vedit3_init_user()
 Err
 _vedit3_init_file_info(UUID main_id)
 {
-    char dir_prefix[MAX_FILENAME_SIZE] = {};
-
     // XXX disp-buffer and disp-screen may need old file-info?    
     Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_FILE_INFO);
     if(error_code) return error_code;
