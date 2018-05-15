@@ -321,7 +321,9 @@ _vedit3_store_to_render()
         error_code = _vedit3_disp_screen(0, b_lines - 1);
     }
     else if(VEDIT3_EDITOR_STATUS.is_scroll_up) {
+        VEDIT3_EDITOR_STATUS.is_redraw_everything = false;
         VEDIT3_EDITOR_STATUS.is_scroll_up = false;
+        VEDIT3_EDITOR_STATUS.is_scroll_down = false;
 
         move(pttui_visible_window_height(VEDIT3_EDITOR_STATUS.is_phone), 0);
         clrtoeol();
@@ -331,6 +333,10 @@ _vedit3_store_to_render()
         outs(ANSI_RESET ANSI_CLRTOEND);
     }
     else if(VEDIT3_EDITOR_STATUS.is_scroll_down) {
+        VEDIT3_EDITOR_STATUS.is_redraw_everything = false;
+        VEDIT3_EDITOR_STATUS.is_scroll_up = false;
+        VEDIT3_EDITOR_STATUS.is_scroll_down = false;
+        
         rscroll();
 
         error_code = _vedit3_disp_line(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl, VEDIT3_EDITOR_STATUS.current_buffer->content_type);
