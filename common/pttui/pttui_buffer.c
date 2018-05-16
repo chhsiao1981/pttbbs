@@ -154,6 +154,7 @@ sync_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIBuffer *current_buffer
     if(*new_buffer) return S_OK;
 
     // not found buffer in the current buffer-info => resync-all
+    fprintf(stderr, "pttui_buffer.sync_pttui_buffer_info: to resync-all-pttui-buffer-info: expected-state: (content-type: %d block-offset: %d line-offset: %d comment-offset: %d\n", state->top_line_content_type, state->top_line_block_offset, state->top_line_line_offset, state->top_line_comment_offset);
     return resync_all_pttui_buffer_info(buffer_info, state, file_info, new_buffer);
 }
 
@@ -410,6 +411,7 @@ extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttU
 
     error_code = pttui_buffer_lock_wr_buffer_info(&is_lock_wr_buffer_info);
 
+    fprintf(stderr, "pttui_buffer.extend_pttui_buffer_info: start\n");
     if(!error_code) {
         orig_head = malloc(sizeof(PttUIBuffer));
         orig_tail = malloc(sizeof(PttUIBuffer));
@@ -446,8 +448,10 @@ extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttU
         buffer_info->n_buffer += n_new_buffer;
     }
 
-    Err error_code_lock = pttui_buffer_unlock_buffer_info(is_lock_buffer_info);
+    Err error_code_lock = pttui_buffer_wrunlock_buffer_info(is_lock_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
+
+    fprintf(stderr, "pttui_buffer.extend_pttui_buffer_info: end\n");
 
     error_code_lock = pttui_buffer_unlock_wr_buffer_info(is_lock_wr_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
@@ -557,10 +561,16 @@ _extend_pttui_buffer_extend_pre_buffer(FileInfo *file_info, PttUIBuffer *head_bu
 
     if (!error_code) {
         error_code = pttui_resource_info_to_resource_dict(&resource_info, &resource_dict);
+        if(error_code) {
+            fprintf(stderr, "pttui_buffer._extend_pttui_buffer_extend_pre_buffer: err in resource-to-resource-dict: e: %d\n", error_code);
+        }
     }
 
     if (!error_code) {
         error_code = _pttui_buffer_info_set_buf_from_resource_dict(*new_head_buffer, start_buffer, &resource_dict);
+        if(error_code) {
+            fprintf(stderr, "pttui_buffer._extend_pttui_buffer_extend_pre_buffer: err in set-buf-from-resource-dict: e: %d\n", error_code);
+        }
     }
 
     // free
@@ -819,10 +829,16 @@ _extend_pttui_buffer_extend_next_buffer(FileInfo *file_info, PttUIBuffer *tail_b
 
     if (!error_code) {
         error_code = pttui_resource_info_to_resource_dict(&resource_info, &resource_dict);
+        if(error_code) {
+            fprintf(stderr, "pttui_buffer._extend_pttui_buffer_extend_next_buffer: err in resource-to-resource-dict: e: %d\n", error_code);
+        }
     }
 
     if (!error_code) {
         error_code = _pttui_buffer_info_set_buf_from_resource_dict(start_buffer, *new_tail_buffer, &resource_dict);
+        if(error_code) {
+            fprintf(stderr, "pttui_buffer._extend_pttui_buffer_extend_next_buffer: err in set-buf-from-resource-dict: e: %d\n", error_code);
+        }
     }
 
     // free
