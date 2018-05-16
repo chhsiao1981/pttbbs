@@ -896,7 +896,9 @@ _vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, 
 {
     Err error_code = S_OK;
 
-    int max_next_lines = file_info->n_total_line - editor_status->current_buffer_line - 1;
+    int n_window_line = b_lines;
+    
+    int max_next_lines = file_info->n_total_line - editor_status->current_buffer_line - 1 - n_window_line;
     if(max_next_lines <= 0) {
         memcpy(expected_state, current_state, sizeof(PttUIState));
         return S_OK;
@@ -927,7 +929,6 @@ _vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, 
 
     if(error_code) return error_code;
 
-    int n_window_line = b_lines;
     memcpy(expected_state->main_id, current_state->main_id, UUIDLEN);
     expected_state->top_line_content_type = tmp_buffer.content_type;
     expected_state->top_line_block_offset = tmp_buffer.block_offset;
