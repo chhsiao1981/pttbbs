@@ -606,6 +606,7 @@ _vedit3_edit_msg()
              VEDIT3_EDITOR_STATUS.is_phone ? 'P' : 'p',
              VEDIT3_EDITOR_STATUS.is_raw ? 'R' : 'r',
              VEDIT3_EDITOR_STATUS.current_buffer_line + 1,
+             PTTUI_FILE_INFO.n_total_line,
              n + 1);
 
     vs_footer(FOOTER_VEDIT3_PREFIX, buf);
