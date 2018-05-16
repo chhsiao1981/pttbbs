@@ -511,8 +511,8 @@ Err
 pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceDict *resource_dict)
 {
     Err error_code = S_OK;
-    int max_buf_size = 0;
-    char *tmp_buf = NULL;
+    int max_buf_size = MAX_BUF_SIZE;
+    char *tmp_buf = malloc(max_buf_size);
     int len_tmp_buf = 0;
     int line_offset_tmp_buf = 0;
 
