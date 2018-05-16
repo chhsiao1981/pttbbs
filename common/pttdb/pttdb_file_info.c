@@ -731,7 +731,7 @@ _save_file_info_to_db_comment(FileInfo *file_info, char *user, char *ip)
     for(int i = 0; i < file_info->n_comment; i++, p_comment++) {
         if(p_comment->storage_type != PTTDB_STORAGE_TYPE_FILE) continue;
 
-        error_code = update_comment_from_comment_info(p_comment, user, ip)
+        error_code = update_comment_from_comment_info(file_info->main_id, p_comment, user, ip, 0);
     }
     return S_OK;
 }
