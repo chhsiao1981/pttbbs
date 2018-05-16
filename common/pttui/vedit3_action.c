@@ -804,8 +804,6 @@ Err
 vedit3_action_move_pgdn()
 {
     Err error_code = S_OK;
-    bool is_eof = false;
-    int current_line = VEDIT3_EDITOR_STATUS.current_line;
     int current_col = VEDIT3_EDITOR_STATUS.current_col;
 
     PttUIState expected_state = {};
@@ -843,9 +841,9 @@ _vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, 
 {
     Err error_code = S_OK;
 
-    int max_next_lines = file_info->n_total_lines - editor_status->current_buffer_line - 1;
+    int max_next_lines = file_info->n_total_line - editor_status->current_buffer_line - 1;
     if(max_next_lines <= 0) {
-        memcpy(expected_state, current_state, siezof(PttUIState));
+        memcpy(expected_state, current_state, sizeof(PttUIState));
         return S_OK;
     }
 
@@ -1033,6 +1031,10 @@ vedit3_action_delete_end_of_line()
         return S_OK;
     }
 
+    bool is_lock_file_info = false;
+    bool is_lock_wr_buffer_info = false;
+    bool is_lock_buffer_info = false;
+    Err error_code_lock = S_OK;
     Err error_code = vedit3_repl_wrlock_file_info_buffer_info(&is_lock_file_info, &is_lock_wr_buffer_info, &is_lock_buffer_info);
 
     if(!error_code) {
