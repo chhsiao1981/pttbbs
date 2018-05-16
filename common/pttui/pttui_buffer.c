@@ -1414,11 +1414,13 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
 
     // XXX defensive programming for not-init-buffer-info
     if(!buffer_info->head) return S_OK;
-        
+
     if(!error_code) {
         error_code = pttui_buffer_lock_wr_buffer_info(&is_lock_wr_buffer_info);
     }
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: start is_lock_wr_buffer_info: %d e: %d\n", is_lock_wr_buffer_info, error_code);
+        
     if(!error_code) {
         error_code = _modified_pttui_buffer_info_to_resource_info(buffer_info->head, buffer_info->tail, &resource_info);
     }
@@ -1460,6 +1462,8 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
 
     error_code_lock = pttui_buffer_wrunlock_buffer_info(is_lock_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
+
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: end\n");
 
     error_code_lock = pttui_buffer_unlock_wr_buffer_info(is_lock_wr_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
