@@ -936,6 +936,8 @@ _vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, 
     expected_state->n_window_line = n_window_line;
     *n_next_line = i;
 
+    fprintf(stderr, "vedit3_action._vedit3_action_move_pgdn_get_expected_buffer: expected_state: current_type: %d block_offset: %d line_offset: %d comment_offset: %d n_window_line: %d\n", expected_state->top_line_content_type, expected_state->top_line_block_offset, expected_state->top_line_line_offset, expected_state->top_line_comment_offset, expected_state->n_window_line);
+
     return S_OK;
 }
 
