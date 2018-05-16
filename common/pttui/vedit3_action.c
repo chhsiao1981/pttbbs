@@ -1288,7 +1288,6 @@ _vedit3_action_buffer_split_core(PttUIBuffer *current_buffer, int pos, int inden
     for(PttUIBuffer *p_buffer2 = pttui_buffer_next_ne(p_new_buffer, PTTUI_BUFFER_INFO.tail); p_buffer2 && p_buffer2->content_type == p_new_buffer->content_type && p_buffer2->block_offset == p_new_buffer->block_offset && p_buffer2->comment_offset == p_new_buffer->comment_offset; p_buffer2->line_offset++, p_buffer2 = pttui_buffer_next_ne(p_buffer2, PTTUI_BUFFER_INFO.tail));
 
     // file-info
-    ContentBlockInfo *p_content_block = NULL;
     switch(current_buffer->content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
         error_code = file_info_increase_main_content_line(&PTTUI_FILE_INFO, current_buffer->block_offset, current_buffer->file_offset);
