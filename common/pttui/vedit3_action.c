@@ -840,7 +840,7 @@ vedit3_action_move_pgdn()
 }
 
 Err
-_vedit3_action_move_pgdn_get_expected_buffer(Vedit3EditorStatus *editor_status, FileInfo *file_info, PttUIState *current_state, PttUIState *expected_state)
+_vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, FileInfo *file_info, PttUIState *current_state, PttUIState *expected_state)
 {
     Err error_code = S_OK;
 
