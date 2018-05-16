@@ -577,7 +577,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             line_offset_dict_buf++;            
         }
 
-        fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: after init: n_line: %d start_i: %d end_i: %d len: %d tmp_buf: %s\n", end_i - start_i, len_tmp_buf, tmp_buf);
+        fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: after init: n_line: %d len: %d tmp_buf: %s\n", end_i - start_i, len_tmp_buf, tmp_buf);
         if(current_buffer->is_to_delete && current_buffer->is_new) {
         }
         else if(current_buffer->is_to_delete) {
