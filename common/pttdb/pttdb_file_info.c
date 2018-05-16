@@ -43,7 +43,23 @@ construct_file_info(UUID main_id, FileInfo *file_info)
         error_code = _get_file_info_set_comment_info(main_id, file_info);
     }
 
+    error_code = _get_file_info_total_comment_reply_lines(file_info, &n_comment_reply_lines);
+    file_info->n_total_line = file_info->n_main_line + file_info->n_comment + n_comment_reply_lines;
+
     return error_code;
+}
+
+Err
+_get_file_info_total_comment_reply_lines(FileInfo *file_info, int *n_comment_reply_lines)
+{
+    int tmp_n = 0;
+    int n_comment = file_info->n_comment;
+    CommentInfo *p_comment = file_info->comments;
+    for(int i = 0; i < n_comment; i++, p_comment++) tmp_n += p_comment->n_comment_reply_total_line;
+
+    *n_comment_reply_lines = tmp_n;
+
+    return S_OK;
 }
 
 Err

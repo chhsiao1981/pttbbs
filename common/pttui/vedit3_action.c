@@ -807,34 +807,54 @@ vedit3_action_move_pgdn()
     bool is_eof = false;
     int current_line = VEDIT3_EDITOR_STATUS.current_line;
     int current_col = VEDIT3_EDITOR_STATUS.current_col;
-    for(int i = 0; i < b_lines - 1; i++) {
-        error_code = vedit3_action_move_down();
-        if(error_code) break;
-        error_code = pttui_buffer_is_eof(VEDIT3_EDITOR_STATUS.current_buffer, &PTTUI_FILE_INFO, &is_eof);
-        if(error_code) break;
-        if(is_eof) break;
-    }
+    int n_window_line = b_lines;
+
+    PttUIState expected_state = {};
+    error_code = _vedit3_action_move_pgdn_get_expected_buffer(VEDIT3_EDITOR_STATUS.current_line, b_lines - VEDIT3_EDITOR_STATUS.current_line, FileInfo *file_info, &expected_state);
     if(error_code) return error_code;
 
-    if(!is_eof) {
-        for(int i = b_lines - 1; i > current_line; i--) {
-            error_code = vedit3_action_move_down();
-            if(error_code) break;
-        }
-        if(error_code) return error_code;
+    error_code = pttui_set_expected_state(PTTUI_STATE.main_id, expected_top_line.content_type, expected_top_line.the_id, expected_top_line.block_offset, expected_top_line.line_offset, expected_top_line.comment_offset, n_window_line);
+    if (error_code) return error_code;
 
-        for(int i = b_lines - 1; i > current_line; i--) {
-            error_code = vedit3_action_move_up();
-            if(error_code) break;
-        }
-        if(error_code) return error_code;
-    }
+    error_code = vedit3_wait_buffer_state_sync(DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC);    
+    if(error_code) return error_code;
+
+    error_code = vedit3_repl_lock_buffer_info();
+    if(error_code) return error_code;
+
+    PttUIBuffer *p_buffer = PTTUI_BUFFER_TOP_LINE;
+    int i = 0;
+    for(i = 0; i < VEDIT3_EDITOR_STATUS.current_line && p_buffer != PTTUI_BUFFER_INFO.tail; i++, p_buffer = p_buffer->next);
+
+    VEDIT3_EDITOR_STATUS.current_buffer = p_buffer;
+    VEDIT3_EDITOR_STATUS.current_line = i;
+
+    Err error_code2 = vedit3_repl_unlock_buffer_info();
+    if(!error_code && error_code2) error_code = error_code2;
 
     error_code = _vedit3_action_ensure_current_col(current_col);
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
     return error_code;
+}
+
+Err
+_vedit3_action_move_pgdn_get_expected_buffer(PttUIBuffer *current_buffer, int n_next_line, FileInfo *file_info, PttUIBuffer *expected_buffer)
+{
+    Err error_code = S_OK;
+    PttUIBuffer tmp_buf = {};
+    PttUIBuffer tmp_buf2 = {};
+    bool is_eof = false;
+    memcpy(&tmp_buf, current_buffer, sizeof(PttUIBuffer));
+    for(int i = 0;  i < n_next_line; i++) {
+        error_code = file_info_is_eof(file_info, tmp_buf.the_id, tmp_buf.content_type, tmp_buf.block_offset, tmp_buf.line_offset, tmp_buf.comment_offset, &is_eof));
+        if(error_code) break;
+
+        if(is_eof) break;
+
+        error_code = file_info_get_next_line(file_info, tmp_buf.the_id, tmp_buf.content_type, tmp_buf.block_offset, tmp_buf.line_offset, tmp_buf.comment_offset, tmp_buf2.the_id, &tmp_buf2.content_type, tmp_buf2.block_offset, tmp_buf2.line_offset, tmp_buf2.comment_offset, tmp_buf2.storage_type);
+    }
 }
 
 Err
@@ -982,9 +1002,22 @@ vedit3_action_delete_line()
 Err
 vedit3_action_delete_end_of_line()
 {
-    VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl = VEDIT3_EDITOR_STATUS.current_col;
-    VEDIT3_EDITOR_STATUS.current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col] = 0;
-    return S_OK;
+    if(VEDIT3_EDITOR_STATUS.current_col != VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl) {
+        VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl = VEDIT3_EDITOR_STATUS.current_col;
+        VEDIT3_EDITOR_STATUS.current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col] = 0;
+        return S_OK;
+    }
+
+    Err error_code = vedit3_repl_wrlock_file_info_buffer_info(&is_lock_file_info, &is_lock_wr_buffer_info, &is_lock_buffer_info);
+
+    if(!error_code) {
+        error_code = _vedit3_action_concat_next_line();
+    }
+
+    error_code_lock = vedit3_repl_wrunlock_file_info_buffer_info(is_lock_file_info, is_lock_wr_buffer_info, is_lock_buffer_info);
+    if(!error_code && error_code_lock) error_code = error_code_lock;
+
+    return error_code;
 }
 
 

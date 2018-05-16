@@ -50,6 +50,8 @@ typedef struct FileInfo {
     int n_comment;
     CommentInfo *comments;
 
+    int n_total_line;
+
 } FileInfo;
 
 Err construct_file_info(UUID main_id, FileInfo *file_info);
@@ -64,6 +66,8 @@ Err file_info_get_pre_line(FileInfo *file_info, UUID orig_id, enum PttDBContentT
 Err file_info_is_next_line(FileInfo *file_info, enum PttDBContentType content_type, int block_offset, int line_offset, int comment_offset, bool *is_next_line);
 
 Err file_info_get_next_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum PttDBStorageType *new_storage_type);
+
+Err file_info_
 
 Err save_file_info_to_db(FileInfo *file_info, char *user, char *ip);
 
