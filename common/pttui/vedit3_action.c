@@ -544,7 +544,7 @@ vedit3_action_insert_char(int ch)
     error_code = vedit3_repl_wrlock_file_info_buffer_info(&is_lock_file_info, &is_lock_wr_buffer_info, &is_lock_buffer_info);
 
     fprintf(stderr, "vedit3_action.vedit3_action_insert_char: start: is_lock_file_info: %d is_lock_wr_buffer_info: %d is_lock_buffer_info: %d e: %d\n", is_lock_file_info, is_lock_wr_buffer_info, is_lock_buffer_info, error_code);
-    
+
     if(!error_code) {
         error_code = pstr ? _vedit3_action_insert_dchar_core(pstr) : _vedit3_action_insert_char_core(ch);
     }
@@ -792,7 +792,7 @@ vedit3_action_move_pgup()
 
     int i = 0;
     if(n_pre_line == expected_state.n_window_line) {
-        for(i = 0; i < VEDIT3_EDITOR_STATUS.current_line && p_buffer != PTTUI_BUFFER_INFO.tail; i++, p_buffer = p_buffer->next, n_pre_line--);
+        for(i = 0; i < VEDIT3_EDITOR_STATUS.current_line && p_buffer != PTTUI_BUFFER_INFO.tail; i++, p_buffer = pttui_buffer_next_ne(p_buffer, PTTUI_BUFFER_INFO.tail), n_pre_line--);
     }
 
     VEDIT3_EDITOR_STATUS.current_buffer = p_buffer;
@@ -874,7 +874,7 @@ vedit3_action_move_pgdn()
     PttUIBuffer *p_buffer = PTTUI_BUFFER_TOP_LINE;
     int i = 0;
     if(n_next_line == expected_state.n_window_line) {
-        for(i = 0; i < VEDIT3_EDITOR_STATUS.current_line && p_buffer != PTTUI_BUFFER_INFO.tail; i++, p_buffer = p_buffer->next, n_next_line++);
+        for(i = 0; i < VEDIT3_EDITOR_STATUS.current_line && p_buffer != PTTUI_BUFFER_INFO.tail; i++, p_buffer = pttui_buffer_next_ne(p_buffer, PTTUI_BUFFER_INFO.tail), n_next_line++);
     }
 
     VEDIT3_EDITOR_STATUS.current_buffer = p_buffer;
