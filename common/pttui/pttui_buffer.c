@@ -1479,7 +1479,7 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     error_code_lock = pttui_buffer_wrunlock_buffer_info(is_lock_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
 
-    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: end\n");
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: end e: %d\n", error_code);
 
     error_code_lock = pttui_buffer_unlock_wr_buffer_info(is_lock_wr_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
@@ -1598,13 +1598,21 @@ _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
  
 Err save_pttui_buffer_info_to_db(PttUIBufferInfo *buffer_info, FileInfo *file_info, char *user, char *ip)
 {
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_db: to save-to-tmp\n");
+
     Err error_code = save_pttui_buffer_info_to_tmp_file(buffer_info, file_info);
+
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_db: after save-to-tmp: e: %d\n", error_code);
     if(error_code) return error_code;
+
 
     error_code = pttui_buffer_rdlock_file_info();
     if(error_code) return error_code;
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_db: to save-file-info-to-db\n");
     error_code = save_file_info_to_db(file_info, user, ip);
+
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_db: after save-file-info-to-db: e: %d\n", error_code);
 
     Err error_code_lock = pttui_buffer_unlock_file_info();
     if(!error_code && error_code_lock) error_code = error_code_lock;
