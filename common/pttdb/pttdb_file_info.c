@@ -43,6 +43,7 @@ construct_file_info(UUID main_id, FileInfo *file_info)
         error_code = _get_file_info_set_comment_info(main_id, file_info);
     }
 
+    int n_comment_reply_lines = 0;
     error_code = _get_file_info_total_comment_reply_lines(file_info, &n_comment_reply_lines);
     file_info->n_total_line = file_info->n_main_line + file_info->n_comment + n_comment_reply_lines;
 
