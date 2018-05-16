@@ -1239,10 +1239,10 @@ _vedit3_action_buffer_split_core(PttUIBuffer *current_buffer, int pos, int inden
     ContentBlockInfo *p_content_block = NULL;
     switch(current_buffer->content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
-        error_code = file_info_increase_main_content_line(&PTTUI_FILE_INFO, current_buffer->block_offset);
+        error_code = file_info_increase_main_content_line(&PTTUI_FILE_INFO, current_buffer->block_offset, current_buffer->file_offset);
         break;
     case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
-        error_code = file_info_increase_comment_reply_line(&PTTUI_FILE_INFO, current_buffer->comment_offset, current_buffer->block_offset);
+        error_code = file_info_increase_comment_reply_line(&PTTUI_FILE_INFO, current_buffer->comment_offset, current_buffer->block_offset, current_buffer->file_offset);
         break;
     default:
         break;
@@ -1450,7 +1450,6 @@ _vedit3_action_delete_line_core(PttUIBuffer *buffer)
     // file-info
     Err error_code = S_OK;
 
-    ContentBlockInfo *p_content_block = NULL;
     switch (buffer->content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
         error_code = file_info_decrease_main_content_line(&PTTUI_FILE_INFO, buffer->block_offset, buffer->file_offset);
