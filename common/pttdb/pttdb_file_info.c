@@ -876,7 +876,7 @@ _file_info_increase_content_line_core(ContentBlockInfo *content_block, int file_
 Err
 file_info_update_comment_storage_type(FileInfo *file_info, int comment_id, enum PttDBStorageType storage_type)
 {
-    if(comment_id = file_info->n_comment) return S_ERR;
+    if(comment_id == file_info->n_comment) return S_ERR;
 
     CommentInfo *p_comment = file_info->comments + comment_id;
     p_comment->storage_type = storage_type;
