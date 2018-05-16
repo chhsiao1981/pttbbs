@@ -628,6 +628,8 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
         memcpy(current_dict->buf, tmp_buf, len_tmp_buf);
         current_dict->buf[len_tmp_buf] = 0;
         current_dict->len = len_tmp_buf;
+
+        fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: to new dict: current_dict: (content-type: %d comment-id: %d block-id: %d file-id: %d) len: %d buf: %s\n", current_dict->content_type, current_dict->comment_id, current_dict->block_id, current_dict->file_id, current_dict->len, current_dict->buf);
     }
 
     // free
