@@ -44,8 +44,10 @@ construct_file_info(UUID main_id, FileInfo *file_info)
     }
 
     int n_comment_reply_lines = 0;
+    fprintf(stderr, "file_info.construct_file_info: to get_file_info_total_comment_reply_line\n");
     error_code = _get_file_info_total_comment_reply_lines(file_info, &n_comment_reply_lines);
     file_info->n_total_line = file_info->n_main_line + file_info->n_comment + n_comment_reply_lines;
+    fprintf(stderr, "file_info.construct_file_info: after get_file_info_total_comment_reply_line: n_total_line: %d\n", file_info->n_total_line);
 
     return error_code;
 }
