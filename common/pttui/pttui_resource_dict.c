@@ -539,6 +539,8 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
                 memcpy(current_dict->buf, tmp_buf, len_tmp_buf);
                 current_dict->buf[len_tmp_buf] = 0;
                 current_dict->len = len_tmp_buf;
+
+                fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: to new dict: current_dict: (content-type: %d comment-id: %d block-id: %d file-id: %d) len: %d buf: %s\n", current_dict->content_type, current_dict->comment_id, current_dict->block_id, current_dict->file_id, current_dict->len, current_dict->buf);
             }
 
             max_buf_size = MAX_BUF_SIZE;
@@ -575,6 +577,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             line_offset_dict_buf++;            
         }
 
+        fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: after init: n_line: %d start_i: %d end_i: %d len: %d tmp_buf: %s\n", end_i - start_i, len_tmp_buf, tmp_buf);
         if(current_buffer->is_to_delete && current_buffer->is_new) {
         }
         else if(current_buffer->is_to_delete) {
@@ -583,6 +586,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             p_dict_buf = p_next_dict_buf;
             dict_buf_offset = dict_buf_next_offset;
             line_offset_dict_buf++;
+            fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: after is-to-delete: len: %d tmp_buf: %s\n", len_tmp_buf, tmp_buf);
         }
         else if(current_buffer->is_new) {
             // save the current-buffer to the tmp-buf
@@ -591,6 +595,8 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, PTTUI_NEWLINE, LEN_PTTUI_NEWLINE);
             
             line_offset_tmp_buf++;
+
+            fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: after is-new: len: %d tmp_buf: %s\n", len_tmp_buf, tmp_buf);
         }
         else {
             // 1. get the next buf.
@@ -606,6 +612,8 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             p_dict_buf = p_next_dict_buf;
             dict_buf_offset = dict_buf_next_offset;
             line_offset_dict_buf++;
+
+            fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: after modified: len: %d tmp_buf: %s\n", len_tmp_buf, tmp_buf);
         }
 
         if (error_code) break;
