@@ -67,7 +67,7 @@ Err file_info_get_pre_line(FileInfo *file_info, UUID orig_id, enum PttDBContentT
 
 Err file_info_increase_main_content_line(FileInfo *file_info, int block_id, int file_id);
 
-Err file_info_decrease_main_content_line(FileInfo *file_info, int block_id);
+Err file_info_decrease_main_content_line(FileInfo *file_info, int block_id, int file_id);
 
 Err file_info_update_main_content_storage_type(FileInfo *file_info, int block_id, enum PttDBStorageType storage_type);
 
@@ -75,7 +75,7 @@ Err file_info_update_comment_storage_type(FileInfo *file_info, int comment_id, e
 
 Err file_info_increase_comment_reply_line(FileInfo *file_info, int comment_id, int block_id, int file_id);
 
-Err file_info_decrease_comment_reply_line(FileInfo *file_info, int comment_id, int block_id);
+Err file_info_decrease_comment_reply_line(FileInfo *file_info, int comment_id, int block_id, int file_id);
 
 Err file_info_update_comment_reply_storage_type(FileInfo *file_info, int comment_id, int block_id, enum PttDBStorageType storage_type);
 

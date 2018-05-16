@@ -899,7 +899,7 @@ file_info_update_comment_reply_storage_type(FileInfo *file_info, int comment_id,
 }
 
 Err
-file_info_decrease_main_content_line(FileInfo *file_info, int block_id)
+file_info_decrease_main_content_line(FileInfo *file_info, int block_id, int file_id)
 {
 
    if(block_id >= file_info->n_main_block) return S_ERR;
