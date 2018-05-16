@@ -99,6 +99,8 @@ Err associate_comment(Comment *comment, char *buf, int max_buf_len);
 Err dissociate_comment(Comment *comment);
 Err read_comments_by_main(UUID main_id, time64_t create_milli_timestamp, char *poster, enum ReadCommentsOpType op_type, int max_n_comments, enum MongoDBId mongo_db_id, Comment *comments, int *n_read_comment, int *len);
 
+Err update_comment_from_comment_info(CommentInfo *comment_info, char *updater, char *update_ip);
+
 Err update_comment_reply_to_comment(UUID comment_id, UUID comment_reply_id, int n_comment_reply_line, int n_comment_reply_block, int n_comment_reply_total_line);
 Err remove_comment_reply_from_comment(UUID comment_id, UUID comment_reply_id);
 Err extract_b_comments_comment_id_to_bsons(bson_t **b_comments, int n_comment, char *result_key, bson_t **b_comment_ids);
