@@ -817,7 +817,7 @@ file_info_increase_main_content_line(FileInfo *file_info, int block_id, int file
 
     ContentBlockInfo *p_content = file_info->main_blocks + block_id;
 
-    Err error_code = _file_info_increase_content_line_core(file_info, p_content, file_id);
+    Err error_code = _file_info_increase_content_line_core(p_content, file_id);
     if(error_code) return error_code;
 
     file_info->n_main_line++;
@@ -836,7 +836,7 @@ file_info_increase_comment_reply_line(FileInfo *file_info, int comment_id, int b
 
     ContentBlockInfo *p_content = p_comment->comment_reply_blocks + block_id;
 
-    Err error_code = _file_info_increase_content_line_core(file_info, p_content, file_id);
+    Err error_code = _file_info_increase_content_line_core(p_content, file_id);
     if(error_code) return error_code;
 
     p_comment->n_comment_reply_total_line++;
@@ -906,7 +906,7 @@ file_info_decrease_main_content_line(FileInfo *file_info, int block_id, int file
 
     ContentBlockInfo *p_content = file_info->main_blocks + block_id;
 
-    Err error_code = _file_info_decrease_content_line_core(file_info, p_content, file_id);
+    Err error_code = _file_info_decrease_content_line_core(p_content, file_id);
     if(error_code) return error_code;
 
     file_info->n_main_line--;
@@ -925,7 +925,7 @@ file_info_decrease_comment_reply_line(FileInfo *file_info, int comment_id, int b
 
     ContentBlockInfo *p_content = p_comment->comment_reply_blocks + block_id;
 
-    Err error_code = _file_info_decrease_content_line_core(file_info, p_content, file_id);
+    Err error_code = _file_info_decrease_content_line_core(p_content, file_id);
     if(error_code) return error_code;
 
     p_comment->n_comment_reply_total_line--;
@@ -935,7 +935,7 @@ file_info_decrease_comment_reply_line(FileInfo *file_info, int comment_id, int b
 }
 
 Err
-_file_info_decrease_content_line_core(FileInfo *file_info, ContentBlockInfo *content_block, int file_id)
+_file_info_decrease_content_line_core(ContentBlockInfo *content_block, int file_id)
 {
     if(content_block->storage_type == PTTDB_STORAGE_TYPE_FILE && file_id >= content_block->n_file) return S_ERR;
 
