@@ -863,8 +863,8 @@ _file_info_increase_content_line_core(ContentBlockInfo *content_block, int file_
 {
     if(content_block->storage_type == PTTDB_STORAGE_TYPE_FILE && file_id >= content_block->n_file) return S_ERR;
 
-    content_block_info->n_line++;
-    content_block_info->n_new_line++;
+    content_block->n_line++;
+    content_block->n_new_line++;
 
     if(content_block->storage_type == PTTDB_STORAGE_TYPE_FILE) {
         content_block->file_n_line[file_id]++;
@@ -939,8 +939,8 @@ _file_info_decrease_content_line_core(ContentBlockInfo *content_block, int file_
 {
     if(content_block->storage_type == PTTDB_STORAGE_TYPE_FILE && file_id >= content_block->n_file) return S_ERR;
 
-    content_block_info->n_line--;
-    content_block_info->n_to_delete_line++;
+    content_block->n_line--;
+    content_block->n_to_delete_line++;
 
     if(content_block->storage_type == PTTDB_STORAGE_TYPE_FILE) {
         content_block->file_n_line[file_id]--;
