@@ -277,8 +277,10 @@ _pttui_resource_dict_add_data(UUID the_id, int block_id, int file_id, int len, c
     // XXX buf_block need to be freed after copy to pttui-buffer
     int comment_id = 0;
     //Err error_code = bson_get_value_int32(resource_dict->b_the_id_comment_id_map, disp_uuid, &comment_id);
-    error_code = pttui_id_comment_id_dict_get_comment_id(&resource_dict->id_comment_id_dict, the_id, &comment_id);
-    if(error_code) return error_code;
+    if(content_type == PTTDB_CONTENT_TYPE_COMMENT_REPLY) {
+        error_code = pttui_id_comment_id_dict_get_comment_id(&resource_dict->id_comment_id_dict, the_id, &comment_id);
+        if(error_code) return error_code;
+    }
 
     int the_idx = ((int)the_id[0] + block_id + file_id + N_PTTUI_RESOURCE_DICT_LINK_LIST) % N_PTTUI_RESOURCE_DICT_LINK_LIST;
     _PttUIResourceDictLinkList *p = resource_dict->data[the_idx];
