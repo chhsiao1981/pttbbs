@@ -29,7 +29,7 @@ typedef struct CommentInfo {
     char comment_poster[IDLEN + 1];
     time64_t comment_create_milli_timestamp;
 
-    PttDBStorageType storage_type;
+    enum PttDBStorageType storage_type;
 
     UUID comment_reply_id;
     int n_comment_reply_total_line;
