@@ -1239,10 +1239,10 @@ _vedit3_action_buffer_split_core(PttUIBuffer *current_buffer, int pos, int inden
     ContentBlockInfo *p_content_block = NULL;
     switch(current_buffer->content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
-        error_code = file_info_increase_main_content_line(file_info, current_buffer->block_offset);
+        error_code = file_info_increase_main_content_line(&PTTUI_FILE_INFO, current_buffer->block_offset);
         break;
     case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
-        error_code = file_info_increase_comment_reply_line(file_info, current_buffer->comment_offset, current_buffer->block_id);
+        error_code = file_info_increase_comment_reply_line(&PTTUI_FILE_INFO, current_buffer->comment_offset, current_buffer->block_offset);
         break;
     default:
         break;
@@ -1453,10 +1453,10 @@ _vedit3_action_delete_line_core(PttUIBuffer *buffer)
     ContentBlockInfo *p_content_block = NULL;
     switch (buffer->content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
-        error_code = file_info_decrease_main_content_line(file_info, buffer->block_offset, buffer->file_offset);
+        error_code = file_info_decrease_main_content_line(&PTTUI_FILE_INFO, buffer->block_offset, buffer->file_offset);
         break;
     case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
-        error_code = file_info_decrease_comment_reply_line(file_info, buffer->comment_offset, buffer->block_offset, buffer->file_offset);
+        error_code = file_info_decrease_comment_reply_line(&PTTUI_FILE_INFO, buffer->comment_offset, buffer->block_offset, buffer->file_offset);
         break;
     default:
         break;
@@ -1471,7 +1471,7 @@ _vedit3_action_delete_line_core(PttUIBuffer *buffer)
         while(p_buffer != PTTUI_BUFFER_INFO.head) {
             p_buffer2 = p_buffer;
             p_buffer = p_buffer->next;
-            safe_free(&p_buffer2);
+            safe_free((void **)&p_buffer2);
         }
         PTTUI_BUFFER_INFO.head->pre = NULL;
     }
@@ -1482,7 +1482,7 @@ _vedit3_action_delete_line_core(PttUIBuffer *buffer)
         while(p_buffer != PTTUI_BUFFER_INFO.tail) {
             p_buffer2 = p_buffer;
             p_buffer = p_buffer->pre;
-            safe_free(&p_buffer2);
+            safe_free((void **)&p_buffer2);
         }
         PTTUI_BUFFER_INFO.tail->next = NULL;
     }
