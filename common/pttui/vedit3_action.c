@@ -807,13 +807,12 @@ vedit3_action_move_pgdn()
     bool is_eof = false;
     int current_line = VEDIT3_EDITOR_STATUS.current_line;
     int current_col = VEDIT3_EDITOR_STATUS.current_col;
-    int n_window_line = b_lines;
 
     PttUIState expected_state = {};
     error_code = _vedit3_action_move_pgdn_get_expected_buffer(&VEDIT3_EDITOR_STATUS, &PTTUI_FILE_INFO, &PTTUI_STATE, &expected_state);
     if(error_code) return error_code;
 
-    error_code = pttui_set_expected_state(PTTUI_STATE.main_id, expected_top_line.content_type, expected_top_line.the_id, expected_top_line.block_offset, expected_top_line.line_offset, expected_top_line.comment_offset, n_window_line);
+    error_code = pttui_set_expected_state(expected_state.main_id, expected_state.content_type, expected_state.the_id, expected_state.block_offset, expected_state.line_offset, expected_state.comment_offset, expected_state.n_window_line);
     if (error_code) return error_code;
 
     error_code = vedit3_wait_buffer_state_sync(DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC);    
@@ -872,6 +871,7 @@ _vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, 
 
     if(error_code) return error_code;
 
+    int n_window_line = b_lines;
     memcpy(expected_state->main_id, current_state->main_id, UUIDLEN);
     expected_state->top_line_content_type = tmp_buffer.content_type;
     expected_state->top_line_block_offset = tmp_buffer.block_offset;
