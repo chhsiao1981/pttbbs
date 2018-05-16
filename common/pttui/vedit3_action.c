@@ -905,6 +905,8 @@ _vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, 
     int tmp_n_next_line = b_lines - editor_status->current_line;
     tmp_n_next_line = tmp_n_next_line < max_next_lines ? tmp_n_next_line : max_next_lines;
 
+    fprintf(stderr, "vedit3_action._vedit3_action_move_pgdn_get_expected_buffer: n_total_line: %d current_buffer_line: %d b_lines: %d current_line: %d n_next_line: %d\n", file_info->n_total_line, editor_status->current_buffer_line, b_lines, editor_status->current_line, tmp_n_next_line);
+
     PttUIBuffer *current_buffer = editor_status->current_buffer;
 
     bool is_next_line = false;
