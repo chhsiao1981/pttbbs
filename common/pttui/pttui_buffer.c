@@ -1441,17 +1441,25 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
         error_code = _modified_pttui_buffer_info_to_resource_info(buffer_info->head, buffer_info->tail, &resource_info);
     }
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after buffer_info-to-resource-info: e: %d\n", error_code);
+
     if(!error_code) {
         error_code = pttui_resource_info_to_resource_dict(&resource_info, &resource_dict);
     }
+
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after resource-info-to-resource-dict: e: %d\n", error_code);
 
     if(!error_code) {
         error_code = pttui_resource_dict_integrate_with_modified_pttui_buffer_info(buffer_info->head, buffer_info->tail, &resource_dict);
     }
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after integrate-with-modified-pttui-buffer-info: e: %d\n", error_code);
+
     if(!error_code) {
         error_code = pttui_resource_dict_save_to_tmp_file(&resource_dict);
     }
+
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after resource-dict-save-to-tmp-file: e: %d\n", error_code);
 
     if(!error_code) {
         error_code = pttui_buffer_wrlock_file_info(&is_lock_file_info);
