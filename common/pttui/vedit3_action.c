@@ -173,6 +173,7 @@ _vedit3_action_to_store_comment(int ch, bool *is_end) {
     case Ctrl('W'):
         break;
     case Ctrl('Q'): // quit
+        error_code = vedit3_action_exit(is_end);
         break;
     case Ctrl('C'): // ansi-code
         break;
