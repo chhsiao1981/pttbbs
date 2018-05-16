@@ -810,7 +810,7 @@ vedit3_action_move_pgdn()
     int n_window_line = b_lines;
 
     PttUIState expected_state = {};
-    error_code = _vedit3_action_move_pgdn_get_expected_buffer(&VEDIT3_EDITOR_STATUS, &PTTUI_FILE_INFO, &VEDIT3_STATE, &expected_state);
+    error_code = _vedit3_action_move_pgdn_get_expected_buffer(&VEDIT3_EDITOR_STATUS, &PTTUI_FILE_INFO, &PTTUI_STATE, &expected_state);
     if(error_code) return error_code;
 
     error_code = pttui_set_expected_state(PTTUI_STATE.main_id, expected_top_line.content_type, expected_top_line.the_id, expected_top_line.block_offset, expected_top_line.line_offset, expected_top_line.comment_offset, n_window_line);
