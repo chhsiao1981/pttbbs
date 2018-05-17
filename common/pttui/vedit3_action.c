@@ -897,8 +897,9 @@ _vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, 
     Err error_code = S_OK;
 
     int n_window_line = b_lines;
-    
-    int max_next_lines = file_info->n_total_line - editor_status->current_buffer_line - 1 - n_window_line;
+
+    int current_buffer_top_line = editor_status->current_buffer_line - editor_status->current_buffer;
+    int max_next_lines = file_info->n_total_line - current_buffer_top_line - 1;
     if(max_next_lines <= 0) {
         memcpy(expected_state, current_state, sizeof(PttUIState));
         return S_OK;
@@ -907,7 +908,7 @@ _vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, 
     int tmp_n_next_line = b_lines - editor_status->current_line;
     tmp_n_next_line = tmp_n_next_line < max_next_lines ? tmp_n_next_line : max_next_lines;
 
-    fprintf(stderr, "vedit3_action._vedit3_action_move_pgdn_get_expected_buffer: n_total_line: %d current_buffer_line: %d b_lines: %d current_line: %d n_next_line: %d\n", file_info->n_total_line, editor_status->current_buffer_line, b_lines, editor_status->current_line, tmp_n_next_line);
+    fprintf(stderr, "vedit3_action._vedit3_action_move_pgdn_get_expected_buffer: n_total_line: %d current_buffer_line: %d b_lines: %d current_buffer_top_line: %d current_line: %d n_next_line: %d\n", file_info->n_total_line, editor_status->current_buffer_line, b_lines, current_buffer_top_line, editor_status->current_line, tmp_n_next_line);
 
     PttUIBuffer *current_buffer = editor_status->current_buffer;
 
