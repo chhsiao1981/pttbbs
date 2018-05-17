@@ -1560,6 +1560,8 @@ _vedit3_action_delete_line_core(PttUIBuffer *buffer)
     buffer->is_to_delete = true;
     buffer->is_modified = true;
 
+    fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: buffer: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", buffer->content_type, buffer->comment_offset, buffer->block_offset, buffer->line_offset, buffer->file_offset, buffer->buf);
+
     // buffer after buffer
     for (PttUIBuffer *p_buffer2 = pttui_buffer_next_ne(buffer, PTTUI_BUFFER_INFO.tail); p_buffer2 && p_buffer2->content_type == buffer->content_type && p_buffer2->block_offset == buffer->block_offset && p_buffer2->comment_offset == buffer->comment_offset; p_buffer2->line_offset--, p_buffer2 = pttui_buffer_next_ne(p_buffer2, PTTUI_BUFFER_INFO.tail));
 
