@@ -1505,13 +1505,19 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
         error_code = pttui_resource_dict_integrate_with_modified_pttui_buffer_info(buffer_info->to_delete_buffer_head, buffer_info->to_delete_buffer_tail, &resource_dict, file_info);
     }    
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after integrate-with-to-deleete-buffer: e: %d\n", error_code);
+
     if(!error_code) {
         error_code = pttui_resource_dict_integrate_with_modified_pttui_buffer_info(buffer_info->head, buffer_info->tail, &resource_dict, file_info);
     }
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after integrate-with-modified-pttui-buffer-info: e: %d\n", error_code);
+
     if(!error_code) {
         error_code = pttui_resource_dict_save_to_tmp_file(&resource_dict);
     }
+
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after save-to-tmp-file: e: %d\n", error_code);
 
     if(!error_code) {
         error_code = pttui_resource_dict_reset_file_info(&resource_dict, file_info);
@@ -1971,4 +1977,6 @@ log_pttui_buffer_info(PttUIBufferInfo *buffer_info, char *prompt)
             p_buffer->file_offset, p_buffer->file_line_offset, p_buffer->file_line_pre_offset, p_buffer->file_line_next_offset, p_buffer->storage_type, p_buffer->is_modified, p_buffer->is_new, p_buffer->is_to_delete, p_buffer->len_no_nl, p_buffer->buf);
         free(disp_uuid);
     }
+
+    return S_OK;
 }
