@@ -160,9 +160,10 @@ _vedit3_action_to_store_comment(int ch, bool *is_end) {
     switch (ch) {
     case KEY_F10:
     case Ctrl('X'): // save and exit
-        *is_end = true;
+        error_code = vedit3_action_save_and_exit(is_end);
         break;
     case KEY_F5:    // goto-line
+        error_code = vedit3_action_goto();
         break;
     case KEY_F8:    // users
         error_code = vedit3_action_t_users();
@@ -176,6 +177,7 @@ _vedit3_action_to_store_comment(int ch, bool *is_end) {
         break;
     case Ctrl('S'): // search-str
     case KEY_F3:
+        error_code = vedit3_action_search();
         break;
     case Ctrl('V'): // toggle ansi-color
         error_code = vedit3_action_toggle_ansi();
@@ -239,67 +241,53 @@ _vedit3_action_to_store_comment_reply(int ch, bool *is_end) {
     }
 
     // ch as ctrl
-    switch (ch) {
-    case KEY_UP:
-    case KEY_DOWN:
-        break;
-    case KEY_ESC:
-        break;
-    }
-
+    if(ch == KEY_ESC) ch = pttui_ctrl_key_ne(ch);
 
     // ctrl-command
     switch (ch) {
     case KEY_F10:
     case Ctrl('X'): // save and exit
-        *is_end = true;
+        error_code = vedit3_action_save_and_exit(is_end);
         break;
     case KEY_F5:    // goto-line
+        error_code = vedit3_action_goto();
         break;
-
     case KEY_F8:    // users
         error_code = vedit3_action_t_users();
         break;
     case Ctrl('W'):
+        error_code = vedit3_action_block_cut();
         break;
-
     case Ctrl('Q'): // quit
+        error_code = vedit3_action_exit(is_end);
         break;
-
     case Ctrl('C'): // ansi-code
+        error_code = vedit3_action_insert_ansi_code();
         break;
-
     case KEY_ESC:   // escape
-            break;
-
+        error_code = vedit3_action_escape();
+        break;
     case Ctrl('S'): // search-str
     case KEY_F3:
+        error_code = vedit3_action_search();
         break;
-
-    /*
     case Ctrl('U'): // insert-esc
         error_code = vedit3_action_insert_char(ESC_CHR);
         break;
-    */
     case Ctrl('V'): // toggle ansi-color
         error_code = vedit3_action_toggle_ansi();
         break;
-    /*
     case Ctrl('I'): // insert-tab
         error_code = vedit3_action_insert_tab();
         break;
-
     case KEY_ENTER: // new-line
         error_code = vedit3_action_insert_new_line();
         break;
-
     case Ctrl('G'): // edit-assistant
         break;
-    
     case Ctrl('P'): // toogle-phone-mode
         error_code = vedit3_action_toggle_phone_mode();
         break;
-    */
     case KEY_F1:
     case Ctrl('Z'): // help
         error_code = vedit3_action_show_help();
@@ -335,7 +323,6 @@ _vedit3_action_to_store_comment_reply(int ch, bool *is_end) {
     case Ctrl('A'):
         error_code = vedit3_action_move_begin_line();
         break;
-    /*
     case Ctrl(']'):
         error_code = vedit3_action_move_start_file();
         break;
@@ -346,7 +333,6 @@ _vedit3_action_to_store_comment_reply(int ch, bool *is_end) {
         case KEY_INS:
         error_code = vedit3_action_toggle_insert();
         break;
-    */
     case KEY_BS:
         error_code = vedit3_action_backspace();
         break;
@@ -354,14 +340,12 @@ _vedit3_action_to_store_comment_reply(int ch, bool *is_end) {
     case KEY_DEL:
         error_code = vedit3_action_delete_char();
         break;
-    /*
     case Ctrl('Y'):
         error_code = vedit3_action_delete_line();
         break;
     case Ctrl('K'):
         error_code = vedit3_action_delete_end_of_line();
         break;
-    */
     default:
         break;
     }
