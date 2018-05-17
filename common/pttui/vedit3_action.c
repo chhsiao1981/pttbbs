@@ -1490,6 +1490,7 @@ _vedit3_action_concat_next_line()
     if(error_code) return error_code;
 
     if(!p_non_space_buf) {
+        fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: no non-space-buf, to delete-line-core");
         error_code = _vedit3_action_delete_line_core(p_next_buffer);
         return error_code;
     }
@@ -1504,6 +1505,7 @@ _vedit3_action_concat_next_line()
         current_buffer->buf[current_buffer->len_no_nl] = 0;
         current_buffer->is_modified = true;
 
+        fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: overflow < 0, to delete-line-core");
         error_code = _vedit3_action_delete_line_core(p_next_buffer);
 
         return error_code;
@@ -1528,6 +1530,7 @@ _vedit3_action_concat_next_line()
     if(error_code) return error_code;
 
     if(!p_non_space_buf) {
+        fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: no non-space-buf2, to delete-line-core");
         error_code = _vedit3_action_delete_line_core(p_next_buffer);
         return error_code;
     }
@@ -1600,6 +1603,34 @@ _vedit3_action_delete_line_core(PttUIBuffer *buffer)
 
     if (PTTUI_BUFFER_INFO.tail == buffer) {
         fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: delete tail: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", buffer->content_type, buffer->comment_offset, buffer->block_offset, buffer->line_offset, buffer->file_offset, buffer->buf);
+
+
+
+        PttUIBuffer *tmp_1 = buffer->pre;
+        PttUIBuffer *tmp_2 = tmp_1 ? tmp_1->pre : NULL;
+        PttUIBuffer *tmp_3 = tmp_2 ? tmp_2->pre : NULL;
+        PttUIBuffer *tmp_4 = tmp_3 ? tmp_3->pre : NULL;
+        PttUIBuffer *tmp_5 = tmp_4 ? tmp_4->pre : NULL;
+
+        if(tmp_5) {
+            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-5: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_5->content_type, tmp_5->comment_offset, tmp_5->block_offset, tmp_5->line_offset, tmp_5->file_offset, tmp_5->buf);
+        }
+
+        if(tmp_4) {
+            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-4: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_4->content_type, tmp_4->comment_offset, tmp_4->block_offset, tmp_4->line_offset, tmp_4->file_offset, tmp_4->buf);
+        }
+
+        if(tmp_3) {
+            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-3: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_3->content_type, tmp_3->comment_offset, tmp_3->block_offset, tmp_3->line_offset, tmp_3->file_offset, tmp_3->buf);
+        }
+
+        if(tmp_2) {
+            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-2: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_2->content_type, tmp_2->comment_offset, tmp_2->block_offset, tmp_2->line_offset, tmp_2->file_offset, tmp_2->buf);
+        }
+
+        if(tmp_1) {
+            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-1: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_1->content_type, tmp_1->comment_offset, tmp_1->block_offset, tmp_1->line_offset, tmp_1->file_offset, tmp_1->buf);
+        }
 
 
         PTTUI_BUFFER_INFO.tail = pttui_buffer_pre_ne(buffer, PTTUI_BUFFER_INFO.head);
