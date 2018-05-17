@@ -1517,8 +1517,12 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
 
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after to-delete-resource-info-to-resource-dict: e: %d\n", error_code);
 
+    if(!error_code) {
+        error_code = pttui_buffer_wrlock_file_info(&is_lock_file_info);
+    }
+
     if(!error_code && buffer_info->n_to_delete_buffer) {
-        error_code = pttui_resource_dict_integrate_with_modified_pttui_buffer_info(buffer_info->to_delete_buffer_head, buffer_info->to_delete_buffer_tail, &resource_dict);
+        error_code = pttui_resource_dict_integrate_with_modified_pttui_buffer_info(buffer_info->to_delete_buffer_head, buffer_info->to_delete_buffer_tail, &resource_dict, file_info);
     }    
 
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after integrate-with-to-delete-buffer: e: %d\n", error_code);
@@ -1526,7 +1530,7 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     log_pttui_resource_dict(&resource_dict, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after integrate-with-to-delete-buffer: ");
 
     if(!error_code) {
-        error_code = pttui_resource_dict_integrate_with_modified_pttui_buffer_info(buffer_info->head, buffer_info->tail, &resource_dict);
+        error_code = pttui_resource_dict_integrate_with_modified_pttui_buffer_info(buffer_info->head, buffer_info->tail, &resource_dict, file_info);
     }
 
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after integrate-with-modified-pttui-buffer-info: e: %d\n", error_code);
@@ -1536,10 +1540,6 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     }
 
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after resource-dict-save-to-tmp-file: e: %d\n", error_code);
-
-    if(!error_code) {
-        error_code = pttui_buffer_wrlock_file_info(&is_lock_file_info);
-    }
 
     if(!error_code) {
         error_code = pttui_resource_dict_reset_file_info(&resource_dict, file_info);

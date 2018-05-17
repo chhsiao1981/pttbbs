@@ -637,9 +637,9 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             break;
         }
         expected_n_line = p_content ? p_content->n_line : 0;
-        the_rest_line = expected_n_line - line_offset_dict_buf;
+        the_rest_line = expected_n_line - line_offset_tmp_buf;
 
-        fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: expected_n_line: %d the_rest_line: %d dict_buf_offset: %d len_dict_buf: %d\n", expected_n_line, the_rest_line, dict_buf_offset, len_dict_buf);
+        fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: expected_n_line: %d line_offset_tmp_buf: %d the_rest_line: %d dict_buf_offset: %d len_dict_buf: %d\n", expected_n_line, line_offset_tmp_buf, the_rest_line, dict_buf_offset, len_dict_buf);
 
         for(int i = 0; i < the_rest_line && dict_buf_offset < len_dict_buf; i++) {
             error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
