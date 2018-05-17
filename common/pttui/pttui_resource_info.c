@@ -31,26 +31,32 @@ pttui_resource_info_to_resource_dict(PttUIResourceInfo *resource_info, PttUIReso
     Err error_code = S_OK;
 
     PttQueue *p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_MAIN * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_MONGO];
+    fprintf(stderr, "pttui_resource_info.pttui_resource_info_to_resource_dict: to get main from db: n_queue: %d\n", p_queue->n_queue);
     error_code = pttui_resource_dict_get_main_from_db(p_queue, resource_dict);
     if(error_code) return error_code;
 
     p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_MAIN * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
+    fprintf(stderr, "pttui_resource_info.pttui_resource_info_to_resource_dict: to get main from file: n_queue: %d\n", p_queue->n_queue);
     error_code = pttui_resource_dict_get_main_from_file(p_queue, resource_dict);
     if(error_code) return error_code;
 
     p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_MONGO];
+    fprintf(stderr, "pttui_resource_info.pttui_resource_info_to_resource_dict: to get comment from db: n_queue: %d\n", p_queue->n_queue);
     error_code = pttui_resource_dict_get_comment_from_db(p_queue, resource_dict);
     if(error_code) return error_code;
 
     p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
+    fprintf(stderr, "pttui_resource_info.pttui_resource_info_to_resource_dict: to get comment from file: n_queue: %d\n", p_queue->n_queue);
     error_code = pttui_resource_dict_get_comment_from_file(p_queue, resource_dict);
     if(error_code) return error_code;
 
     p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT_REPLY * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_MONGO];
+    fprintf(stderr, "pttui_resource_info.pttui_resource_info_to_resource_dict: to get comment-reply from db: n_queue: %d\n", p_queue->n_queue);
     error_code = pttui_resource_dict_get_comment_reply_from_db(p_queue, resource_dict);
     if(error_code) return error_code;
 
     p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT_REPLY * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
+    fprintf(stderr, "pttui_resource_info.pttui_resource_info_to_resource_dict: to get comment-reply from file: n_queue: %d\n", p_queue->n_queue);
     error_code = pttui_resource_dict_get_comment_reply_from_file(p_queue, resource_dict);
     if(error_code) return error_code;
 
