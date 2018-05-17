@@ -546,6 +546,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             max_buf_size = MAX_BUF_SIZE;
             tmp_buf = realloc(tmp_buf, max_buf_size);
             len_tmp_buf = 0;
+            tmp_buf[len_tmp_buf] = 0;
             line_offset_tmp_buf = 0;
 
             error_code = pttui_resource_dict_get_link_list(resource_dict, current_buffer->the_id, current_buffer->block_offset, current_buffer->file_offset, &current_dict);
