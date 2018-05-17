@@ -400,8 +400,8 @@ _pttui_resource_dict_get_content_block_from_db_core2(bson_t *q, int max_n_conten
     char *q_str = bson_as_canonical_extended_json(q, NULL);
     char *field_str = bson_as_canonical_extended_json(fields, NULL);
     fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_get_content_block_from_db_core2: q: %s fields: %s max_n_content_block: %d mongo_db_id: %d n_content_block: %d\n", q_str, field_str, max_n_content_block, mongo_db_id, n_content_block);
-    bson_free(&q_str);
-    bson_free(&field_str);
+    bson_free(q_str);
+    bson_free(field_str);
 
     if(!error_code) {
         error_code = _pttui_resource_dict_content_block_db_to_dict(b_content_blocks, n_content_block, content_type, resource_dict);
