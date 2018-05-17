@@ -532,7 +532,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             if(current_dict) {
                 error_code = _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(current_dict, p_dict_buf, dict_buf_offset, len_dict_buf, tmp_buf, max_buf_size, len_tmp_buf, line_offset_tmp_buf, file_info);
 
-                fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: to new dict: current_dict: (content-type: %d comment-id: %d block-id: %d file-id: %d) the_rest_len: %d len: %d buf: %s\n", current_dict->content_type, current_dict->comment_id, current_dict->block_id, current_dict->file_id, the_rest_len, current_dict->len, current_dict->buf);
+                fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: to new dict: current_dict: (content-type: %d comment-id: %d block-id: %d file-id: %d) len: %d buf: %s\n", current_dict->content_type, current_dict->comment_id, current_dict->block_id, current_dict->file_id, current_dict->len, current_dict->buf);
             }
 
             max_buf_size = MAX_BUF_SIZE;
@@ -625,13 +625,16 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
 Err
 _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(_PttUIResourceDictLinkList *the_dict, char *p_dict_buf, int dict_buf_offset, int len_dict_buf, char *tmp_buf, int max_buf_size, int len_tmp_buf, int line_offset_tmp_buf, FileInfo *file_info)
 {
+    Err error_code = S_OK;
+    CommentInfo *p_comment = NULL;
+    ContentBlockInfo *p_content = NULL;
     switch(the_dict->content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
         p_content = file_info->main_blocks + the_dict->block_id;
         break;
     case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
-        p_comment = file_info->comments + current_dict->comment_id;
-        p_content = p_comment->comment_reply_blocks + current_dict->block_id;
+        p_comment = file_info->comments + the_dict->comment_id;
+        p_content = p_comment->comment_reply_blocks + the_dict->block_id;
         break;
     default:
         break;
