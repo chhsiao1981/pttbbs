@@ -264,7 +264,11 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
         p_buffer = (PttUIBuffer *)p->val.p;
         min_block_id = p_buffer->block_offset;
         max_block_id = p_tail_buffer->block_offset;
+
         error_code = _pttui_resource_dict_get_content_block_from_db_core(tail_uuid, min_block_id, max_block_id, MONGO_COMMENT_REPLY_BLOCK, PTTDB_CONTENT_TYPE_COMMENT_REPLY, resource_dict);
+        char *disp_uuid = display_uuid(tail_uuid);        
+        fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_get_comment_reply_fom_db: tail: %s min_block_id: %d max_block_id: %d e: %d\n", disp_uuid, min_block_id, max_block_id, error_code);
+        free(disp_uuid);
     }
 
     //free
