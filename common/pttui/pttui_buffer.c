@@ -1483,6 +1483,10 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
         error_code = pttui_resource_info_to_resource_dict(&resource_info, &resource_dict);
     }
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after resource_info_to_resource_dict: e: %d\n", error_code);
+
+    log_pttui_resource_dict(&resource_dict, "pttui_buffer.save_pttui_buffer_info_to_tmp_file");
+
     if(!error_code && buffer_info->n_to_delete_buffer) {
         error_code = _modified_pttui_buffer_info_to_resource_info(buffer_info->to_delete_buffer_head, buffer_info->to_delete_buffer_tail, &resource_info2);
     }
