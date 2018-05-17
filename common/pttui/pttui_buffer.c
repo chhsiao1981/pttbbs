@@ -1650,6 +1650,13 @@ _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
  
 Err save_pttui_buffer_info_to_db(PttUIBufferInfo *buffer_info, FileInfo *file_info, char *user, char *ip)
 {
+
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_db: file_info:\n");
+    log_file_info(file_info, "pttui_buffer.save_pttui_buffer_info_to_db");
+
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_db: buffer_info:\n");
+    log_pttui_buffer_info(buffer_info, "pttui_buffer.save_pttui_buffer_info_to_db");
+
     Err error_code = save_pttui_buffer_info_to_tmp_file(buffer_info, file_info);
     if(error_code) return error_code;
 
