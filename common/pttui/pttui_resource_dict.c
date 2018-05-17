@@ -236,7 +236,7 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
         if(!memcmp(p_buffer->the_id, pre_uuid, UUIDLEN)) continue;
         memcpy(pre_uuid, p_buffer->the_id, UUIDLEN);
 
-        //_pttui_resource_dict_add_the_id_comment_id_map(p_buffer->the_id, p_buffer->comment_offset, resource_dict);
+        pttui_id_comment_id_dict_add_data(p_buffer->the_id, p_buffer->comment_offset, &resource_dict->id_comment_id_dict);
 
         array_keylen = bson_uint32_to_string(i, &array_key, buf, sizeof(buf));
         status = bson_append_bin(&child, array_key, (int)array_keylen, p_buffer->the_id, UUIDLEN);
