@@ -945,7 +945,7 @@ _vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, 
         *n_next_line = i;
     }
 
-    error_code_lock = vedit3_repl_wrunlock_file_info_buffer_info(is_lock_file_info, is_lock_buffer_info);
+    error_code_lock = vedit3_repl_unlock_file_info_buffer_info(is_lock_file_info, is_lock_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
 
     if(!error_code) {
