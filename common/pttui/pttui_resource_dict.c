@@ -249,7 +249,7 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
 
     char *str = bson_as_canonical_extended_json(q_array, NULL);
     fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_get_comment_reply_from_db: max_n_middle: %d q_array: %s\n", max_n_middle, str);
-    bson_free(&str);
+    bson_free(str);
 
     bson_t *q_middle = NULL;
     if(max_n_middle) {
