@@ -202,7 +202,7 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
     PttUIBuffer *p_tail_buffer = (PttUIBuffer *)queue->tail->val.p;
     UUID tail_uuid = {};
     memcpy(tail_uuid, p_tail_buffer->the_id, UUIDLEN);
-    pttui_id_comment_id_dict_add_data(p_head_buffer->the_id, p_head_buffer->comment_offset, &resource_dict->id_comment_id_dict);
+    pttui_id_comment_id_dict_add_data(p_tail_buffer->the_id, p_tail_buffer->comment_offset, &resource_dict->id_comment_id_dict);
 
     // head
     p_pre_buffer = p_head_buffer;
