@@ -175,10 +175,10 @@ _sync_pttui_buffer_info_is_pre(PttUIState *state, PttUIBuffer *buffer, bool *is_
 }
 
 bool
-_pttui_buffer_is_pre_ne(PttUIBuffer *buffer_a, PttUIBuffer *buffer_b)
+_pttui_buffer_is_pre_(PttUIBuffer *buffer_a, PttUIBuffer *buffer_b)
 {
     bool is_pre = false;
-    Err error_code = _pttui_buffer_is_pre_core(
+    _pttui_buffer_is_pre_core(
         buffer_a->content_type,
         buffer_a->comment_offset,
         buffer_a->block_offset,
@@ -1551,7 +1551,6 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
 
     // free
     destroy_pttui_resource_info(&resource_info);
-    destroy_pttui_resource_info(&resource_info2);
     safe_destroy_pttui_resource_dict(&resource_dict);
 
     return error_code;
