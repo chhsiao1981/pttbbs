@@ -1615,23 +1615,23 @@ _vedit3_action_delete_line_core(PttUIBuffer *buffer)
         PttUIBuffer *tmp_5 = tmp_4 ? tmp_4->pre : NULL;
 
         if(tmp_5) {
-            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-5: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_5->content_type, tmp_5->comment_offset, tmp_5->block_offset, tmp_5->line_offset, tmp_5->file_offset, tmp_5->buf);
+            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-5: is_to_delete: %d content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_5->is_to_delete, tmp_5->content_type, tmp_5->comment_offset, tmp_5->block_offset, tmp_5->line_offset, tmp_5->file_offset, tmp_5->buf);
         }
 
         if(tmp_4) {
-            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-4: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_4->content_type, tmp_4->comment_offset, tmp_4->block_offset, tmp_4->line_offset, tmp_4->file_offset, tmp_4->buf);
+            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-4: is-to-delete: %d tmp-4: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_4->is_to_delete, tmp_4->content_type, tmp_4->comment_offset, tmp_4->block_offset, tmp_4->line_offset, tmp_4->file_offset, tmp_4->buf);
         }
 
         if(tmp_3) {
-            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-3: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_3->content_type, tmp_3->comment_offset, tmp_3->block_offset, tmp_3->line_offset, tmp_3->file_offset, tmp_3->buf);
+            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-3: is-to-delete: %d tmp-3: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_3->is_to_delete, tmp_3->content_type, tmp_3->comment_offset, tmp_3->block_offset, tmp_3->line_offset, tmp_3->file_offset, tmp_3->buf);
         }
 
         if(tmp_2) {
-            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-2: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_2->content_type, tmp_2->comment_offset, tmp_2->block_offset, tmp_2->line_offset, tmp_2->file_offset, tmp_2->buf);
+            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-2: is-to-delete: %d tmp-2: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_2->is_to_delete, tmp_2->content_type, tmp_2->comment_offset, tmp_2->block_offset, tmp_2->line_offset, tmp_2->file_offset, tmp_2->buf);
         }
 
         if(tmp_1) {
-            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-1: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_1->content_type, tmp_1->comment_offset, tmp_1->block_offset, tmp_1->line_offset, tmp_1->file_offset, tmp_1->buf);
+            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: tmp-1: is-to-delete: %d tmp-1: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", tmp_1->is_to_delete, tmp_1->content_type, tmp_1->comment_offset, tmp_1->block_offset, tmp_1->line_offset, tmp_1->file_offset, tmp_1->buf);
         }
 
 
