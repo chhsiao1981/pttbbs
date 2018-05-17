@@ -742,7 +742,9 @@ _save_file_info_to_db_comment_reply(FileInfo *file_info, char *user, char *ip)
     Err error_code = S_OK;
     CommentInfo *p_comment = file_info->comments;
     ContentBlockInfo *p_content_blocks = NULL;
-    bool is_modified = false;    
+    bool is_modified = false;
+
+    log_file_info(file_info, "pttdb_file_info._save_file_info_to_db_comment_reply");
 
     UUID new_comment_reply_id = {};
     for(int i = 0; i < file_info->n_comment; i++, p_comment++) {
@@ -750,6 +752,8 @@ _save_file_info_to_db_comment_reply(FileInfo *file_info, char *user, char *ip)
         error_code = _save_file_info_to_db_is_modified(p_content_blocks, p_comment->n_comment_reply_block, &is_modified);
         if(error_code) break;
         if(!is_modified) continue;
+
+        fprintf(stderr, "pttdb_file_info._save_file_info_to_db_comment_reply: (%d/%d): is-modified\n", i, file_info->n_comment);
 
         bzero(new_comment_reply_id, sizeof(UUID));
         error_code = create_comment_reply_from_content_block_infos(
