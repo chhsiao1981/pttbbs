@@ -433,10 +433,18 @@ pttui_resource_dict_get_comment_reply_from_file(PttQueue *queue, PttUIResourceDi
     Err error_code = S_OK;
     PttLinkList *p = queue->head;
     PttUIBuffer *p_buffer = NULL;
+    PttUIBuffer *pre_buffer = NULL;
     for(; p; p = p->next) {
         p_buffer = (PttUIBuffer *)p->val.p;
+
+        if(!pre_buffer || memcmp(pre_buffer->the_id, p_buffer->the_id, UUIDLEN)) {
+            pttui_id_comment_id_dict_add_data(p_buffer->the_id, p_buffer->comment_offset, &resource_dict->id_comment_id_dict);
+        }
+
         error_code = _pttui_resource_dict_get_content_block_from_file_core(p_buffer, resource_dict);
         if(error_code) break;
+
+        pre_buffer = p_buffer;
     }
 
     return error_code;
