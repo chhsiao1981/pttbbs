@@ -525,20 +525,12 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
     char *p_next_dict_buf = NULL;
     int dict_buf_next_offset = 0;
 
-    int the_rest_len = 0;
     for (PttUIBuffer *current_buffer = head; current_buffer && current_buffer != tail->next; current_buffer = current_buffer->next) {
         if(!current_buffer->is_modified) continue;
 
         if(!current_dict || current_buffer->block_offset != current_dict->block_id || current_buffer->file_offset != current_dict->file_id || memcmp(current_buffer->the_id, current_dict->the_id, UUIDLEN)) {
             if(current_dict) {
-                the_rest_len = len_dict_buf - (p_dict_buf - current_dict->buf);
-                error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, the_rest_len);
-
-                safe_free((void **)&current_dict->buf);
-                current_dict->buf = malloc(len_tmp_buf + 1);
-                memcpy(current_dict->buf, tmp_buf, len_tmp_buf);
-                current_dict->buf[len_tmp_buf] = 0;
-                current_dict->len = len_tmp_buf;
+                error_code = _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(current_dict, p_dict_buf, dict_buf_offset, len_dict_buf, tmp_buf, max_buf_size, len_tmp_buf, line_offset_tmp_buf, file_info);
 
                 fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: to new dict: current_dict: (content-type: %d comment-id: %d block-id: %d file-id: %d) the_rest_len: %d len: %d buf: %s\n", current_dict->content_type, current_dict->comment_id, current_dict->block_id, current_dict->file_id, the_rest_len, current_dict->len, current_dict->buf);
             }
@@ -620,47 +612,8 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
         if (error_code) break;
     }
 
-    int the_rest_line = 0;
-    int expected_n_line = 0;
-    CommentInfo *p_comment = NULL;
-    ContentBlockInfo *p_content = NULL;
     if(current_dict) { 
-        switch(current_dict->content_type) {
-        case PTTDB_CONTENT_TYPE_MAIN:
-            p_content = file_info->main_blocks + current_dict->block_id;
-            break;
-        case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
-            p_comment = file_info->comments + current_dict->comment_id;
-            p_content = p_comment->comment_reply_blocks + current_dict->block_id;
-            break;
-        default:
-            break;
-        }
-        expected_n_line = p_content ? p_content->n_line : 0;
-        the_rest_line = expected_n_line - line_offset_tmp_buf;
-
-        fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: expected_n_line: %d line_offset_tmp_buf: %d the_rest_line: %d dict_buf_offset: %d len_dict_buf: %d\n", expected_n_line, line_offset_tmp_buf, the_rest_line, dict_buf_offset, len_dict_buf);
-
-        for(int i = 0; i < the_rest_line && dict_buf_offset < len_dict_buf; i++) {
-            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
-
-            // 2. save to the tmp-buf
-            error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, p_next_dict_buf - p_dict_buf);
-            line_offset_tmp_buf++;
-
-            // 3. move the current-buf to the next-buf
-            p_dict_buf = p_next_dict_buf;
-            dict_buf_offset = dict_buf_next_offset;
-            line_offset_dict_buf++;
-        }
-
-        safe_free((void **)&current_dict->buf);
-        current_dict->buf = malloc(len_tmp_buf + 1);
-        memcpy(current_dict->buf, tmp_buf, len_tmp_buf);
-        current_dict->buf[len_tmp_buf] = 0;
-        current_dict->len = len_tmp_buf;
-
-        fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: to new dict: current_dict: (content-type: %d comment-id: %d block-id: %d file-id: %d) the_rest_len: %d len: %d buf: %s\n", current_dict->content_type, current_dict->comment_id, current_dict->block_id, current_dict->file_id, the_rest_len, current_dict->len, current_dict->buf);
+        error_code = _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(current_dict, p_dict_buf, dict_buf_offset, len_dict_buf, tmp_buf, max_buf_size, len_tmp_buf, line_offset_tmp_buf, file_info);
     }
 
     // free
@@ -668,6 +621,48 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
 
     return error_code;
 }
+
+Err
+_pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(_PttUIResourceDictLinkList *the_dict, char *p_dict_buf, int dict_buf_offset, int len_dict_buf, char *tmp_buf, int max_buf_size, int len_tmp_buf, int line_offset_tmp_buf, FileInfo *file_info)
+{
+    switch(the_dict->content_type) {
+    case PTTDB_CONTENT_TYPE_MAIN:
+        p_content = file_info->main_blocks + the_dict->block_id;
+        break;
+    case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
+        p_comment = file_info->comments + current_dict->comment_id;
+        p_content = p_comment->comment_reply_blocks + current_dict->block_id;
+        break;
+    default:
+        break;
+    }
+    int expected_n_line = p_content ? p_content->n_line : 0;
+    int the_rest_line = expected_n_line - line_offset_tmp_buf;
+
+    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf: expected_n_line: %d line_offset_tmp_buf: %d the_rest_line: %d dict_buf_offset: %d len_dict_buf: %d\n", expected_n_line, line_offset_tmp_buf, the_rest_line, dict_buf_offset, len_dict_buf);
+
+    for(int i = 0; i < the_rest_line && dict_buf_offset < len_dict_buf; i++) {
+        error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
+
+        // 2. save to the tmp-buf
+        error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, p_next_dict_buf - p_dict_buf);
+        line_offset_tmp_buf++;
+
+        // 3. move the current-buf to the next-buf
+        p_dict_buf = p_next_dict_buf;
+        dict_buf_offset = dict_buf_next_offset;
+        line_offset_dict_buf++;
+    }
+
+    safe_free((void **)&the_dict->buf);
+    the_dict->buf = malloc(len_tmp_buf + 1);
+    memcpy(the_dict->buf, tmp_buf, len_tmp_buf);
+    the_dict->buf[len_tmp_buf] = 0;
+    the_dict->len = len_tmp_buf;
+
+    return S_OK;
+}
+
 
 Err
 pttui_resource_dict_get_next_buf(char *p_buf, int buf_offset, int len, char **p_next_buf, int *buf_next_offset)
