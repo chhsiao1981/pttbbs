@@ -908,7 +908,7 @@ _vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, 
 
     int current_buffer_top_line = editor_status->current_buffer_line - editor_status->current_line;
 
-    int tmp_n_next_line = current_buffer_top_line + b_lines >= file_info->n_total_line ? file_info->n_total_line - b_lines : b_lines;
+    int tmp_n_next_line = file_info->n_total_line - current_buffer_top_line < b_lines ? file_info->n_total_line - current_buffer_top_line : b_lines;
 
     fprintf(stderr, "vedit3_action._vedit3_action_move_pgdn_get_expected_buffer: n_total_line: %d current_buffer_line: %d b_lines: %d current_buffer_top_line: %d current_line: %d n_next_line: %d\n", file_info->n_total_line, editor_status->current_buffer_line, b_lines, current_buffer_top_line, editor_status->current_line, tmp_n_next_line);
 
