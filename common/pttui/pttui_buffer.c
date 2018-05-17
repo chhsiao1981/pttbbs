@@ -1545,6 +1545,10 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
         error_code = pttui_resource_dict_reset_file_info(&resource_dict, file_info);
     }
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after reset_file_info: e: %d\n", error_code);
+
+    log_file_info(file_info, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after reset file_info");
+
     error_code_lock = pttui_buffer_wrunlock_file_info(is_lock_file_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
 
