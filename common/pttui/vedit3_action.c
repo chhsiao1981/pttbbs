@@ -575,6 +575,8 @@ vedit3_action_comment_init_comment_reply()
         error_code = vedit3_action_move_down();
     }
 
+    VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
+
     return error_code;
 }
 
