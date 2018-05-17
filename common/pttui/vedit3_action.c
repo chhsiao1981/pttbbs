@@ -1490,7 +1490,7 @@ _vedit3_action_concat_next_line()
     if(error_code) return error_code;
 
     if(!p_non_space_buf) {
-        fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: no non-space-buf, to delete-line-core");
+        fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: no non-space-buf, to delete-line-core\n");
         error_code = _vedit3_action_delete_line_core(p_next_buffer);
         return error_code;
     }
@@ -1505,7 +1505,7 @@ _vedit3_action_concat_next_line()
         current_buffer->buf[current_buffer->len_no_nl] = 0;
         current_buffer->is_modified = true;
 
-        fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: overflow < 0, to delete-line-core");
+        fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: overflow < 0, to delete-line-core\n");
         error_code = _vedit3_action_delete_line_core(p_next_buffer);
 
         return error_code;
@@ -1530,7 +1530,7 @@ _vedit3_action_concat_next_line()
     if(error_code) return error_code;
 
     if(!p_non_space_buf) {
-        fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: no non-space-buf2, to delete-line-core");
+        fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: no non-space-buf2, to delete-line-core\n");
         error_code = _vedit3_action_delete_line_core(p_next_buffer);
         return error_code;
     }
