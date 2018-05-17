@@ -501,12 +501,14 @@ vedit3_action_comment_init_comment_reply()
     error_code = vedit3_repl_wrlock_file_info_buffer_info(&is_lock_file_info, &is_lock_wr_buffer_info, &is_lock_buffer_info);
 
     ContentBlockInfo *p_comment_reply = NULL;
+    unsigned char zero_comment_reply_id = 0;
 
     // file-info
     if(!error_code) {
         // XXX hack for the temporary comment-reply-id
         memcpy(p_comment->comment_reply_id, p_comment->comment_id, UUIDLEN);
-        p_comment->comment_reply_id[0] = '=';
+        zero_comment_reply_id = p_comment->comment_reply_id[0];
+        p_comment->comment_reply_id[0] = zero_comment_reply_id == 255 ? 0 : zero_comment_reply_id + 1;
 
         p_comment->n_comment_reply_total_line = 1;
         p_comment->n_comment_reply_block = 1;
