@@ -26,7 +26,7 @@ Err _vedit3_action_move_up_ensure_top_of_window();
 
 Err _vedit3_action_move_down_ensure_end_of_window();
 
-Err _vedit3_action_move_pgup_get_expected_buffer(VEdit3EditorStatus *editor_status, FileInfo *file_info, PttUIState *current_state, PttUIState *expected_state, int *n_pre_line);
+Err _vedit3_action_move_pgup_get_expected_top_line_buffer(VEdit3EditorStatus *editor_status, FileInfo *file_info, PttUIState *current_state, PttUIState *expected_state, int *n_pre_line);
 
 Err _vedit3_action_move_pgdn_get_expected_top_line_buffer(VEdit3EditorStatus *editor_status, FileInfo *file_info, PttUIState *current_state, PttUIState *expected_state, int *n_next_line);
 
