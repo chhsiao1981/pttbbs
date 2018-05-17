@@ -898,7 +898,7 @@ _vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, 
 
     int n_window_line = b_lines;
 
-    int current_buffer_top_line = editor_status->current_buffer_line - editor_status->current_buffer;
+    int current_buffer_top_line = editor_status->current_buffer_line - editor_status->current_line;
     int max_next_lines = file_info->n_total_line - current_buffer_top_line - 1;
     if(max_next_lines <= 0) {
         memcpy(expected_state, current_state, sizeof(PttUIState));
