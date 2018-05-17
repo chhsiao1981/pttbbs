@@ -84,7 +84,7 @@ pttdb_file_get_data(UUID main_id, enum PttDBContentType content_type, UUID conte
     sprintf(filename, "%s/T%d/U%s/B%d/F%d", dir_prefix, content_type, disp_uuid, block_id, file_id);
     free(disp_uuid);
 
-    fprintf(stderr, "pttdb_file.pttdb_file_get_data: filename: %s\n");
+    fprintf(stderr, "pttdb_file.pttdb_file_get_data: filename: %s\n", filename);
 
     int tmp_len = 0;
     int fd = open(filename, O_RDONLY);
