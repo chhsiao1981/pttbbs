@@ -865,7 +865,6 @@ vedit3_action_move_pgdn()
 
     PttUIState expected_state = {};
     int n_next_line = 0;
-    bool is_end = false;
     error_code = _vedit3_action_move_pgdn_get_expected_top_line_buffer(&VEDIT3_EDITOR_STATUS, &PTTUI_FILE_INFO, &PTTUI_STATE, &expected_state, &n_next_line);
     if(error_code) return error_code;
 
