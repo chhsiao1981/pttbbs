@@ -508,7 +508,7 @@ _pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list
  * @param resource_dict [description]
  */ 
 Err
-pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceDict *resource_dict)
+pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceDict *resource_dict, FileInfo *file_info)
 {
     Err error_code = S_OK;
     int max_buf_size = MAX_BUF_SIZE;
@@ -620,9 +620,39 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
         if (error_code) break;
     }
 
-    if(current_dict) {
-        the_rest_len = len_dict_buf - (p_dict_buf - current_dict->buf);
-        error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, the_rest_len);
+    int the_rest_line = 0;
+    int expected_n_line = 0;
+    CommentInfo *p_comment = NULL;
+    ContentBlockInfo *p_content = NULL;
+    if(current_dict) { 
+        switch(current_dict->content_type) {
+        case PTTDB_CONTENT_TYPE_MAIN:
+            p_content = file_info->main_blocks + current_dict->block_id;
+            break;
+        case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
+            p_comment = file_info->comments + current_dict->comment_id;
+            p_content = p_comment->comment_reply_blocks + current_dict->block_id;
+            break;
+        default:
+            break;
+        }
+        expected_n_line = p_content ? p_content->n_line : 0;
+        the_rest_line = expected_n_line - line_offset_dict_buf;
+
+        fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: expected_n_line: %d the_rest_line: %d dict_buf_offset: %d len_dict_buf: %d\n", expected_n_line, the_rest_line, dict_buf_offset, len_dict_buf);
+
+        for(int i = 0; i < the_rest_line && dict_buf_offset < len_dict_buf; i++) {
+            error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
+
+            // 2. save to the tmp-buf
+            error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, p_dict_buf, p_next_dict_buf - p_dict_buf);
+            line_offset_tmp_buf++;
+
+            // 3. move the current-buf to the next-buf
+            p_dict_buf = p_next_dict_buf;
+            dict_buf_offset = dict_buf_next_offset;
+            line_offset_dict_buf++;
+        }
 
         safe_free((void **)&current_dict->buf);
         current_dict->buf = malloc(len_tmp_buf + 1);
