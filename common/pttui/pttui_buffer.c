@@ -1532,6 +1532,8 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
         error_code = pttui_buffer_wrlock_buffer_info(&is_lock_buffer_info);
     }
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: to remove deleted buffer in buffer-info: e: %d\n", error_code);
+
     if(!error_code) {
         error_code = _remove_deleted_pttui_buffer_in_buffer_info(buffer_info);
     }
