@@ -1591,6 +1591,12 @@ _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
     Err error_code = S_OK;
     Err error_code2 = S_OK;
 
+    fprintf(stderr, "pttui_buffer._reset_pttui_buffer_info: file_info:\n");
+    log_file_info(file_info, "pttui_buffer._reset_pttui_buffer_info");
+
+    fprintf(stderr, "pttui_buffer._reset_pttui_buffer_info: buffer_info:\n");
+    log_pttui_buffer_info(buffer_info, "pttui_buffer._reset_pttui_buffer_info");
+
     PttUIBuffer *p_buffer = buffer_info->head;
     PttUIBuffer *p_pre_buffer = NULL;
 
@@ -1641,10 +1647,18 @@ _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
 
         p_buffer->storage_type = p_content_block->storage_type;
 
-        error_code2 = _pttui_buffer_load_line_next_from_content_block_info(p_buffer, p_pre_buffer, p_content_block);
-        if(!error_code && error_code2) error_code = error_code2;
-        error_code2 = _pttui_buffer_file_offset_next_from_content_block_info(p_buffer, p_pre_buffer, p_content_block);
-        if(!error_code && error_code2) error_code = error_code2;
+        if(p_buffer->block_offset == 0 && p_buffer->line_offset == 0) {
+            error_code2 = _pttui_buffer_set_load_line_from_content_block_info(p_buffer, p_content_block);
+            if(!error_code && error_code2) error_code = error_code2;
+            error_code2 = _pttui_buffer_set_file_offset_from_content_block_info(p_buffer, p_content_block);
+            if(!error_code && error_code2) error_code = error_code2;        
+        }
+        else {
+            error_code2 = _pttui_buffer_load_line_next_from_content_block_info(p_buffer, p_pre_buffer, p_content_block);
+            if(!error_code && error_code2) error_code = error_code2;
+            error_code2 = _pttui_buffer_file_offset_next_from_content_block_info(p_buffer, p_pre_buffer, p_content_block);
+            if(!error_code && error_code2) error_code = error_code2;
+        }
 
         if(error_code) break;
 
