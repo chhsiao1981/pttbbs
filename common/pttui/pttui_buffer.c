@@ -1538,6 +1538,8 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     error_code_lock = pttui_buffer_unlock_wr_buffer_info(is_lock_wr_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: e: %d\n", error_code);
+
     // free
     destroy_pttui_resource_info(&resource_info);
     safe_destroy_pttui_resource_dict(&resource_dict);
