@@ -793,7 +793,7 @@ vedit3_action_move_pgup()
 
     if(n_pre_line) {
         p_buffer = PTTUI_BUFFER_TOP_LINE;
-        for(i = 0; i < VEDIT3_EDITOR_STATUS.current_line && p_buffer != PTTUI_BUFFER_INFO.tail; i++, p_buffer = pttui_buffer_next_ne(p_buffer, PTTUI_BUFFER_INFO.tail), n_pre_line--);
+        for(i = 0; i < VEDIT3_EDITOR_STATUS.current_line && p_buffer != PTTUI_BUFFER_INFO.tail; i++, p_buffer = pttui_buffer_next_ne(p_buffer, PTTUI_BUFFER_INFO.tail));
     }
     else {
         p_buffer = PTTUI_BUFFER_TOP_LINE;
@@ -863,6 +863,13 @@ _vedit3_action_move_pgup_get_expected_top_line_buffer(VEdit3EditorStatus *editor
 
     error_code_lock = vedit3_repl_unlock_file_info_buffer_info(is_lock_file_info, is_lock_buffer_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
+
+    if(!error_code) {
+        fprintf(stderr, "vedit3_action._vedit3_action_move_pgup_get_expected_buffer: expected_state: current_type: %d block_offset: %d line_offset: %d comment_offset: %d n_window_line: %d n_pre_line: %d\n", expected_state->top_line_content_type, expected_state->top_line_block_offset, expected_state->top_line_line_offset, expected_state->top_line_comment_offset, expected_state->n_window_line, *n_next_line);
+    }
+    else {
+        fprintf(stderr, "vedit3_action._vedit3_action_move_pgup_get_expected_buffer: e: %d\n", error_code);
+    }
 
     return S_OK;
 }
