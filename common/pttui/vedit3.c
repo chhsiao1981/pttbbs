@@ -781,6 +781,60 @@ vedit3_repl_wrunlock_file_info()
     return error_code;
 }
 
+Err
+vedit3_repl_rdlock_file_info()
+{
+    Err error_code = pttui_thread_lock_rdlock(LOCK_PTTUI_FILE_INFO);
+
+    return error_code;
+}
+
+Err
+vedit3_repl_unlock_file_info()
+{
+    Err error_code = pttui_thread_lock_unlock(LOCK_PTTUI_FILE_INFO);
+
+    return error_code;
+}
+
+Err
+vedit3_repl_rdlock_file_info_buffer_info(bool *is_lock_file_info, bool *is_lock_buffer_info)
+{
+    *is_lock_file_info = false;
+    *is_lock_buffer_info = false;
+
+    Err error_code = vedit3_repl_rdlock_file_info(is_lock_file_info);
+    if(error_code) return error_code;
+
+    *is_lock_file_info = true;
+
+    error_code = vedit3_repl_lock_buffer_info();
+    if(error_code) return error_code;
+
+    *is_lock_buffer_info = true;
+
+    return S_OK;
+}
+
+Err
+vedit3_repl_unlock_file_info_buffer_info(bool is_lock_file_info, bool is_lock_buffer_info)
+{
+    Err error_code = S_OK;
+
+    Err error_code_lock = S_OK;
+    if(is_lock_buffer_info) {
+        error_code_lock = vedit3_repl_unlock_buffer_info();
+        if(error_code_lock) error_code = error_code_lock;
+    }
+
+    if(is_lock_file_info) {
+        error_code_lock = vedit3_repl_unlock_file_info();
+        if(!error_code && error_code_lock) error_code = error_code_lock;
+    }
+
+    return error_code;    
+}
+
 /**********
  * destroy editor
  **********/

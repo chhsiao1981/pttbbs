@@ -910,6 +910,11 @@ _vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, 
 
     fprintf(stderr, "vedit3_action._vedit3_action_move_pgdn_get_expected_buffer: n_total_line: %d current_buffer_line: %d b_lines: %d current_buffer_top_line: %d current_line: %d n_next_line: %d\n", file_info->n_total_line, editor_status->current_buffer_line, b_lines, current_buffer_top_line, editor_status->current_line, tmp_n_next_line);
 
+    bool is_lock_file_info = false;
+    bool is_lock_buffer_info = false;
+    Err error_code_lock = vedit3_repl_rdlock_file_info_buffer_info(&is_lock_file_info, &is_lock_buffer_info);
+    if(!error_code && error_code_lock) error_code = error_code_lock;
+
     PttUIBuffer *current_buffer = editor_status->current_buffer;
 
     bool is_next_line = false;
@@ -917,30 +922,40 @@ _vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, 
     PttUIBuffer tmp_buffer2 = {};
     memcpy(&tmp_buffer, current_buffer, sizeof(PttUIBuffer));
     int i = 0;
-    for(i = 0; i < tmp_n_next_line; i++) {
-        error_code = file_info_is_next_line(file_info, tmp_buffer.content_type, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer.comment_offset, &is_next_line);
-        if(error_code) break;
-        if(!is_next_line) break;
+    if(!error_code) {
+        for(i = 0; i < tmp_n_next_line; i++) {
+            error_code = file_info_is_next_line(file_info, tmp_buffer.content_type, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer.comment_offset, &is_next_line);
+            if(error_code) break;
+            if(!is_next_line) break;
 
-        error_code = file_info_get_next_line(file_info, tmp_buffer.the_id, tmp_buffer.content_type, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer.comment_offset, tmp_buffer2.the_id, &tmp_buffer2.content_type, &tmp_buffer2.block_offset, &tmp_buffer2.line_offset, &tmp_buffer2.comment_offset, &tmp_buffer2.storage_type);
-        if(error_code) break;
+            error_code = file_info_get_next_line(file_info, tmp_buffer.the_id, tmp_buffer.content_type, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer.comment_offset, tmp_buffer2.the_id, &tmp_buffer2.content_type, &tmp_buffer2.block_offset, &tmp_buffer2.line_offset, &tmp_buffer2.comment_offset, &tmp_buffer2.storage_type);
+            if(error_code) break;
 
-        memcpy(&tmp_buffer, &tmp_buffer2, sizeof(PttUIBuffer));
+            memcpy(&tmp_buffer, &tmp_buffer2, sizeof(PttUIBuffer));
+        }
     }
 
-    if(error_code) return error_code;
+    if(!error_code) {
+        memcpy(expected_state->main_id, current_state->main_id, UUIDLEN);
+        expected_state->top_line_content_type = tmp_buffer.content_type;
+        expected_state->top_line_block_offset = tmp_buffer.block_offset;
+        expected_state->top_line_line_offset = tmp_buffer.line_offset;
+        expected_state->top_line_comment_offset = tmp_buffer.comment_offset;
+        expected_state->n_window_line = n_window_line;
+        *n_next_line = i;
+    }
 
-    memcpy(expected_state->main_id, current_state->main_id, UUIDLEN);
-    expected_state->top_line_content_type = tmp_buffer.content_type;
-    expected_state->top_line_block_offset = tmp_buffer.block_offset;
-    expected_state->top_line_line_offset = tmp_buffer.line_offset;
-    expected_state->top_line_comment_offset = tmp_buffer.comment_offset;
-    expected_state->n_window_line = n_window_line;
-    *n_next_line = i;
+    error_code_lock = vedit3_repl_wrunlock_file_info_buffer_info(is_lock_file_info, is_lock_buffer_info);
+    if(!error_code && error_code_lock) error_code = error_code_lock;
 
-    fprintf(stderr, "vedit3_action._vedit3_action_move_pgdn_get_expected_buffer: expected_state: current_type: %d block_offset: %d line_offset: %d comment_offset: %d n_window_line: %d n_next_line: %d\n", expected_state->top_line_content_type, expected_state->top_line_block_offset, expected_state->top_line_line_offset, expected_state->top_line_comment_offset, expected_state->n_window_line, *n_next_line);
+    if(!error_code) {
+        fprintf(stderr, "vedit3_action._vedit3_action_move_pgdn_get_expected_buffer: expected_state: current_type: %d block_offset: %d line_offset: %d comment_offset: %d n_window_line: %d n_next_line: %d\n", expected_state->top_line_content_type, expected_state->top_line_block_offset, expected_state->top_line_line_offset, expected_state->top_line_comment_offset, expected_state->n_window_line, *n_next_line);
+    }
+    else {
+        fprintf(stderr, "vedit3_action._vedit3_action_move_pgdn_get_expected_buffer: e: %d\n", error_code);
+    }
 
-    return S_OK;
+    return error_code;
 }
 
 Err
