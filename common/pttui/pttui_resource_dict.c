@@ -626,8 +626,13 @@ Err
 _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(_PttUIResourceDictLinkList *the_dict, char *p_dict_buf, int dict_buf_offset, int len_dict_buf, int line_offset_dict_buf, char *tmp_buf, int max_buf_size, int len_tmp_buf, int line_offset_tmp_buf, FileInfo *file_info)
 {
     Err error_code = S_OK;
+
     CommentInfo *p_comment = NULL;
     ContentBlockInfo *p_content = NULL;
+
+    char *p_next_dict_buf = NULL;
+    int dict_buf_next_offset = 0;
+
     switch(the_dict->content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
         p_content = file_info->main_blocks + the_dict->block_id;
