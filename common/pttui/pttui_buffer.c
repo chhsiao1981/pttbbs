@@ -1946,4 +1946,14 @@ log_pttui_buffer_info(PttUIBufferInfo *buffer_info, char *prompt)
             p_buffer->file_offset, p_buffer->file_line_offset, p_buffer->file_line_pre_offset, p_buffer->file_line_next_offset, p_buffer->storage_type, p_buffer->is_modified, p_buffer->is_new, p_buffer->is_to_delete, p_buffer->len_no_nl, p_buffer->buf);
         free(disp_uuid);
     }
+    p_buffer = buffer_info->to_delete_buffer_head;
+    int n_to_delete_buffer = buffer_info->n_to_delete_buffer;
+    for(; p_buffer; i++, p_buffer = p_buffer->next) {
+        disp_uuid = display_uuid(p_buffer->the_id);
+        fprintf(stderr, "%s: (%d/%d): id: %s content_type: %d block: %d line: %d comment: %d load_line: (%d pre: %d next: %d) file: %d file_line: (%d pre: %d next: %d) storage_type: %d is_modified: %d is_new: %d is_to_delete: %d len: %d buf: %s\n", prompt, i, n_to_delete_buffer, disp_uuid, 
+            p_buffer->content_type, p_buffer->block_offset, p_buffer->line_offset, p_buffer->comment_offset,
+            p_buffer->load_line_offset, p_buffer->load_line_pre_offset, p_buffer->load_line_next_offset,
+            p_buffer->file_offset, p_buffer->file_line_offset, p_buffer->file_line_pre_offset, p_buffer->file_line_next_offset, p_buffer->storage_type, p_buffer->is_modified, p_buffer->is_new, p_buffer->is_to_delete, p_buffer->len_no_nl, p_buffer->buf);
+        free(disp_uuid);
+    }
 }
