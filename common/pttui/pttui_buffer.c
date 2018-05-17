@@ -193,6 +193,25 @@ _pttui_buffer_is_pre_ne(PttUIBuffer *buffer_a, PttUIBuffer *buffer_b)
     return is_pre;
 }
 
+bool
+_pttui_buffer_is_load_line_pre_ne(PttUIBuffer *buffer_a, PttUIBuffer *buffer_b)
+{
+    bool is_pre = false;
+    _pttui_buffer_is_pre_core(
+        buffer_a->content_type,
+        buffer_a->comment_offset,
+        buffer_a->block_offset,
+        buffer_a->load_line_offset,
+        buffer_b->content_type,
+        buffer_b->comment_offset,
+        buffer_b->block_offset,
+        buffer_b->load_line_offset,
+        &is_pre
+        );
+
+    return is_pre;
+}
+
 
 Err
 _pttui_buffer_is_pre_core(enum PttDBContentType content_type_a, int comment_id_a, int block_id_a, int line_id_a, enum PttDBContentType content_type_b, int comment_id_b, int block_id_b, int line_id_b, bool *is_pre)
@@ -1897,6 +1916,10 @@ pttui_buffer_unlock_buffer_info()
 Err
 pttui_buffer_add_to_delete_buffer_list(PttUIBuffer *buffer, PttUIBufferInfo *buffer_info)
 {
+    if(buffer->is_to_delete && buffer->is_new) {
+        return S_OK;
+    }
+
     // init
     if(!buffer_info->n_to_delete_buffer) {
         buffer_info->to_delete_buffer_head = buffer;
@@ -1910,7 +1933,7 @@ pttui_buffer_add_to_delete_buffer_list(PttUIBuffer *buffer, PttUIBufferInfo *buf
     }
 
     // buffer as 1st
-    if(_pttui_buffer_is_pre_ne(buffer, buffer_info->to_delete_buffer_head)) {
+    if(_pttui_buffer_is_load_line_pre_ne(buffer, buffer_info->to_delete_buffer_head)) {
         buffer->next = buffer_info->to_delete_buffer_head;
         buffer->pre = NULL;
 
@@ -1926,7 +1949,7 @@ pttui_buffer_add_to_delete_buffer_list(PttUIBuffer *buffer, PttUIBufferInfo *buf
     // the rest
     PttUIBuffer *p_buffer = buffer_info->to_delete_buffer_head;
     for(; p_buffer && p_buffer->next; p_buffer = p_buffer->next) {
-        if(_pttui_buffer_is_pre_ne(p_buffer, buffer) && _pttui_buffer_is_pre_ne(buffer, p_buffer->next)) {
+        if(_pttui_buffer_is_load_line_pre_ne(p_buffer, buffer) && _pttui_buffer_is_load_line_pre_ne(buffer, p_buffer->next)) {
             buffer->next = p_buffer->next;
             buffer->pre = p_buffer;
 
