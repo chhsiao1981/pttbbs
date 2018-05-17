@@ -161,24 +161,60 @@ sync_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIBuffer *current_buffer
 Err
 _sync_pttui_buffer_info_is_pre(PttUIState *state, PttUIBuffer *buffer, bool *is_pre)
 {
+    return _pttui_buffer_is_pre_core(
+        state->top_line_content_type,
+        state->top_line_comment_offset,
+        state->top_line_block_offset,
+        state->top_line_line_offset,
+        buffer->content_type,
+        buffer->comment_offset,
+        buffer->block_offset,
+        buffer->line_offset,
+        is_pre
+        );
+}
+
+bool
+_pttui_buffer_is_pre_ne(PttUIBuffer *buffer_a, PttUIBuffer *buffer_b)
+{
+    bool is_pre = false;
+    Err error_code = _pttui_buffer_is_pre_core(
+        buffer_a->content_type,
+        buffer_a->comment_offset,
+        buffer_a->block_offset,
+        buffer_a->line_offset,
+        buffer_b->content_type,
+        buffer_b->comment_offset,
+        buffer_b->block_offset,
+        buffer_b->line_offset,
+        &is_pre
+        );
+
+    return is_pre;
+}
+
+
+Err
+_pttui_buffer_is_pre_core(enum PttDBContentType content_type_a, int comment_id_a, int block_id_a, int line_id_a, enum PttDBContentType content_type_b, int comment_id_b, int block_id_b, int line_id_b, bool *is_pre)
+{
     // content-type as main
-    if (state->top_line_content_type == PTTDB_CONTENT_TYPE_MAIN && buffer->content_type != PTTDB_CONTENT_TYPE_MAIN) {
+    if (content_type_a == PTTDB_CONTENT_TYPE_MAIN && content_type_b != PTTDB_CONTENT_TYPE_MAIN) {
         *is_pre = true;
         return S_OK;
     }
 
-    if (state->top_line_content_type != PTTDB_CONTENT_TYPE_MAIN && buffer->content_type == PTTDB_CONTENT_TYPE_MAIN) {
+    if (content_type_a != PTTDB_CONTENT_TYPE_MAIN && content_type_b == PTTDB_CONTENT_TYPE_MAIN) {
         *is_pre = false;
         return S_OK;
     }
 
     // both are as main
-    if (state->top_line_content_type == PTTDB_CONTENT_TYPE_MAIN && buffer->content_type == PTTDB_CONTENT_TYPE_MAIN) {
-        if (state->top_line_block_offset != buffer->block_offset) {
-            *is_pre = state->top_line_block_offset < buffer->block_offset ? true : false;
+    if (content_type_a == PTTDB_CONTENT_TYPE_MAIN && content_type_b == PTTDB_CONTENT_TYPE_MAIN) {
+        if (block_id_a != block_id_b) {
+            *is_pre = block_id_a < block_id_b ? true : false;
         }
         else {
-            *is_pre = state->top_line_line_offset < buffer->line_offset ? true : false;
+            *is_pre = line_id_a < line_id_b ? true : false;
         }
         return S_OK;
     }
@@ -187,34 +223,34 @@ _sync_pttui_buffer_info_is_pre(PttUIState *state, PttUIBuffer *buffer, bool *is_
      * both are not main
      */
     // comment-offset
-    if (state->top_line_comment_offset < buffer->comment_offset) {
+    if (comment_id_a < comment_id_b) {
         *is_pre = true;
         return S_OK;
     }
 
-    if (state->top_line_comment_offset > buffer->comment_offset) {
+    if (comment_id_a > comment_id_b) {
         *is_pre = false;
         return S_OK;
     }
 
     // same comment-offset, compare content-type
-    if (state->top_line_content_type == PTTDB_CONTENT_TYPE_COMMENT && buffer->content_type != PTTDB_CONTENT_TYPE_COMMENT) {
+    if (content_type_a == PTTDB_CONTENT_TYPE_COMMENT && content_type_b != PTTDB_CONTENT_TYPE_COMMENT) {
         *is_pre = true;
         return S_OK;
     }
 
-    if (state->top_line_content_type != PTTDB_CONTENT_TYPE_COMMENT && buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT) {
+    if (content_type_a != PTTDB_CONTENT_TYPE_COMMENT && content_type_b == PTTDB_CONTENT_TYPE_COMMENT) {
         *is_pre = false;
         return S_OK;
     }
 
     // both are comment-reply
-    if (state->top_line_content_type == PTTDB_CONTENT_TYPE_COMMENT_REPLY && buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT_REPLY) {
-        if (state->top_line_block_offset != buffer->block_offset) {
-            *is_pre = state->top_line_block_offset < buffer->block_offset ? true : false;
+    if (content_type_a == PTTDB_CONTENT_TYPE_COMMENT_REPLY && content_type_b == PTTDB_CONTENT_TYPE_COMMENT_REPLY) {
+        if (block_id_a != block_id_b) {
+            *is_pre = block_id_a < block_id_b ? true : false;
         }
         else {
-            *is_pre = state->top_line_line_offset < buffer->line_offset ? true : false;
+            *is_pre = line_id_a < line_id_b ? true : false;
         }
         return S_OK;
     }
@@ -1425,6 +1461,7 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     bool is_lock_file_info = false;
 
     PttUIResourceInfo resource_info = {};
+    PttUIResourceInfo resource_info2 = {};
     PttUIResourceDict resource_dict = {};
     init_pttui_resource_dict(file_info->main_id, &resource_dict);
 
@@ -1448,6 +1485,26 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     }
 
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after resource-info-to-resource-dict: e: %d\n", error_code);
+
+    if(!error_code && buffer_info->n_to_delete_buffer) {
+        error_code = _modified_pttui_buffer_info_to_resource_info(buffer_info->to_delete_buffer_head, buffer_info->to_delete_buffer_tail, &resource_info2);
+    }
+
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after buffer_info-to-delete-to-resource-info: e: %d\n", error_code);
+
+    if(!error_code) {
+        error_code = pttui_resource_info_to_resource_dict(&resource_info2, &resource_dict);
+    }
+
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after to-delete-resource-info-to-resource-dict: e: %d\n", error_code);
+
+    if(!error_code && buffer_info->n_to_delete_buffer) {
+        error_code = pttui_resource_dict_integrate_with_modified_pttui_buffer_info(buffer_info->to_delete_buffer_head, buffer_info->to_delete_buffer_tail, &resource_dict);
+    }    
+
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after integrate-with-to-delete-buffer: e: %d\n", error_code);
+
+    log_pttui_resource_dict(&resource_dict, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after integrate-with-to-delete-buffer: ");
 
     if(!error_code) {
         error_code = pttui_resource_dict_integrate_with_modified_pttui_buffer_info(buffer_info->head, buffer_info->tail, &resource_dict);
@@ -1494,6 +1551,7 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
 
     // free
     destroy_pttui_resource_info(&resource_info);
+    destroy_pttui_resource_info(&resource_info2);
     safe_destroy_pttui_resource_dict(&resource_dict);
 
     return error_code;
@@ -1596,6 +1654,10 @@ _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
 
     buffer_info->n_new = 0;
     buffer_info->n_to_delete = 0;
+
+    buffer_info->to_delete_buffer_head = NULL;
+    buffer_info->to_delete_buffer_tail = NULL;
+    buffer_info->n_to_delete_buffer = 0;
 
     return error_code;
 }
@@ -1831,4 +1893,59 @@ Err
 pttui_buffer_unlock_buffer_info()
 {
     return pttui_thread_lock_unlock(LOCK_PTTUI_BUFFER_INFO);
+}
+
+Err
+pttui_buffer_add_to_delete_buffer_list(PttUIBuffer *buffer, PttUIBufferInfo *buffer_info)
+{
+    // init
+    if(!buffer_info->n_to_delete_buffer) {
+        buffer_info->to_delete_buffer_head = buffer;
+        buffer_info->to_delete_buffer_tail = buffer;
+        buffer_info->n_to_delete_buffer = 1;
+
+        buffer->next = NULL;
+        buffer->pre = NULL;
+
+        return S_OK;
+    }
+
+    // buffer as 1st
+    if(_pttui_buffer_is_pre_ne(buffer, buffer_info->to_delete_buffer_head)) {
+        buffer->next = buffer_info->to_delete_buffer_head;
+        buffer->pre = NULL;
+
+        if(buffer->next) buffer->next->pre = buffer;
+
+        buffer_info->to_delete_buffer_head = buffer;
+
+        buffer_info->n_to_delete_buffer++;
+
+        return S_OK;
+    }
+
+    // the rest
+    PttUIBuffer *p_buffer = buffer_info->to_delete_buffer_head;
+    for(; p_buffer && p_buffer->next; p_buffer = p_buffer->next) {
+        if(_pttui_buffer_is_pre_ne(p_buffer, buffer) && _pttui_buffer_is_pre_ne(buffer, p_buffer->next)) {
+            buffer->next = p_buffer->next;
+            buffer->pre = p_buffer;
+
+            buffer->next->pre = buffer;
+            p_buffer->next = buffer;
+            break;
+        }
+    }
+
+    if(!p_buffer->next) {
+        p_buffer->next = buffer;
+        buffer->pre = p_buffer;
+
+        buffer->next = NULL;
+        buffer_info->to_delete_buffer_tail = buffer;
+    }
+
+    buffer_info->n_to_delete_buffer++;
+
+    return S_OK;
 }

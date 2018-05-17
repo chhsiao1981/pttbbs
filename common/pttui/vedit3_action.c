@@ -1575,31 +1575,44 @@ _vedit3_action_delete_line_core(PttUIBuffer *buffer)
     }
 
     // buffer-info
+    PTTUI_BUFFER_INFO.n_to_delete++;
+
+
+    // buffer-info head / tail
     PttUIBuffer *p_buffer = NULL;
     PttUIBuffer *p_buffer2 = NULL;
     if (PTTUI_BUFFER_INFO.head == buffer) {
+        fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: delete head: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d\n", buffer->content_type, buffer->comment_offset, buffer->block_offset, buffer->line_offset, buffer->file_offset);
         PTTUI_BUFFER_INFO.head = pttui_buffer_next_ne(buffer, PTTUI_BUFFER_INFO.tail);
         p_buffer = buffer;
         while(p_buffer != PTTUI_BUFFER_INFO.head) {
             p_buffer2 = p_buffer;
             p_buffer = p_buffer->next;
-            safe_free((void **)&p_buffer2);
+
+            p_buffer2->pre = NULL;
+            p_buffer2->next = NULL;
+            error_code = pttui_buffer_add_to_delete_buffer_list(p_buffer2, &PTTUI_BUFFER_INFO);
+            if(error_code) break;
         }
         PTTUI_BUFFER_INFO.head->pre = NULL;
     }
+    if(error_code) return error_code;
 
     if (PTTUI_BUFFER_INFO.tail == buffer) {
+        fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: delete tail: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d\n", buffer->content_type, buffer->comment_offset, buffer->block_offset, buffer->line_offset, buffer->file_offset);
         PTTUI_BUFFER_INFO.tail = pttui_buffer_pre_ne(buffer, PTTUI_BUFFER_INFO.head);
         p_buffer = buffer;
         while(p_buffer != PTTUI_BUFFER_INFO.tail) {
             p_buffer2 = p_buffer;
             p_buffer = p_buffer->pre;
-            safe_free((void **)&p_buffer2);
+
+            p_buffer2->pre = NULL;
+            p_buffer2->next = NULL;
+            error_code = pttui_buffer_add_to_delete_buffer_list(p_buffer2, &PTTUI_BUFFER_INFO);
         }
         PTTUI_BUFFER_INFO.tail->next = NULL;
     }
-
-    PTTUI_BUFFER_INFO.n_to_delete++;
+    if(error_code) return error_code;
 
     VEDIT3_EDITOR_STATUS.is_redraw_everything = true;
 
