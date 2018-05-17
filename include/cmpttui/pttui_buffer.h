@@ -112,6 +112,9 @@ Err pttui_buffer_wrunlock_buffer_info(bool is_lock_buffer_info);
 Err pttui_buffer_rdlock_buffer_info();
 Err pttui_buffer_unlock_buffer_info();
 
+Err log_pttui_buffer_info(PttUIBufferInfo *buffer_info, char *prompt);
+
+
 #ifdef __cplusplus
 }
 #endif
