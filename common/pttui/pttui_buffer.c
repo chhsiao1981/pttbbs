@@ -175,7 +175,7 @@ _sync_pttui_buffer_info_is_pre(PttUIState *state, PttUIBuffer *buffer, bool *is_
 }
 
 bool
-_pttui_buffer_is_pre_(PttUIBuffer *buffer_a, PttUIBuffer *buffer_b)
+_pttui_buffer_is_pre_ne(PttUIBuffer *buffer_a, PttUIBuffer *buffer_b)
 {
     bool is_pre = false;
     _pttui_buffer_is_pre_core(
