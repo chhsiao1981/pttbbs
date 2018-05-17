@@ -524,7 +524,7 @@ vedit3_action_comment_init_comment_reply()
         p_tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;
         p_tmp->block_offset = 0;
         p_tmp->line_offset = 0;
-        p_tmp->comment_offset = 0;
+        p_tmp->comment_offset = comment_offset;
 
         p_tmp->load_line_offset = 0;
         p_tmp->load_line_pre_offset = INVALID_LINE_OFFSET_PRE_END;
