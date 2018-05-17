@@ -865,7 +865,8 @@ vedit3_action_move_pgdn()
 
     PttUIState expected_state = {};
     int n_next_line = 0;
-    error_code = _vedit3_action_move_pgdn_get_expected_buffer(&VEDIT3_EDITOR_STATUS, &PTTUI_FILE_INFO, &PTTUI_STATE, &expected_state, &n_next_line);
+    bool is_end = false;
+    error_code = _vedit3_action_move_pgdn_get_expected_top_buffer(&VEDIT3_EDITOR_STATUS, &PTTUI_FILE_INFO, &PTTUI_STATE, &expected_state, &n_next_line);
     if(error_code) return error_code;
 
     error_code = pttui_set_expected_state(expected_state.main_id, expected_state.top_line_content_type, expected_state.top_line_id, expected_state.top_line_block_offset, expected_state.top_line_line_offset, expected_state.top_line_comment_offset, expected_state.n_window_line);
@@ -877,11 +878,25 @@ vedit3_action_move_pgdn()
     error_code = vedit3_repl_lock_buffer_info();
     if(error_code) return error_code;
 
-    n_next_line -= VEDIT3_EDITOR_STATUS.current_line;
-
-    PttUIBuffer *p_buffer = PTTUI_BUFFER_TOP_LINE;
+    PttUIBuffer *p_buffer = NULL;
     int i = 0;
-    for(i = 0; i < VEDIT3_EDITOR_STATUS.current_line && p_buffer != PTTUI_BUFFER_INFO.tail; i++, p_buffer = pttui_buffer_next_ne(p_buffer, PTTUI_BUFFER_INFO.tail), n_next_line++);
+    if(n_next_line) {
+        n_next_line -= VEDIT3_EDITOR_STATUS.current_line;
+
+        p_buffer = PTTUI_BUFFER_TOP_LINE;
+        for(i = 0;
+            i < VEDIT3_EDITOR_STATUS.current_line && p_buffer != PTTUI_BUFFER_INFO.tail;
+            i++, p_buffer = pttui_buffer_next_ne(p_buffer, PTTUI_BUFFER_INFO.tail), n_next_line++);
+
+    }
+    else {
+        VEDIT3_EDITOR_STATUS.current_buffer_line -= VEDIT3_EDITOR_STATUS.current_line;
+        VEDIT3_EDITOR_STATUS.current_line = 0;
+        p_buffer = PTTUI_BUFFER_TOP_LINE;
+        for(i = 0;
+            p_buffer != PTTUI_BUFFER_INFO.tail;
+            i++, p_buffer = pttui_buffer_next_ne(p_buffer, PTTUI_BUFFER_INFO.tail), n_next_line++);
+    }
 
     VEDIT3_EDITOR_STATUS.current_buffer = p_buffer;
     VEDIT3_EDITOR_STATUS.current_line = i;
@@ -898,7 +913,7 @@ vedit3_action_move_pgdn()
 }
 
 Err
-_vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, FileInfo *file_info, PttUIState *current_state, PttUIState *expected_state, int *n_next_line)
+_vedit3_action_move_pgdn_get_expected_top_line_buffer(VEdit3EditorStatus *editor_status, FileInfo *file_info, PttUIState *current_state, PttUIState *expected_state, int *n_next_line)
 {
     Err error_code = S_OK;
 
@@ -908,7 +923,7 @@ _vedit3_action_move_pgdn_get_expected_buffer(VEdit3EditorStatus *editor_status, 
 
     int current_buffer_top_line = editor_status->current_buffer_line - editor_status->current_line;
 
-    int tmp_n_next_line = file_info->n_total_line - current_buffer_top_line < b_lines ? file_info->n_total_line - current_buffer_top_line : b_lines;
+    int tmp_n_next_line = file_info->n_total_line - current_buffer_top_line < b_lines ? 0 : b_lines;
 
     fprintf(stderr, "vedit3_action._vedit3_action_move_pgdn_get_expected_buffer: n_total_line: %d current_buffer_line: %d b_lines: %d current_buffer_top_line: %d current_line: %d n_next_line: %d\n", file_info->n_total_line, editor_status->current_buffer_line, b_lines, current_buffer_top_line, editor_status->current_line, tmp_n_next_line);
 
