@@ -803,7 +803,7 @@ vedit3_repl_rdlock_file_info_buffer_info(bool *is_lock_file_info, bool *is_lock_
     *is_lock_file_info = false;
     *is_lock_buffer_info = false;
 
-    Err error_code = vedit3_repl_rdlock_file_info(is_lock_file_info);
+    Err error_code = vedit3_repl_rdlock_file_info();
     if(error_code) return error_code;
 
     *is_lock_file_info = true;
