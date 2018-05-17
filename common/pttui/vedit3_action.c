@@ -826,6 +826,9 @@ _vedit3_action_move_pgup_get_expected_top_line_buffer(VEdit3EditorStatus *editor
     int current_buffer_top_line = editor_status->current_buffer_line - editor_status->current_line;
     int tmp_n_pre_line = current_buffer_top_line < b_lines ? 0 : b_lines;    
 
+    fprintf(stderr, "vedit3_action._vedit3_action_move_pgup_get_expected_buffer: n_total_line: %d current_buffer_line: %d b_lines: %d current_buffer_top_line: %d current_line: %d n_next_line: %d\n", file_info->n_total_line, editor_status->current_buffer_line, b_lines, current_buffer_top_line, editor_status->current_line, tmp_n_pre_line);
+
+
     bool is_lock_file_info = false;
     bool is_lock_buffer_info = false;
     Err error_code_lock = vedit3_repl_rdlock_file_info_buffer_info(&is_lock_file_info, &is_lock_buffer_info);
