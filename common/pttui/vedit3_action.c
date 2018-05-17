@@ -1342,8 +1342,9 @@ _vedit3_action_buffer_split_core(PttUIBuffer *current_buffer, int pos, int inden
     }
 
     // buffer-info
+    // BASIC_OP. directly use ->next
     if(PTTUI_BUFFER_INFO.tail == current_buffer) {
-        PTTUI_BUFFER_INFO.tail = pttui_buffer_next_ne(current_buffer, PTTUI_BUFFER_INFO.tail);
+        PTTUI_BUFFER_INFO.tail = current_buffer->next;
     }
     PTTUI_BUFFER_INFO.n_buffer++;
     PTTUI_BUFFER_INFO.n_new++;
