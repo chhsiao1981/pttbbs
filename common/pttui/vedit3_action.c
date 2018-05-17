@@ -491,8 +491,8 @@ vedit3_action_comment_init_comment_reply()
     if(!error_code) {
         // XXX hack for the temporary comment-reply-id
         memcpy(p_comment->comment_reply_id, p_comment->comment_id, UUIDLEN);
-        zero_comment_reply_id = p_comment->comment_reply_id[0];
-        p_comment->comment_reply_id[0] = zero_comment_reply_id == 255 ? 0 : zero_comment_reply_id + 1;
+        zero_comment_reply_id = p_comment->comment_id[0];
+        p_comment->comment_id[0] = zero_comment_reply_id == 255 ? 0 : zero_comment_reply_id + 1;
 
         p_comment->n_comment_reply_total_line = 1;
         p_comment->n_comment_reply_block = 1;
