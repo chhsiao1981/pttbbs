@@ -521,6 +521,8 @@ vedit3_action_comment_init_comment_reply()
         p_comment_reply->n_file = 1;
         p_comment_reply->file_n_line = malloc(sizeof(int));
         p_comment_reply->file_n_line[0] = 1;
+
+        PTTUI_FILE_INFO.n_total_line++;
     }
 
     // file
@@ -561,6 +563,8 @@ vedit3_action_comment_init_comment_reply()
 
         VEDIT3_EDITOR_STATUS.current_buffer->next = p_tmp;
         if(p_tmp->next) p_tmp->next->pre = p_tmp;
+
+        PTTUI_BUFFER_INFO.n_buffer++;
     }
 
     // unlock
