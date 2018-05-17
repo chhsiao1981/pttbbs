@@ -449,6 +449,8 @@ _pttui_resource_dict_get_content_block_from_file_core(PttUIBuffer *buffer, PttUI
     int len = 0;
     Err error_code = pttdb_file_get_data(resource_dict->main_id, buffer->content_type, buffer->the_id, buffer->block_offset, buffer->file_offset, &buf, &len);
 
+    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_get_content_block_from_file_core: content-type: %d comment: %d block: %d file: %d len: %d buf: %s\n", buffer->content_type, buffer->comment_offset, buffer->block_offset, buffer->file_offset, len, buf);
+
     error_code = _pttui_resource_dict_add_data(buffer->the_id, buffer->block_offset, buffer->file_offset, len, buf, buffer->content_type, resource_dict);
 
     // do not free buf because buf is used in resource_dict and freed in safe_destroy_resource_dict .
