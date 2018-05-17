@@ -500,6 +500,8 @@ vedit3_action_comment_init_comment_reply()
 
     error_code = vedit3_repl_wrlock_file_info_buffer_info(&is_lock_file_info, &is_lock_wr_buffer_info, &is_lock_buffer_info);
 
+    ContentBlockInfo *p_comment_reply = NULL;
+
     // file-info
     if(!error_code) {
         // XXX hack for the temporary comment-reply-id
@@ -526,6 +528,7 @@ vedit3_action_comment_init_comment_reply()
         error_code = pttdb_file_save_data(PTTUI_FILE_INFO.main_id, PTTDB_CONTENT_TYPE_COMMENT_REPLY, p_comment->comment_reply_id, 0, 0, "\n", 1);
     }
 
+    PttUIBuffer *p_tmp = NULL;
     // buffer-info
     if(!error_code) {
         p_tmp = malloc(sizeof(PttUIBuffer));
