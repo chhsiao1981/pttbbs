@@ -824,7 +824,7 @@ _vedit3_action_move_pgup_get_expected_top_line_buffer(VEdit3EditorStatus *editor
     memcpy(expected_state, current_state, sizeof(PttUIState));
 
     int current_buffer_top_line = editor_status->current_buffer_line - editor_status->current_line;
-    int tmp_n_pre_line = current_buffer_top_line < b_lines ? 0 : current_buffer_top_line - b_lines;
+    int tmp_n_pre_line = current_buffer_top_line < b_lines ? 0 : b_lines;    
 
     bool is_lock_file_info = false;
     bool is_lock_buffer_info = false;
