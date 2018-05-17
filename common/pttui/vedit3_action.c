@@ -797,7 +797,7 @@ vedit3_action_move_pgup()
     }
     else {
         p_buffer = PTTUI_BUFFER_TOP_LINE;
-        n_pre_line = VEDIT3_EDITOR_STATUS.current_line;        
+        n_pre_line = VEDIT3_EDITOR_STATUS.current_line;
     }
 
     VEDIT3_EDITOR_STATUS.current_buffer = p_buffer;
@@ -824,7 +824,7 @@ _vedit3_action_move_pgup_get_expected_top_line_buffer(VEdit3EditorStatus *editor
     memcpy(expected_state, current_state, sizeof(PttUIState));
 
     int current_buffer_top_line = editor_status->current_buffer_line - editor_status->current_line;
-    int tmp_n_pre_line = current_buffer_top_line < b_lines ? 0 : b_lines;    
+    int tmp_n_pre_line = current_buffer_top_line < b_lines ? current_buffer_top_line : b_lines;
 
     fprintf(stderr, "vedit3_action._vedit3_action_move_pgup_get_expected_buffer: n_total_line: %d current_buffer_line: %d b_lines: %d current_buffer_top_line: %d current_line: %d n_next_line: %d\n", file_info->n_total_line, editor_status->current_buffer_line, b_lines, current_buffer_top_line, editor_status->current_line, tmp_n_pre_line);
 
