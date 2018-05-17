@@ -550,6 +550,10 @@ vedit3_action_comment_init_comment_reply()
         VEDIT3_EDITOR_STATUS.current_buffer->next = p_tmp;
         if(p_tmp->next) p_tmp->next->pre = p_tmp;
 
+        if(PTTUI_BUFFER_INFO.tail == VEDIT3_EDITOR_STATUS.current_buffer) {
+            PTTUI_BUFFER_INFO.tail = p_tmp;
+        }
+
         PTTUI_BUFFER_INFO.n_buffer++;
     }
 
