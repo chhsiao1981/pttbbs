@@ -1600,6 +1600,8 @@ _vedit3_action_delete_line_core(PttUIBuffer *buffer)
 
     if (PTTUI_BUFFER_INFO.tail == buffer) {
         fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: delete tail: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", buffer->content_type, buffer->comment_offset, buffer->block_offset, buffer->line_offset, buffer->file_offset, buffer->buf);
+
+
         PTTUI_BUFFER_INFO.tail = pttui_buffer_pre_ne(buffer, PTTUI_BUFFER_INFO.head);
         p_buffer = buffer;
         while(p_buffer != PTTUI_BUFFER_INFO.tail) {
@@ -1608,8 +1610,12 @@ _vedit3_action_delete_line_core(PttUIBuffer *buffer)
 
             p_buffer2->pre = NULL;
             p_buffer2->next = NULL;
+
+            fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: to-delete: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", p_buffer2->content_type, p_buffer2->comment_offset, p_buffer2->block_offset, p_buffer2->line_offset, p_buffer2->file_offset, p_buffer2->buf);
+
             error_code = pttui_buffer_add_to_delete_buffer_list(p_buffer2, &PTTUI_BUFFER_INFO);
         }
+        fprintf(stderr, "vedit3_action._vedit3_action_delete_line_core: delete tail: tail: content-type: %d comment-id: %d block-id: %d line-id: %d file-id: %d buf: %s\n", PTTUI_BUFFER_INFO.tail->content_type, PTTUI_BUFFER_INFO.tail->comment_offset, PTTUI_BUFFER_INFO.tail->block_offset, PTTUI_BUFFER_INFO.tail->line_offset, PTTUI_BUFFER_INFO.tail->file_offset, PTTUI_BUFFER_INFO.tail->buf);
         PTTUI_BUFFER_INFO.tail->next = NULL;
     }
     if(error_code) return error_code;
