@@ -877,11 +877,11 @@ vedit3_action_move_pgdn()
     error_code = vedit3_repl_lock_buffer_info();
     if(error_code) return error_code;
 
+    n_next_line -= VEDIT3_EDITOR_STATUS.current_line;
+
     PttUIBuffer *p_buffer = PTTUI_BUFFER_TOP_LINE;
     int i = 0;
-    if(n_next_line == expected_state.n_window_line) {
-        for(i = 0; i < VEDIT3_EDITOR_STATUS.current_line && p_buffer != PTTUI_BUFFER_INFO.tail; i++, p_buffer = pttui_buffer_next_ne(p_buffer, PTTUI_BUFFER_INFO.tail), n_next_line++);
-    }
+    for(i = 0; i < VEDIT3_EDITOR_STATUS.current_line && p_buffer != PTTUI_BUFFER_INFO.tail; i++, p_buffer = pttui_buffer_next_ne(p_buffer, PTTUI_BUFFER_INFO.tail), n_next_line++);
 
     VEDIT3_EDITOR_STATUS.current_buffer = p_buffer;
     VEDIT3_EDITOR_STATUS.current_line = i;
