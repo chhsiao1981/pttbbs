@@ -82,7 +82,7 @@ construct_contents_from_content_block_infos(UUID main_id, enum PttDBContentType 
         if (error_code) return error_code;
     }
 
-    error_code = gen_content_uuid_with_db(MONGO_MAIN_CONTENT, content_id, create_milli_timestamp);
+    error_code = gen_content_uuid_with_db(mongo_db_id, content_id, create_milli_timestamp);
     if (error_code) return error_code;
 
     ContentBlockInfo *p_content_block_info = content_block_infos;

@@ -484,7 +484,88 @@ vedit3_action_toggle_phone_mode()
 Err
 vedit3_action_comment_init_comment_reply()
 {
-    return S_OK;
+    Err error_code = S_OK;
+
+    int comment_offset = VEDIT3_EDITOR_STATUS.current_buffer->comment_offset;
+
+    CommentInfo *p_comment = PTTUI_FILE_INFO.comments + comment_offset;
+
+    if(p_comment->n_comment_reply_block) {
+        return vedit3_action_move_down();
+    }
+
+    bool is_lock_file_info = false;
+    bool is_lock_wr_buffer_info = false;
+    bool is_lock_buffer_info = false;
+
+    error_code = vedit3_repl_wrlock_file_info_buffer_info(&is_lock_file_info, &is_lock_wr_buffer_info, &is_lock_buffer_info);
+
+    // file-info
+    if(!error_code) {
+        memcpy(p_comment->comment_reply_id, p_comment->comment_id, UUIDLEN);
+        p_comment->n_comment_reply_total_line = 1;
+        p_comment->n_comment_reply_block = 1;
+
+        p_comment->comment_reply_blocks = malloc(sizeof(ContentBlockInfo));
+        bzero(p_comment->comment_reply_blocks, sizeof(ContentBlockInfo));
+
+        p_comment_reply = p_comment->comment_reply_blocks;
+        p_comment_reply->n_line = 1;
+        p_comment_reply->n_line_in_db = 1;
+        p_comment_reply->storage_type = PTTDB_STORAGE_TYPE_FILE;
+        p_comment_reply->n_file = 1;
+        p_comment_reply->file_n_line = malloc(sizeof(int));
+        p_comment_reply->file_n_line[0] = 1;
+    }
+
+    // file
+    if(!error_code) {
+        error_code = pttdb_file_save_data(PTTUI_FILE_INFO.main_id, PTTDB_CONTENT_TYPE_COMMENT_REPLY, p_comment->comment_reply_id, 0, 0, "\n", 1);
+    }
+
+    // buffer-info
+    if(!error_code) {
+        p_tmp = malloc(sizeof(PttUIBuffer));
+        memcpy(p_tmp->the_id, p_comment->comment_reply_id, UUIDLEN);
+        p_tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;
+        p_tmp->block_offset = 0;
+        p_tmp->line_offset = 0;
+        p_tmp->comment_offset = 0;
+
+        p_tmp->load_line_offset = 0;
+        p_tmp->load_line_pre_offset = INVALID_LINE_OFFSET_PRE_END;
+        p_tmp->load_line_next_offset = INVALID_LINE_OFFSET_NEXT_END;
+
+        p_tmp->file_offset = 0;
+        p_tmp->file_line_offset = 0;
+        p_tmp->file_line_pre_offset = INVALID_LINE_OFFSET_PRE_END;
+        p_tmp->file_line_next_offset = INVALID_LINE_OFFSET_NEXT_END;
+
+        p_tmp->storage_type = PTTDB_STORAGE_TYPE_FILE;
+
+        p_tmp->is_modified = false;
+        p_tmp->is_new = false;
+        p_tmp->is_to_delete = false;
+        p_tmp->len_no_nl = 0;
+        p_tmp->buf = malloc(MAX_TEXTLINE_SIZE + 1);
+        p_tmp->buf[0] = 0;
+
+        p_tmp->next = VEDIT3_EDITOR_STATUS.current_buffer->next;
+        p_tmp->pre = VEDIT3_EDITOR_STATUS.current_buffer;
+
+        VEDIT3_EDITOR_STATUS.current_buffer->next = p_tmp;
+        if(p_tmp->next) p_tmp->next->pre = p_tmp;
+    }
+
+    // unlock
+    Err error_code_lock = vedit3_repl_wrunlock_file_info_buffer_info(is_lock_file_info, is_lock_wr_buffer_info, is_lock_buffer_info);
+    if(!error_code && error_code_lock) error_code = error_code_lock;
+
+    if(!error_code) {
+        error_code = vedit3_action_move_down();
+    }
+
+    return error_code;
 }
 
 Err
