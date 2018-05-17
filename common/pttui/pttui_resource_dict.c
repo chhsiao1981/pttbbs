@@ -530,7 +530,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
 
         if(!current_dict || current_buffer->block_offset != current_dict->block_id || current_buffer->file_offset != current_dict->file_id || memcmp(current_buffer->the_id, current_dict->the_id, UUIDLEN)) {
             if(current_dict) {
-                error_code = _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(current_dict, p_dict_buf, dict_buf_offset, len_dict_buf, tmp_buf, max_buf_size, len_tmp_buf, line_offset_tmp_buf, file_info);
+                error_code = _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(current_dict, p_dict_buf, dict_buf_offset, len_dict_buf, line_offset_dict_buf, tmp_buf, max_buf_size, len_tmp_buf, line_offset_tmp_buf, file_info);
 
                 fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: to new dict: current_dict: (content-type: %d comment-id: %d block-id: %d file-id: %d) len: %d buf: %s\n", current_dict->content_type, current_dict->comment_id, current_dict->block_id, current_dict->file_id, current_dict->len, current_dict->buf);
             }
@@ -613,7 +613,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
     }
 
     if(current_dict) { 
-        error_code = _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(current_dict, p_dict_buf, dict_buf_offset, len_dict_buf, tmp_buf, max_buf_size, len_tmp_buf, line_offset_tmp_buf, file_info);
+        error_code = _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(current_dict, p_dict_buf, dict_buf_offset, len_dict_buf, line_offset_dict_buf, tmp_buf, max_buf_size, len_tmp_buf, line_offset_tmp_buf, file_info);
     }
 
     // free
@@ -623,7 +623,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
 }
 
 Err
-_pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(_PttUIResourceDictLinkList *the_dict, char *p_dict_buf, int dict_buf_offset, int len_dict_buf, char *tmp_buf, int max_buf_size, int len_tmp_buf, int line_offset_tmp_buf, FileInfo *file_info)
+_pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(_PttUIResourceDictLinkList *the_dict, char *p_dict_buf, int dict_buf_offset, int len_dict_buf, int line_offset_dict_buf, char *tmp_buf, int max_buf_size, int len_tmp_buf, int line_offset_tmp_buf, FileInfo *file_info)
 {
     Err error_code = S_OK;
     CommentInfo *p_comment = NULL;
