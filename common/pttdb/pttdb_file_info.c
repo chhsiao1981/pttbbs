@@ -747,6 +747,7 @@ _save_file_info_to_db_comment_reply(FileInfo *file_info, char *user, char *ip)
     log_file_info(file_info, "pttdb_file_info._save_file_info_to_db_comment_reply");
 
     UUID new_comment_reply_id = {};
+    bool is_all_whitespace = false;
     for(int i = 0; i < file_info->n_comment; i++, p_comment++) {
         p_content_blocks = p_comment->comment_reply_blocks;
         error_code = _save_file_info_to_db_is_modified(p_content_blocks, p_comment->n_comment_reply_block, &is_modified);
@@ -754,6 +755,13 @@ _save_file_info_to_db_comment_reply(FileInfo *file_info, char *user, char *ip)
         if(!is_modified) continue;
 
         fprintf(stderr, "pttdb_file_info._save_file_info_to_db_comment_reply: (%d/%d): is-modified\n", i, file_info->n_comment);
+
+        error_code = _save_file_info_to_db_comment_reply_is_all_whitespace(file_info->main_id, p_comment->comment_reply_id, p_comment->n_comment_reply_block, p_comment->comment_reply_blocks, &is_all_whitespace);
+
+        if(is_all_whitespace) {
+            error_code = update_comment_reply_to_comment(p_comment->comment_id, EMPTY_ID, 0, 0, 0);
+            continue;
+        }
 
         bzero(new_comment_reply_id, sizeof(UUID));
         error_code = create_comment_reply_from_content_block_infos(
@@ -770,6 +778,36 @@ _save_file_info_to_db_comment_reply(FileInfo *file_info, char *user, char *ip)
         if(error_code) break;
 
     }
+    return S_OK;
+}
+
+Err
+_save_file_info_to_db_comment_reply_is_all_whitespace(UUID main_id, UUID comment_reply_id, int n_coment_reply_block, ContentBlockInfo *comment_reply_blocks, bool *is_all_whitespace)
+{
+    ContentBlockInfo *p_content_block = comment_reply_blocks;
+
+    char *buf = NULL;
+    int len = 0;
+    bool is_end = false;
+    *is_all_whitespace = true;
+    for(int i = 0; i < n_comment_reply_block; i++, p_content_block++) {
+        n_file = p_content_block->n_file;
+        for(int j = 0; j < n_file; j++) {
+            error_code = pttdb_file_get_data(main_id, PTTDB_CONTENT_TYPE_COMMENT_REPLY, comment_reply_id, i, j, &buf, &len);
+            p_buf = buf;
+            for(int k = 0; k < len; k++, p_buf++) {
+                if(*p_buf != '\n' && *p_buf != '\r' && *p_buf != ' ') {
+                    *is_all_whitespace = false;
+                    is_end = true;
+                    break;
+                }
+            }
+            safe_free(&buf);
+            if(is_end) break;
+        }
+        if(is_end) break;
+    }
+
     return S_OK;
 }
 
