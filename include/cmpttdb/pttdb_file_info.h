@@ -59,7 +59,11 @@ typedef struct FileInfo {
 Err construct_file_info(UUID main_id, FileInfo *file_info);
 Err destroy_file_info(FileInfo *file_info);
 
+bool file_info_is_first_block_ne(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset);
+
 Err file_info_is_first_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, bool *is_first_block);
+
+bool file_info_is_last_block_ne(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset);
 
 Err file_info_is_last_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, bool *is_last_block);
 
@@ -79,25 +83,25 @@ Err file_info_is_last_line(FileInfo *file_info, enum PttDBContentType content_ty
 
 Err file_info_get_content_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, ContentBlockInfo **content_block);
 
-Err file_info_get_n_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int *n_block);
+Err file_info_get_n_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int *n_block);
 
 Err file_info_get_pre_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum PttDBStorageType *new_storage_type);
 
 Err file_info_get_next_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum PttDBStorageType *new_storage_type);
 
-Err file_info_increase_main_content_line(FileInfo *file_info, int block_id, int file_id);
+Err file_info_increase_main_content_line(FileInfo *file_info, int block_offset, int file_offset);
 
-Err file_info_decrease_main_content_line(FileInfo *file_info, int block_id, int file_id);
+Err file_info_decrease_main_content_line(FileInfo *file_info, int block_offset, int file_offset);
 
-Err file_info_update_main_content_storage_type(FileInfo *file_info, int block_id, enum PttDBStorageType storage_type);
+Err file_info_update_main_content_storage_type(FileInfo *file_info, int block_offset, enum PttDBStorageType storage_type);
 
-Err file_info_update_comment_storage_type(FileInfo *file_info, int comment_id, enum PttDBStorageType storage_type);
+Err file_info_update_comment_storage_type(FileInfo *file_info, int comment_offset, enum PttDBStorageType storage_type);
 
-Err file_info_increase_comment_reply_line(FileInfo *file_info, int comment_id, int block_id, int file_id);
+Err file_info_increase_comment_reply_line(FileInfo *file_info, int comment_offset, int block_offset, int file_offset);
 
-Err file_info_decrease_comment_reply_line(FileInfo *file_info, int comment_id, int block_id, int file_id);
+Err file_info_decrease_comment_reply_line(FileInfo *file_info, int comment_offset, int block_offset, int file_offset);
 
-Err file_info_update_comment_reply_storage_type(FileInfo *file_info, int comment_id, int block_id, enum PttDBStorageType storage_type);
+Err file_info_update_comment_reply_storage_type(FileInfo *file_info, int comment_offset, int block_offset, enum PttDBStorageType storage_type);
 
 Err save_file_info_to_db(FileInfo *file_info, char *user, char *ip);
 

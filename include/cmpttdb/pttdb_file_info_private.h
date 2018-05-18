@@ -8,6 +8,7 @@
 #include "cmpttdb/pttdb_comment.h"
 #include "cmpttdb/pttdb_comment_reply.h"
 #include "cmpttdb/pttdb_dict_idx_by_uu.h"
+#include "cmpttdb/pttdb_file.h"
 
 #ifdef __cplusplus
 extern "C" {
