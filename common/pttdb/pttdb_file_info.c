@@ -5,7 +5,7 @@ bool
 file_info_is_first_block_ne(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset)
 {
     bool is_first_block = false;
-    file_info_is_first_block(file_info, content_type, comment_offset, block_offset, &is_first_block)
+    file_info_is_first_block(file_info, content_type, comment_offset, block_offset, &is_first_block);
 
     return is_first_block;
 }
@@ -45,7 +45,7 @@ bool
 file_info_is_last_block_ne(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset)
 {
     bool is_last_block = false;
-    file_info_is_last_block(file_info, content_type, comment_offset, block_offset, &is_last_block)
+    file_info_is_last_block(file_info, content_type, comment_offset, block_offset, &is_last_block);
 
     return is_last_block;
 }
@@ -107,7 +107,7 @@ Err
 file_info_next_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int *new_block_offset)
 {
     int n_block = 0;
-    Err error_code = file_info_get_n_content_block(file_info, content_type, comment_offset, &n_block);
+    Err error_code = file_info_get_n_block(file_info, content_type, comment_offset, &n_block);
     if(error_code) return error_code;
 
     if(block_offset == n_block - 1) return S_ERR_NOT_EXISTS;
@@ -131,7 +131,7 @@ Err
 file_info_first_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int *new_block_offset)
 {
     int n_block = 0;
-    Err error_code = file_info_get_n_content_block(file_info, content_type, comment_offset, &n_block);
+    Err error_code = file_info_get_n_block(file_info, content_type, comment_offset, &n_block);
     if(error_code) return error_code;
 
     ContentBlockInfo *p_content = NULL;
@@ -152,7 +152,7 @@ Err
 file_info_last_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int *new_block_offset)
 {
     int n_block = 0;
-    Err error_code = file_info_get_n_content_block(file_info, content_type, comment_offset, &n_block);
+    Err error_code = file_info_get_n_block(file_info, content_type, comment_offset, &n_block);
     if(error_code) return error_code;
 
     ContentBlockInfo *p_content = NULL;
@@ -796,6 +796,7 @@ _file_info_get_pre_line_comment(FileInfo *file_info, UUID orig_id GCC_UNUSED, en
 Err
 _file_info_get_pre_line_comment_reply(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type GCC_UNUSED, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum PttDBStorageType *new_storage_type)
 {
+    Err error_code = S_OK;
     CommentInfo *p_comment = file_info->comments + orig_comment_offset;
     ContentBlockInfo *p_comment_reply_block = p_comment->comment_reply_blocks + orig_block_offset;
 
@@ -825,7 +826,7 @@ _file_info_get_pre_line_comment_reply(FileInfo *file_info, UUID orig_id, enum Pt
         }
     }
 
-    return S_OK;
+    return error_code;
 }
 
 Err
@@ -861,6 +862,7 @@ _file_info_get_next_line_main(FileInfo *file_info, UUID orig_id, enum PttDBConte
     ContentBlockInfo *p_content_block = file_info->main_blocks + orig_block_offset;
 
     // last line of main-block. new-buffer as comment
+    bool is_last_block = false;
     Err error_code = file_info_is_last_block(file_info, orig_content_type, orig_comment_offset, orig_block_offset, &is_last_block);
 
     CommentInfo *p_comment = NULL;
@@ -1212,7 +1214,7 @@ _file_info_increase_content_line_core(ContentBlockInfo *content_block, int file_
     content_block->n_new_line++;
 
     if(content_block->storage_type == PTTDB_STORAGE_TYPE_FILE) {
-        content_block->file_n_line[file_id]++;
+        content_block->file_n_line[file_offset]++;
     }
 
     return S_OK;
@@ -1235,7 +1237,7 @@ file_info_update_comment_reply_storage_type(FileInfo *file_info, int comment_off
     if(comment_offset >= file_info->n_comment) return S_ERR;
 
     CommentInfo *p_comment = file_info->comments + comment_offset;
-    if(block_id >= p_comment->n_comment_reply_block) return S_ERR;
+    if(block_offset >= p_comment->n_comment_reply_block) return S_ERR;
 
     ContentBlockInfo *p_content = p_comment->comment_reply_blocks + block_offset;
     p_content->storage_type = storage_type;
@@ -1288,7 +1290,7 @@ _file_info_decrease_content_line_core(ContentBlockInfo *content_block, int file_
     content_block->n_to_delete_line++;
 
     if(content_block->storage_type == PTTDB_STORAGE_TYPE_FILE) {
-        content_block->file_n_line[file_id]--;
+        content_block->file_n_line[file_offset]--;
     }
 
     return S_OK;
