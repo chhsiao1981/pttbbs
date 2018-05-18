@@ -782,7 +782,7 @@ _save_file_info_to_db_comment_reply(FileInfo *file_info, char *user, char *ip)
 }
 
 Err
-_save_file_info_to_db_comment_reply_is_all_whitespace(UUID main_id, UUID comment_reply_id, int n_coment_reply_block, ContentBlockInfo *comment_reply_blocks, bool *is_all_whitespace)
+_save_file_info_to_db_comment_reply_is_all_whitespace(UUID main_id, UUID comment_reply_id, int n_comment_reply_block, ContentBlockInfo *comment_reply_blocks, bool *is_all_whitespace)
 {
     ContentBlockInfo *p_content_block = comment_reply_blocks;
 

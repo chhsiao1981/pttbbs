@@ -48,7 +48,7 @@ Err _save_file_info_to_db_comment(FileInfo *file_info, char *user, char *ip);
 Err _save_file_info_to_db_comment_reply(FileInfo *file_info, char *user, char *ip);
 Err _save_file_info_to_db_is_modified(ContentBlockInfo *content_blocks, int n_content_block, bool *is_modified);
 
-Err _save_file_info_to_db_comment_reply_is_all_whitespace(UUID main_id, UUID comment_reply_id, int n_coment_reply_block, ContentBlockInfo *comment_reply_blocks, bool *is_all_whitespace);
+Err _save_file_info_to_db_comment_reply_is_all_whitespace(UUID main_id, UUID comment_reply_id, int n_comment_reply_block, ContentBlockInfo *comment_reply_blocks, bool *is_all_whitespace);
 
 
 #ifdef __cplusplus
