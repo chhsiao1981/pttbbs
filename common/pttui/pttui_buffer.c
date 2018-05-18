@@ -2,6 +2,22 @@
 #include "cmpttui/pttui_buffer_private.h"
 
 bool
+pttui_buffer_is_need_sync_ne(PttUIState *expected_state, PttUIState *current_state, PttUIBufferInfo *buffer_info, FileInfo *file_info)
+{
+    if(memcpy(expected_state, current_state, sizeof(PttUIState))) return true;
+
+    int n_buffer = buffer_info->n_buffer - buffer_info->n_to_delete;
+
+    fprintf(stderr, "pttui_buffer.pttui_buffer_is_need_sync_ne: buffer-info n_buffer: %d file_info n-total-line: %d\n", n_buffer, file_info->n_total_line);
+
+    if(n_buffer >= file_info->n_total_line) return false;
+
+    if(n_buffer < N_EXTEND_PTTUI_BUFFER) return true;
+
+    return false;
+}
+
+bool
 pttui_buffer_is_begin_ne(PttUIBuffer *buffer, PttUIBuffer *head) {
     PttUIBuffer *pre = pttui_buffer_pre_ne(buffer, head);
     return pre == NULL;
@@ -290,7 +306,7 @@ _sync_pttui_buffer_info_get_buffer(PttUIState *state, PttUIBuffer *current_buffe
             break;
         }
 
-        p_buffer = is_pre ? pttui_buffer_pre_ne(p_buffer, buffer_info->head) : pttui_buffer_next_ne(p_buffer, buffer_info->tail);        
+        p_buffer = is_pre ? pttui_buffer_pre_ne(p_buffer, buffer_info->head) : pttui_buffer_next_ne(p_buffer, buffer_info->tail);
     }
 
     *new_buffer = p_buffer;
@@ -305,8 +321,8 @@ _sync_pttui_buffer_info_get_buffer(PttUIState *state, PttUIBuffer *current_buffe
  *          3. extend pre-buffer based on the new buffer.
  *          4. extend next-buffer based on the new buffer.
  *          5. setup buffer to buffer_info.
- * 
- * 
+ *
+ *
  * @param buffer_info [description]
  * @param state [description]
  * @param file_info [description]
@@ -350,7 +366,7 @@ resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, Fi
     }
 
     if(!error_code) {
-        n_buffer++;        
+        n_buffer++;
         *new_buffer = tmp_buffer;
     }
 
@@ -385,7 +401,7 @@ resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, Fi
 /**
  * @brief [brief description]
  * @details XXX ASSUME no new-line in the file-info (used only in resync-all)
- * 
+ *
  * @param state [description]
  * @param file_info [description]
  * @param buffer [description]
@@ -398,7 +414,7 @@ _pttui_buffer_init_buffer_no_buf_from_file_info(PttUIState *state, FileInfo *fil
     *buffer = malloc(sizeof(PttUIBuffer));
     PttUIBuffer *p_buffer = *buffer;
     if(!p_buffer) return S_ERR_MALLOC;
-    
+
     bzero(p_buffer, sizeof(PttUIBuffer));
 
     memcpy(p_buffer->the_id, state->top_line_id, UUIDLEN);
@@ -475,7 +491,7 @@ extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttU
 
     PttUIBuffer *new_head_buffer = NULL;
     PttUIBuffer *new_tail_buffer = NULL;
-    int n_new_buffer = 0;    
+    int n_new_buffer = 0;
 
     if(!error_code) {
         error_code = _extend_pttui_buffer(file_info, orig_head, orig_tail, current_buffer, &new_head_buffer, &new_tail_buffer, &n_new_buffer, buffer_info);
@@ -487,13 +503,13 @@ extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttU
 
     if(!error_code) { // basic operation, use ->pre and ->next directly
         buffer_info->head->pre = orig_head->pre;
-        if(orig_head->pre) orig_head->pre->next = buffer_info->head;        
+        if(orig_head->pre) orig_head->pre->next = buffer_info->head;
         if(new_head_buffer && orig_head != new_head_buffer) {
             buffer_info->head = new_head_buffer;
         }
 
         buffer_info->tail->next = orig_tail->next;
-        if(orig_tail->next) orig_tail->next->pre = buffer_info->tail;        
+        if(orig_tail->next) orig_tail->next->pre = buffer_info->tail;
         if(new_tail_buffer && orig_tail != new_tail_buffer) {
             buffer_info->tail = new_tail_buffer;
         }
@@ -523,7 +539,7 @@ extend_pttui_buffer_info(FileInfo *file_info, PttUIBufferInfo *buffer_info, PttU
  *          1. count extra-pre-range
  *          2. if need extend pre: extend-pre
  *          3. if need extend next: extend-next
- * 
+ *
  * @param buffer_info [description]
  * @param current_buffer [description]
  */
@@ -585,7 +601,7 @@ _extend_pttui_buffer_count_extra_next_range(PttUIBuffer *buffer, int *n_extra_ra
  **********/
 Err
 _extend_pttui_buffer_extend_pre_buffer(FileInfo *file_info, PttUIBuffer *head_buffer, int n_buffer, PttUIBuffer **new_head_buffer, int *ret_n_buffer)
-{    
+{
     Err error_code = S_OK;
     PttUIBuffer *start_buffer = head_buffer;
 
@@ -645,7 +661,7 @@ _extend_pttui_buffer_extend_pre_buffer_no_buf(PttUIBuffer *current_buffer, FileI
 
         new_buffer->next = current_buffer;
         current_buffer->pre = new_buffer;
-        
+
         current_buffer = new_buffer;
         new_buffer = NULL;
     }
@@ -683,7 +699,7 @@ _extend_pttui_buffer_extend_pre_buffer_no_buf_main(PttUIBuffer *current_buffer, 
     // begin-of-file
     bool is_begin = false;
     Err error_code = pttui_buffer_is_begin_of_file(current_buffer, file_info, &is_begin);
-    if(error_code) return error_code;    
+    if(error_code) return error_code;
     if(is_begin) return S_OK;
 
     // same-block, but no valid pre-offset
@@ -944,11 +960,11 @@ _extend_pttui_buffer_extend_next_buffer_no_buf_main(PttUIBuffer *current_buffer,
     // eof
     bool is_eof = false;
     Err error_code = pttui_buffer_is_eof(current_buffer, file_info, &is_eof);
-    if(error_code) return error_code;    
+    if(error_code) return error_code;
     if(is_eof) return S_OK;
 
     // same-block, but no valid next-offset
-    ContentBlockInfo *p_content_block = file_info->main_blocks + current_buffer->block_offset;    
+    ContentBlockInfo *p_content_block = file_info->main_blocks + current_buffer->block_offset;
     if(current_buffer->line_offset != p_content_block->n_line - 1 && current_buffer->load_line_next_offset < 0) return S_ERR_EXTEND;
 
     // malloc new buffer
@@ -1016,7 +1032,7 @@ _extend_pttui_buffer_extend_next_buffer_no_buf_comment(PttUIBuffer *current_buff
     // eof
     bool is_eof = false;
     Err error_code = pttui_buffer_is_eof(current_buffer, file_info, &is_eof);
-    if(error_code) return error_code;    
+    if(error_code) return error_code;
     if(is_eof) return S_OK;
 
     int current_buffer_comment_offset = current_buffer->comment_offset;
@@ -1074,7 +1090,7 @@ _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(PttUIBuffer *curren
     // eof
     bool is_eof = false;
     Err error_code = pttui_buffer_is_eof(current_buffer, file_info, &is_eof);
-    if(error_code) return error_code;    
+    if(error_code) return error_code;
     if(is_eof) return S_OK;
 
     CommentInfo *p_comment = file_info->comments + current_buffer->comment_offset;
@@ -1091,7 +1107,7 @@ _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(PttUIBuffer *curren
     Err error_code2 = S_OK;
     // same-block
     if (current_buffer->line_offset != p_content_block->n_line - 1) {
-        tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;        
+        tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT_REPLY;
         memcpy(tmp->the_id, p_comment->comment_reply_id, UUIDLEN);
         tmp->comment_offset = current_buffer->comment_offset;
 
@@ -1123,7 +1139,7 @@ _extend_pttui_buffer_extend_next_buffer_no_buf_comment_reply(PttUIBuffer *curren
     }
     else {
         // different comment
-        p_comment++;        
+        p_comment++;
 
         tmp->content_type = PTTDB_CONTENT_TYPE_COMMENT;
         memcpy(tmp->the_id, p_comment->comment_id, UUIDLEN);
@@ -1167,7 +1183,7 @@ _pttui_buffer_set_load_line_from_content_block_info(PttUIBuffer *buffer, Content
 
 Err
 _pttui_buffer_load_line_pre_from_content_block_info(PttUIBuffer *pre_buffer, PttUIBuffer *current_buffer, ContentBlockInfo *content_block)
-{    
+{
     if(pre_buffer->content_type == current_buffer->content_type && pre_buffer->block_offset == current_buffer->block_offset) {
         // within same-block
         pre_buffer->load_line_offset = current_buffer->load_line_pre_offset;
@@ -1354,7 +1370,7 @@ _modified_pttui_buffer_info_to_resource_info(PttUIBuffer *head, PttUIBuffer *tai
             current_buffer->content_type != PTTDB_CONTENT_TYPE_COMMENT &&
             pre_buffer->content_type == current_buffer->content_type &&
             pre_buffer->comment_offset == current_buffer->comment_offset &&
-            pre_buffer->block_offset == current_buffer->block_offset &&            
+            pre_buffer->block_offset == current_buffer->block_offset &&
             pre_buffer->file_offset == current_buffer->file_offset) continue;
 
         error_code = pttui_resource_info_push_queue(current_buffer, resource_info, current_buffer->content_type, current_buffer->storage_type);
@@ -1424,7 +1440,7 @@ _pttui_buffer_info_set_buf_from_resource_dict(PttUIBuffer *head, PttUIBuffer *ta
         if(buf_offset == len) { // XXX should not be here
             error_code = S_ERR;
             break;
-        }        
+        }
         error_code = pttui_resource_dict_get_next_buf(p_buf, buf_offset, len, &p_next_buf, &buf_next_offset);
         if(error_code) break;
 
@@ -1514,7 +1530,7 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
 
     if(!error_code && buffer_info->n_to_delete_buffer) {
         error_code = pttui_resource_dict_integrate_with_modified_pttui_buffer_info(buffer_info->to_delete_buffer_head, buffer_info->to_delete_buffer_tail, &resource_dict, file_info);
-    }    
+    }
 
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after integrate-with-to-deleete-buffer: e: %d\n", error_code);
 
@@ -1633,7 +1649,7 @@ _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
         error_code2 = _pttui_buffer_set_load_line_from_content_block_info(p_buffer, p_content_block);
         if(!error_code && error_code2) error_code = error_code2;
         error_code2 = _pttui_buffer_set_file_offset_from_content_block_info(p_buffer, p_content_block);
-        if(!error_code && error_code2) error_code = error_code2;        
+        if(!error_code && error_code2) error_code = error_code2;
         if(error_code) return error_code;
     }
 
@@ -1662,7 +1678,7 @@ _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
             error_code2 = _pttui_buffer_set_load_line_from_content_block_info(p_buffer, p_content_block);
             if(!error_code && error_code2) error_code = error_code2;
             error_code2 = _pttui_buffer_set_file_offset_from_content_block_info(p_buffer, p_content_block);
-            if(!error_code && error_code2) error_code = error_code2;        
+            if(!error_code && error_code2) error_code = error_code2;
         }
         else {
             error_code2 = _pttui_buffer_load_line_next_from_content_block_info(p_buffer, p_pre_buffer, p_content_block);
@@ -1695,7 +1711,7 @@ _reset_pttui_buffer_info(PttUIBufferInfo *buffer_info, FileInfo *file_info)
 /**********
  * save to db
  **********/
- 
+
 Err save_pttui_buffer_info_to_db(PttUIBufferInfo *buffer_info, FileInfo *file_info, char *user, char *ip)
 {
 
@@ -1719,7 +1735,7 @@ Err save_pttui_buffer_info_to_db(PttUIBufferInfo *buffer_info, FileInfo *file_in
 
     buffer_info->is_saved = true;
 
-    return error_code;    
+    return error_code;
 }
 
 /**********
@@ -1759,7 +1775,7 @@ _sync_pttui_buffer_info_shrink_head(PttUIBufferInfo *buffer_info)
 {
     Err error_code = S_OK;
     PttUIBuffer *p_orig_head = buffer_info->head;
-    PttUIBuffer *p_top_line_pre = PTTUI_BUFFER_TOP_LINE;    
+    PttUIBuffer *p_top_line_pre = PTTUI_BUFFER_TOP_LINE;
     int i = 0;
     for(i = 0; i < HARD_N_PTTUI_BUFFER && p_top_line_pre; p_top_line_pre = p_top_line_pre->pre);
     if(!p_top_line_pre) return S_OK;
@@ -1792,7 +1808,7 @@ _sync_pttui_buffer_info_shrink_head(PttUIBufferInfo *buffer_info)
 Err
 _sync_pttui_buffer_info_shrink_tail(PttUIBufferInfo *buffer_info)
 {
-    Err error_code = S_OK;    
+    Err error_code = S_OK;
     PttUIBuffer *p_orig_tail = buffer_info->tail;
     PttUIBuffer *p_end_line_next = PTTUI_BUFFER_TOP_LINE;
     int i = 0;
@@ -1995,7 +2011,7 @@ log_pttui_buffer_info(PttUIBufferInfo *buffer_info, char *prompt)
     char *disp_uuid = NULL;
     for(; p_buffer; i++, p_buffer = p_buffer->next) {
         disp_uuid = display_uuid(p_buffer->the_id);
-        fprintf(stderr, "%s: (%d/%d): id: %s content_type: %d block: %d line: %d comment: %d load_line: (%d pre: %d next: %d) file: %d file_line: (%d pre: %d next: %d) storage_type: %d is_modified: %d is_new: %d is_to_delete: %d len: %d buf: %s\n", prompt, i, n_buffer, disp_uuid, 
+        fprintf(stderr, "%s: (%d/%d): id: %s content_type: %d block: %d line: %d comment: %d load_line: (%d pre: %d next: %d) file: %d file_line: (%d pre: %d next: %d) storage_type: %d is_modified: %d is_new: %d is_to_delete: %d len: %d buf: %s\n", prompt, i, n_buffer, disp_uuid,
             p_buffer->content_type, p_buffer->block_offset, p_buffer->line_offset, p_buffer->comment_offset,
             p_buffer->load_line_offset, p_buffer->load_line_pre_offset, p_buffer->load_line_next_offset,
             p_buffer->file_offset, p_buffer->file_line_offset, p_buffer->file_line_pre_offset, p_buffer->file_line_next_offset, p_buffer->storage_type, p_buffer->is_modified, p_buffer->is_new, p_buffer->is_to_delete, p_buffer->len_no_nl, p_buffer->buf);
@@ -2005,7 +2021,7 @@ log_pttui_buffer_info(PttUIBufferInfo *buffer_info, char *prompt)
     int n_to_delete_buffer = buffer_info->n_to_delete_buffer;
     for(; p_buffer; i++, p_buffer = p_buffer->next) {
         disp_uuid = display_uuid(p_buffer->the_id);
-        fprintf(stderr, "%s: (%d/%d): id: %s content_type: %d block: %d line: %d comment: %d load_line: (%d pre: %d next: %d) file: %d file_line: (%d pre: %d next: %d) storage_type: %d is_modified: %d is_new: %d is_to_delete: %d len: %d buf: %s\n", prompt, i, n_to_delete_buffer, disp_uuid, 
+        fprintf(stderr, "%s: (%d/%d): id: %s content_type: %d block: %d line: %d comment: %d load_line: (%d pre: %d next: %d) file: %d file_line: (%d pre: %d next: %d) storage_type: %d is_modified: %d is_new: %d is_to_delete: %d len: %d buf: %s\n", prompt, i, n_to_delete_buffer, disp_uuid,
             p_buffer->content_type, p_buffer->block_offset, p_buffer->line_offset, p_buffer->comment_offset,
             p_buffer->load_line_offset, p_buffer->load_line_pre_offset, p_buffer->load_line_next_offset,
             p_buffer->file_offset, p_buffer->file_line_offset, p_buffer->file_line_pre_offset, p_buffer->file_line_next_offset, p_buffer->storage_type, p_buffer->is_modified, p_buffer->is_new, p_buffer->is_to_delete, p_buffer->len_no_nl, p_buffer->buf);

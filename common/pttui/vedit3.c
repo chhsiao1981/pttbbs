@@ -169,7 +169,7 @@ _vedit3_init_user()
 Err
 _vedit3_init_file_info(UUID main_id)
 {
-    // XXX disp-buffer and disp-screen may need old file-info?    
+    // XXX disp-buffer and disp-screen may need old file-info?
     Err error_code = pttui_thread_lock_wrlock(LOCK_PTTUI_FILE_INFO);
     if(error_code) return error_code;
 
@@ -301,7 +301,7 @@ _vedit3_check_healthy()
 Err
 _vedit3_store_to_render()
 {
-    // XXX check why redraw-everything makes different len in comments    
+    // XXX check why redraw-everything makes different len in comments
     Err error_code = S_OK;
 
     int ch = 0;
@@ -341,7 +341,7 @@ _vedit3_store_to_render()
         VEDIT3_EDITOR_STATUS.is_redraw_everything = false;
         VEDIT3_EDITOR_STATUS.is_scroll_up = false;
         VEDIT3_EDITOR_STATUS.is_scroll_down = false;
-        
+
         rscroll();
 
         error_code = _vedit3_disp_line(VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_buffer->buf, VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl, VEDIT3_EDITOR_STATUS.current_buffer->content_type);
@@ -532,9 +532,12 @@ vedit3_buffer()
     error_code = pttui_get_expected_state(&expected_state);
     if (error_code) return error_code;
 
-    if (!memcmp(&expected_state, &PTTUI_BUFFER_STATE, sizeof(PttUIState))) {
+    if(!pttui_buffer_is_need_sync_ne(&expected_state, &PTTUI_BUFFER_STATE, &PTTUI_BUFFER_INFO, &PTTUI_FILE_INFO)) {
         error_code = check_and_save_pttui_buffer_info_to_tmp_file(&PTTUI_BUFFER_INFO, &PTTUI_FILE_INFO);
         return S_OK;
+    }
+
+    if (!memcmp(&expected_state, &PTTUI_BUFFER_STATE, sizeof(PttUIState)) && PTTUI_BUFFER_INFO->n_buffer - PTTUI_BUFFER_INFO->n_to_delete > ) {
     }
 
     // sync disp buffer to tmp_disp_buffer while checking the alignment of orig_expected_state and new_expected_state
@@ -720,7 +723,7 @@ vedit3_repl_unlock_wr_buffer_info()
 /**
  * @brief [brief description]
  * @details XXX require: 1. wrlock_file_info 2. lock_wr_buffer_info
- * 
+ *
  * @param error_code [description]
  */
 Err
@@ -837,7 +840,7 @@ vedit3_repl_unlock_file_info_buffer_info(bool is_lock_file_info, bool is_lock_bu
         if(!error_code && error_code_lock) error_code = error_code_lock;
     }
 
-    return error_code;    
+    return error_code;
 }
 
 /**********

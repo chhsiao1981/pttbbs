@@ -12,7 +12,8 @@ extern "C" {
 
 #define SOFT_N_PTTUI_BUFFER 100
 #define HARD_N_PTTUI_BUFFER 250
-#define N_SHRINK_PTTUI_BUFFER 600
+#define N_SHRINK_PTTUI_BUFFER 800
+#define N_EXTEND_PTTUI_BUFFER 400
 
 #define N_TO_DELETE_SAVE_PTTUI_BUFFER_TO_TMP_FILE 40
 #define N_NEW_SAVE_PTTUI_BUFFER_TO_TMP_FILE 100
@@ -29,11 +30,11 @@ typedef struct PttUIBuffer {
     struct PttUIBuffer *pre;
 
     UUID the_id;
-    enum PttDBContentType content_type;    
+    enum PttDBContentType content_type;
     int block_offset;
     int line_offset;
     int comment_offset;
-    
+
     int load_line_offset;
     int load_line_pre_offset;
     int load_line_next_offset;
@@ -42,7 +43,7 @@ typedef struct PttUIBuffer {
     int file_line_offset;
     int file_line_pre_offset;
     int file_line_next_offset;
-    
+
     enum PttDBStorageType storage_type;
 
     bool is_modified;
@@ -70,6 +71,8 @@ typedef struct PttUIBufferInfo {
 
     UUID main_id;
 } PttUIBufferInfo;
+
+bool pttui_buffer_is_need_sync_ne(PttUIState *expected_state, PttUIState *current_state, PttUIBufferInfo *buffer_info, FileInfo *file_info);
 
 bool pttui_buffer_is_begin_ne(PttUIBuffer *buffer, PttUIBuffer *head);
 bool pttui_buffer_is_end_ne(PttUIBuffer *buffer, PttUIBuffer *tail);
