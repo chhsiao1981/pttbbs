@@ -71,25 +71,23 @@ log_pttui_resource_info(PttUIResourceInfo *resource_info, char *prompt)
     sprintf(prompt2, "%s: main-db:", prompt);
     _log_pttui_resource_info_queue(p_queue, prompt2);
 
-    PttQueue *p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_MAIN * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
+    p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_MAIN * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
     sprintf(prompt2, "%s: main-file:", prompt);
     _log_pttui_resource_info_queue(p_queue, prompt2);
 
-    char prompt2[MAX_BUF_SIZE] = {};
-    PttQueue *p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_MONGO];
+    p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_MONGO];
     sprintf(prompt2, "%s: comment-db:", prompt);
     _log_pttui_resource_info_queue(p_queue, prompt2);
 
-    PttQueue *p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
+    p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
     sprintf(prompt2, "%s: comment-file:", prompt);
     _log_pttui_resource_info_queue(p_queue, prompt2);
 
-    char prompt2[MAX_BUF_SIZE] = {};
-    PttQueue *p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT_REPLY * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_MONGO];
+    p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT_REPLY * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_MONGO];
     sprintf(prompt2, "%s: comment-reply-db:", prompt);
     _log_pttui_resource_info_queue(p_queue, prompt2);
 
-    PttQueue *p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT_REPLY * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
+    p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT_REPLY * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
     sprintf(prompt2, "%s: comment-reply-file:", prompt);
     _log_pttui_resource_info_queue(p_queue, prompt2);
 
