@@ -102,7 +102,7 @@ _log_pttui_resource_info_queue(PttQueue *q, char *prompt)
     PttUIBuffer *p_buffer;
     for(; p; p = p->next, i++) {
         p_buffer = (PttUIBuffer *)p->val.p;
-        fprintf(stderr, "%s: (%d/%d) content_type: %d comment: %d block: %d line: %d file: %d\n", prompt, i, p->n_queue, p_buffer->content_type, p_buffer->comment_offset, p_buffer->block_offset, p_buffer->line_offset, p_buffer->file_offset);
+        fprintf(stderr, "%s: (%d/%d) content_type: %d comment: %d block: %d line: %d file: %d\n", prompt, i, q->n_queue, p_buffer->content_type, p_buffer->comment_offset, p_buffer->block_offset, p_buffer->line_offset, p_buffer->file_offset);
     }
 
     return S_OK;
