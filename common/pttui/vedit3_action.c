@@ -395,7 +395,7 @@ vedit3_action_save_and_exit(bool *is_end)
             error_code = S_ERR;
             break;
         }
-    }    
+    }
 
     if(i == N_ITER_WAIT_BUFFER_SAVE) error_code = S_ERR_SAVE;
 
@@ -445,7 +445,7 @@ vedit3_action_search()
 Err
 vedit3_action_toggle_insert()
 {
-    return S_OK;    
+    return S_OK;
 }
 
 Err
@@ -615,7 +615,7 @@ vedit3_action_insert_char(int ch)
     if(VEDIT3_EDITOR_STATUS.is_phone) {
         error_code = pttui_phone_char(ch, VEDIT3_EDITOR_STATUS.phone_mode, &pstr);
         if(error_code) return error_code;
-    }   
+    }
 
     bool is_lock_file_info = false;
     bool is_lock_wr_buffer_info = false;
@@ -859,7 +859,7 @@ vedit3_action_move_pgup()
     error_code = pttui_set_expected_state(expected_state.main_id, expected_state.top_line_content_type, expected_state.top_line_id, expected_state.top_line_block_offset, expected_state.top_line_line_offset, expected_state.top_line_comment_offset, expected_state.n_window_line);
     if (error_code) return error_code;
 
-    error_code = vedit3_wait_buffer_state_sync(DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC);    
+    error_code = vedit3_wait_buffer_state_sync(DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC);
     if(error_code) return error_code;
 
     error_code = vedit3_repl_lock_buffer_info();
@@ -910,16 +910,16 @@ _vedit3_action_move_pgup_get_expected_top_line_buffer(VEdit3EditorStatus *editor
 
     PttUIBuffer *current_buffer = PTTUI_BUFFER_TOP_LINE;
 
-    bool is_pre_line = false;
+    bool is_first_line = false;
     PttUIBuffer tmp_buffer = {};
     PttUIBuffer tmp_buffer2 = {};
     memcpy(&tmp_buffer, current_buffer, sizeof(PttUIBuffer));
     int i = 0;
     if(!error_code) {
         for(i = 0; i < tmp_n_pre_line; i++) {
-            error_code = file_info_is_pre_line(file_info, tmp_buffer.content_type, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer.comment_offset, &is_pre_line);
+            error_code = file_info_is_first_line(file_info, tmp_buffer.content_type, tmp_buffer.comment_offset, tmp_buffer.block_offset, tmp_buffer.line_offset, &is_first_line);
             if(error_code) break;
-            if(!is_pre_line) break;
+            if(is_first_line) break;
 
             error_code = file_info_get_pre_line(file_info, tmp_buffer.the_id, tmp_buffer.content_type, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer.comment_offset, tmp_buffer2.the_id, &tmp_buffer2.content_type, &tmp_buffer2.block_offset, &tmp_buffer2.line_offset, &tmp_buffer2.comment_offset, &tmp_buffer2.storage_type);
             if(error_code) break;
@@ -958,7 +958,7 @@ vedit3_action_move_pgdn()
     error_code = pttui_set_expected_state(expected_state.main_id, expected_state.top_line_content_type, expected_state.top_line_id, expected_state.top_line_block_offset, expected_state.top_line_line_offset, expected_state.top_line_comment_offset, expected_state.n_window_line);
     if (error_code) return error_code;
 
-    error_code = vedit3_wait_buffer_state_sync(DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC);    
+    error_code = vedit3_wait_buffer_state_sync(DEFAULT_ITER_VEDIT3_WAIT_BUFFER_STATE_SYNC);
     if(error_code) return error_code;
 
     error_code = vedit3_repl_lock_buffer_info();
@@ -1017,16 +1017,16 @@ _vedit3_action_move_pgdn_get_expected_top_line_buffer(VEdit3EditorStatus *editor
 
     PttUIBuffer *current_buffer = PTTUI_BUFFER_TOP_LINE;
 
-    bool is_next_line = false;
+    bool is_last_line = false;
     PttUIBuffer tmp_buffer = {};
     PttUIBuffer tmp_buffer2 = {};
     memcpy(&tmp_buffer, current_buffer, sizeof(PttUIBuffer));
     int i = 0;
     if(!error_code) {
         for(i = 0; i < tmp_n_next_line; i++) {
-            error_code = file_info_is_next_line(file_info, tmp_buffer.content_type, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer.comment_offset, &is_next_line);
+            error_code = file_info_is_last_line(file_info, tmp_buffer.content_type, tmp_buffer.comment_offset, tmp_buffer.block_offset, tmp_buffer.line_offset, &is_next_line);
             if(error_code) break;
-            if(!is_next_line) break;
+            if(is_last_line) break;
 
             error_code = file_info_get_next_line(file_info, tmp_buffer.the_id, tmp_buffer.content_type, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer.comment_offset, tmp_buffer2.the_id, &tmp_buffer2.content_type, &tmp_buffer2.block_offset, &tmp_buffer2.line_offset, &tmp_buffer2.comment_offset, &tmp_buffer2.storage_type);
             if(error_code) break;
@@ -1082,7 +1082,7 @@ vedit3_action_show_help()
 }
 
 /**
- * @brief 
+ * @brief
  * @details ref: case KEY_BS in edit.c
  *          1. is-ansi: is-ansi == false
  *          2. is current-line == 0 and current-col == 0: no change
@@ -1195,7 +1195,7 @@ vedit3_action_delete_line()
 
 Err
 vedit3_action_delete_end_of_line()
-{    
+{
     VEDIT3_EDITOR_STATUS.current_buffer->is_modified = true;
 
     if(VEDIT3_EDITOR_STATUS.current_col != VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl) {
@@ -1349,7 +1349,7 @@ _vedit3_action_ensure_current_col(int current_col) {
 /**
  * @brief [brief description]
  * @details [long description]
- * 
+ *
  * @param current_buffer [description]
  * @param pos [description]
  * @param indent [description]
@@ -1512,7 +1512,7 @@ _vedit3_action_delete_char_core()
 
     VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl--;
 
-    VEDIT3_EDITOR_STATUS.current_buffer->is_modified = true;    
+    VEDIT3_EDITOR_STATUS.current_buffer->is_modified = true;
 
     return S_OK;
 }
