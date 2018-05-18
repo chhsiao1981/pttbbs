@@ -1510,6 +1510,8 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
         error_code = pttui_buffer_wrlock_file_info(&is_lock_file_info);
     }
 
+    fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: to integrate-with-to-deleete-buffer: e: %d\n", error_code);
+
     if(!error_code && buffer_info->n_to_delete_buffer) {
         error_code = pttui_resource_dict_integrate_with_modified_pttui_buffer_info(buffer_info->to_delete_buffer_head, buffer_info->to_delete_buffer_tail, &resource_dict, file_info);
     }    
