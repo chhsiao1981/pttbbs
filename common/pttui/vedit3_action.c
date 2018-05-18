@@ -8,6 +8,7 @@ vedit3_action_to_store(bool *is_end)
     int ch;
 
     error_code = _vedit3_action_get_key(&ch);
+
     if (error_code) return error_code;
 
     switch(VEDIT3_EDITOR_STATUS.current_buffer->content_type) {
@@ -1536,6 +1537,21 @@ _vedit3_action_concat_next_line()
     if (!VEDIT3_EDITOR_STATUS.is_own_wrlock_buffer_info) return S_ERR_EDIT_LOCK;
 
     PttUIBuffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
+
+    int n_block = 0;
+    switch(current_buffer->content_type) {
+    case PTTDB_CONTENT_TYPE_MAIN:
+        n_block = PTTUI_FILE_INFO.n_main_block;
+        break;
+    case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
+        n_block = PTTUI_FILE_INFO.comments[current_buffer->comment_offset].n_comment_reply_block;
+        break;
+    default:
+        break;
+    }
+
+    if(current_buffer->block_offset == n_block - 1 && current_buffer->load_line_next_offset == INVALID_LINE_OFFSET_NEXT_END) return S_OK;
+
     PttUIBuffer *p_next_buffer = pttui_buffer_next_ne(current_buffer, PTTUI_BUFFER_INFO.tail);
 
     // 1. if no next: return
