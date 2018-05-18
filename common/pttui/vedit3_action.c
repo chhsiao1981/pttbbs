@@ -1195,7 +1195,9 @@ vedit3_action_delete_line()
 
 Err
 vedit3_action_delete_end_of_line()
-{
+{    
+    VEDIT3_EDITOR_STATUS.current_buffer->is_modified = true;
+
     if(VEDIT3_EDITOR_STATUS.current_col != VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl) {
         VEDIT3_EDITOR_STATUS.current_buffer->len_no_nl = VEDIT3_EDITOR_STATUS.current_col;
         VEDIT3_EDITOR_STATUS.current_buffer->buf[VEDIT3_EDITOR_STATUS.current_col] = 0;
