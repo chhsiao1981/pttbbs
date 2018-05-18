@@ -784,6 +784,7 @@ _save_file_info_to_db_comment_reply(FileInfo *file_info, char *user, char *ip)
 Err
 _save_file_info_to_db_comment_reply_is_all_whitespace(UUID main_id, UUID comment_reply_id, int n_comment_reply_block, ContentBlockInfo *comment_reply_blocks, bool *is_all_whitespace)
 {
+    Err error_code = S_OK;
     ContentBlockInfo *p_content_block = comment_reply_blocks;
 
     char *buf = NULL;
@@ -791,6 +792,7 @@ _save_file_info_to_db_comment_reply_is_all_whitespace(UUID main_id, UUID comment
     bool is_end = false;
     *is_all_whitespace = true;
     int n_file = 0;
+    char *p_buf = NULL;
     for(int i = 0; i < n_comment_reply_block; i++, p_content_block++) {
         n_file = p_content_block->n_file;
         for(int j = 0; j < n_file; j++) {
@@ -803,7 +805,7 @@ _save_file_info_to_db_comment_reply_is_all_whitespace(UUID main_id, UUID comment
                     break;
                 }
             }
-            safe_free(&buf);
+            safe_free((void **)&buf);
             if(is_end) break;
         }
         if(is_end) break;
