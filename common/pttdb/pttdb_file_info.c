@@ -150,7 +150,8 @@ file_info_last_block(FileInfo *file_info, enum PttDBContentType content_type, in
     return S_ERR_NOT_EXISTS;
 }
 
-bool file_info_is_first_line_ne(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int line_offset)
+bool
+file_info_is_first_line_ne(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int line_offset)
 {
     bool is_first_line = false;
 

@@ -59,9 +59,27 @@ typedef struct FileInfo {
 Err construct_file_info(UUID main_id, FileInfo *file_info);
 Err destroy_file_info(FileInfo *file_info);
 
-Err file_info_is_first_line(FileInfo *file_info, enum PttDBContentType content_type, int comment_id, int block_id, int line_id, bool *is_first_line);
+Err file_info_is_first_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, bool *is_first_block);
 
-Err file_info_is_last_line(FileInfo *file_info, enum PttDBContentType content_type, int comment_id, int block_id, int line_id, bool *is_last_line);
+Err file_info_is_last_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, bool *is_last_block);
+
+Err file_info_pre_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int *new_block_offset);
+
+Err file_info_next_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int *new_block_offset);
+
+Err file_info_first_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int *new_block_offset);
+
+Err file_info_last_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int *new_block_offset);
+
+bool file_info_is_first_line_ne(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int line_offset)
+
+Err file_info_is_first_line(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int line_offset, bool *is_first_line)
+
+Err file_info_is_last_line(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int line_offset, bool *is_last_line);
+
+Err file_info_get_content_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, ContentBlockInfo **content_block);
+
+Err file_info_get_n_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int *n_block);
 
 Err file_info_get_pre_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum PttDBStorageType *new_storage_type);
 

@@ -17,6 +17,22 @@ extern "C" {
 
 #define N_FILE_INFO_SET_COMMENT_INFO_BLOCK 1000
 
+Err _file_info_is_first_block_core(FileInfo *file_info, ContentBlockInfo *content, int block_offset, bool *is_first_block);
+
+Err _file_info_is_last_block_core(FileInfo *file_info, ContentBlockInfo *content, int block_offset, int n_block, bool *is_last_block);
+
+Err _file_info_is_first_line_main(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int line_offset, bool *is_first_line);
+
+Err _file_info_is_first_line_comment(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int line_offset, bool *is_first_line);
+
+Err _file_info_is_last_line_main(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int line_offset, bool *is_last_line);
+
+Err _file_info_is_last_line_comment(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int line_offset, bool *is_last_line);
+
+Err _file_info_is_last_line_comment_reply(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int line_offset, bool *is_last_line);
+
+Err _file_info_is_last_line_content(ContentBlockInfo *p_content, int block_offset, int line_offset, int n_block, bool *is_last_line);
+
 Err _get_file_info_set_content_block_info(UUID main_content_id, int n_content_block, FileInfo *file_info);
 
 Err _get_file_info_set_comment_info(UUID main_id, FileInfo *file_info);
