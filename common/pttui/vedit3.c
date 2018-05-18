@@ -537,9 +537,6 @@ vedit3_buffer()
         return S_OK;
     }
 
-    if (!memcmp(&expected_state, &PTTUI_BUFFER_STATE, sizeof(PttUIState)) && PTTUI_BUFFER_INFO->n_buffer - PTTUI_BUFFER_INFO->n_to_delete > ) {
-    }
-
     // sync disp buffer to tmp_disp_buffer while checking the alignment of orig_expected_state and new_expected_state
     PttUIBuffer *new_top_line_buffer = NULL;
     error_code = sync_pttui_buffer_info(&PTTUI_BUFFER_INFO, PTTUI_BUFFER_TOP_LINE, &expected_state, &PTTUI_FILE_INFO, &new_top_line_buffer);
