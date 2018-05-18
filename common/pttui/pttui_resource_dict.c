@@ -290,6 +290,10 @@ _pttui_resource_dict_add_data(UUID the_id, int block_id, int file_id, int len, c
         if(error_code) return error_code;
     }
 
+    char *disp_uuid = display_uuid(the_id);
+    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_add_data: the_id: %s block_id: %d file_id: %d\n", disp_uuid, block_id, file_id);
+    free(disp_uuid);
+
     int the_idx = ((int)the_id[0] + block_id + file_id + N_PTTUI_RESOURCE_DICT_LINK_LIST) % N_PTTUI_RESOURCE_DICT_LINK_LIST;
     _PttUIResourceDictLinkList *p = resource_dict->data[the_idx];
     if(!p) {
