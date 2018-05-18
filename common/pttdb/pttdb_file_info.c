@@ -317,6 +317,7 @@ _file_info_is_last_line_content(ContentBlockInfo *p_content, int block_offset, i
 Err
 file_info_get_content_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, ContentBlockInfo **content_block)
 {
+    Err error_code = S_OK;
     CommentInfo *p_comment = NULL;
     switch(content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
@@ -328,10 +329,11 @@ file_info_get_content_block(FileInfo *file_info, enum PttDBContentType content_t
         break;
     default:
         *content_block = NULL;
+        error_code = S_ERR;
         break;
     }
 
-    return S_OK;
+    return error_code;
 }
 
 Err
@@ -350,6 +352,18 @@ file_info_get_n_block(FileInfo *file_info, enum PttDBContentType content_type, i
         *n_block = 0;
         break;
     }
+
+    return S_OK;
+}
+
+Err
+file_info_get_n_line(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int *n_line)
+{
+    ContentBlockInfo *p_content = NULL;
+    Err error_code = file_info_get_content_block(file_info, content_type, comment_offset, block_offset, &p_content);
+    if(error_code) return error_code;
+
+    *n_line = p_content->n_line;
 
     return S_OK;
 }

@@ -1032,7 +1032,7 @@ _vedit3_action_move_pgdn_get_expected_top_line_buffer(VEdit3EditorStatus *editor
     int i = 0;
     if(!error_code) {
         for(i = 0; i < tmp_n_next_line; i++) {
-            error_code = file_info_is_last_line(file_info, tmp_buffer.content_type, tmp_buffer.comment_offset, tmp_buffer.block_offset, tmp_buffer.line_offset, &is_next_line);
+            error_code = file_info_is_last_line(file_info, tmp_buffer.content_type, tmp_buffer.comment_offset, tmp_buffer.block_offset, tmp_buffer.line_offset, &is_last_line);
             if(error_code) break;
             if(is_last_line) break;
 
@@ -1548,23 +1548,13 @@ _vedit3_action_concat_next_line()
 
     PttUIBuffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
 
-    int n_block = 0;
     int n_line = 0;
-    switch(current_buffer->content_type) {
-    case PTTDB_CONTENT_TYPE_MAIN:
-        n_block = PTTUI_FILE_INFO.n_main_block;
-        n_line = PTTUI_FILE_INFO.n_main_line;
-        break;
-    case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
-        n_block = PTTUI_FILE_INFO.comments[current_buffer->comment_offset].n_comment_reply_block;
-        n_line = PTTUI_FILE_INFO.comments[current_buffer->comment_offset].n_comment_reply_total_line;
-        break;
-    default:
-        break;
-    }
+    error_code = file_info_get_n_line(file_info, current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset);
+    if(error_code) return error_code;
 
-    fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: buffer: (content_type: %d comment: %d block: %d line: %d file: %d load_line_next_offset: %d) n_block: %d\n", current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset, current_buffer->line_offset, current_buffer->file_offset, current_buffer->load_line_next_offset);
-    if(current_buffer->block_offset == n_block - 1 && n_line == 1) return S_OK;
+    fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: buffer: (content_type: %d comment: %d block: %d line: %d file: %d load_line_next_offset: %d) n_line: %d\n", current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset, current_buffer->line_offset, current_buffer->file_offset, current_buffer->load_line_next_offset, n_line);
+
+    if(file_info_is_last_block_ne(PTTUI_FILE_INFO, current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset) && n_line == 1) return S_OK;
 
     PttUIBuffer *p_next_buffer = pttui_buffer_next_ne(current_buffer, PTTUI_BUFFER_INFO.tail);
 
