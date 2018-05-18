@@ -23,6 +23,10 @@ Err destroy_pttui_resource_info(PttUIResourceInfo *resource_info);
 
 Err pttui_resource_info_to_resource_dict(PttUIResourceInfo *resource_info, PttUIResourceDict *resource_dict);
 
+Err log_pttui_resource_info(PttUIResourceInfo *resource_info, char *prompt);
+
+Err _log_pttui_resource_info_queue(PttQueue *q, char *prompt);
+
 #ifdef __cplusplus
 }
 #endif

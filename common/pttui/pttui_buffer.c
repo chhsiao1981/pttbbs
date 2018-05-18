@@ -1481,6 +1481,8 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
 
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after buffer_info_to_resource_info: e: %d\n", error_code);
 
+    log_pttui_resource_info(&resource_info, "pttui_buffer.save_pttui_buffer_info_to_tmp_file");
+
     if(!error_code) {
         error_code = pttui_resource_info_to_resource_dict(&resource_info, &resource_dict);
     }

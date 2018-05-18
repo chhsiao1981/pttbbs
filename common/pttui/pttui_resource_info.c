@@ -62,3 +62,50 @@ pttui_resource_info_to_resource_dict(PttUIResourceInfo *resource_info, PttUIReso
 
     return S_OK;
 }
+
+Err
+log_pttui_resource_info(PttUIResourceInfo *resource_info, char *prompt)
+{
+    char prompt2[MAX_BUF_SIZE] = {};
+    PttQueue *p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_MAIN * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_MONGO];
+    sprintf(prompt2, "%s: main-db:", prompt);
+    _log_pttui_resource_info_queue(p_queue, prompt2);
+
+    PttQueue *p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_MAIN * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
+    sprintf(prompt2, "%s: main-file:", prompt);
+    _log_pttui_resource_info_queue(p_queue, prompt2);
+
+    char prompt2[MAX_BUF_SIZE] = {};
+    PttQueue *p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_MONGO];
+    sprintf(prompt2, "%s: comment-db:", prompt);
+    _log_pttui_resource_info_queue(p_queue, prompt2);
+
+    PttQueue *p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
+    sprintf(prompt2, "%s: comment-file:", prompt);
+    _log_pttui_resource_info_queue(p_queue, prompt2);
+
+    char prompt2[MAX_BUF_SIZE] = {};
+    PttQueue *p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT_REPLY * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_MONGO];
+    sprintf(prompt2, "%s: comment-reply-db:", prompt);
+    _log_pttui_resource_info_queue(p_queue, prompt2);
+
+    PttQueue *p_queue = &resource_info->queue[PTTDB_CONTENT_TYPE_COMMENT_REPLY * N_PTTDB_STORAGE_TYPE + PTTDB_STORAGE_TYPE_FILE];
+    sprintf(prompt2, "%s: comment-reply-file:", prompt);
+    _log_pttui_resource_info_queue(p_queue, prompt2);
+
+    return S_OK;
+}
+
+Err
+_log_pttui_resource_info_queue(PttQueue *q, char *prompt)
+{
+    PttLinkList *p = q->head;
+    int i = 0;
+    PttUIBuffer *p_buffer;
+    for(; p; p = p->next, i++) {
+        p_buffer = (PttUIBuffer *)p->val.p;
+        fprintf(stderr, "%s: (%d/%d) content_type: %d comment: %d block: %d line: %d file: %d\n", prompt, i, p->n_queue, p_buffer->content_type, p_buffer->comment_offset, p_buffer->block_offset, p_buffer->line_offset, p_buffer->file_offset);
+    }
+
+    return S_OK;
+}
