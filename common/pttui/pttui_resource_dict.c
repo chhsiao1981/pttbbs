@@ -304,6 +304,7 @@ _pttui_resource_dict_add_data(UUID the_id, int block_id, int file_id, int len, c
         for(; p->next; p = p->next) {
             if(!memcmp(p->the_id, the_id, UUIDLEN) && p->block_id == block_id && p->file_id == file_id) return S_OK;
         }
+        if(!memcmp(p->the_id, the_id, UUIDLEN) && p->block_id == block_id && p->file_id == file_id) return S_OK;
 
         p->next = malloc(sizeof(_PttUIResourceDictLinkList));
         p = p->next;
