@@ -247,6 +247,10 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
     }
     bson_append_array_end(q_array, &child);
 
+    char *str = bson_as_canonical_extended_json(q_array, NULL);
+    fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_get_comment_reply_from_db: max_n_middle: %d q_array: %s\n", max_n_middle, str);
+    bson_free(str);
+
     bson_t *q_middle = NULL;
     if(max_n_middle) {
         q_middle = BCON_NEW(
@@ -262,6 +266,9 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
         max_block_id = p_tail_buffer->block_offset;
 
         error_code = _pttui_resource_dict_get_content_block_from_db_core(tail_uuid, min_block_id, max_block_id, MONGO_COMMENT_REPLY_BLOCK, PTTDB_CONTENT_TYPE_COMMENT_REPLY, resource_dict);
+        char *disp_uuid = display_uuid(tail_uuid);        
+        fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_get_comment_reply_fom_db: tail: %s min_block_id: %d max_block_id: %d e: %d\n", disp_uuid, min_block_id, max_block_id, error_code);
+        free(disp_uuid);
     }
 
     //free
@@ -390,6 +397,12 @@ _pttui_resource_dict_get_content_block_from_db_core2(bson_t *q, int max_n_conten
 
     error_code = read_content_blocks_by_query_to_bsons(q, fields, max_n_content_block, mongo_db_id, b_content_blocks, &n_content_block);
 
+    char *q_str = bson_as_canonical_extended_json(q, NULL);
+    char *field_str = bson_as_canonical_extended_json(fields, NULL);
+    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_get_content_block_from_db_core2: q: %s fields: %s max_n_content_block: %d mongo_db_id: %d n_content_block: %d\n", q_str, field_str, max_n_content_block, mongo_db_id, n_content_block);
+    bson_free(q_str);
+    bson_free(field_str);
+
     if(!error_code) {
         error_code = _pttui_resource_dict_content_block_db_to_dict(b_content_blocks, n_content_block, content_type, resource_dict);
     }
@@ -457,6 +470,8 @@ _pttui_resource_dict_get_content_block_from_file_core(PttUIBuffer *buffer, PttUI
     char *buf = NULL;
     int len = 0;
     Err error_code = pttdb_file_get_data(resource_dict->main_id, buffer->content_type, buffer->the_id, buffer->block_offset, buffer->file_offset, &buf, &len);
+
+    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_get_content_block_from_file_core: content-type: %d comment: %d block: %d file: %d len: %d buf: %s e: %d\n", buffer->content_type, buffer->comment_offset, buffer->block_offset, buffer->file_offset, len, buf, error_code);
 
     error_code = _pttui_resource_dict_add_data(buffer->the_id, buffer->block_offset, buffer->file_offset, len, buf, buffer->content_type, resource_dict);
 
