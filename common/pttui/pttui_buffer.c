@@ -1345,7 +1345,6 @@ _modified_pttui_buffer_info_to_resource_info(PttUIBuffer *head, PttUIBuffer *tai
     PttUIBuffer *pre_buffer = NULL;
     for (PttUIBuffer *current_buffer = head; current_buffer && current_buffer != tail->next; current_buffer = current_buffer->next) {
         if(!current_buffer->is_modified) continue;
-        fprintf(stderr, "pttui_buffer._modified_pttui_buffer_info_to_resource_info: current: (content-type: %d block_offset: %d file_offset: %d)")
         if (pre_buffer &&
             current_buffer->content_type != PTTDB_CONTENT_TYPE_COMMENT &&
             pre_buffer->content_type == current_buffer->content_type &&
