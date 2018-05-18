@@ -609,15 +609,15 @@ _extend_pttui_buffer_extend_pre_buffer(FileInfo *file_info, PttUIBuffer *head_bu
     if (start_buffer->buf) start_buffer = start_buffer->pre;
 
     error_code = _pttui_buffer_info_to_resource_info(*new_head_buffer, start_buffer, &resource_info);
-    fprintf(stder, "pttui_buffer._extend_pttui_buffer_extend_pre_buffer: after buffer-info to resource_info: e: %d\n", error_code);
+    fprintf(stderr, "pttui_buffer._extend_pttui_buffer_extend_pre_buffer: after buffer-info to resource_info: e: %d\n", error_code);
 
     if (!error_code) {
         error_code = pttui_resource_info_to_resource_dict(&resource_info, &resource_dict);
     }
 
-    fprintf(stder, "pttui_buffer._extend_pttui_buffer_extend_pre_buffer: after resource_info to resource-dict: e: %d\n", error_code);
+    fprintf(stderr, "pttui_buffer._extend_pttui_buffer_extend_pre_buffer: after resource_info to resource-dict: e: %d\n", error_code);
 
-    log_pttui_resource_dict("pttui_buffer._extend_pttui_buffer_extend_pre_buffer: resource_dict");
+    log_pttui_resource_dict(&resource_dict, "pttui_buffer._extend_pttui_buffer_extend_pre_buffer: resource_dict");
 
     if (!error_code) {
         error_code = _pttui_buffer_info_set_buf_from_resource_dict(*new_head_buffer, start_buffer, &resource_dict);
