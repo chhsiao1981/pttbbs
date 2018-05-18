@@ -790,6 +790,7 @@ _save_file_info_to_db_comment_reply_is_all_whitespace(UUID main_id, UUID comment
     int len = 0;
     bool is_end = false;
     *is_all_whitespace = true;
+    int n_file = 0;
     for(int i = 0; i < n_comment_reply_block; i++, p_content_block++) {
         n_file = p_content_block->n_file;
         for(int j = 0; j < n_file; j++) {
