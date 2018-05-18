@@ -1549,7 +1549,7 @@ _vedit3_action_concat_next_line()
     PttUIBuffer *current_buffer = VEDIT3_EDITOR_STATUS.current_buffer;
 
     int n_line = 0;
-    error_code = file_info_get_n_line(&PTTUI_FILE_INFO, current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset);
+    error_code = file_info_get_n_line(&PTTUI_FILE_INFO, current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset, &n_line);
     if(error_code) return error_code;
 
     fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: buffer: (content_type: %d comment: %d block: %d line: %d file: %d load_line_next_offset: %d) n_line: %d\n", current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset, current_buffer->line_offset, current_buffer->file_offset, current_buffer->load_line_next_offset, n_line);
