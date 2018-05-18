@@ -4,37 +4,150 @@
 Err
 file_info_is_first_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, bool *is_first_block)
 {
+    ContentBlockInfo *p_content = NULL;
+    Err error_code = file_info_get_content_block(file_info, content_type, comment_offset, block_offset, &p_content);
+    if(error_code) return error_code;
 
+    return _file_info_is_first_block_core(file_info, p_content, block_offset, is_first_block);
+}
+
+Err
+_file_info_is_first_block_core(FileInfo *file_info, ContentBlockInfo *content, int block_offset, bool *is_first_block)
+{
+    if(!block_offset) {
+        *is_first_block = true;
+        return S_OK;
+    }
+
+    ContentBlockInfo *p_content = content - 1;
+    for(int i = block_offset - 1; i >= 0; i--, p_content--) {
+        if(p_content->n_line) {
+            *is_first_block = false;
+            return S_OK;
+        }
+    }
+
+    *is_first_block = true;
+    return S_OK;
 }
 
 Err
 file_info_is_last_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, bool *is_last_block)
 {
+    ContentBlockInfo *p_content = NULL;
+    Err error_code = file_info_get_content_block(file_info, content_type, comment_offset, block_offset, &p_content);
+    if(error_code) return error_code;
 
+    int n_block = 0;
+    error_code = file_info_get_n_content_block(file_info, content_type, comment_offset, &n_block);
+
+    return _file_info_is_last_block_core(file_info, p_content, block_offset, n_block, is_first_block);
+}
+
+Err
+_file_info_is_last_block_core(FileInfo *file_info, ContentBlockInfo *content, int block_offset, int n_block, bool *is_last_block)
+{
+    if(block_offset == n_block - 1) {
+        *is_last_block = true;
+        return S_OK;
+    }
+
+    ContentBlockInfo *p_content = content + 1;
+    for(int i = block_offset + 1; i < n_block; i++, p_content++) {
+        if(p_content->n_line) {
+            *is_last_block = false;
+            return S_OK;
+        }
+    }
+
+    *is_last_block = true;
+    return S_OK;
 }
 
 Err
 file_info_pre_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int *new_block_offset)
 {
+    if(block_offset == 0) return S_ERR_NOT_EXISTS;
 
+    ContentBlockInfo *p_content = NULL;
+    error_code = file_info_get_content_block(file_info, content_type, comment_offset, block_offset, &p_content);
+    if(error_code) return error_code;
+
+    p_content--;
+    for(int i = block_offset - 1; i >= 0; i--, p_content--) {
+        if(p_content->n_line) {
+            *new_block_offset = i;
+            return S_OK;
+        }
+    }
+
+    return S_ERR_NOT_EXISTS;
 }
 
 Err
 file_info_next_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int *new_block_offset)
 {
+    int n_block = 0;
+    Err error_code = file_info_get_n_content_block(file_info, content_type, comment_offset, &n_block);
+    if(error_code) return error_code;
 
+    if(block_offset == n_block - 1) return S_ERR_NOT_EXISTS;
+
+    ContentBlockInfo *p_content = NULL;
+    error_code = file_info_get_content_block(file_info, content_type, comment_offset, 0, &p_content);
+    if(error_code) return error_code;
+
+    p_content++;
+    for(int i = block_offset + 1; i < n_block; i++, p_content++) {
+        if(p_content->n_line) {
+            *new_block_offset = i;
+            return S_OK;
+        }
+    }
+
+    return S_ERR_NOT_EXISTS;
 }
 
 Err
 file_info_first_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int *new_block_offset)
 {
+    int n_block = 0;
+    Err error_code = file_info_get_n_content_block(file_info, content_type, comment_offset, &n_block);
+    if(error_code) return error_code;
 
+    ContentBlockInfo *p_content = NULL;
+    error_code = file_info_get_content_block(file_info, content_type, comment_offset, 0, &p_content);
+    if(error_code) return error_code;
+
+    for(int i = 0; i < n_block; i++, p_content++) {
+        if(p_content->n_line) {
+            *new_block_offset = i;
+            return S_OK;
+        }
+    }
+
+    return S_ERR_NOT_EXISTS;
 }
 
 Err
 file_info_last_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int *new_block_offset)
 {
+    int n_block = 0;
+    Err error_code = file_info_get_n_content_block(file_info, content_type, comment_offset, &n_block);
+    if(error_code) return error_code;
 
+    ContentBlockInfo *p_content = NULL;
+    error_code = file_info_get_content_block(file_info, content_type, comment_offset, n_block - 1, &p_content);
+    if(error_code) return error_code;
+
+    for(int i = n_block - 1; i >= 0; i--, p_content--) {
+        if(p_content->n_line) {
+            *new_block_offset = i;
+            return S_OK;
+        }
+    }
+
+    return S_ERR_NOT_EXISTS;
 }
 
 bool file_info_is_first_line_ne(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int line_offset)
@@ -185,20 +298,38 @@ Err
 file_info_get_content_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, ContentBlockInfo **content_block)
 {
     CommentInfo *p_comment = NULL;
-    ContentBlockInfo *p_content = NULL;
     switch(content_type) {
     case PTTDB_CONTENT_TYPE_MAIN:
-        p_content = file_info->main_blocks + block_offset;
+        *content_block = file_info->main_blocks + block_offset;
         break;
     case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
         p_comment = file_info->comments + comment_offset;
-        p_content = p_comment->comment_reply_blocks + block_offset;
+        *content_block = p_comment->comment_reply_blocks + block_offset;
         break;
     default:
+        *content_block = NULL;
         break;
     }
 
-    *content_block = p_content;
+    return S_OK;
+}
+
+Err
+file_info_get_n_block(FileInfo *file_info, enum PttDBContentType content_type, int comment_offset, int block_offset, int *n_block)
+{
+    CommentInfo *p_comment = NULL;
+    switch(content_type) {
+    case PTTDB_CONTENT_TYPE_MAIN:
+        *n_block = file_info->n_main_block;
+        break;
+    case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
+        p_comment = file_info->comments + comment_offset;
+        *n_block = p_comment->n_comment_reply_block;
+        break;
+    default:
+        *n_block = 0;
+        break;
+    }
 
     return S_OK;
 }

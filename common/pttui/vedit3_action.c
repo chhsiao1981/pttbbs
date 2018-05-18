@@ -475,7 +475,7 @@ vedit3_action_comment_init_comment_reply()
 
     CommentInfo *p_comment = PTTUI_FILE_INFO.comments + comment_offset;
 
-    if(p_comment->n_comment_reply_block) {
+    if(p_comment->n_comment_reply_total_line) {
         return vedit3_action_move_down();
     }
 
@@ -491,23 +491,31 @@ vedit3_action_comment_init_comment_reply()
     // file-info
     if(!error_code) {
         // XXX hack for the temporary comment-reply-id
-        memcpy(p_comment->comment_reply_id, p_comment->comment_id, UUIDLEN);
-        zero_comment_reply_id = p_comment->comment_id[0];
-        p_comment->comment_reply_id[0] = zero_comment_reply_id == 255 ? 0 : zero_comment_reply_id + 1;
+        if(!p_comment->n_comment_reply_block) {
+            memcpy(p_comment->comment_reply_id, p_comment->comment_id, UUIDLEN);
+            zero_comment_reply_id = p_comment->comment_id[0];
+            p_comment->comment_reply_id[0] = zero_comment_reply_id == 255 ? 0 : zero_comment_reply_id + 1;
+
+            p_comment->n_comment_reply_block = 1;
+            p_comment->comment_reply_blocks = malloc(sizeof(ContentBlockInfo));
+            bzero(p_comment->comment_reply_blocks, sizeof(ContentBlockInfo));
+        }
 
         p_comment->n_comment_reply_total_line = 1;
-        p_comment->n_comment_reply_block = 1;
-
-        p_comment->comment_reply_blocks = malloc(sizeof(ContentBlockInfo));
-        bzero(p_comment->comment_reply_blocks, sizeof(ContentBlockInfo));
 
         p_comment_reply = p_comment->comment_reply_blocks;
+
+        if(!p_comment_reply->n_file) {
+            p_comment_reply->n_file = 1;
+            p_comment_reply->file_n_line = malloc(sizeof(int));
+        }
+
+        p_comment_reply->storage_type = PTTDB_STORAGE_TYPE_FILE;
+
+        p_comment_reply->file_n_line[0] = 1;
+
         p_comment_reply->n_line = 1;
         p_comment_reply->n_line_in_db = 1;
-        p_comment_reply->storage_type = PTTDB_STORAGE_TYPE_FILE;
-        p_comment_reply->n_file = 1;
-        p_comment_reply->file_n_line = malloc(sizeof(int));
-        p_comment_reply->file_n_line[0] = 1;
 
         PTTUI_FILE_INFO.n_total_line++;
     }
