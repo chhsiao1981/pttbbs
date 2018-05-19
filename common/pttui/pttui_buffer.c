@@ -408,7 +408,7 @@ _pttui_buffer_init_buffer_no_buf_from_file_info(PttUIState *state, FileInfo *fil
     Err error_code = S_OK;
     CommentInfo *p_comment_info = NULL;
     ContentBlockInfo *p_content_block = NULL;
-    Err error_code2 = file_info_get_content_block(file_info, tmp->content_type, tmp->comment_offset, tmp->block_offset, &p_content_block);
+    Err error_code2 = file_info_get_content_block(file_info, p_buffer->content_type, p_buffer->comment_offset, p_buffer->block_offset, &p_content_block);
 
     // storage
     if(!error_code2) {
