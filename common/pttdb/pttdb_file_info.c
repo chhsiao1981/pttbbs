@@ -880,7 +880,7 @@ _file_info_get_next_line_main(FileInfo *file_info, UUID orig_id, enum PttDBConte
     Err error_code = file_info_is_last_block(file_info, orig_content_type, orig_comment_offset, orig_block_offset, &is_last_block);
 
     CommentInfo *p_comment = NULL;
-    if (is_last_block) {
+    if (is_last_block && orig_line_offset == p_content_block->n_line - 1) {
         p_comment = file_info->comments;
         memcpy(new_id, p_comment->comment_id, UUIDLEN);
         *new_content_type = PTTDB_CONTENT_TYPE_COMMENT;
