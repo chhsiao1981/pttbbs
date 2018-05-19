@@ -1554,7 +1554,7 @@ _vedit3_action_concat_next_line()
 
     fprintf(stderr, "vedit3_action._vedit3_action_concat_next_line: buffer: (content_type: %d comment: %d block: %d line: %d file: %d load_line_next_offset: %d) n_line: %d\n", current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset, current_buffer->line_offset, current_buffer->file_offset, current_buffer->load_line_next_offset, n_line);
 
-    if(file_info_is_last_block_ne(&PTTUI_FILE_INFO, current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset) && n_line == 1) return S_OK;
+    if(file_info_is_last_block_ne(&PTTUI_FILE_INFO, current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset) && current_buffer->line_offset == n_line - 1) return S_OK;
 
     PttUIBuffer *p_next_buffer = pttui_buffer_next_ne(current_buffer, PTTUI_BUFFER_INFO.tail);
 
