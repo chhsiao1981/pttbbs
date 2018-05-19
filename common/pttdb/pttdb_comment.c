@@ -984,7 +984,7 @@ _dynamic_read_b_comment_comment_reply_by_ids_to_file_comment_reply_core(UUID com
         "block_id", BCON_INT32(idx)
         );
 
-    bson_t *b_comment_reply_block = NULL;    
+    bson_t *b_comment_reply_block = NULL;
     error_code = db_find_one(MONGO_COMMENT_REPLY_BLOCK, key, NULL, &b_comment_reply_block);
 
     int len = 0;
@@ -1484,10 +1484,12 @@ update_comment_from_comment_info(UUID main_id, CommentInfo *comment_info, char *
 
     if (!error_code) {
         error_code = db_update_one(MONGO_COMMENT, comment_id_bson, comment_bson, false);
-    }    
+    }
 
     // free
     safe_free((void **)&tmp_buf);
     bson_safe_destroy(&comment_bson);
     bson_safe_destroy(&comment_id_bson);
+
+    return S_OK;
 }

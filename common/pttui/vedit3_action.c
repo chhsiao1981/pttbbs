@@ -998,7 +998,7 @@ vedit3_action_move_pgdn()
     VEDIT3_EDITOR_STATUS.current_line = i;
     VEDIT3_EDITOR_STATUS.current_buffer_line += n_next_line;
 
-    log_pttdb_file_info(&PTTUI_FILE_INFO, "vedit3_action.vedit3_action_move_pgdn: file_info");
+    log_file_info(&PTTUI_FILE_INFO, "vedit3_action.vedit3_action_move_pgdn: file_info");
     log_pttui_buffer_info(&PTTUI_BUFFER_INFO, "vedit3_action.vedit3_action_move_pgdn: buffer_info");
 
     Err error_code2 = vedit3_repl_unlock_buffer_info();
