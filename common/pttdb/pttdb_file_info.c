@@ -1167,7 +1167,7 @@ log_file_info(FileInfo *file_info, char *prompt)
         }
 
     }
-    fprintf(stderr, "%s: n-total-line: %d\n", file_info->n_total_line);
+    fprintf(stderr, "%s: n-total-line: %d\n", prompt, file_info->n_total_line);
 
     return S_OK;
 }
