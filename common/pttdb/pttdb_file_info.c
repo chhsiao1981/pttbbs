@@ -753,6 +753,7 @@ _file_info_get_pre_line_main(FileInfo *file_info, UUID orig_id, enum PttDBConten
     }
     else {
         error_code = file_info_pre_block(file_info, orig_content_type, orig_comment_offset, orig_block_offset, new_block_offset);
+        fprintf(stderr, "file_info._file_info_get_pre_line_main: after pre_block: orig: (content_type: %d comment: %d block: %d new_block: %d e: %d\n", orig_content_type, orig_comment_offset, orig_block_offset, *new_block_offset, error_code);
         if(error_code) return error_code;
 
         p_content_block = file_info->main_blocks + *new_block_offset;
