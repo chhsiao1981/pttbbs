@@ -929,8 +929,12 @@ _vedit3_action_move_pgup_get_expected_top_line_buffer(VEdit3EditorStatus *editor
             fprintf(stderr, "vedit3_action._vedit3_action_move_pgup_get_expected_top_line_buffer: (%d/%d) after is_first_line: (content_type: %d comment: %d block: %d line: %d) is_first_line: %d\n", i, tmp_n_pre_line, tmp_buffer.content_type, tmp_buffer.comment_offset, tmp_buffer.block_offset, tmp_buffer.line_offset, is_first_line);
             if(error_code) break;
             if(is_first_line) break;
-            error_code = file_info_get_pre_line(file_info, tmp_buffer.the_id, tmp_buffer.content_type, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer.comment_offset, tmp_buffer2.the_id, &tmp_buffer2.content_type, &tmp_buffer2.block_offset, &tmp_buffer2.line_offset, &tmp_buffer2.comment_offset, &tmp_buffer2.storage_type);
-            fprintf(stderr, "vedit3_action._vedit3_action_move_pgup_get_expected_top_line_buffer: (%d/%d) after get_pre_line: (content_type: %d comment: %d block: %d line: %d) new: (content_type: %d comment: %d block: %d line: %d)\n", i, tmp_n_pre_line, tmp_buffer.content_type, tmp_buffer.comment_offset, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer2.content_type, tmp_buffer2.comment_offset, tmp_buffer2.block_offset, tmp_buffer2.line_offset);
+            error_code = file_info_get_pre_line(file_info, tmp_buffer.the_id,
+                tmp_buffer.content_type, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer.comment_offset,
+                tmp_buffer2.the_id,
+                &tmp_buffer2.content_type, &tmp_buffer2.block_offset, &tmp_buffer2.line_offset, &tmp_buffer2.comment_offset,
+                &tmp_buffer2.storage_type);
+            fprintf(stderr, "vedit3_action._vedit3_action_move_pgup_get_expected_top_line_buffer: (%d/%d) after get_pre_line: (content_type: %d comment: %d block: %d line: %d) new: (content_type: %d comment: %d block: %d line: %d) e: %d\n", i, tmp_n_pre_line, tmp_buffer.content_type, tmp_buffer.comment_offset, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer2.content_type, tmp_buffer2.comment_offset, tmp_buffer2.block_offset, tmp_buffer2.line_offset, error_code);
             if(error_code) break;
 
             memcpy(&tmp_buffer, &tmp_buffer2, sizeof(PttUIBuffer));
