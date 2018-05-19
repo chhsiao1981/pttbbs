@@ -143,6 +143,8 @@ sync_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIBuffer *current_buffer
         error_code = _sync_pttui_buffer_info_get_buffer(state, current_buffer, tmp_is_pre, new_buffer, buffer_info);
     }
 
+    fprintf(stderr, "pttui_buffer.sync_pttui_buffer_info after get buffer: new_buffer: %lu e: %d\n", new_buffer, error_code);
+
     Err error_code_lock = pttui_buffer_unlock_buffer_info();
     if(!error_code && error_code_lock) error_code = error_code_lock;
 
@@ -150,6 +152,8 @@ sync_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIBuffer *current_buffer
 
     // found buffer in the current buffer-info
     if(*new_buffer) return S_OK;
+
+    fprintf(stderr, "pttui_buffer.sync_pttui_buffer_info to resync-all: e: %d\n", error_code);
 
     // not found buffer in the current buffer-info => resync-all
     return resync_all_pttui_buffer_info(buffer_info, state, file_info, new_buffer);
@@ -280,7 +284,12 @@ _sync_pttui_buffer_info_get_buffer(PttUIState *state, PttUIBuffer *current_buffe
 {
     PttUIBuffer *p_buffer = current_buffer;
 
-    fprintf(stderr, "pttui_buffer._sync_pttui_buffer_info_get_buffer: to-while: current_buffer: (content-type: %d comment: %d block: %d line: %d) is_pre: %d\n", current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset, current_buffer->line_offset, is_pre);
+    if(current_buffer) {
+        fprintf(stderr, "pttui_buffer._sync_pttui_buffer_info_get_buffer: to-while: current_buffer: (content-type: %d comment: %d block: %d line: %d) is_pre: %d\n", current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset, current_buffer->line_offset, is_pre);
+    }
+    else {
+        fprintf(stderr, "pttui_buffer._sync_pttui_buffer_info_get_buffer: to-while: current_buffer: NULL is_pre: %d\n", is_pre);
+    }
     while (p_buffer) {
         if (state->top_line_content_type == p_buffer->content_type &&
             state->top_line_block_offset == p_buffer->block_offset &&
@@ -319,9 +328,13 @@ resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, Fi
 
     // 1. save all buffer to tmp_file
 
+    fprintf(stderr, "pttui_buffer.resync_all: to save pttui-buffer-info-to-tmp-file\n");
+
     if(!error_code) {
         error_code = save_pttui_buffer_info_to_tmp_file(buffer_info, file_info);
     }
+
+    fprintf(stderr, "pttui_buffer.resync_all: after save pttui-buffer-info-to-tmp-file: e: %d\n", error_code);
 
     // 2. destroy buffer_info
     bool is_lock_wr_buffer_info = false;
@@ -339,6 +352,8 @@ resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, Fi
         error_code = destroy_pttui_buffer_info(buffer_info);
     }
 
+    fprintf(stderr, "pttui_buffer.resync_all: after destroy-pttui-buffer-info: e: %d\n", error_code);
+
     // 3. init-one-buf
     PttUIBuffer *tmp_buffer = NULL;
     PttUIBuffer *tmp_head = NULL;
@@ -349,6 +364,8 @@ resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, Fi
         error_code = _pttui_buffer_init_buffer_no_buf_from_file_info(state, file_info, &tmp_buffer);
     }
 
+    fprintf(stderr, "pttui_buffer.resync_all: after init buffer-no-buf-from-file-info: e: %d\n", error_code);
+
     if(!error_code) {
         n_buffer++;
         *new_buffer = tmp_buffer;
@@ -358,6 +375,8 @@ resync_all_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIState *state, Fi
     if(!error_code) {
         error_code = _extend_pttui_buffer(file_info, tmp_buffer, tmp_buffer, tmp_buffer, &tmp_head, &tmp_tail, &n_buffer, buffer_info);
     }
+
+    fprintf(stderr, "pttui_buffer.resync_all: after extend-pttui-buffer: e: %d\n", error_code);
 
     // 5. set to buffer-info
 

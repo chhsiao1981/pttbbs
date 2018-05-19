@@ -803,19 +803,24 @@ vedit3_action_move_down()
     // is end of file
     bool is_eof = false;
     error_code = pttui_buffer_is_eof(VEDIT3_EDITOR_STATUS.current_buffer, &PTTUI_FILE_INFO, &is_eof);
+    fprintf(stderr, "vedit3_action.vedit3_action_move_down: after is_eof: is_eof: %d e: %d\n", is_eof, error_code);
     if (error_code) return error_code;
     if (is_eof) return S_OK;
 
     // check end-of-window
     error_code = _vedit3_action_move_down_ensure_end_of_window();
+    fprintf(stderr, "vedit3_action.vedit3_action_move_down: after ensure end of window: e: %d\n", error_code);
     if (error_code) return error_code;
 
     // move next
     error_code = vedit3_repl_lock_buffer_info();
     if (error_code) return error_code;
 
+    fprintf(stderr, "vedit3_action.vedit3_action_move_down: to next-ne: e: %d\n", error_code);
+
     PttUIBuffer *next_buffer = pttui_buffer_next_ne(VEDIT3_EDITOR_STATUS.current_buffer, PTTUI_BUFFER_INFO.tail);
     if(!next_buffer) error_code = S_ERR;
+    fprintf(stderr, "vedit3_action.vedit3_action_move_down: after next-ne: e: %d\n", error_code);
     if(!error_code) {
         VEDIT3_EDITOR_STATUS.current_buffer = next_buffer;
     }
@@ -833,6 +838,8 @@ vedit3_action_move_down()
 
     Err error_code2 = _vedit3_action_ensure_current_col(VEDIT3_EDITOR_STATUS.current_col);
     if(!error_code && error_code2) error_code = error_code2;
+
+    fprintf(stderr, "vedit3_action.vedit3_action_move_down: after ensure-current-col: e: %d\n", error_code);
 
     return error_code;
 }
@@ -1517,7 +1524,7 @@ _vedit3_action_move_down_ensure_end_of_window()
     enum PttDBStorageType _dummy = PTTDB_STORAGE_TYPE_MONGO;
 
     Err error_code = file_info_get_next_line(&PTTUI_FILE_INFO, PTTUI_STATE.top_line_id, PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset, PTTUI_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
-    fprintf(stderr, "vedit3_action.file_info_get_next_line: orig-top-line: (content-type: %d comment: %d block: %d line: %d) new: (content-type: %d comment: %d block: %d line: %d)\n",
+    fprintf(stderr, "vedit3_action._vedit3_action_move_down_ensure_end_of_window: after file_info_get_next_line: orig-top-line: (content-type: %d comment: %d block: %d line: %d) new: (content-type: %d comment: %d block: %d line: %d)\n",
         PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_comment_offset, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset,
         new_content_type, new_block_offset, new_line_offset, new_comment_offset);
     if (error_code) return error_code;
