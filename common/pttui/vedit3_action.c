@@ -1055,7 +1055,7 @@ _vedit3_action_move_pgdn_get_expected_top_line_buffer(VEdit3EditorStatus *editor
             if(is_last_line) break;
 
             error_code = file_info_get_next_line(file_info, tmp_buffer.the_id, tmp_buffer.content_type, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer.comment_offset, tmp_buffer2.the_id, &tmp_buffer2.content_type, &tmp_buffer2.block_offset, &tmp_buffer2.line_offset, &tmp_buffer2.comment_offset, &tmp_buffer2.storage_type);
-            fprintf(stderr, "vedit3_action._vedit3_action_move_pgdn_get_expected_top_line_buffer: (%d/%d) after get_pre_line: (content_type: %d comment: %d block: %d line: %d) new: (content_type: %d comment: %d block: %d line: %d) e: %d\n", i, tmp_n_pre_line, tmp_buffer.content_type, tmp_buffer.comment_offset, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer2.content_type, tmp_buffer2.comment_offset, tmp_buffer2.block_offset, tmp_buffer2.line_offset, error_code);
+            fprintf(stderr, "vedit3_action._vedit3_action_move_pgdn_get_expected_top_line_buffer: (%d/%d) after get_next_line: (content_type: %d comment: %d block: %d line: %d) new: (content_type: %d comment: %d block: %d line: %d) e: %d\n", i, tmp_n_pre_line, tmp_buffer.content_type, tmp_buffer.comment_offset, tmp_buffer.block_offset, tmp_buffer.line_offset, tmp_buffer2.content_type, tmp_buffer2.comment_offset, tmp_buffer2.block_offset, tmp_buffer2.line_offset, error_code);
 
             if(error_code) break;
 
