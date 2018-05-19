@@ -180,6 +180,8 @@ _vedit3_init_file_info(UUID main_id)
 
     error_code = construct_file_info(main_id, &PTTUI_FILE_INFO);
 
+    log_file_info(&PTTUI_FILE_INFO, "vedit3._vedit3_init_file_info");
+
     Err error_code_lock = pttui_thread_lock_unlock(LOCK_PTTUI_FILE_INFO);
     if(!error_code && error_code_lock) error_code = error_code_lock;
 
@@ -512,6 +514,8 @@ vedit3_init_buffer()
 
     error_code = resync_all_pttui_buffer_info(&PTTUI_BUFFER_INFO, &expected_state, &PTTUI_FILE_INFO, &PTTUI_BUFFER_TOP_LINE);
     if (error_code) return error_code;
+
+    log_pttui_buffer_info(&PTTUI_BUFFER_INFO, "vedit3.vedit3_init_buffer");
 
     error_code = pttui_set_buffer_state(&expected_state);
 
