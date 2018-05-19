@@ -96,16 +96,16 @@ destroy_pttui_buffer_info(PttUIBufferInfo *buffer_info)
 Err
 pttui_buffer_is_begin_of_file(PttUIBuffer *buffer, FileInfo *file_info GCC_UNUSED, bool *is_begin)
 {
-    if (buffer->content_type == PTTDB_CONTENT_TYPE_MAIN &&
-        buffer->block_offset == 0 &&
-        buffer->line_offset == 0) {
-        *is_begin = true;
-    }
-    else {
-        *is_begin = false;
-    }
 
-    return S_OK;
+    Err error_code = pttui_buffer_rdlock_file_info();
+    if(error_code) return error_code;
+
+    error_code = file_info_is_first_line(file_info, buffer->content_type, buffer->comment_offset, buffer->block_offset, buffer->line_offset, is_begin);
+
+    Err error_code_lock = pttui_buffer_unlock_file_info();
+    if(!error_code && error_code_lock) error_code = error_code_lock;
+
+    return error_code;
 }
 
 Err
@@ -114,28 +114,7 @@ pttui_buffer_is_eof(PttUIBuffer *buffer, FileInfo *file_info, bool *is_eof)
     Err error_code = pttui_buffer_rdlock_file_info();
     if(error_code) return error_code;
 
-    if (!file_info->n_comment &&
-        buffer->block_offset == file_info->n_main_block - 1 &&
-        buffer->line_offset == file_info->main_blocks[buffer->block_offset].n_line - 1) {
-        *is_eof = true;
-    }
-    else if (file_info->n_comment &&
-        buffer->comment_offset == file_info->n_comment - 1 &&
-        buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT &&
-        file_info->comments[buffer->comment_offset].n_comment_reply_block == 0) {
-        *is_eof = true;
-    }
-    else if (file_info->n_comment &&
-        buffer->comment_offset == file_info->n_comment - 1 &&
-        buffer->content_type == PTTDB_CONTENT_TYPE_COMMENT_REPLY &&
-        file_info->comments[buffer->comment_offset].n_comment_reply_block &&
-        buffer->block_offset == file_info->comments[buffer->comment_offset].n_comment_reply_block - 1 &&
-        buffer->line_offset == file_info->comments[buffer->comment_offset].comment_reply_blocks[buffer->block_offset].n_line - 1) {
-        *is_eof = true;
-    }
-    else {
-        *is_eof = false;
-    }
+    error_code = file_info_is_last_line(file_info, buffer->content_type, buffer->comment_offset, buffer->block_offset, buffer->line_offset, is_eof);
 
     Err error_code_lock = pttui_buffer_unlock_file_info();
     if(!error_code && error_code_lock) error_code = error_code_lock;
