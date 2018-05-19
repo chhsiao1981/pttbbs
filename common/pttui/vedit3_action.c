@@ -1000,6 +1000,12 @@ vedit3_action_move_pgdn()
 
     log_file_info(&PTTUI_FILE_INFO, "vedit3_action.vedit3_action_move_pgdn: file_info");
     log_pttui_buffer_info(&PTTUI_BUFFER_INFO, "vedit3_action.vedit3_action_move_pgdn: buffer_info");
+    fprintf(stderr, "vedit3_action.current_buffer: (content-type: %d comment: %d block: %d line: %d load-line: (%d pre: %d next: %d) file: %d file-line: (%d pre: %d next: %d)) current_line: %d current_buffer_line: %d\n",
+        p_buffer->content_type, p_buffer->comment_offset, p_buffer->block_offset, p_buffer->line_offset,
+        p_buffer->load_line_offset, p_buffer->load_line_pre_offset, p_buffer->load_line_next_offset,
+        p_buffer->file_offset,
+        p_buffer->file_line_offset, p_buffer->file_line_pre_offset, p_buffer->file_line_next_offset, VEDIT3_EDITOR_STATUS.current_line, VEDIT3_EDITOR_STATUS.current_buffer_line
+        );
 
     Err error_code2 = vedit3_repl_unlock_buffer_info();
     if(!error_code && error_code2) error_code = error_code2;
