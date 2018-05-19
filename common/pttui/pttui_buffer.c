@@ -280,7 +280,8 @@ _sync_pttui_buffer_info_get_buffer(PttUIState *state, PttUIBuffer *current_buffe
 {
     PttUIBuffer *p_buffer = current_buffer;
 
-    while (p_buffer != NULL) {
+    fprintf("pttui_buffer._sync_pttui_buffer_info_get_buffer: to-while: current_buffer: (content-type: %d comment: %d block: %d line: %d) is_pre: %d\n", current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset, current_buffer->line_offset, is_pre);
+    while (p_buffer) {
         if (state->top_line_content_type == p_buffer->content_type &&
             state->top_line_block_offset == p_buffer->block_offset &&
             state->top_line_line_offset == p_buffer->line_offset &&
@@ -290,6 +291,7 @@ _sync_pttui_buffer_info_get_buffer(PttUIState *state, PttUIBuffer *current_buffe
 
         p_buffer = is_pre ? pttui_buffer_pre_ne(p_buffer, buffer_info->head) : pttui_buffer_next_ne(p_buffer, buffer_info->tail);
     }
+    fprintf("pttui_buffer._sync_pttui_buffer_info_get_buffer: after-while\n");
 
     *new_buffer = p_buffer;
 

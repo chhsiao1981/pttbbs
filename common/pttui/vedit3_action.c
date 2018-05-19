@@ -1517,6 +1517,9 @@ _vedit3_action_move_down_ensure_end_of_window()
     enum PttDBStorageType _dummy = PTTDB_STORAGE_TYPE_MONGO;
 
     Err error_code = file_info_get_next_line(&PTTUI_FILE_INFO, PTTUI_STATE.top_line_id, PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset, PTTUI_STATE.top_line_comment_offset, new_id, &new_content_type, &new_block_offset, &new_line_offset, &new_comment_offset, &_dummy);
+    fprintf(stderr, "vedit3_action.file_info_get_next_line: orig-top-line: (content-type: %d comment: %d block: %d line: %d) new: (content-type: %d comment: %d block: %d line: %d)\n",
+        PTTUI_STATE.top_line_content_type, PTTUI_STATE.top_line_comment_offset, PTTUI_STATE.top_line_block_offset, PTTUI_STATE.top_line_line_offset,
+        new_content_type, new_block_offset, new_line_offset, new_comment_offset);
     if (error_code) return error_code;
 
     error_code = pttui_set_expected_state(main_id, new_content_type, new_id, new_block_offset, new_line_offset, new_comment_offset, n_window_line);
