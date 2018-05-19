@@ -329,7 +329,7 @@ file_info_get_content_block(FileInfo *file_info, enum PttDBContentType content_t
         break;
     default:
         *content_block = NULL;
-        error_code = S_ERR;
+        error_code = S_ERR_NOT_EXISTS;
         break;
     }
 
