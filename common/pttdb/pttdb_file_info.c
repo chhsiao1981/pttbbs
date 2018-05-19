@@ -711,7 +711,7 @@ destroy_file_info(FileInfo *file_info)
 Err
 file_info_get_pre_line(FileInfo *file_info, UUID orig_id, enum PttDBContentType orig_content_type, int orig_block_offset, int orig_line_offset, int orig_comment_offset, UUID new_id, enum PttDBContentType *new_content_type, int *new_block_offset, int *new_line_offset, int *new_comment_offset, enum PttDBStorageType *new_storage_type)
 {
-    if(file_info_is_first_line_ne(file_info, orig_content_type, orig_block_offset, orig_line_offset, orig_comment_offset)) return S_ERR_NOT_EXISTS;
+    if(file_info_is_first_line_ne(file_info, orig_content_type, orig_comment_offset, orig_block_offset, orig_line_offset)) return S_ERR_NOT_EXISTS;
 
     Err (*p_func)(FileInfo *, UUID, enum PttDBContentType, int, int, int, UUID, enum PttDBContentType *, int *, int *, int *, enum PttDBStorageType *) = NULL;
 
