@@ -158,7 +158,7 @@ sync_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIBuffer *current_buffer
     if(error_code) return error_code;
 
     error_code = _sync_pttui_buffer_info_is_pre(state, current_buffer, &tmp_is_pre);
-    log_pttdb_file_info(&PTTUI_FILE_INFO, "vedit3_action.vedit3_action_move_pgdn: file_info after is_pre: tmp_is_pre: %d e: %d\n", tmp_is_pre, error_code);
+    fprintf(stderr, "pttui_buffer.sync_pttui_buffer_info after is_pre: tmp_is_pre: %d e: %d\n", tmp_is_pre, error_code);
 
     if(!error_code) {
         error_code = _sync_pttui_buffer_info_get_buffer(state, current_buffer, tmp_is_pre, new_buffer, buffer_info);
