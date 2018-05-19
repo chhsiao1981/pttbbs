@@ -4,7 +4,7 @@
 bool
 pttui_buffer_is_need_sync_ne(PttUIState *expected_state, PttUIState *current_state, PttUIBufferInfo *buffer_info, FileInfo *file_info)
 {
-    if(memcpy(expected_state, current_state, sizeof(PttUIState))) return true;
+    if(memcmp(expected_state, current_state, sizeof(PttUIState))) return true;
 
     int n_buffer = buffer_info->n_buffer - buffer_info->n_to_delete;
 
