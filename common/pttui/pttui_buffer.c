@@ -9,12 +9,10 @@ pttui_buffer_is_need_sync_ne(PttUIState *expected_state, PttUIState *current_sta
     int n_buffer = buffer_info->n_buffer - buffer_info->n_to_delete;
 
     if(n_buffer >= file_info->n_total_line) {
-        fprintf(stderr, "pttui_buffer.pttui_buffer_is_need_sync_ne: buffer-info n-buffer: %d file-info n-total-line: %d \n", n_buffer, file_info->n_total_line);
         return false;
     }
 
     if(n_buffer < N_EXTEND_PTTUI_BUFFER) {
-        fprintf(stderr, "pttui_buffer.pttui_buffer_is_need_sync_ne: buffer-info n-buffer: %d\n", n_buffer);
         return true;
     }
 
