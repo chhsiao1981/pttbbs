@@ -541,6 +541,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
     int max_buf_size = MAX_BUF_SIZE;
     char *tmp_buf = malloc(max_buf_size);
     int len_tmp_buf = 0;
+    tmp_buf[len_tmp_buf] = 0;
     int line_offset_tmp_buf = 0;
 
     _PttUIResourceDictLinkList *current_dict = NULL;
@@ -632,12 +633,13 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
         if (error_code) break;
     }
 
-    if(current_dict) {
+    if(!error_code && current_dict) {
         fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: after for-loop: to dict-last-buf: current_dict: (content-type: %d comment: %d block: %d file: %d)\n", current_dict->content_type, current_dict->comment_id, current_dict->block_id, current_dict->file_id);
         error_code = _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(current_dict, p_dict_buf, dict_buf_offset, len_dict_buf, line_offset_dict_buf, tmp_buf, max_buf_size, len_tmp_buf, line_offset_tmp_buf, file_info);
     }
 
-    fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info. to safe-free tmp-buf: e: %d tmp-buf: %s\n", error_code, tmp_buf ? tmp_buf : NULL);
+    fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info. to safe-free tmp-buf: e: %d tmp-buf: %s len_tmp_buf: %d max_buf_size: %d e: %d\n", error_code, tmp_buf ? tmp_buf : NULL, len_tmp_buf, max_buf_size, error_code);
+
     // free
     safe_free((void **)&tmp_buf);
 
@@ -657,17 +659,8 @@ _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(_Pt
     char *p_next_dict_buf = NULL;
     int dict_buf_next_offset = 0;
 
-    switch(the_dict->content_type) {
-    case PTTDB_CONTENT_TYPE_MAIN:
-        p_content = file_info->main_blocks + the_dict->block_id;
-        break;
-    case PTTDB_CONTENT_TYPE_COMMENT_REPLY:
-        p_comment = file_info->comments + the_dict->comment_id;
-        p_content = p_comment->comment_reply_blocks + the_dict->block_id;
-        break;
-    default:
-        break;
-    }
+    error_code = file_info_get_content_block(file_info, the_dict->content_type, the_dict->comment_id, the_dict->block_id, &p_content);
+
     int expected_n_line = p_content ? p_content->n_line : 0;
     int the_rest_line = expected_n_line - line_offset_tmp_buf;
 
