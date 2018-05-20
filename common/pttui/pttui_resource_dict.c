@@ -558,7 +558,6 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
 
         if(!current_dict || current_buffer->comment_offset != current_dict->comment_id || current_buffer->block_offset != current_dict->block_id || current_buffer->file_offset != current_dict->file_id || memcmp(current_buffer->the_id, current_dict->the_id, UUIDLEN)) {
             if(current_dict) {
-                fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: in for-loop: to dict-last-buf: current_dict: (content-type: %d comment: %d block: %d file: %d) currenet-buffer: (content-type: %d comment: %d block: %d file: %d) \n", current_dict->content_type, current_dict->comment_id, current_dict->block_id, current_dict->file_id, current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset, current_buffer->file_offset);
                 error_code = _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(current_dict, p_dict_buf, dict_buf_offset, len_dict_buf, line_offset_dict_buf, &tmp_buf, &max_buf_size, &len_tmp_buf, &line_offset_tmp_buf, file_info);
             }
 
@@ -635,17 +634,11 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
     }
 
     if(!error_code && current_dict) {
-        fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info. after for-loop: e: %d tmp-buf: %s len_tmp_buf: %d max_buf_size: %d e: %d\n", error_code, tmp_buf ? tmp_buf : NULL, len_tmp_buf, max_buf_size, error_code);
-        fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: after for-loop: to dict-last-buf: current_dict: (content-type: %d comment: %d block: %d file: %d)\n", current_dict->content_type, current_dict->comment_id, current_dict->block_id, current_dict->file_id);
         error_code = _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(current_dict, p_dict_buf, dict_buf_offset, len_dict_buf, line_offset_dict_buf, &tmp_buf, &max_buf_size, &len_tmp_buf, &line_offset_tmp_buf, file_info);
     }
 
-    fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info. to safe-free tmp-buf: e: %d tmp-buf: %s len_tmp_buf: %d max_buf_size: %d e: %d\n", error_code, tmp_buf ? tmp_buf : NULL, len_tmp_buf, max_buf_size, error_code);
-
     // free
     safe_free((void **)&tmp_buf);
-
-    fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info. after safe-free tmp-buf\n");
 
     return error_code;
 }
@@ -666,8 +659,6 @@ _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(_Pt
 
     int expected_n_line = p_content ? p_content->n_line : 0;
     int the_rest_line = expected_n_line - tmp_line_offset_tmp_buf;
-
-    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf: to for-loop: line_offset_dict_buf: %d line_offset_tmp_buf: %d tmp_buf: %s expected_n_line: %d the_rest_line: %d\n", line_offset_dict_buf, *line_offset_tmp_buf, *tmp_buf, expected_n_line, the_rest_line);
 
     for(int i = 0; i < the_rest_line && dict_buf_offset < len_dict_buf; i++) {
         error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
@@ -692,10 +683,6 @@ _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(_Pt
     memcpy(the_dict->buf, p_tmp_buf, tmp_len_tmp_buf);
     the_dict->buf[tmp_len_tmp_buf] = 0;
     the_dict->len = tmp_len_tmp_buf;
-
-    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf: after for-loop: tmp_buf: %s len_tmp_buf: %d max_buf_size: %d line_offset_tmp_buf: %d\n", *tmp_buf, *len_tmp_buf, *max_buf_size, *line_offset_tmp_buf);
-
-    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf: after for-loop: buf: %s len: %d\n", the_dict->buf, the_dict->len);
 
     return S_OK;
 }
