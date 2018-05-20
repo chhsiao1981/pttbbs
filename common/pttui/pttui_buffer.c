@@ -137,7 +137,7 @@ sync_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIBuffer *current_buffer
     if(error_code) return error_code;
 
     error_code = _sync_pttui_buffer_info_is_pre(state, current_buffer, &tmp_is_pre);
-    fprintf(stderr, "pttui_buffer.sync_pttui_buffer_info after is_pre: state: (content_type: %d comment: %d block: %d line: %d) current-buffer: (content_type: %d comment: %d block: %d line: %d) tmp_is_pre: %d e: %d\n", state->top_line_content_type, state->top_line_comment_offset, state->top_line_block_offset, state->top_line_line_offset, current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset, current_buffer->line_offset, tmp_is_pre, error_code);
+    fprintf(stderr, "pttui_buffer.sync_pttui_buffer_info after is_pre: state: (content_type: %d comment: %d block: %d line: %d) current-buffer: (content_type: %d comment: %d block: %d line: %d buf: %s) tmp_is_pre: %d e: %d\n", state->top_line_content_type, state->top_line_comment_offset, state->top_line_block_offset, state->top_line_line_offset, current_buffer->content_type, current_buffer->comment_offset, current_buffer->block_offset, current_buffer->line_offset, current_buffer->buf, tmp_is_pre, error_code);
 
     log_file_info(&PTTUI_FILE_INFO, "pttui_buffer.sync_pttui_buffer_info: file_info");
     log_pttui_buffer_info(&PTTUI_BUFFER_INFO, "pttui_buffer.sync_pttui_buffer_info: buffer_info");
