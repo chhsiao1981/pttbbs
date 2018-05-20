@@ -113,7 +113,7 @@ file_info_next_block(FileInfo *file_info, enum PttDBContentType content_type, in
     if(block_offset == n_block - 1) return S_ERR_NOT_EXISTS;
 
     ContentBlockInfo *p_content = NULL;
-    error_code = file_info_get_content_block(file_info, content_type, comment_offset, 0, &p_content);
+    error_code = file_info_get_content_block(file_info, content_type, comment_offset, block_offset, &p_content);
     if(error_code) return error_code;
 
     p_content++;
