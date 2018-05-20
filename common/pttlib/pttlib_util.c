@@ -1,6 +1,16 @@
 #include "cmpttlib/pttlib_util.h"
 
 Err
+safe_free(void **a)
+{
+    if(!(*a)) return S_OK;
+
+    free(*a);
+    *a = NULL;
+    return S_OK;
+}
+
+Err
 safe_strcat(char **buf, int *max_buf_size, int alloc_size, int *len_buf, char *new_buf, int len_new_buf)
 {
     int tmp_len_buf = *len_buf;

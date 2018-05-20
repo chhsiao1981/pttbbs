@@ -81,7 +81,7 @@ typedef struct Comment {
 
     int max_buf_len;                                 // max buf len
     int len;                                         // size
-    char *buf;                                       // buf    
+    char *buf;                                       // buf
 } Comment;
 
 Err create_comment(UUID main_id, char *poster, char *ip, int len, char *content, enum CommentType comment_type, UUID comment_id, time64_t create_milli_timestamp);

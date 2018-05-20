@@ -13,16 +13,18 @@ extern "C" {
 #include <errno.h>
 #include <ctype.h>
 #include <sys/types.h>
-#include <dirent.h>    
+#include <dirent.h>
 #include <string.h>
-#include <fcntl.h>    
-#include <unistd.h>  
+#include <fcntl.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 Err safe_strcat(char **buf, int *max_buf_size, int alloc_size, int *len_buf, char *new_buf, int len_new_buf);
 
 int Rmdir(char *dir, char *dir_prefix);
+
+Err safe_free(void **a);
 
 #ifdef __cplusplus
 }

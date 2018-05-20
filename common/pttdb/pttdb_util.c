@@ -1,15 +1,5 @@
 #include "cmpttdb/pttdb_util.h"
 
-Err
-safe_free(void **a)
-{
-    if(!(*a)) return S_OK;
-    
-    free(*a);
-    *a = NULL;
-    return S_OK;
-}
-
 /**
  * @brief Try to get a line (ending with \n) from buffer.
  * @details [long description]
@@ -45,7 +35,7 @@ get_line_from_buf(char *buf, int offset_buf, int buf_size, char *p_line, int off
         if (*p_buf == '\n') {
             *p_line = '\n';
             *bytes_in_new_line = i + 1;
- 
+
             return S_OK;
         }
 
@@ -64,7 +54,7 @@ get_line_from_buf(char *buf, int offset_buf, int buf_size, char *p_line, int off
 /**
  * @brief Count lines in the content (based on '\n')
  * @details Count lines in the content (based on '\n')
- * 
+ *
  * @param content [description]
  * @param len [description]
  * @param n_line n_line

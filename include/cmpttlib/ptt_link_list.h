@@ -16,7 +16,7 @@ typedef struct PttLinkList {
         void *p;
         int d;
     } val;
-} PttLinkList; 
+} PttLinkList;
 
 Err destroy_ptt_link_list(PttLinkList **p);
 
