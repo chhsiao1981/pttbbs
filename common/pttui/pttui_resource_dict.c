@@ -562,8 +562,9 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
                 error_code = _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(current_dict, p_dict_buf, dict_buf_offset, len_dict_buf, line_offset_dict_buf, tmp_buf, max_buf_size, len_tmp_buf, line_offset_tmp_buf, file_info);
             }
 
+            safe_free((void **)&tmp_buf);
             max_buf_size = MAX_BUF_SIZE;
-            tmp_buf = realloc(tmp_buf, max_buf_size);
+            tmp_buf = malloc(max_buf_size);
             len_tmp_buf = 0;
             tmp_buf[len_tmp_buf] = 0;
             line_offset_tmp_buf = 0;
