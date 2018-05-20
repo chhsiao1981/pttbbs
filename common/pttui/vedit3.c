@@ -65,6 +65,7 @@ vedit3_wrapper(const char *fpath, int saveheader, char title[TTLEN + 1], int fla
     error_code = migrate_file_to_pttdb(fpath, poster, board, title, origin, aid, web_link, create_milli_timestamp, main_id);
 
     error_code = vedit3(main_id, title, flags, &money);
+    fprintf(stderr, "vedit3.vedit3_wrapper: after vedit3: money: %d e: %d\n", money, error_code);
     if (error_code) return EDIT_ABORTED;
 
     error_code = migrate_pttdb_to_file(main_id, fpath);
