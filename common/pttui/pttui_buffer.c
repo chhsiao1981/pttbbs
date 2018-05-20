@@ -1136,6 +1136,10 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     if(!buffer_info->head) return S_OK;
 
     if(!error_code) {
+        error_code = pttui_buffer_wrlock_file_info(&is_lock_file_info);
+    }
+
+    if(!error_code) {
         error_code = pttui_buffer_lock_wr_buffer_info(&is_lock_wr_buffer_info);
     }
 
@@ -1161,10 +1165,6 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
 
     if(!error_code) {
         error_code = pttui_resource_info_to_resource_dict(&resource_info2, &resource_dict);
-    }
-
-    if(!error_code) {
-        error_code = pttui_buffer_wrlock_file_info(&is_lock_file_info);
     }
 
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: to integrate-with-to-deleete-buffer: e: %d\n", error_code);
@@ -1193,9 +1193,6 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
 
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: after reset-file-info: e: %d\n", error_code);
 
-    error_code_lock = pttui_buffer_wrunlock_file_info(is_lock_file_info);
-    if(!error_code && error_code_lock) error_code = error_code_lock;
-
     if(!error_code) {
         error_code = pttui_buffer_wrlock_buffer_info(&is_lock_buffer_info);
     }
@@ -1219,6 +1216,9 @@ save_pttui_buffer_info_to_tmp_file(PttUIBufferInfo *buffer_info, FileInfo *file_
     if(!error_code && error_code_lock) error_code = error_code_lock;
 
     error_code_lock = pttui_buffer_unlock_wr_buffer_info(is_lock_wr_buffer_info);
+    if(!error_code && error_code_lock) error_code = error_code_lock;
+
+    error_code_lock = pttui_buffer_wrunlock_file_info(is_lock_file_info);
     if(!error_code && error_code_lock) error_code = error_code_lock;
 
     fprintf(stderr, "pttui_buffer.save_pttui_buffer_info_to_tmp_file: e: %d\n", error_code);
