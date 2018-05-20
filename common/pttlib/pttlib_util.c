@@ -14,6 +14,7 @@ safe_strcat(char **buf, int *max_buf_size, int alloc_size, int *len_buf, char *n
     }
 
     *buf = p_buf;
+    *max_buf_size = tmp_max_buf_size;
 
     p_buf += tmp_len_buf;
 
