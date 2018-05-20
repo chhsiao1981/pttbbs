@@ -93,7 +93,7 @@ pttui_resource_dict_get_comment_from_db(PttQueue *queue, PttUIResourceDict *reso
     bson_t *q_array = bson_new();
 
     PttUIBuffer *p_buffer = NULL;
-    BSON_APPEND_ARRAY_BEGIN(q_array, "$in", &child);    
+    BSON_APPEND_ARRAY_BEGIN(q_array, "$in", &child);
     int i = 0;
     int status = 0;
     PttLinkList *p = queue->head;
@@ -211,7 +211,7 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
         if(memcmp(head_uuid, p_buffer->the_id, UUIDLEN)) break;
         p_pre_buffer = p_buffer;
 
-    }    
+    }
 
     int min_block_id = p_head_buffer->block_offset;
     int max_block_id = p_pre_buffer->block_offset;
@@ -227,7 +227,7 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
     q_array = bson_new();
     BSON_APPEND_ARRAY_BEGIN(q_array, "$in", &child);
     UUID pre_uuid = {};
-    int i = 0;    
+    int i = 0;
     int status = 0;
     for(; p; p = p->next, max_n_middle++, i++) {
         p_buffer = (PttUIBuffer *)p->val.p;
@@ -243,7 +243,7 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
         if (!status) {
             error_code = S_ERR;
             break;
-        }        
+        }
     }
     bson_append_array_end(q_array, &child);
 
@@ -266,7 +266,7 @@ pttui_resource_dict_get_comment_reply_from_db(PttQueue *queue, PttUIResourceDict
         max_block_id = p_tail_buffer->block_offset;
 
         error_code = _pttui_resource_dict_get_content_block_from_db_core(tail_uuid, min_block_id, max_block_id, MONGO_COMMENT_REPLY_BLOCK, PTTDB_CONTENT_TYPE_COMMENT_REPLY, resource_dict);
-        char *disp_uuid = display_uuid(tail_uuid);        
+        char *disp_uuid = display_uuid(tail_uuid);
         fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_get_comment_reply_fom_db: tail: %s min_block_id: %d max_block_id: %d e: %d\n", disp_uuid, min_block_id, max_block_id, error_code);
         free(disp_uuid);
     }
@@ -362,14 +362,14 @@ pttui_resource_dict_get_link_list(PttUIResourceDict *resource_dict, UUID the_id,
 
 Err
 _pttui_resource_dict_get_content_block_from_db_core(UUID uuid, int min_block_id, int max_block_id, enum MongoDBId mongo_db_id, enum PttDBContentType content_type, PttUIResourceDict *resource_dict)
-{    
+{
     Err error_code = S_OK;
     bson_t *q = BCON_NEW(
         "the_id", BCON_BINARY(uuid, UUIDLEN),
         "block_id", "{",
             "$gte", BCON_INT32(min_block_id),
             "$lte", BCON_INT32(max_block_id),
-        "}"        
+        "}"
         );
 
     int max_n_content_block = max_block_id - min_block_id + 1;
@@ -438,7 +438,7 @@ pttui_resource_dict_get_main_from_file(PttQueue *queue, PttUIResourceDict *resou
 
 Err
 pttui_resource_dict_get_comment_from_file(PttQueue *queue, PttUIResourceDict *resource_dict GCC_UNUSED)
-{    
+{
     if(!queue->n_queue) return S_OK;
 
     return S_ERR;
@@ -481,7 +481,7 @@ _pttui_resource_dict_get_content_block_from_file_core(PttUIBuffer *buffer, PttUI
     error_code = _pttui_resource_dict_add_data(buffer->the_id, buffer->block_offset, buffer->file_offset, len, buf, buffer->content_type, resource_dict);
 
     // do not free buf because buf is used in resource_dict and freed in safe_destroy_resource_dict .
-    //safe_free((void **)&buf); 
+    //safe_free((void **)&buf);
 
     return error_code;
 }
@@ -529,11 +529,11 @@ _pttui_resource_dict_save_to_tmp_file(_PttUIResourceDictLinkList *dict_link_list
 /**
  * @brief [brief description]
  * @details ref: _modified_pttui_buffer_info_to_resource_info in pttui_buffer.c
- * 
+ *
  * @param head [description]
  * @param tail [description]
  * @param resource_dict [description]
- */ 
+ */
 Err
 pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head, PttUIBuffer *tail, PttUIResourceDict *resource_dict, FileInfo *file_info)
 {
@@ -547,7 +547,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
     char *p_dict_buf = NULL;
     int len_dict_buf = 0;
     int dict_buf_offset = 0;
-    int line_offset_dict_buf = 0;    
+    int line_offset_dict_buf = 0;
 
     char *p_next_dict_buf = NULL;
     int dict_buf_next_offset = 0;
@@ -592,7 +592,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             // 3. move the current-buf to the next-buf
             p_dict_buf = p_next_dict_buf;
             dict_buf_offset = dict_buf_next_offset;
-            line_offset_dict_buf++;            
+            line_offset_dict_buf++;
         }
 
         if(current_buffer->is_to_delete && current_buffer->is_new) {
@@ -609,7 +609,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
             error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, current_buffer->buf, current_buffer->len_no_nl);
 
             error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, PTTUI_NEWLINE, LEN_PTTUI_NEWLINE);
-            
+
             line_offset_tmp_buf++;
         }
         else {
@@ -621,7 +621,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
 
             error_code = safe_strcat(&tmp_buf, &max_buf_size, MAX_BUF_SIZE, &len_tmp_buf, PTTUI_NEWLINE, LEN_PTTUI_NEWLINE);
             line_offset_tmp_buf++;
-            
+
             // 3. move the current-buf to the next-buf.
             p_dict_buf = p_next_dict_buf;
             dict_buf_offset = dict_buf_next_offset;
@@ -631,12 +631,15 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
         if (error_code) break;
     }
 
-    if(current_dict) { 
+    if(current_dict) {
         error_code = _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(current_dict, p_dict_buf, dict_buf_offset, len_dict_buf, line_offset_dict_buf, tmp_buf, max_buf_size, len_tmp_buf, line_offset_tmp_buf, file_info);
     }
 
+    fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info. to safe-free tmp-buf: e: %d tmp-buf: %s\n", error_code, tmp_buf ? tmp_buf : NULL);
     // free
     safe_free((void **)&tmp_buf);
+
+    fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info. after safe-free tmp-buf\n");
 
     return error_code;
 }
