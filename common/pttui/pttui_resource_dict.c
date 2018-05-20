@@ -654,7 +654,6 @@ _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(_Pt
 {
     Err error_code = S_OK;
 
-    CommentInfo *p_comment = NULL;
     ContentBlockInfo *p_content = NULL;
 
     char *p_next_dict_buf = NULL;
