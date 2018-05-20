@@ -665,9 +665,9 @@ _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(_Pt
     error_code = file_info_get_content_block(file_info, the_dict->content_type, the_dict->comment_id, the_dict->block_id, &p_content);
 
     int expected_n_line = p_content ? p_content->n_line : 0;
-    int the_rest_line = expected_n_line - line_offset_tmp_buf;
+    int the_rest_line = expected_n_line - tmp_line_offset_tmp_buf;
 
-    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf: to for-loop: line_offset_dict_buf: %d line_offset_tmp_buf: %d tmp_buf: %s expected_n_line: %d the_rest_line: %d\n", line_offset_dict_buf, line_offset_tmp_buf, tmp_buf, expected_n_line, the_rest_line);
+    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf: to for-loop: line_offset_dict_buf: %d line_offset_tmp_buf: %d tmp_buf: %s expected_n_line: %d the_rest_line: %d\n", line_offset_dict_buf, *line_offset_tmp_buf, *tmp_buf, expected_n_line, the_rest_line);
 
     for(int i = 0; i < the_rest_line && dict_buf_offset < len_dict_buf; i++) {
         error_code = pttui_resource_dict_get_next_buf(p_dict_buf, dict_buf_offset, len_dict_buf, &p_next_dict_buf, &dict_buf_next_offset);
