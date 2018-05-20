@@ -539,7 +539,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
 {
     Err error_code = S_OK;
     int max_buf_size = MAX_BUF_SIZE;
-    char *tmp_buf = malloc(max_buf_size);
+    char *tmp_buf = malloc(max_buf_size + 1);
     int len_tmp_buf = 0;
     tmp_buf[len_tmp_buf] = 0;
     int line_offset_tmp_buf = 0;
@@ -564,7 +564,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
 
             safe_free((void **)&tmp_buf);
             max_buf_size = MAX_BUF_SIZE;
-            tmp_buf = malloc(max_buf_size);
+            tmp_buf = malloc(max_buf_size + 1);
             len_tmp_buf = 0;
             tmp_buf[len_tmp_buf] = 0;
             line_offset_tmp_buf = 0;
@@ -635,6 +635,7 @@ pttui_resource_dict_integrate_with_modified_pttui_buffer_info(PttUIBuffer *head,
     }
 
     if(!error_code && current_dict) {
+        fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info. after for-loop: e: %d tmp-buf: %s len_tmp_buf: %d max_buf_size: %d e: %d\n", error_code, tmp_buf ? tmp_buf : NULL, len_tmp_buf, max_buf_size, error_code);
         fprintf(stderr, "pttui_resource_dict.pttui_resource_dict_integrate_with_modified_pttui_buffer_info: after for-loop: to dict-last-buf: current_dict: (content-type: %d comment: %d block: %d file: %d)\n", current_dict->content_type, current_dict->comment_id, current_dict->block_id, current_dict->file_id);
         error_code = _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(current_dict, p_dict_buf, dict_buf_offset, len_dict_buf, line_offset_dict_buf, tmp_buf, max_buf_size, len_tmp_buf, line_offset_tmp_buf, file_info);
     }
@@ -685,7 +686,9 @@ _pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf(_Pt
     the_dict->buf[len_tmp_buf] = 0;
     the_dict->len = len_tmp_buf;
 
-    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf: after for-loop: buf: %s\n", the_dict->buf);
+    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf: after for-loop: tmp_buf: %s len_tmp_buf: %d\n", tmp_buf, len_tmp_buf);
+
+    fprintf(stderr, "pttui_resource_dict._pttui_resource_dict_integrate_with_modified_pttui_buffer_info_dict_last_buf: after for-loop: buf: %s len: %d\n", the_dict->buf, the_dict->len);
 
     return S_OK;
 }
