@@ -7,10 +7,16 @@ safe_strcat(char **buf, int *max_buf_size, int alloc_size, int *len_buf, char *n
     int tmp_max_buf_size = *max_buf_size;
     int factor = 0;
     char *p_buf = *buf;
+    char *p_buf2 = NULL;
     if(tmp_len_buf + len_new_buf >= tmp_max_buf_size) {
         factor = ((tmp_len_buf + len_new_buf - tmp_max_buf_size) / alloc_size) + 1;
+
         tmp_max_buf_size += factor * alloc_size;
-        p_buf = realloc(p_buf, tmp_max_buf_size);
+        p_buf2 = malloc(tmp_max_buf_size);
+
+        memcpy(p_buf2, p_buf, tmp_len_buf);
+        safe_free((void **)&p_buf);
+        p_buf = p_buf2;
     }
 
     *buf = p_buf;
