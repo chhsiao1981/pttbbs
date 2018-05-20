@@ -143,7 +143,7 @@ sync_pttui_buffer_info(PttUIBufferInfo *buffer_info, PttUIBuffer *current_buffer
         error_code = _sync_pttui_buffer_info_get_buffer(state, current_buffer, tmp_is_pre, new_buffer, buffer_info);
     }
 
-    fprintf(stderr, "pttui_buffer.sync_pttui_buffer_info after get buffer: new_buffer: %lu e: %d\n", new_buffer, error_code);
+    fprintf(stderr, "pttui_buffer.sync_pttui_buffer_info after get buffer: new_buffer: %lu e: %d\n", *new_buffer, error_code);
 
     Err error_code_lock = pttui_buffer_unlock_buffer_info();
     if(!error_code && error_code_lock) error_code = error_code_lock;
