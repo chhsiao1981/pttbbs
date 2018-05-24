@@ -1,23 +1,16 @@
 #!/bin/bash
 
-if [ "${BASH_ARGC}" == "" ]
+if [ "$#" -gt 1 ]
 then
-    MY_ARGC=0
-else
-    MY_ARGC=${BASH_ARGC}
+    echo "usage: run_docker.sh [[tag]]"
+    exit 255
 fi
 
-if [ "${MY_ARGC}" -gt "1" ]
-then
-   echo "usage: run_docker.sh [[tag]]"
-   exit 255
-fi
+tag=`git branch|grep '*'|awk '{print $2}'`
 
-if [ "${MY_ARGC}" == "0" ]
+if [ "$#" -ge 1 ]
 then
-    tag=`git branch|grep '*'|awk '{print $2}'`
-else
-    tag=${BASH_ARGV[0]}
+    tag=$1
 fi
 
 docker run --rm -itd -p 3000:3000 --name pttbbs pttbbs:${tag}
