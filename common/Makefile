@@ -1,3 +1,3 @@
-SUBDIR:=	bbs osdep sys
+SUBDIR:=	bbs osdep sys pttlib
 
 .include <bsd.subdir.mk>
