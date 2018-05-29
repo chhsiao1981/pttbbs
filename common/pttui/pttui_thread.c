@@ -32,7 +32,7 @@ DestroyPttuiThread()
 }
 
 void *
-PttUIThreadBuffer(void *a)
+PttUIThreadBuffer(void *a GCC_UNUSED)
 {
     Err error_code = S_OK;
     bool is_end = false;

@@ -11,6 +11,10 @@ extern "C" {
 
 #include <pthread.h>
 
+#define NS_DEFAULT_SLEEP_THREAD 20000000  // 20 ms
+
+#define NS_DEFAULT_SLEEP_PTTUI_THREAD_WAIT_BUFFER_LOOP 100000000 // 100 ms
+
 extern enum PttUIThreadState _PTTUI_THREAD_EXPECTED_STATE;
 extern enum PttUIThreadState _PTTUI_THREAD_BUFFER_STATE;
 
