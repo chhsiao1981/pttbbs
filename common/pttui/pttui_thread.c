@@ -6,7 +6,7 @@ enum PttUIThreadState _PTTUI_THREAD_BUFFER_STATE = PTTUI_THREAD_STATE_START;
 
 pthread_t _PTTUI_THREAD_BUFFER;
 
-Err (*_PTTUI_THREAD_BUFFER_FUNC_MAP)()[N_PTTUI_THREAD_STATE] = {
+Err (*_PTTUI_THREAD_BUFFER_FUNC_MAP[N_PTTUI_THREAD_STATE])() = {
     NULL,                      // start
     NULL,                      // init-read
     NULL,                      // read
