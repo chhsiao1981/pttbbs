@@ -2,7 +2,7 @@
 #ifndef PTTUI_THREAD_H
 #define PTTUI_THREAD_H
 
-#include "ptterr.h"
+#include "pttconst.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -2,7 +2,7 @@
 #ifndef PTTUI_THREAD_PRIVATE_H
 #define PTTUI_THREAD_PRIVATE_H
 
-#include "ptterr.h"
+#include "pttconst.h"
 #include "cmpttui/pttui_thread.h"
 
 #ifdef __cplusplus

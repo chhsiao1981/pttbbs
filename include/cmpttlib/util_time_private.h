@@ -2,7 +2,7 @@
 #ifndef UTIL_TIME_PRIVATE_H
 #define UTIL_TIME_PRIVATE_H
 
-#include "ptterr.h"
+#include "pttconst.h"
 
 #ifdef __cplusplus
 extern "C" {
