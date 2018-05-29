@@ -3,7 +3,7 @@
 SRCROOT:=       ../..
 .include "$(SRCROOT)/pttbbs.mk"
 
-SRCS:=
+SRCS:=	pttui_thread.c
 LIB:=   cmpttui
 
 install:

@@ -6,6 +6,13 @@ enum PttUIThreadState _PTTUI_THREAD_BUFFER_STATE = PTTUI_THREAD_STATE_START;
 
 pthread_t _PTTUI_THREAD_BUFFER = {};
 
+Err (*_PTTUI_THREAD_BUFFER_FUNC_MAP)()[N_PTTUI_THREAD_STATE] = {
+    NULL,                      // start
+    NULL,                      // init-read
+    NULL,                      // read
+    NULL                       // end
+};
+
 Err
 InitPttuiThread()
 {
@@ -50,8 +57,10 @@ PttUIThreadBuffer(void *a)
         error_code = PttUIThreadSetBufferState(expected_state);
         if(error_code) break;
 
-        error_code = _PTTUI_THREAD_BUFFER_FUNC_MAP[expected_state]();
-        if(error_code) break;
+        if(_PTTUI_THREAD_BUFFER_FUNC_MAP[expected_state]) {
+            error_code = _PTTUI_THREAD_BUFFER_FUNC_MAP[expected_state]();
+            if(error_code) break;
+        }
 
         ret = nanosleep(&req, &rem);
         if(ret) break;
@@ -66,28 +75,36 @@ PttUIThreadBuffer(void *a)
 Err
 PttUIThreadSetExpectedState(enum PttUIThreadState thread_state)
 {
+    return S_OK;
 }
 
 Err
 PttUIThreadGetExpectedState(enum PttUIThreadState *thread_state)
 {
-
+    return S_OK;
 }
 
 Err
 PttUIThreadSetBufferState(enum PttUIThreadState thread_state)
 {
-
+    return S_OK;
 }
 
 Err
 PttUIThreadGetBufferState(enum PttUIThreadState *thread_state)
 {
-
+    return S_OK;
 }
 
 Err
 PttUIThreadWaitBufferLoop(enum PttUIThreadState expected_state, int n_iter)
 {
+    return S_OK;
+}
 
+Err
+_PttUIThreadIsEnd(bool *is_end)
+{
+    *is_end = false;
+    return S_OK;
 }
