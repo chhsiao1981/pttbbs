@@ -31,7 +31,7 @@ DestroyPttUIThreadLock()
     for (int i = 0; i < N_PTTUI_THREAD_LOCK; i++) {
         if (!_IS_INIT_PTTUI_RWLOCKS[i]) continue;
 
-        ret = pthread_rwlock_destroy(&PTTUI_RWLOCKS[i]);
+        ret = pthread_rwlock_destroy(&_PTTUI_RWLOCKS[i]);
         if (ret) {
             error_code = S_ERR;
         }
