@@ -85,11 +85,16 @@ DatetimeToTimestamp(const int year, const int mm, const int dd, const int HH, co
 const char*
 MilliTimestampToCdate_ne(const time64_t milli_timestamp)
 {
+    // milli-timestamp: 1514764800
+    //                  (2018-01-01 00:00:00 UTC, 2017-12-31 19:00:00 EST, 2017-12-31 20:00:00 EDT,
+    //                   timezone-EST: 18000, timezone-EDT: 14400)
+    // new-timestamp: milli-timestamp - timezone
+
     time_t    the_timestamp = MilliTimestampToTimestamp_ne(milli_timestamp);
     struct tm mytm = {};
 
     tzset();
-    the_timestamp -= timezone - TZ_TAIPEI;
+    the_timestamp += timezone + TZ_TAIPEI;
 
     localtime_r(&the_timestamp, &mytm);
     strftime(_CDATE_BUFFER, sizeof(_CDATE_BUFFER), "%m/%d/%Y %T %a", &mytm);
