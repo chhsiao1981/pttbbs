@@ -10,6 +10,7 @@ typedef char Err;
 
 #define S_OK 0
 #define S_ERR -1                    // 255
+#define S_ERR_BUSY -2               // 254
 
 
 #ifdef __cplusplus

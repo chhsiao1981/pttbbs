@@ -8,6 +8,7 @@
 extern "C" {
 #endif
 
+#include <errno.h>
 #include <pthread.h>
 
 #define NS_DEFAULT_SLEEP_LOCK 1000000 // 1ms
