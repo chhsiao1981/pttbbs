@@ -41,6 +41,7 @@ TEST(util_time, DatetimeToTimestamp)
 {
     time64_t the_timestamp = 0;
     Err error_code = DatetimeToTimestamp(2018, 1, 1, 0, 0, 0, 0, &the_timestamp);
+    EXPECT_EQ(S_OK, error_code);
     EXPECT_EQ(1514764800, the_timestamp);
 }
 

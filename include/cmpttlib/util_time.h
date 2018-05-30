@@ -21,7 +21,7 @@ Err MilliTimestampToYear(const time64_t milli_timestamp, int *year);
 
 Err MilliTimestampToTimestamp(const time64_t milli_timestamp, time64_t *timestamp);
 
-inline time64_t MilliTimestampToTimestamp_ne(const time64_t milli_timestamp);
+time64_t MilliTimestampToTimestamp_ne(const time64_t milli_timestamp);
 
 Err DatetimeToTimestamp(const int year, const int mm, const int dd, const int HH, const int MM, const int SS, const int tz, time64_t *timestamp);
 
