@@ -49,6 +49,7 @@ PttUIThreadBuffer(void *a GCC_UNUSED)
     struct timespec rem = {};
     int ret = 0;
 
+    fprintf(stderr, "pttui_thread.PttUIThreadBuffer: to while-loop");
     while(true) {
         error_code = _PttUIThreadIsEnd(&is_end);
         if(error_code) break;
@@ -70,8 +71,12 @@ PttUIThreadBuffer(void *a GCC_UNUSED)
         if(ret) break;
     }
 
+    fprintf(stderr, "pttui_thread.PttUIThreadBuffer: after while-loop: e: %d\n", error_code);
+
     Err error_code_set_state = PttUIThreadSetBufferState(PTTUI_THREAD_STATE_END);
     if (!error_code && error_code_set_state) error_code = error_code_set_state;
+
+    fprintf(stderr, "pttui_thread.PttUIThreadBuffer: end: e: %d\n", error_code);
 
     return NULL;
 }

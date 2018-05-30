@@ -29,8 +29,6 @@ MilliTimestampToYear(const time64_t milli_timestamp, int *year)
     tzset();
     the_timestamp += timezone + TZ_TAIPEI;
 
-    fprintf(stderr, "util_time.MilliTimestampToYear: the_timestamp: %ld timezone: %d TZ_TAIPEI: %d\n", the_timestamp, timezone, TZ_TAIPEI);
-
     localtime_r(&the_timestamp, &tmp_tm);
     *year = tmp_tm.tm_year + 1900;
     return S_OK;
