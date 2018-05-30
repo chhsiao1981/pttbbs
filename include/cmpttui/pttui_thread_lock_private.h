@@ -12,8 +12,8 @@ extern "C" {
 #include <pthread.h>
 
 #define NS_DEFAULT_SLEEP_LOCK 1000000 // 1ms
-#define N_ITER_PTTUI_WRITE_LOCK 10000 // write lock waits up to 10 s
-#define N_ITER_PTTUI_READ_LOCK 5000 // read lock waits up to 5s
+#define N_ITER_PTTUI_WRITE_LOCK 100 // write lock waits up to 100 ms
+#define N_ITER_PTTUI_READ_LOCK 50 // read lock waits up to 50 ms
 
 extern pthread_rwlock_t _PTTUI_RWLOCKS[N_PTTUI_THREAD_LOCK];
 
