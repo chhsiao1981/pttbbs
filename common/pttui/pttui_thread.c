@@ -19,12 +19,16 @@ InitPttUIThread()
     int ret = pthread_create(&_PTTUI_THREAD_BUFFER, NULL, PttUIThreadBuffer, NULL);
     if(ret) return S_ERR;
 
-    return S_OK;
+    Err error_code = InitPttUIThreadLock();
+
+    return error_code;
 }
 
 Err
 DestroyPttUIThread()
 {
+    DestroyPttUIThreadLock();
+
     int ret = pthread_cancel(_PTTUI_THREAD_BUFFER);
     if(ret) return S_ERR;
 

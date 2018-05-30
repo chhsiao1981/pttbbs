@@ -193,6 +193,10 @@ u_exit(const char *mode)
 {
     currmode = 0;
 
+#ifdef PTTUI_THREAD
+    DestroyPttUIThread();
+#endif
+
     /* close fd 0 & 1 to terminate network */
     close(0);
     close(1);
@@ -307,6 +311,10 @@ abort_bbs_debug(int sig)
 	u_exit("AXXED");
     }
     */
+
+#ifdef PTTUI_THREAD
+    DestroyPttUIThread();
+#endif
 
 #ifdef DEBUGSLEEP
 
@@ -1412,6 +1420,10 @@ start_client(struct ProgramOption *option)
     auto_close_polls();		/* 自動開票 */
 
     Signal(SIGALRM, SIG_IGN);
+
+#ifdef PTTUI_THREAD
+    InitPttUIThread();
+#endif
     return 0;
 }
 
