@@ -68,8 +68,9 @@ const char*
 MilliTimestampToCdate_ne(const time64_t milli_timestamp)
 {
     time_t temp = MilliTimestampToTimestamp_ne(milli_timestamp);
-
     struct tm mytm = {};
+
+    temp += timezone - TZ_TAIPEI;
 
     localtime_r(&temp, &mytm);
     strftime(_CDATE_BUFFER, sizeof(_CDATE_BUFFER), "%m/%d/%Y %T %a", &mytm);
@@ -84,6 +85,8 @@ MilliTimestampToCdateLite_ne(const time64_t milli_timestamp)
 {
     time_t    temp = MilliTimestampToTimestamp_ne(milli_timestamp);
     struct tm mytm = {};
+
+    temp += timezone - TZ_TAIPEI;
 
     localtime_r(&temp, &mytm);
     strftime(_CDATE_BUFFER, sizeof(_CDATE_BUFFER), "%m/%d/%Y %T", &mytm);
