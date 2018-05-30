@@ -3,8 +3,6 @@
 #ifndef INCLUDE_BBS_H
 #define INCLUDE_BBS_H
 
-#include "cmpttui.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

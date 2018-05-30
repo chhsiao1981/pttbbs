@@ -3,6 +3,10 @@
 #include <sys/wait.h>
 #include <netinet/tcp.h>
 
+#ifdef PTTUI_THREAD
+#include "cmpttui.h"
+#endif
+
 #ifdef __linux__
 #    ifdef CRITICAL_MEMORY
 #        include <malloc.h>
