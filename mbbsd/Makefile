@@ -44,8 +44,8 @@ LDFLAGS+=-Wl,--sort-common
 #######################################################################
 
 LDFLAGS+= -L$(SRCROOT)/common/bbs -L$(SRCROOT)/common/sys \
-	  -L$(SRCROOT)/common/osdep 
-LDLIBS:= -lcmbbs -lcmsys -losdep $(LDLIBS)
+	  -L$(SRCROOT)/common/osdep -L$(SRCROOT)/common/pttlib -L$(SRCROOT)/common/pttui
+LDLIBS:= -lcmbbs -lcmsys -losdep -lcmpttlib -lcmpttui $(LDLIBS)
 
 #######################################################################
 # conditional configurations and optional modules
