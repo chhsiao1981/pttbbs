@@ -21,8 +21,6 @@ extern enum PttUIThreadState _PTTUI_THREAD_BUFFER_STATE;
 
 extern pthread_t _PTTUI_THREAD_BUFFER;
 
-Err _PttUIThreadIsEnd(bool *is_end);
-
 #ifdef __cplusplus
 }
 #endif

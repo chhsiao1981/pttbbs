@@ -48,11 +48,6 @@ PttUIThreadBuffer(void *a GCC_UNUSED)
     int ret = 0;
 
     while(true) {
-        error_code = _PttUIThreadIsEnd(&is_end);
-        if(error_code) break;
-
-        if(is_end) break;
-
         error_code = PttUIThreadGetExpectedState(&expected_state);
         if(error_code) break;
 
@@ -63,6 +58,8 @@ PttUIThreadBuffer(void *a GCC_UNUSED)
             error_code = _PTTUI_THREAD_BUFFER_FUNC_MAP[expected_state]();
             if(error_code) break;
         }
+
+        if(expected_state == PTTUI_THREAD_STATE_END) break;
 
         ret = nanosleep(&req, &rem);
         if(ret) break;
@@ -158,11 +155,4 @@ PttUIThreadWaitBufferLoop(enum PttUIThreadState expected_state, int n_iter)
     if (i == n_iter) error_code = S_ERR_BUSY;
 
     return error_code;
-}
-
-Err
-_PttUIThreadIsEnd(bool *is_end)
-{
-    *is_end = false;
-    return S_OK;
 }
