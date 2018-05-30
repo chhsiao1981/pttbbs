@@ -4,7 +4,7 @@
 
 #ifndef __cplusplus
 
-typedef char bool
+typedef char bool;
 
 #define true 1
 #define false 0
