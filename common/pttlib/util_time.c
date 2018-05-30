@@ -31,8 +31,7 @@ MilliTimestampToYear(const time64_t milli_timestamp, int *year)
     return S_OK;
 }
 
-time64_t
-MilliTimestampToTimestamp_ne(const time64_t milli_timestamp)
+inline time64_tMilliTimestampToTimestamp_ne(const time64_t milli_timestamp)
 {
     return milli_timestamp / 1000;
 }
@@ -49,7 +48,6 @@ MilliTimestampToTimestamp(const time64_t milli_timestamp, time64_t *timestamp)
 Err
 DatetimeToTimestamp(const int year, const int mm, const int dd, const int HH, const int MM, const int SS, const int tz, time64_t *timestamp)
 {
-
     char buf[MAX_TIMESTAMP_BUF_SIZE] = {};
     sprintf(buf, "%04d-%02d-%02d %02d:%02d:%02d", year, mm, dd, HH, MM, SS);
     struct tm datetime = {};
@@ -57,7 +55,7 @@ DatetimeToTimestamp(const int year, const int mm, const int dd, const int HH, co
     char *ret = strptime(buf, "%Y-%m-%d %H:%M:%S", &datetime);
     if(!ret) return S_ERR;
 
-    time_t tmp_timestamp = mktime(&datetime) + MY_TZ * 3600 - tz * 3600;
+    time_t tmp_timestamp = mktime(&datetime) - timezone - tz;
     *timestamp = (time64_t) tmp_timestamp;
 
     return S_OK;

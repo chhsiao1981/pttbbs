@@ -8,18 +8,14 @@
 extern "C" {
 #endif
 
+#include <time.h>
 #include <sys/time.h>
 #include <stdio.h>
 #include "config.h"
 
-#ifndef MY_TZ
-#define MY_TZ 8
-#endif
-
 #define BILLION 1000000000
 
 #define MAX_TIMESTAMP_BUF_SIZE 24
-
 
 #ifdef __cplusplus
 }
