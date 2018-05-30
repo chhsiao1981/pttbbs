@@ -49,7 +49,7 @@ TEST(util_time, MilliTimestampToCdate_ne)
 {
     time64_t milli_timestamp = 1514764800000;
     const char *str = MilliTimestampToCdate_ne(milli_timestamp);
-    EXPECT_STREQ("01/01/2018 00:00:00 Mon", str);
+    EXPECT_STREQ("01/01/2018 08:00:00 Mon", str);
 }
 
 /**********
