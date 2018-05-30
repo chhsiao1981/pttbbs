@@ -15,6 +15,6 @@ SRCROOT:=		../../..
 # test
 ##########
 
-TEST_PROGS=
+TEST_PROGS=	test_pttui_thread_lock test_pttui_thread
 
 .include "$(SRCROOT)/pttbbs_test.mk"
