@@ -20,6 +20,37 @@ TEST(util_time, GetMilliTimestamp)
     EXPECT_LT(milli_timestamp, _END_MILLI_TIMESTAMP);
 }
 
+TEST(util_time, MilliTimestampToYear)
+{
+    time64_t milli_timestamp = 1514764800000;
+    int year = 0;
+    Err error_code = MilliTimestampToYear(milli_timestamp, &year);
+    EXPECT_EQ(S_OK, error_code);
+
+    EXPECT_EQ(2018, year);
+}
+
+TEST(util_time, MilliTimestampToTimestamp_ne)
+{
+    time64_t milli_timestamp = 1514764800000;
+    time64_t the_timestamp = MilliTimestampToTimestamp_ne(milli_timestamp);
+    EXPECT_EQ(1514764800, the_timestamp);
+}
+
+TEST(util_time, DatetimeToTimestamp)
+{
+    time64_t the_timestamp = 0;
+    Err error_code = DatetimeToTimestamp(2018, 1, 1, 0, 0, 0, 0, &the_timestamp)
+    EXPECT_EQ(1514764800, the_timestamp);
+}
+
+TEST(util_time, MilliTimestampToCdate_ne)
+{
+    time64_t milli_timestamp = 1514764800000;
+    const char *str = MilliTimestampToCdate_ne(milli_timestamp);
+    EXPECT_STREQ("01/01/2018 00:00:00 Mon", str);
+}
+
 /**********
  * MAIN
  */
