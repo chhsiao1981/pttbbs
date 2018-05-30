@@ -3,7 +3,6 @@
 #define PTTBOOL_H
 
 #ifndef __cplusplus
-
 typedef char bool;
 
 #define true 1
