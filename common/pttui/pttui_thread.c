@@ -14,7 +14,7 @@ Err (*_PTTUI_THREAD_BUFFER_FUNC_MAP[N_PTTUI_THREAD_STATE])() = {
 };
 
 Err
-InitPttuiThread()
+InitPttUIThread()
 {
     int ret = pthread_create(&_PTTUI_THREAD_BUFFER, NULL, PttUIThreadBuffer, NULL);
     if(ret) return S_ERR;
@@ -23,7 +23,7 @@ InitPttuiThread()
 }
 
 Err
-DestroyPttuiThread()
+DestroyPttUIThread()
 {
     int ret = pthread_cancel(_PTTUI_THREAD_BUFFER);
     if(ret) return S_ERR;
@@ -142,7 +142,7 @@ PttUIThreadWaitBufferLoop(enum PttUIThreadState expected_state, int n_iter)
 
     int i = 0;
     for (i = 0; i < n_iter; i++) {
-        error_code = PttUIThreadGetBufferState(&current_state);
+        error_code = PttUIThreadLock(&current_state);
         if (error_code) break;
 
         if (expected_state == current_state) break; // XXX maybe re-edit too quickly

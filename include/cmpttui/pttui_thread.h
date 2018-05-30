@@ -17,9 +17,9 @@ enum PttUIThreadState {
     N_PTTUI_THREAD_STATE
 };
 
-Err InitPttuiThread();
+Err InitPttUIThread();
 
-Err DestroyPttuiThread();
+Err DestroyPttUIThread();
 
 void *PttUIThreadBuffer(void *a);
 
