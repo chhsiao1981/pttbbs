@@ -3,6 +3,7 @@
 #define PTTUI_THREAD_PRIVATE_H
 
 #include "pttconst.h"
+#include "cmpttui/pttui_thread_lock.h"
 #include "cmpttui/pttui_thread.h"
 
 #ifdef __cplusplus
