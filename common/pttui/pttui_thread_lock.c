@@ -97,9 +97,9 @@ PttUIThreadLockRdlock(enum PttUIThreadLock thread_lock)
         }
     }
     if(!error_code && i == N_ITER_PTTUI_READ_LOCK) error_code = S_ERR_BUSY;
-
     if(error_code) return error_code;
 
+    int ret_lock = 0;
     for(i = 0; i < N_ITER_PTTUI_READ_LOCK; i++) {
         ret_lock = pthread_rwlock_tryrdlock(&_PTTUI_RWLOCKS[thread_lock]);
         if(!ret_lock) break;
@@ -115,7 +115,7 @@ PttUIThreadLockRdlock(enum PttUIThreadLock thread_lock)
         }
     }
 
-    if(!error_code && i < N_ITER_PTTUI_READ_LOCK) error_code = S_ERR_BUSY;
+    if(!error_code && i == N_ITER_PTTUI_READ_LOCK) error_code = S_ERR_BUSY;
 
     return error_code;
 }
@@ -134,7 +134,7 @@ Err
 PttUIThreadLockGetLock(enum PttUIThreadLock thread_lock, pthread_rwlock_t **p_lock)
 {
 
-    *p_lock = &PTTUI_RWLOCKS[thread_lock];
+    *p_lock = &_PTTUI_RWLOCKS[thread_lock];
 
     return S_OK;
 }
