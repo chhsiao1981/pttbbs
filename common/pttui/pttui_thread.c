@@ -75,31 +75,87 @@ pttui_thread_buffer(void *a GCC_UNUSED)
 Err
 PttUIThreadSetExpectedState(enum PttUIThreadState thread_state)
 {
-    return S_OK;
+    // lock
+    Err error_code = PttUIThreadLockWrlock(LOCK_PTTUI_THREAD_EXPECTED_STATE);
+    if (error_code) return error_code;
+
+    // do op
+    _PTTUI_THREAD_EXPECTED_STATE = thread_state;
+
+    // release lock
+    error_code = PttUIThreadLockUnlock(LOCK_PTTUI_THREAD_EXPECTED_STATE);
+
+    return error_code;
 }
 
 Err
 PttUIThreadGetExpectedState(enum PttUIThreadState *thread_state)
 {
-    return S_OK;
+    // lock
+    Err error_code = PttUIThreadLockRdlock(LOCK_PTTUI_THREAD_EXPECTED_STATE);
+    if (error_code) return error_code;
+
+    // do op
+    *thread_state = _PTTUI_THREAD_EXPECTED_STATE;
+
+    // release lock
+    error_code = PttUIThreadLockUnlock(LOCK_PTTUI_THREAD_EXPECTED_STATE);
+
+    return error_code;
 }
 
 Err
 PttUIThreadSetBufferState(enum PttUIThreadState thread_state)
 {
-    return S_OK;
+    Err error_code = PttUIThreadLockWrlock(LOCK_PTTUI_THREAD_BUFFER_STATE);
+    if (error_code) return error_code;
+
+    _PTTUI_THREAD_BUFFER_STATE = thread_state;
+
+    error_code = PttUIThreadLockUnlock(LOCK_PTTUI_THREAD_BUFFER_STATE);
+
+    return error_code;
 }
 
 Err
 PttUIThreadGetBufferState(enum PttUIThreadState *thread_state)
 {
-    return S_OK;
+    Err error_code = PttUIThreadLockRdlock(LOCK_PTTUI_THREAD_BUFFER_STATE);
+    if (error_code) return error_code;
+
+    *thread_state = _PTTUI_THREAD_BUFFER_STATE;
+
+    error_code = PttUIThreadLockUnlock(LOCK_PTTUI_THREAD_BUFFER_STATE);
+
+    return error_code;
 }
 
 Err
 PttUIThreadWaitBufferLoop(enum PttUIThreadState expected_state, int n_iter)
 {
-    return S_OK;
+    Err error_code = S_OK;
+    int ret_sleep = 0;
+    enum PttUIThreadState current_state = PTTUI_THREAD_STATE_START;
+
+    struct timespec req = {0, NS_DEFAULT_SLEEP_PTTUI_THREAD_WAIT_BUFFER_LOOP};
+    struct timespec rem = {};
+
+    int i = 0;
+    for (i = 0; i < n_iter; i++) {
+        error_code = PttUIThreadGetBufferState(&current_state);
+        if (error_code) break;
+
+        if (expected_state == current_state) break; // XXX maybe re-edit too quickly
+
+        ret_sleep = nanosleep(&req, &rem);
+        if (ret_sleep) {
+            error_code = S_ERR;
+            break;
+        }
+    }
+    if (i == n_iter) error_code = S_ERR_BUSY;
+
+    return error_code;
 }
 
 Err
