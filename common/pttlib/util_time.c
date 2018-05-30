@@ -68,10 +68,6 @@ DatetimeToTimestamp(const int year, const int mm, const int dd, const int HH, co
 }
 
 /**
- */
-
-
-/**
  * @brief   given milli-timestamp in UTC, local-time with ELSE, would like to show m/d/Y H:M:S a in CST
  * @details [long description]
  *          23+1 bytes, "12/31/2007 00:00:00 Mon\0"
@@ -102,7 +98,15 @@ MilliTimestampToCdate_ne(const time64_t milli_timestamp)
 }
 
 /**
- * 19+1 bytes, "12/31/2007 00:00:00\0"
+ * @brief   given milli-timestamp in UTC, local-time with ELSE, would like to show m/d/Y H:M:S in CST
+ * @details [long description]
+ *          19+1 bytes, "12/31/2007 00:00:00\0"
+ *
+ *          ex: milli-timestamp: 1514764800 (2018-01-01 UTC)
+ *              output: 01/01/2018 08:00:00
+ *
+ * @param milli_timestamp [description]
+ * @return [description]
  */
 const char*
 MilliTimestampToCdateLite_ne(const time64_t milli_timestamp)
@@ -119,6 +123,17 @@ MilliTimestampToCdateLite_ne(const time64_t milli_timestamp)
 
 }
 
+/**
+ * @brief   given milli-timestamp in UTC, local-time with ELSE, would like to show m/d/Y in CST
+ * @details [long description]
+ *          10+1 bytes, "12/31/2007\0"
+ *
+ *          ex: milli-timestamp: 1514764800 (2018-01-01 UTC)
+ *              output: 01/01/2018
+ *
+ * @param milli_timestamp [description]
+ * @return [description]
+ */
 const char*
 MilliTimestampToCdateDate_ne(const time64_t milli_timestamp)
 {
@@ -133,6 +148,17 @@ MilliTimestampToCdateDate_ne(const time64_t milli_timestamp)
     return _CDATE_BUFFER;
 }
 
+/**
+ * @brief   given milli-timestamp in UTC, local-time with ELSE, would like to show m/d in CST
+ * @details [long description]
+ *          5+1 bytes, "12/31\0"
+ *
+ *          ex: milli-timestamp: 1514764800 (2018-01-01 UTC)
+ *              output: 01/01
+ *
+ * @param milli_timestamp [description]
+ * @return [description]
+ */
 const char*
 MilliTimestampToCdateMd_ne(const time64_t milli_timestamp)
 {
@@ -147,6 +173,17 @@ MilliTimestampToCdateMd_ne(const time64_t milli_timestamp)
     return _CDATE_BUFFER;
 }
 
+/**
+ * @brief   given milli-timestamp in UTC, local-time with ELSE, would like to show m/d H:M in CST
+ * @details [long description]
+ *          11+1 bytes, "12/31 00:00\0"
+ *
+ *          ex: milli-timestamp: 1514764800 (2018-01-01 UTC)
+ *              output: 01/01 08:00
+ *
+ * @param milli_timestamp [description]
+ * @return [description]
+ */
 const char*
 MilliTimestampToCdateMdHM_ne(const time64_t milli_timestamp)
 {
@@ -163,8 +200,12 @@ MilliTimestampToCdateMdHM_ne(const time64_t milli_timestamp)
 }
 
 /**
- * @brief   given milli-timestamp in UTC, local-time with ELSE, would like to show MdHMS in CST
+ * @brief   given milli-timestamp in UTC, local-time with ELSE, would like to show m/d H:M in CST
  * @details [long description]
+ *          14+1 bytes, "12/31 00:00:00\0"
+ *
+ *          ex: milli-timestamp: 1514764800 (2018-01-01 UTC)
+ *              output: 01/01 08:00:00
  *
  * @param milli_timestamp [description]
  * @return [description]

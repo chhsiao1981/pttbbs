@@ -52,6 +52,56 @@ TEST(util_time, MilliTimestampToCdate_ne)
     EXPECT_STREQ("01/01/2018 08:00:00 Mon", str);
 }
 
+TEST(util_time, MilliTimestampToCdateLite_ne)
+{
+    time64_t milli_timestamp = 1514764800000;
+    const char *str = MilliTimestampToCdateLite_ne(milli_timestamp);
+    EXPECT_STREQ("01/01/2018 08:00:00", str);
+}
+
+TEST(util_time, MilliTimestampToCdateDate_ne)
+{
+    time64_t milli_timestamp = 1514764800000;
+    const char *str = MilliTimestampToCdateDate_ne(milli_timestamp);
+    EXPECT_STREQ("01/01/2018", str);
+}
+
+TEST(util_time, MilliTimestampToCdateMd_ne)
+{
+    time64_t milli_timestamp = 1514764800000;
+    const char *str = MilliTimestampToCdateMd_ne(milli_timestamp);
+    EXPECT_STREQ("01/01", str);
+}
+
+TEST(util_time, MilliTimestampToCdateMdHM_ne)
+{
+    time64_t milli_timestamp = 1514764800000;
+    const char *str = MilliTimestampToCdateMdHM_ne(milli_timestamp);
+    EXPECT_STREQ("01/01 08:00", str);
+}
+
+TEST(util_time, MilliTimestampToCdateMdHMS_ne)
+{
+    time64_t milli_timestamp = 1514764800000;
+    const char *str = MilliTimestampToCdateMdHMS_ne(milli_timestamp);
+    EXPECT_STREQ("01/01 08:00:00", str);
+}
+
+TEST(util_time, AddTimespecWithNanosecs)
+{
+    struct timespec t = {};
+    Err error_code = AddTimespecWithNanosecs(&t, 999999999);
+    EXPECT_EQ(S_OK, error_code);
+
+    EXPECT_EQ(0, t.tv_sec);
+    EXPECT_EQ(999999999, t.tv_nsec);
+
+    error_code = AddTimespecWithNanosecs(&t, 999999999);
+    EXPECT_EQ(S_OK, error_code);
+    EXPECT_EQ(1, t.tv_sec);
+    EXPECT_EQ(999999998, t.tv_nsec);
+}
+
 /**********
  * MAIN
  */
