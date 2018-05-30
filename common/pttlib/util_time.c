@@ -27,7 +27,7 @@ MilliTimestampToYear(const time64_t milli_timestamp, int *year)
     if(error_code) return error_code;
 
     tzset();
-    the_timestamp += timezone - TZ_TAIPEI;
+    the_timestamp += timezone + TZ_TAIPEI;
 
     fprintf(stderr, "util_time.MilliTimestampToYear: the_timestamp: %ld timezone: %d TZ_TAIPEI: %d\n", the_timestamp, timezone, TZ_TAIPEI);
 
@@ -111,7 +111,7 @@ MilliTimestampToCdateLite_ne(const time64_t milli_timestamp)
     struct tm mytm = {};
 
     tzset();
-    the_timestamp += timezone - TZ_TAIPEI;
+    the_timestamp += timezone + TZ_TAIPEI;
 
     localtime_r(&the_timestamp, &mytm);
     strftime(_CDATE_BUFFER, sizeof(_CDATE_BUFFER), "%m/%d/%Y %T", &mytm);
@@ -126,7 +126,7 @@ MilliTimestampToCdateDate_ne(const time64_t milli_timestamp)
     struct tm mytm = {};
 
     tzset();
-    the_timestamp += timezone - TZ_TAIPEI;
+    the_timestamp += timezone + TZ_TAIPEI;
 
     localtime_r(&the_timestamp, &mytm);
     strftime(_CDATE_BUFFER, sizeof(_CDATE_BUFFER), "%m/%d/%Y", &mytm);
@@ -140,7 +140,7 @@ MilliTimestampToCdateMd_ne(const time64_t milli_timestamp)
     struct tm mytm = {};
 
     tzset();
-    the_timestamp += timezone - TZ_TAIPEI;
+    the_timestamp += timezone + TZ_TAIPEI;
 
     localtime_r(&the_timestamp, &mytm);
     strftime(_CDATE_BUFFER, sizeof(_CDATE_BUFFER), "%m/%d", &mytm);
@@ -154,7 +154,7 @@ MilliTimestampToCdateMdHM_ne(const time64_t milli_timestamp)
     struct tm mytm = {};
 
     tzset();
-    the_timestamp += timezone - TZ_TAIPEI;
+    the_timestamp += timezone + TZ_TAIPEI;
 
     localtime_r(&the_timestamp, &mytm);
     strftime(_CDATE_BUFFER, sizeof(_CDATE_BUFFER), "%m/%d %H:%M", &mytm);
@@ -176,7 +176,7 @@ MilliTimestampToCdateMdHMS_ne(const time64_t milli_timestamp)
     struct tm mytm = {};
 
     tzset();
-    the_timestamp += timezone - TZ_TAIPEI;
+    the_timestamp += timezone + TZ_TAIPEI;
 
     localtime_r(&the_timestamp, &mytm);
     strftime(_CDATE_BUFFER, sizeof(_CDATE_BUFFER), "%m/%d %H:%M:%S", &mytm);
