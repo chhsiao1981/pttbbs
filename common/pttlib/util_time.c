@@ -68,7 +68,19 @@ DatetimeToTimestamp(const int year, const int mm, const int dd, const int HH, co
 }
 
 /**
- * 23+1 bytes, "12/31/2007 00:00:00 Mon\0"
+ */
+
+
+/**
+ * @brief   given milli-timestamp in UTC, local-time with ELSE, would like to show m/d/Y H:M:S a in CST
+ * @details [long description]
+ *          23+1 bytes, "12/31/2007 00:00:00 Mon\0"
+ *
+ *          ex: milli-timestamp: 1514764800 (2018-01-01 UTC)
+ *              output: 01/01/2018 08:00:00 Mon
+ *
+ * @param milli_timestamp [description]
+ * @return [description]
  */
 const char*
 MilliTimestampToCdate_ne(const time64_t milli_timestamp)
@@ -77,7 +89,7 @@ MilliTimestampToCdate_ne(const time64_t milli_timestamp)
     struct tm mytm = {};
 
     tzset();
-    the_timestamp += timezone - TZ_TAIPEI;
+    the_timestamp -= timezone - TZ_TAIPEI;
 
     localtime_r(&the_timestamp, &mytm);
     strftime(_CDATE_BUFFER, sizeof(_CDATE_BUFFER), "%m/%d/%Y %T %a", &mytm);
@@ -145,6 +157,13 @@ MilliTimestampToCdateMdHM_ne(const time64_t milli_timestamp)
 
 }
 
+/**
+ * @brief   given milli-timestamp in UTC, local-time with ELSE, would like to show MdHMS in CST
+ * @details [long description]
+ *
+ * @param milli_timestamp [description]
+ * @return [description]
+ */
 const char*
 MilliTimestampToCdateMdHMS_ne(const time64_t milli_timestamp)
 {
