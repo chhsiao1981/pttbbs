@@ -67,3 +67,7 @@ OBJS+=		pfterm.o
 .else
 OBJS+=		screen.o
 .endif
+
+.if $(USE_PTTUI_THREAD)
+LDLIBS+=	-pthread
+.endif
