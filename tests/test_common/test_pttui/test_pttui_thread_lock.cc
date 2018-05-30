@@ -3,12 +3,12 @@
 #include "cmpttui/pttui_thread_lock.h"
 #include "cmpttui/pttui_thread_lock_private.h"
 
-TEST(pttui_thread_lock, InitPttuiThreadLock)
+TEST(pttui_thread_lock, InitPttUIThreadLock)
 {
-    Err error_code = InitPttuiThreadLock();
+    Err error_code = InitPttUIThreadLock();
     EXPECT_EQ(S_OK, error_code);
 
-    error_code = DestroyPttuiThreadLock();
+    error_code = DestroyPttUIThreadLock();
     EXPECT_EQ(S_OK, error_code);
 }
 

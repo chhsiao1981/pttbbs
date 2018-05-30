@@ -3,12 +3,12 @@
 #include "cmpttui/pttui_thread.h"
 #include "cmpttui/pttui_thread_private.h"
 
-TEST(pttui_thread, InitPttuiThread)
+TEST(pttui_thread, InitPttUIThread)
 {
-    Err error_code = InitPttuiThread();
+    Err error_code = InitPttUIThread();
     EXPECT_EQ(S_OK, error_code);
 
-    error_code = DestroyPttuiThread();
+    error_code = DestroyPttUIThread();
     EXPECT_EQ(S_OK, error_code);
 }
 
