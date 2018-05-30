@@ -31,7 +31,7 @@ MilliTimestampToYear(const time64_t milli_timestamp, int *year)
     return S_OK;
 }
 
-inline time64_tMilliTimestampToTimestamp_ne(const time64_t milli_timestamp)
+time64_t MilliTimestampToTimestamp_ne(const time64_t milli_timestamp)
 {
     return milli_timestamp / 1000;
 }
