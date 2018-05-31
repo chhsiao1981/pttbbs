@@ -13,7 +13,7 @@ enum PttDBContentType {
 };
 
 enum PttDBStorageType {
-    PTTDB_STORAGE_TYPE_MMAP,
+    PTTDB_STORAGE_TYPE_FILE,
 
     N_PTTDB_STORAGE_TYPE
 };

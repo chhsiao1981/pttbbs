@@ -13,6 +13,8 @@ typedef struct PageInfo {
     aidu_t aid;
 
     enum PttDBContentType content_type;
+    int comment_id;
+    int block_id;
     int line_id;
 
     enum PttDBStorageType storage_type;
@@ -20,6 +22,8 @@ typedef struct PageInfo {
 
 typedef struct FilePageInfo {
     aidu_t aid;
+
+    char *filename;
 
     int n_page;
     PageInfo *page_infos;
