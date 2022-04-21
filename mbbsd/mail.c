@@ -2574,4 +2574,67 @@ bsmtp(const char *fpath, const char *title, const char *rcpt, const char *from)
 	return 0;
     return chrono;
 }
+
+int
+bsmtp_c(const char *content, const char *title, const char *rcpt, const char *from)
+{
+    char            buf[80], *ptr;
+    time4_t         chrono;
+    MailQueue       mqueue = {};
+
+    if (!from) {
+        from = cuser.userid;
+    }
+
+    /* check if the mail is a inner mail */
+    if ((ptr = strstr(rcpt, str_mail_address)) || !strchr(rcpt, '@')) {
+        char            hacker[20];
+        int             len;
+
+        if (strchr(rcpt, '@')) {
+            strlcpy(hacker, rcpt, sizeof(hacker));
+            len = ptr - rcpt;
+            if (0 <= len && (size_t)len < sizeof(hacker)) {
+                hacker[len] = '\0';
+            }
+        } else {
+            strlcpy(hacker, rcpt, sizeof(hacker));
+        }
+        return send_inner_mail(fpath, title, hacker);
+    }
+    chrono = now;
+
+    /* stamp the queue file */
+    strlcpy(buf, "out/", sizeof(buf));
+    FILE *f = NULL;
+    for (;;) {
+        snprintf(buf + 4, sizeof(buf) - 4, "M.%d.%d.A", (int)++chrono, getpid());
+        if (!dashf(buf)) {
+            f = fopen(buf, "w");
+            fwrite(content, sizeof(char), strlen(content), f);
+            fclose(f);
+            f = NULL;
+            break;
+        }
+    }
+
+    char *fpath = buf;
+
+    /* setup mail queue */
+    mqueue.mailtime = chrono;
+    // XXX (unused) mqueue.method = method;
+    strlcpy(mqueue.filepath, fpath, sizeof(mqueue.filepath));
+    strlcpy(mqueue.subject, title, sizeof(mqueue.subject));
+    strlcpy(mqueue.sender, from, sizeof(mqueue.sender));
+    // username is deprecated: why use it?
+    // strlcpy(mqueue.username, username, sizeof(mqueue.username));
+    strlcpy(mqueue.username, "", sizeof(mqueue.username));
+    strlcpy(mqueue.rcpt, rcpt, sizeof(mqueue.rcpt));
+
+    if (append_record("out/" FN_DIR, (fileheader_t *) & mqueue, sizeof(mqueue)) < 0) {
+        return 0;
+    }
+    return chrono;
+}
+
 #endif				/* USE_BSMTP */
