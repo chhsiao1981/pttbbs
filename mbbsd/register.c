@@ -5,6 +5,7 @@
 #define FN_REGISTER_LOG  "register.log"	// global registration history
 #define FN_REJECT_NOTIFY "justify.reject"
 #define FN_NOTIN_WHITELIST_NOTICE "etc/whitemail.notice"
+#define FN_NOTIN_CONTACT_WHITELIST_NOTICE "etc/contact_whitemail.notice"
 
 // Regform1 file name (deprecated)
 #define fn_register	"register.new"
@@ -71,7 +72,7 @@ static int
 register_check_and_update_emaildb(const userec_t *u, const char *email);
 
 bool
-check_email_allow_reject_lists_core(char *email, const char **errmsg, const char **notice_file, const char *white_email, const char *ban_email);
+check_email_allow_reject_lists_core(char *email, const char **errmsg, const char **notice_file, const char *white_email, const char *ban_email, const char *notice_filename);
 
 ////////////////////////////////////////////////////////////////////////////
 // Value Validation
@@ -1016,11 +1017,11 @@ user_has_email(const userec_t *u)
 bool
 check_email_allow_reject_lists(char *email, const char **errmsg, const char **notice_file)
 {
-    return check_email_allow_reject_lists_core(email, errmsg, notice_file, "etc/whitemail", "etc/banemail");
+    return check_email_allow_reject_lists_core(email, errmsg, notice_file, "etc/whitemail", "etc/banemail", FN_NOTIN_WHITELIST_NOTICE);
 }
 
 bool
-check_email_allow_reject_lists_core(char *email, const char **errmsg, const char **notice_file, const char *white_email, const char *ban_email)
+check_email_allow_reject_lists_core(char *email, const char **errmsg, const char **notice_file, const char *white_email, const char *ban_email, const char *notice_filename)
 {
     FILE           *fp;
     char            buf[128], *c;
@@ -1071,8 +1072,8 @@ check_email_allow_reject_lists_core(char *email, const char **errmsg, const char
 	fclose(fp);
 	if (!allow)
 	{
-	    if (notice_file && dashf(FN_NOTIN_WHITELIST_NOTICE))
-		*notice_file = FN_NOTIN_WHITELIST_NOTICE;
+	    if (notice_file && dashf(notice_filename))
+		*notice_file = notice_filename;
 	    if (errmsg)
 		*errmsg = "抱歉，目前不接受此 Email 的註冊申請。";
 	    return false;
@@ -1707,7 +1708,7 @@ u_register()
 bool
 check_contact_email_allow_reject_lists(char *email, const char **errmsg, const char **notice_file)
 {
-    return check_email_allow_reject_lists_core(email, errmsg, notice_file, "etc/contact_whitemail", "etc/contact_banemail");
+    return check_email_allow_reject_lists_core(email, errmsg, notice_file, "etc/contact_whitemail", "etc/contact_banemail", FN_NOTIN_CONTACT_WHITELIST_NOTICE);
 }
 
 static bool
