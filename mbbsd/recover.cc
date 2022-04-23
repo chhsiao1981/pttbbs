@@ -308,7 +308,7 @@ void AccountRecovery::ResetPasswd() {
   LogToSecurity(user_.value(), email_);
   std::string fromhost_str = std::string(fromhost);
   for (const auto &email : all_emails_) {
-    passwdnotify::PasswdNotify::NotifyUser(user_->userid, fromhost_str, email);
+    passwdnotify::NotifyUser(user_->userid, fromhost_str, email);
   }
 
   // Log to user security.
