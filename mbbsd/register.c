@@ -71,7 +71,7 @@ register_count_email(const userec_t *u, const char *email);
 static int
 register_check_and_update_emaildb(const userec_t *u, const char *email);
 
-bool
+static bool
 check_email_allow_reject_lists_core(char *email, const char **errmsg, const char **notice_file, const char *white_email, const char *ban_email, const char *notice_filename);
 
 ////////////////////////////////////////////////////////////////////////////
@@ -1020,7 +1020,7 @@ check_email_allow_reject_lists(char *email, const char **errmsg, const char **no
     return check_email_allow_reject_lists_core(email, errmsg, notice_file, "etc/whitemail", "etc/banemail", FN_NOTIN_WHITELIST_NOTICE);
 }
 
-bool
+static bool
 check_email_allow_reject_lists_core(char *email, const char **errmsg, const char **notice_file, const char *white_email, const char *ban_email, const char *notice_filename)
 {
     FILE           *fp;
