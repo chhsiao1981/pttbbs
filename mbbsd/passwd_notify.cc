@@ -9,11 +9,11 @@ extern "C" {
 
 namespace passwdnotify {
 
-void PasswdNotify::NotifyMe() {
+void NotifyMe() {
     NotifyUser(std::string(cuser.userid), std::string(fromhost), std::string(cuser.email));
 }
 
-void PasswdNotify::NotifyUser(const std::string &userid,
+void NotifyUser(const std::string &userid,
                               const std::string &fromhost,
                               const std::string &email) {
   std::string subject;
@@ -28,5 +28,5 @@ void PasswdNotify::NotifyUser(const std::string &userid,
 } // namespace
 
 void passwd_notify_me() {
-  passwdnotify::PasswdNotify::NotifyMe();
+  passwdnotify::NotifyMe();
 }
