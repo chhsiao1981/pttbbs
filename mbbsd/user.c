@@ -953,6 +953,13 @@ uinfo_query(const char *orig_uid, int adminmode, int unum)
 		fail++;
 		break;
 	    }
+
+            int out_y = 0;
+            if(!email_challenge(cuser.email, &cuser, y, " " BBSNAME " - 重設密碼認證碼 [ ", "etc/resetpasswdmail", &out_y)) {
+                fail++;
+                break;
+            }
+            y = out_y;
 #   endif
 #endif
             if (!getdata(y++, 0, "請輸入原密碼：", buf, PASS_INPUT_LEN + 1,
