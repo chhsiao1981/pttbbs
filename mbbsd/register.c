@@ -1712,7 +1712,7 @@ check_contact_email_allow_reject_lists(char *email, const char **errmsg, const c
 }
 
 static bool
-check_contact_mail(email_input_t *ein)
+check_contact_email_input(email_input_t *ein)
 {
     char *email = ein->email;
 
@@ -1755,7 +1755,7 @@ change_contact_email()
 	return;
     }
 
-    if (!check_contact_mail(&ein)) {
+    if (!check_contact_email_input(&ein)) {
         return;
     }
 
