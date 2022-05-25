@@ -507,6 +507,7 @@ int fav_load(void)
 	return -1;
 
     setuserfile(buf, FAV);
+    fprintf(stderr, "fav_load: after setuserfile: buf: %s\n", buf);
 
     if (!dashf(buf)) {
 #if 1 // DEPRECATED
