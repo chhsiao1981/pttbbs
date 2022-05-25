@@ -1,0 +1,9 @@
+cc_test(
+  name = "mbbsd_test",
+  size = "small",
+  srcs = [
+      "hello_test.cc",
+      "fav_test.cc",
+  ],
+  deps = ["@com_google_googletest//:gtest_main"],
+)
