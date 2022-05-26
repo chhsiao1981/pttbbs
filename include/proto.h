@@ -151,7 +151,7 @@ const char *banned_msg(const char *bname);
 
 /* cal */
 const char* money_level(int money);
-int pay(int money, const char *item, ...) GCC_CHECK_FORMAT(2,3); 
+int pay(int money, const char *item, ...) GCC_CHECK_FORMAT(2,3);
 int pay_as_uid(int uid, int money, const char *item,...)GCC_CHECK_FORMAT(3,4);
 int lockutmpmode(int unmode, int state);
 int unlockutmpmode(void);
@@ -330,7 +330,7 @@ int guess_main(void);
 /* io */
 int init_io();
 
-// output 
+// output
 int  ochar(int c);
 void output(const char *s, int len);
 void oflush(void);
@@ -422,6 +422,7 @@ int establish_talk_connection(const userinfo_t *uip);
 void my_talk(userinfo_t * uin, int fri_stat, char defact);
 int query_file_money(const fileheader_t *pfh);
 int mbbsd_is_secure_connection();
+int main_core(int argc, char *argv[], char *envp[]);
 
 /* menu */
 void showtitle(const char *title, const char *mid);
@@ -452,11 +453,11 @@ int more(const char *fpath, int promptend);
 int more_inmemory(void *content, int size, int promptend);
 /* piaip's new pager, pmore.c */
 int pmore (const char *fpath, int promptend);
-int pmore2(const char *fpath, int promptend, void *ctx, 
+int pmore2(const char *fpath, int promptend, void *ctx,
 	int (*key_handler)   (int key, void *ctx),
 	int (*footer_handler)(int ratio, int width, void *ctx),
 	int (*help_handler)  (int y,   void *ctx));
-int pmore2_inmemory( 
+int pmore2_inmemory(
 	void *content, int size,
 	int promptend, void *ctx,
 	int (*key_handler)   (int key, void *ctx),
@@ -516,7 +517,7 @@ keeploc_t *getkeep(const char *s, int def_topline, int def_cursline);
 void forward_file(const fileheader_t * fhdr, const char *direct);
 
 typedef struct
-{ 
+{
     // TODO use aid_t
     char filename[FNLEN];
 } TagItem;
@@ -536,22 +537,22 @@ void set_safedel_fhdr(fileheader_t *fhdr, const char *newtitle);
 #ifndef _BBS_UTIL_C_
 void safe_delete_range(const char *fpath, int id1, int id2);
 #endif
-int safe_article_delete(int ent, const fileheader_t *fhdr, const char *direct, 
+int safe_article_delete(int ent, const fileheader_t *fhdr, const char *direct,
                         const char *newtitle);
 int safe_article_delete_range(const char *direct, int from, int to);
 #endif
 int delete_file(const char *dirname, int size, int ent, int (*filecheck)());
 int delete_range(const char *fpath, int id1, int id2);
 int search_rec(const char* dirname, int (*filecheck)());
-int append_record_forward(char *fpath, fileheader_t *record, int size, 
+int append_record_forward(char *fpath, fileheader_t *record, int size,
                           const char *origid);
 int get_sum_records(const char* fpath, int size);
 int substitute_ref_record(const char* direct, fileheader_t *fhdr, int ent);
 int getindex(const char *fpath, fileheader_t *fh, int start);
-int rotate_text_logfile(const char *filename, off_t max_size, 
+int rotate_text_logfile(const char *filename, off_t max_size,
                         float keep_ratio);
-int rotate_bin_logfile(const char *filename, off_t record_size, 
-                       off_t max_size, float keep_ratio); 
+int rotate_bin_logfile(const char *filename, off_t record_size,
+                       off_t max_size, float keep_ratio);
 int delete_file_content(const char *direct, const fileheader_t *fh,
                         const char *backup_direct,
                         char *newpath, size_t sznewpath);
@@ -702,7 +703,7 @@ void post_policelog2(const char *bname, const char *atitle, const char *action,
         (iswritable_stat(uentp, friend_stat(currutmp, uentp)))
 #define isvisible(me, uentp) \
         (isvisible_stat(currutmp, uentp, friend_stat(me, uentp)))
-     
+
 int iswritable_stat(const userinfo_t *uentp, int fri_stat);
 int isvisible_stat(const userinfo_t * me, const userinfo_t * uentp, int fri_stat);
 int cmpwatermtime(const void *a, const void *b);
