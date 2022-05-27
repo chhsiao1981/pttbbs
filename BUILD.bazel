@@ -1,6 +1,5 @@
 cc_library(
-    name = "headers",
-    hdrs = glob(["include/**"]) + ["pttbbs.conf"],
+    name = "pttbbsconf",
+    hdrs = glob(["pttbbs.conf"]),
     visibility = ["//visibility:public"],
-    includes = ["include"],
 )

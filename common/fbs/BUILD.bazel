@@ -1,0 +1,8 @@
+load("//:build_tools/func.bzl", "fbsrule")
+
+fbsrule(
+    name = "fbs",
+    srcs = ["verifydb.fbs", "register_sms.fbs"],
+    outs = glob(["verifydb.fbs.h", "register_sms.fbs.h"]),
+    visibility = ["//visibility:public"],
+)

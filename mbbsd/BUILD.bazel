@@ -1,0 +1,137 @@
+COREOBJS = [
+    "bbs.c",
+    "announce.c",
+    "read.c",
+    "board.c",
+    "brc.c",
+    "mail.c",
+    "record.c",
+    "fav.c",
+]
+
+ABUSEOBJS = [
+    "captcha.c",
+]
+
+ACCOBJS = [
+    "user.c",
+    "acl.c",
+    "register.c",
+    "passwd.c",
+    "emaildb.c",
+]
+
+NETOBJS = [
+    "mbbsd.c",
+    "io.c",
+    "term.c",
+    "telnet.c",
+    "nios.c",
+]
+
+TALKOBJS = [
+    "friend.c",
+    "talk.c",
+    "ccw.c",
+]
+
+UTILOBJS = [
+    "stuff.c",
+    "kaede.c",
+    "convert.c",
+    "name.c",
+    "syspost.c",
+    "cache.c",
+    "cal.c",
+]
+
+UIOBJS = [
+    "menu.c",
+    "vtuikit.c",
+    "psb.c",
+]
+
+PAGEROBJS = [
+    "more.c",
+    "pmore.c",
+]
+
+PLUGOBJS = [
+    "ordersong.c",
+    "angel.c",
+    "timecap.c",
+]
+
+CHESSOBJS = [
+    "chess.c",
+    "chc.c",
+    "chc_tab.c",
+    "ch_go.c",
+    "ch_gomo.c",
+    "ch_dark.c",
+    "ch_reversi.c",
+    "ch_conn6.c",
+]
+
+GAMEOBJS = [
+    "chicken.c",
+    "gamble.c",
+]
+
+MISCOBJS = [
+    "admin.c",
+    "assess.c",
+    "edit.c",
+    "xyz.c",
+    "var.c",
+    "vote.c",
+    "voteboard.c",
+    "comments.c",
+]
+
+BBSLUAOBJS = [
+    "bbslua.c",
+    "bbsluaext.c",
+]
+
+SCREENOBJS = [
+    "pfterm.c",
+]
+
+MBBSD_CXX_OBJS = [
+    "recover.cc",
+    "register_sms.cc",
+    "verifydb.cc",
+    "verifydb_info.cc",
+    "verifydb_search.cc",
+]
+
+cc_library(
+    name = "mbbsd",
+    srcs = MISCOBJS + COREOBJS + ABUSEOBJS + \
+    ACCOBJS + NETOBJS + TALKOBJS + UTILOBJS + \
+    UIOBJS + PAGEROBJS + PLUGOBJS + CHESSOBJS + \
+    GAMEOBJS + BBSLUAOBJS + SCREENOBJS + MBBSD_CXX_OBJS,
+    visibility = ["//visibility:public"],
+    hdrs = [
+    ],
+    linkstatic = True,
+    copts = [
+        "-Iinclude",
+        "-Ibazel-out/k8-fastbuild/bin/include",
+        "-DBBSHOME=$(BBSHOME)",
+    ],
+    data = [
+    ],
+    deps = [
+        "//include:all",
+        "//:pttbbsconf",
+        "//common/fbs:fbs",
+    ],
+)
+
+filegroup(
+    name = "varc",
+    srcs = glob(["var.c"]),
+    visibility = ["//visibility:public"],
+)
