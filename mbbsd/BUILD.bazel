@@ -95,7 +95,7 @@ BBSLUAOBJS = [
 ]
 
 SCREENOBJS = [
-    "pfterm.c",
+    "screen.c",
 ]
 
 MBBSD_CXX_OBJS = [
@@ -109,6 +109,14 @@ MBBSD_CXX_OBJS = [
 LUACFLAGS = "-I/usr/include/lua5.1"
 LUALIBS = "-llua5.1"
 
+PTT_WARN = [
+    "-W",
+    "-Wall",
+    "-Wunused",
+    "-Wno-missing-field-initializers",
+    "-Wno-address-of-packed-member",
+]
+
 cc_library(
     name = "mbbsd",
     srcs = MISCOBJS + COREOBJS + ABUSEOBJS + \
@@ -118,13 +126,19 @@ cc_library(
     visibility = ["//visibility:public"],
     hdrs = [
     ],
-    linkstatic = False,
-    copts = [
+    linkstatic = True,
+    copts = PTT_WARN + [
+        "-pipe",
         "-Iinclude",
         "-Ibazel-out/k8-fastbuild/bin/include",
         "-Ibazel-out/k8-fastbuild/bin/common/fbs",
         LUACFLAGS,
         "-DBBSHOME=$(BBSHOME)",
+
+        # "-Qunused-arguments",
+        "-Wno-parentheses-equality",
+        # "-fcolor-diagnostics",
+        "-Wno-invalid-source-encoding",
     ],
     data = [
     ],
@@ -142,12 +156,17 @@ cc_library(
 cc_library(
     name = "mbbsdcxx",
     srcs = MBBSD_CXX_OBJS,
-    copts = [
+    copts = PTT_WARN + [
+        "-pipe",
         "-std=c++17",
         "-Iinclude",
         "-Ibazel-out/k8-fastbuild/bin/include",
         "-Ibazel-out/k8-fastbuild/bin/common/fbs",
+        "-DBBSHOME=$(BBSHOME)",
+
+        "-Wno-invalid-source-encoding",
     ],
+    linkstatic = True,
     visibility = ["//visibility:public"],
     deps = [
         "//include:all",

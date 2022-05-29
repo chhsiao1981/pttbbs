@@ -9,7 +9,7 @@ SRCS = [
 cc_library(
     name = "commonosdep",
     srcs = SRCS,
-    linkstatic = False,
+    linkstatic = True,
     copts = [
         "-Iinclude",
         "-Ibazel-out/k8-fastbuild/bin/include",
