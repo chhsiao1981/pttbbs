@@ -1,0 +1,31 @@
+SRCS = [
+    "log.c",
+    "money.c",
+    "names.c",
+    "path.c",
+    "time.c",
+    "string.c",
+    "fhdr_stamp.c",
+    "cache.c",
+    "passwd.c",
+    "filehdr.c",
+    "banip.c",
+    "search.c",
+]
+
+cc_library(
+    name = "commonbbs",
+    srcs = SRCS,
+    linkstatic = False,
+    copts = [
+        "-Iinclude",
+        "-Ibazel-out/k8-fastbuild/bin/include",
+        "-DBBSHOME=$(BBSHOME)",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//include:all",
+        "//:pttbbsconf",
+        "//common/sys:commonsys",
+    ],
+)

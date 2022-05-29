@@ -9,7 +9,7 @@ build_origin="$(git rev-parse --short origin/master 2>/dev/null)"
 build_hash="$(git rev-parse --short HEAD 2>/dev/null)"
 [ "${build_hash}" = "${build_origin}" ] && build_origin=""
 if ! git diff --quiet 2>/dev/null; then
-  build_hash="${build_hash} M"
+    build_hash="${build_hash} M"
 fi
 build_time="$(date)"
 

@@ -1,8 +1,25 @@
-load("//:build_tools/func.bzl", "fbsrule")
+load("//:build_tools/func.bzl", "cc_flatbuffers_compile")
 
-fbsrule(
+cc_flatbuffers_compile(
+    name = "verifydbfbs",
+    src = "verifydb.fbs",
+    out = "verifydb.fbs.h",
+    visibility = ["//visibility:public"],
+)
+
+cc_flatbuffers_compile(
+    name = "registersmsfbs",
+    src = "register_sms.fbs",
+    out = "register_sms.fbs.h",
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
     name = "fbs",
-    srcs = ["verifydb.fbs", "register_sms.fbs"],
-    outs = glob(["verifydb.fbs.h", "register_sms.fbs.h"]),
+    srcs = [],
+    deps = [
+        "verifydbfbs",
+        "registersmsfbs",
+    ],
     visibility = ["//visibility:public"],
 )

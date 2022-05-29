@@ -106,19 +106,24 @@ MBBSD_CXX_OBJS = [
     "verifydb_search.cc",
 ]
 
+LUACFLAGS = "-I/usr/include/lua5.1"
+LUALIBS = "-llua5.1"
+
 cc_library(
     name = "mbbsd",
     srcs = MISCOBJS + COREOBJS + ABUSEOBJS + \
     ACCOBJS + NETOBJS + TALKOBJS + UTILOBJS + \
     UIOBJS + PAGEROBJS + PLUGOBJS + CHESSOBJS + \
-    GAMEOBJS + BBSLUAOBJS + SCREENOBJS + MBBSD_CXX_OBJS,
+    GAMEOBJS + BBSLUAOBJS + SCREENOBJS,
     visibility = ["//visibility:public"],
     hdrs = [
     ],
-    linkstatic = True,
+    linkstatic = False,
     copts = [
         "-Iinclude",
         "-Ibazel-out/k8-fastbuild/bin/include",
+        "-Ibazel-out/k8-fastbuild/bin/common/fbs",
+        LUACFLAGS,
         "-DBBSHOME=$(BBSHOME)",
     ],
     data = [
@@ -126,7 +131,29 @@ cc_library(
     deps = [
         "//include:all",
         "//:pttbbsconf",
-        "//common/fbs:fbs",
+        "//common/fbs:verifydbfbs",
+        "//common/fbs:registersmsfbs",
+        "//common/osdep:commonosdep",
+        "//common/sys:commonsys",
+        "//common/bbs:commonbbs",
+    ],
+)
+
+cc_library(
+    name = "mbbsdcxx",
+    srcs = MBBSD_CXX_OBJS,
+    copts = [
+        "-std=c++17",
+        "-Iinclude",
+        "-Ibazel-out/k8-fastbuild/bin/include",
+        "-Ibazel-out/k8-fastbuild/bin/common/fbs",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//include:all",
+        "//:pttbbsconf",
+        "//common/fbs:verifydbfbs",
+        "//common/fbs:registersmsfbs",
     ],
 )
 
@@ -134,4 +161,21 @@ filegroup(
     name = "varc",
     srcs = glob(["var.c"]),
     visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "versc",
+    srcs = ["vers.c"],
+    visibility = ["//visibility:public"],
+)
+
+genrule(
+    name = "genversc",
+    srcs = [],
+    outs = ["vers.c"],
+    cmd = "echo \"\"; echo \"versc@: $@\"; echo \"pwd: `pwd`\"; mkdir -p mbbsd; cd mbbsd; sh ../$(location //util:newvers); cd ..; cp mbbsd/vers.c $@",
+    visibility = ["//visibility:public"],
+    tools = [
+        "//util:newvers"
+    ],
 )

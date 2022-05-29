@@ -9,6 +9,9 @@ cc_test(
     ],
 )
 
+LUACFLAGS = "-I/usr/include/lua5.1"
+LUALIBS = "-llua5.1"
+
 cc_test(
     name = "fav_test",
     size = "small",
@@ -20,9 +23,24 @@ cc_test(
     ],
     visibility = ["//visibility:public"],
     data = glob(["testcase/**"]),
+    copts = [
+        "-Iinclude",
+        "-Ibazel-out/k8-fastbuild/bin/include",
+        "-Ibazel-out/k8-fastbuild/bin/common/fbs",
+        LUACFLAGS,
+        "-DBBSHOME=$(BBSHOME)",
+    ],
+    linkopts = [
+        "-Lbazel-out/k8-fastbuild/bin/common/bbs/_objs/commonbbs",
+        "-Lbazel-out/k8-fastbuild/bin/common/sys/_objs/commonsys",
+        "-Lbazel-out/k8-fastbuild/bin/common/osdep/_objs/commonosdep",
+        LUALIBS,
+        "-lncurses",
+        "-lstdc++",
+    ],
     deps = [
         "@com_google_googletest//:gtest_main",
-        "//:headers",
         "//mbbsd:mbbsd",
+        "//mbbsd:mbbsdcxx",
     ],
 )

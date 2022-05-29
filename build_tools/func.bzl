@@ -1,25 +1,29 @@
-def _fbs(ctx):
-    srcs = ctx.attr.srcs
-    outs = ctx.attr.outs
+def _impl(ctx):
+    print('files:', ctx.files.src, 'outdir:', ctx.outputs.out.dirname)
+    args = ["-c"] + ["-o", ctx.outputs.out.dirname, "--filename-suffix", ".fbs"] + [f.path for f in ctx.files.src]
 
-    for idx, each in enumerate(srcs):
-        print(idx, dir(each), dir(each.label), each.files, each.label.name)
-        out_h = ctx.actions.declare_file(each.label.name + ".h")
+    print('args:', args)
 
-        ctx.actions.run_shell(
-            mnemonic="FlatC",
-            command="echo \"to flatc $(each.label.name)\"; flatc --cpp $(each.label.name) --filename-suffix .fbs",
-            outputs=[out_h],
-        )
+    infile = ctx.files.src[0]
 
-    compilation_context = cc_common.create_compilation_context(headers=depset(outs))
+    ctx.actions.run(
+        inputs=ctx.files.src,
+        outputs=[ctx.outputs.out],
+        arguments=args,
+        progress_message="flatc $(infile.path)",
+        # command="flatc --cpp -o $(ctx.outputs.out.dirname) --filename-suffix .fbs $(infile.path)",
+        executable = "/usr/bin/flatc",
+    )
+
+    compilation_context = cc_common.create_compilation_context(headers=depset([ctx.outputs.out]))
+
     return [CcInfo(compilation_context=compilation_context)]
 
 
-fbsrule = rule(
-    implementation = _fbs,
+cc_flatbuffers_compile = rule(
+    implementation = _impl,
     attrs = {
-        "srcs": attr.label_list(allow_files = [".fbs"]),
-        "outs": attr.label_list(allow_files = [".h"])
+        "src": attr.label(allow_files = True),
+        "out": attr.output(mandatory = True),
     },
 )
