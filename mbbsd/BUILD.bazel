@@ -114,7 +114,7 @@ cc_library(
     srcs = MISCOBJS + COREOBJS + ABUSEOBJS + \
     ACCOBJS + NETOBJS + TALKOBJS + UTILOBJS + \
     UIOBJS + PAGEROBJS + PLUGOBJS + CHESSOBJS + \
-    GAMEOBJS + BBSLUAOBJS + SCREENOBJS,
+    GAMEOBJS + BBSLUAOBJS + SCREENOBJS + ["//mbbsd:versc"],
     visibility = ["//visibility:public"],
     hdrs = [
     ],
