@@ -1,0 +1,32 @@
+PTT_WARN = [
+    "-W",
+    "-Wall",
+    "-Wunused",
+    "-Wno-missing-field-initializers",
+    "-Wno-address-of-packed-member",
+]
+
+SRCS = [
+]
+
+cc_binary(
+)
+
+cc_library(
+    name = "testutil",
+    srcs = SRCS,
+    hdrs = ["testutil.h"],
+    visibility = ["//visibility:public"],
+    linkstatic = True,
+    copts = [
+        "-Iinclude",
+        "-Ibazel-out/k8-fastbuild/bin/include",
+        "-DBBSHOME=$(BBSHOME)",
+    ],
+    deps = [
+        "//include:all",
+        "//:pttbbsconf",
+        "//common/sys:commonsys",
+        "//common/bbs:commonbbs",
+    ],
+)

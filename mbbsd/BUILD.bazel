@@ -117,8 +117,39 @@ PTT_WARN = [
     "-Wno-address-of-packed-member",
 ]
 
-cc_library(
+cc_binary(
     name = "mbbsd",
+    srcs = ["main.c"],
+    linkstatic = True,
+    copts = [
+        "-Iinclude",
+        "-Ibazel-out/k8-fastbuild/bin/include",
+        "-Ibazel-out/k8-fastbuild/bin/common/fbs",
+        LUACFLAGS,
+        "-DBBSHOME=$(BBSHOME)",
+    ],
+    linkopts = [
+        "-Os",
+        "-Wl,--as-needed",
+        "-Wl,--sort-common",
+
+        "-Lbazel-out/k8-fastbuild/bin/common/bbs/_objs/commonbbs",
+        "-Lbazel-out/k8-fastbuild/bin/common/sys/_objs/commonsys",
+        "-Lbazel-out/k8-fastbuild/bin/common/osdep/_objs/commonosdep",
+        "-Lbazel-out/k8-fastbuild/bin/testutil/_objs/testutil",
+
+        LUALIBS,
+
+        "-lstdc++",
+    ],
+    deps = [
+        "//mbbsd:mbbsdlib",
+        "//mbbsd:mbbsdcxx",
+    ],
+)
+
+cc_library(
+    name = "mbbsdlib",
     srcs = MISCOBJS + COREOBJS + ABUSEOBJS + \
     ACCOBJS + NETOBJS + TALKOBJS + UTILOBJS + \
     UIOBJS + PAGEROBJS + PLUGOBJS + CHESSOBJS + \

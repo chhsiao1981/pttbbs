@@ -22,13 +22,17 @@ cc_test(
         "exclusive",
     ],
     visibility = ["//visibility:public"],
-    data = glob(["testcase/**"]),
+    data = [
+        "//testcase:testcase",
+    ],
     copts = [
         "-Iinclude",
         "-Ibazel-out/k8-fastbuild/bin/include",
         "-Ibazel-out/k8-fastbuild/bin/common/fbs",
         LUACFLAGS,
         "-DBBSHOME=$(BBSHOME)",
+
+        "-Itestutil",
     ],
     linkstatic = True,
     linkopts = [
@@ -39,6 +43,8 @@ cc_test(
         "-Lbazel-out/k8-fastbuild/bin/common/bbs/_objs/commonbbs",
         "-Lbazel-out/k8-fastbuild/bin/common/sys/_objs/commonsys",
         "-Lbazel-out/k8-fastbuild/bin/common/osdep/_objs/commonosdep",
+        "-Lbazel-out/k8-fastbuild/bin/testutil/_objs/testutil",
+
         LUALIBS,
 
         "-lstdc++",
@@ -47,5 +53,6 @@ cc_test(
         "@com_google_googletest//:gtest_main",
         "//mbbsd:mbbsd",
         "//mbbsd:mbbsdcxx",
+        "//testutil:testutil",
     ],
 )
