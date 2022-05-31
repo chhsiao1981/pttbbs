@@ -31,10 +31,10 @@ extern "C" {
 #include <sys/shm.h>
 #include <sys/sem.h>
 
-/* our header */
+  /* our header */
 #include "config.h"
 
-/* common library */
+  /* common library */
 #include "cmsys.h"
 #include "cmbbs.h"
 
@@ -57,15 +57,15 @@ extern "C" {
 #include "fnv_hash.h"
 
 #ifdef ASSESS
-    #include "assess.h"
+#include "assess.h"
 #endif
 
 #ifdef CONVERT
-    #include "convert.h"
+#include "convert.h"
 #endif
 
 #ifndef INCLUDE_VAR_H
-    #include "var.h"
+#include "var.h"
 #endif
 
 #ifdef __cplusplus

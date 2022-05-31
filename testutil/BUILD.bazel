@@ -7,10 +7,8 @@ PTT_WARN = [
 ]
 
 SRCS = [
+    "load_uhash.c",
 ]
-
-cc_binary(
-)
 
 cc_library(
     name = "testutil",
@@ -28,5 +26,6 @@ cc_library(
         "//:pttbbsconf",
         "//common/sys:commonsys",
         "//common/bbs:commonbbs",
+        "//mbbsd:mbbsdlib",
     ],
 )

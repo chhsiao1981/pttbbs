@@ -34,7 +34,6 @@ cc_test(
 
         "-Itestutil",
     ],
-    linkstatic = True,
     linkopts = [
         "-Os",
         "-Wl,--as-needed",
@@ -45,14 +44,11 @@ cc_test(
         "-Lbazel-out/k8-fastbuild/bin/common/osdep/_objs/commonosdep",
         "-Lbazel-out/k8-fastbuild/bin/testutil/_objs/testutil",
 
-        LUALIBS,
-
         "-lstdc++",
     ],
     deps = [
-        "@com_google_googletest//:gtest_main",
-        "//mbbsd:mbbsd",
-        "//mbbsd:mbbsdcxx",
         "//testutil:testutil",
+        "//mbbsd:mbbsdcxx",
+        "@com_google_googletest//:gtest_main",
     ],
 )

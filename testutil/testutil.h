@@ -1,4 +1,12 @@
 #pragma once
 
-// uhash_loader
-void load_uhash(void);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+  // uhash_loader
+  void load_uhash();
+
+#ifdef __cplusplus
+}
+#endif
