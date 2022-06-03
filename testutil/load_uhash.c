@@ -14,22 +14,26 @@ void load_uhash() {
 #endif
                  0600 | IPC_CREAT | IPC_EXCL);
   err = errno;
-  if( err == EEXIST )
+  fprintf(stderr, "load_uhash: shmid: %d err: %d EEXIST: %d\n", shmid, err, EEXIST);
+  if( err == EEXIST ) {
     shmid = shmget(SHM_KEY, SHMSIZE,
 #ifdef USE_HUGETLB
                    SHM_HUGETLB |
 #endif
                    0600 | IPC_CREAT);
+  }
 
   if( shmid < 0 ){
     perror("shmget");
     exit(1);
   }
+
   SHM = (void *) shmat(shmid, NULL, 0);
-  if( SHM == (void *)-1 ){
+  if (SHM == (void *)-1) {
     perror("shmat");
     exit(1);
   }
+
   if( err  != EEXIST ) {
     SHM->number=SHM->loaded = 0;
     SHM->version = SHM_VERSION;
@@ -44,13 +48,12 @@ void load_uhash() {
   }
 
   // in case it's not assumed zero, this becomes a race...
-  if( SHM->number == 0 && SHM->loaded == 0 ){
+  if (SHM->number == 0 && SHM->loaded == 0) {
     SHM->loaded = 0;
     fill_uhash(0);
     SHM->today_is[0] = '\0';
     SHM->loaded = 1;
-  }
-  else{
+  } else {
     fill_uhash(1);
   }
 }

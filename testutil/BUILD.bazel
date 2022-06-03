@@ -19,7 +19,6 @@ cc_library(
     copts = [
         "-Iinclude",
         "-Ibazel-out/k8-fastbuild/bin/include",
-        "-DBBSHOME=$(BBSHOME)",
     ],
     deps = [
         "//include:all",
@@ -27,5 +26,8 @@ cc_library(
         "//common/sys:commonsys",
         "//common/bbs:commonbbs",
         "//mbbsd:mbbsdlib",
+    ],
+    defines = [
+        "BBSHOME='\"$(BINDIR)/testcase\"'",
     ],
 )

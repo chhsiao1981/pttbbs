@@ -126,7 +126,6 @@ cc_binary(
         "-Ibazel-out/k8-fastbuild/bin/include",
         "-Ibazel-out/k8-fastbuild/bin/common/fbs",
         LUACFLAGS,
-        "-DBBSHOME=$(BBSHOME)",
     ],
     linkopts = [
         "-Os",
@@ -146,6 +145,9 @@ cc_binary(
         "//mbbsd:mbbsdlib",
         "//mbbsd:mbbsdcxx",
     ],
+    defines = [
+        "BBSHOME='\"$(BINDIR)/testcase\"'",
+    ],
 )
 
 cc_library(
@@ -164,7 +166,6 @@ cc_library(
         "-Ibazel-out/k8-fastbuild/bin/include",
         "-Ibazel-out/k8-fastbuild/bin/common/fbs",
         LUACFLAGS,
-        "-DBBSHOME=$(BBSHOME)",
 
         # "-Qunused-arguments",
         "-Wno-parentheses-equality",
@@ -182,6 +183,9 @@ cc_library(
         "//common/sys:commonsys",
         "//common/bbs:commonbbs",
     ],
+    defines = [
+        "BBSHOME='\"$(BINDIR)/testcase\"'",
+    ],
 )
 
 cc_library(
@@ -193,8 +197,6 @@ cc_library(
         "-Iinclude",
         "-Ibazel-out/k8-fastbuild/bin/include",
         "-Ibazel-out/k8-fastbuild/bin/common/fbs",
-        "-DBBSHOME=$(BBSHOME)",
-
         "-Wno-invalid-source-encoding",
     ],
     linkstatic = True,
@@ -204,6 +206,9 @@ cc_library(
         "//:pttbbsconf",
         "//common/fbs:verifydbfbs",
         "//common/fbs:registersmsfbs",
+    ],
+    defines = [
+        "BBSHOME='\"$(BINDIR)/testcase\"'",
     ],
 )
 

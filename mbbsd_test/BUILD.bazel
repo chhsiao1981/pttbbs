@@ -30,7 +30,6 @@ cc_test(
         "-Ibazel-out/k8-fastbuild/bin/include",
         "-Ibazel-out/k8-fastbuild/bin/common/fbs",
         LUACFLAGS,
-        "-DBBSHOME=$(BBSHOME)",
 
         "-Itestutil",
     ],
@@ -50,5 +49,8 @@ cc_test(
         "//testutil:testutil",
         "//mbbsd:mbbsdcxx",
         "@com_google_googletest//:gtest_main",
+    ],
+    defines = [
+        "BBSHOME='\"$(BINDIR)/testcase\"'",
     ],
 )

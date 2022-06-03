@@ -13,11 +13,13 @@ cc_library(
     copts = [
         "-Iinclude",
         "-Ibazel-out/k8-fastbuild/bin/include",
-        "-DBBSHOME=$(BBSHOME)",
     ],
     visibility = ["//visibility:public"],
     deps = [
         "//include:all",
         "//:pttbbsconf",
+    ],
+    defines = [
+        "BBSHOME='\"$(BINDIR)/testcase\"'",
     ],
 )

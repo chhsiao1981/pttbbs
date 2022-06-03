@@ -12,17 +12,19 @@ class FavLoadTest : public ::testing::Test {
     filename = NULL;
 
     system("pwd");
-    system("cp -R ./testcase/home1 ./testcase/home");
-    system("cp ./testcase/.PASSWDS1 ./testcase/.PASSWDS");
-    system("cp ./testcase/.BRD1 ./testcase/.BRD");
+    printf(BBSHOME "\n");
+    system("mkdir -p " BBSHOME);
+    system("cp -R ./testcase/home1 " BBSHOME "/home");
+    system("cp ./testcase/.PASSWDS1 " BBSHOME "/.PASSWDS");
+    system("cp ./testcase/.BRD1 " BBSHOME "/.BRD");
     chdir(BBSHOME);
     load_uhash();
   }
 
   void TearDown() override {
-    system("rm -r ./testcase/home");
-    system("rm ./testcase/.PASSWDS");
-    system("rm ./testcase/.BRD");
+    system("rm -r " BBSHOME "/home");
+    system("rm  " BBSHOME "/.PASSWDS");
+    system("rm " BBSHOME " /.BRD");
   }
 
 
