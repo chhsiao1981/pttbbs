@@ -15,6 +15,7 @@ void load_uhash() {
                  0600 | IPC_CREAT | IPC_EXCL);
   err = errno;
   fprintf(stderr, "load_uhash: shmid: %d err: %d EEXIST: %d\n", shmid, err, EEXIST);
+
   if( err == EEXIST ) {
     shmid = shmget(SHM_KEY, SHMSIZE,
 #ifdef USE_HUGETLB
@@ -48,6 +49,7 @@ void load_uhash() {
   }
 
   // in case it's not assumed zero, this becomes a race...
+  fprintf(stderr, "[load_uhash]: to check onfly: SHM->number: %d SHM->loaded: %d\n", SHM->number, SHM->loaded);
   if (SHM->number == 0 && SHM->loaded == 0) {
     SHM->loaded = 0;
     fill_uhash(0);
@@ -122,7 +124,7 @@ static void fill_uhash(int onfly)
   }
   SHM->number = usernumber;
 
-  printf("total %d names %s.\n", usernumber, onfly ? "checked":"loaded");
+  fprintf(stderr, "[fill_uhash] total %d names %s.\n", usernumber, onfly ? "checked":"loaded");
 }
 
 static void userec_add_to_uhash(int n, userec_t *user, int onfly)
@@ -132,12 +134,15 @@ static void userec_add_to_uhash(int n, userec_t *user, int onfly)
   // uhash use userid="" to denote free slot for new register
   // However, such entries will have the same hash key.
   // So we skip most of invalid userid to prevent lots of hash collision.
+  fprintf(stderr, "[userec_add_to_uhash] start: userid: %s\n", user->userid);
   if (!is_validuserid(user->userid)) {
     // dirty hack, preserve few slot for new register
     static int count = 0;
     count++;
-    if (count > 1000)
+    if (count > 1000) {
+      fprintf(stderr, "[userec_add_to_uhash] count > 1000: userid: %s\n", user->userid);
       return;
+    }
   }
 
   h = StringHash(user->userid)%(1<<HASH_BITS);
@@ -151,17 +156,17 @@ static void userec_add_to_uhash(int n, userec_t *user, int onfly)
 #ifdef USE_COOLDOWN
     SHM->cooldowntime[n] = 0;
 #endif
-    if(onfly)
-      printf("add %s\n", user->userid);
+    fprintf(stderr, "[user_add_to_uhash] add %s\n", user->userid);
   }
   while (*p != -1)
   {
-    if(onfly && *p==n )  // already in hash
+    if(onfly && *p==n ) {// already in hash
+      fprintf(stderr, "[userec_add_to_uhash] onfly and already in hash: userid: %s\n", user->userid);
       return;
+    }
     l++;
     p = &(SHM->next_in_hash[*p]);
   }
-  if(onfly)
-    printf("add %d %d %d [%s] in hash\n", l, h, n, user->userid);
+  fprintf(stderr, "[userec_add_to_uhash] add %d %d %d [%s] in hash\n", l, h, n, user->userid);
   SHM->next_in_hash[*p = n] = -1;
 }

@@ -4,8 +4,14 @@
 extern "C" {
 #endif
 
-  // uhash_loader
+  // load uhash
   void load_uhash();
+
+  // load current user
+  int load_current_user(const char *uid);
+
+  // multi user check
+  void multi_user_check(void);
 
 #ifdef __cplusplus
 }

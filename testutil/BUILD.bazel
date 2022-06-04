@@ -8,6 +8,8 @@ PTT_WARN = [
 
 SRCS = [
     "load_uhash.c",
+    "load_current_user.c",
+    "multi_user_check.c",
 ]
 
 cc_library(
@@ -25,7 +27,6 @@ cc_library(
         "//:pttbbsconf",
         "//common/sys:commonsys",
         "//common/bbs:commonbbs",
-        "//mbbsd:mbbsdlib",
     ],
     defines = [
         "BBSHOME='\"$(BINDIR)/testcase\"'",

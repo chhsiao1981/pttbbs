@@ -47,6 +47,7 @@ cc_test(
     ],
     deps = [
         "//testutil:testutil",
+        "//mbbsd:mbbsdlib",
         "//mbbsd:mbbsdcxx",
         "@com_google_googletest//:gtest_main",
     ],

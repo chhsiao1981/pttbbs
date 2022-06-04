@@ -12,13 +12,15 @@ class FavLoadTest : public ::testing::Test {
     filename = NULL;
 
     system("pwd");
-    printf(BBSHOME "\n");
+    printf("BBSHOME: " BBSHOME "\n");
     system("mkdir -p " BBSHOME);
     system("cp -R ./testcase/home1 " BBSHOME "/home");
     system("cp ./testcase/.PASSWDS1 " BBSHOME "/.PASSWDS");
     system("cp ./testcase/.BRD1 " BBSHOME "/.BRD");
-    chdir(BBSHOME);
+    // chdir(BBSHOME);
+    system("echo \"pwd:\" && pwd");
     load_uhash();
+    load_current_user("SYSOP");
   }
 
   void TearDown() override {
