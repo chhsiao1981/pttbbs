@@ -8,14 +8,16 @@ PTT_WARN = [
 
 SRCS = [
     "load_uhash.c",
-    "load_current_user.c",
-    "multi_user_check.c",
+    "setup_root_link.c",
 ]
 
 cc_library(
     name = "testutil",
     srcs = SRCS,
-    hdrs = ["testutil.h"],
+    hdrs = [
+        "testutil.h",
+        "mbbsd_s.c",
+    ],
     visibility = ["//visibility:public"],
     linkstatic = True,
     copts = [

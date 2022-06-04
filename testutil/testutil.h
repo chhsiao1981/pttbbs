@@ -7,11 +7,8 @@ extern "C" {
   // load uhash
   void load_uhash();
 
-  // load current user
-  int load_current_user(const char *uid);
-
-  // multi user check
-  void multi_user_check(void);
+  // setup root link
+  int setup_root_link(char *bbshome);
 
 #ifdef __cplusplus
 }
