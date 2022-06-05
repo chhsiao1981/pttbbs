@@ -58,7 +58,7 @@ bazelinstall: $(BAZELPROG)
 	@ln -sfv mbbsd.bazel.$(DATETIME) $(BBSHOME)/bin/mbbsd
 
 bazeltest:
-	CC=$(CC) $(BAZEL) test --sandbox_debug --define BBSHOME="testcase" ...
+	CC=$(CC) $(BAZEL) test --define BBSHOME="testcase" ...
 
 bazelclean:
 	$(BAZEL) clean
