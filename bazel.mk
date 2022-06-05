@@ -57,5 +57,8 @@ bazelinstall: $(BAZELPROG)
 	@cd $(BBSHOME)/bin && objcopy --add-gnu-debuglink=mbbsd.bazel.$(DATETIME).debug mbbsd.bazel.$(DATETIME)
 	@ln -sfv mbbsd.bazel.$(DATETIME) $(BBSHOME)/bin/mbbsd
 
+bazeltest:
+	CC=$(CC) $(BAZEL) test --sandbox_debug --define BBSHOME="testcase" ...
+
 bazelclean:
 	$(BAZEL) clean
