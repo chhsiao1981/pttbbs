@@ -34,7 +34,7 @@ cc_library(
         "//:pttbbsconf",
     ],
     defines = [
-        "BBSHOME='\"$(BINDIR)/testcase\"'",
+        "BBSHOME='\"testcase\"'",
     ],
 )
 

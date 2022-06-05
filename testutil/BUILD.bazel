@@ -31,6 +31,6 @@ cc_library(
         "//common/bbs:commonbbs",
     ],
     defines = [
-        "BBSHOME='\"$(BINDIR)/testcase\"'",
+        "BBSHOME='\"testcase\"'",
     ],
 )

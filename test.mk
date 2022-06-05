@@ -7,7 +7,7 @@ pre-bazeltest:
 	bazelisk info
 
 bazeltest:
-	echo "CC=$(CC) BAZEL=$(BAZEL)" && export CC=$(CC) && $(BAZEL) test --sandbox_debug --test_output=all ...
+	echo "CC=$(CC) BAZEL=$(BAZEL)" && export CC=$(CC) && $(BAZEL) test --sandbox_debug --test_output=all --subcommands ...
 
 bazelclean:
 	$(BAZEL) clean

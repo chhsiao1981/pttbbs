@@ -28,6 +28,6 @@ cc_library(
         "//common/sys:commonsys",
     ],
     defines = [
-        "BBSHOME='\"$(BINDIR)/testcase\"'",
+        "BBSHOME='\"testcase\"'",
     ],
 )
