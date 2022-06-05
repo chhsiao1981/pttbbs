@@ -15,9 +15,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: install pmake
       run: sudo apt update && sudo apt install -y pmake
-    - name: bbsuser
-      run: sudo pmake bbsuser
     - name: pre-bazel
       run: sudo pmake pre-bazel
     - name: bazeltest
-      run: sudo su bbs -- pmake bazeltest
+      run: sudo pmake bazeltest
