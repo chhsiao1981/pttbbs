@@ -1,0 +1,23 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: install pmake
+      run: apt update && apt install -y pmake
+    - name: bbsuser
+      run: pmake bbsuser
+    - name: pre-bazel
+      run: pmake pre-bazel
+    - name: bazeltest
+      run: pmake bazeltest
