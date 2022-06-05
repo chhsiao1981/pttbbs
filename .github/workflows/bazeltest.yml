@@ -17,5 +17,7 @@ jobs:
       run: sudo apt update && sudo apt install -y pmake
     - name: pre-bazel
       run: sudo pmake pre-bazel
+    - name: cp pttbbs_test.conf
+      run: cp sample/pttbbs_test.conf pttbbs.conf
     - name: bazeltest
       run: sudo pmake bazeltest
