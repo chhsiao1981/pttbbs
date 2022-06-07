@@ -16,8 +16,8 @@ cc_test(
     ],
     copts = PTT_WARN + [
         "-Iinclude",
-        "-Ibazel-out/k8-fastbuild/bin/include",
-        "-Ibazel-out/k8-fastbuild/bin/common/fbs",
+        "-I$(BINDIR)/include",
+        "-I$(BINDIR)/common/fbs",
         LUACFLAGS,
 
         # "-Qunused-arguments",
@@ -63,8 +63,8 @@ cc_test(
     ],
     copts = PTT_WARN + [
         "-Iinclude",
-        "-Ibazel-out/k8-fastbuild/bin/include",
-        "-Ibazel-out/k8-fastbuild/bin/common/fbs",
+        "-I$(BINDIR)/include",
+        "-I$(BINDIR)/common/fbs",
         LUACFLAGS,
 
         # "-Qunused-arguments",
