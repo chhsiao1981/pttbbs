@@ -15,7 +15,7 @@ cc_library(
     linkstatic = True,
     copts = PTT_WARN + [
         "-Iinclude",
-        "-Ibazel-out/k8-fastbuild/bin/include",
+        "-I$(BINDIR)/include",
 
         # "-Qunused-arguments",
         "-Wno-parentheses-equality",
@@ -48,7 +48,7 @@ cc_library(
     linkstatic = True,
     copts = PTT_WARN + [
         "-Iinclude",
-        "-Ibazel-out/k8-fastbuild/bin/include",
+        "-I$(BINDIR)/include",
 
         # "-Qunused-arguments",
         "-Wno-parentheses-equality",

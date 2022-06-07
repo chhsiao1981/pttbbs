@@ -128,8 +128,8 @@ cc_binary(
     copts = PTT_WARN + [
         "-pipe",
         "-Iinclude",
-        "-Ibazel-out/k8-fastbuild/bin/include",
-        "-Ibazel-out/k8-fastbuild/bin/common/fbs",
+        "-I$(BINDIR)/include",
+        "-I$(BINDIR)/common/fbs",
         LUACFLAGS,
 
         # "-Qunused-arguments",
@@ -174,8 +174,8 @@ cc_library(
     copts = PTT_WARN + [
         "-pipe",
         "-Iinclude",
-        "-Ibazel-out/k8-fastbuild/bin/include",
-        "-Ibazel-out/k8-fastbuild/bin/common/fbs",
+        "-I$(BINDIR)/include",
+        "-I$(BINDIR)/common/fbs",
         LUACFLAGS,
 
         # "-Qunused-arguments",
@@ -207,8 +207,8 @@ cc_library(
     copts = PTT_WARN + [
         "-pipe",
         "-Iinclude",
-        "-Ibazel-out/k8-fastbuild/bin/include",
-        "-Ibazel-out/k8-fastbuild/bin/common/fbs",
+        "-I$(BINDIR)/include",
+        "-I$(BINDIR)/common/fbs",
         LUACFLAGS,
 
         # "-Qunused-arguments",
@@ -241,8 +241,8 @@ cc_library(
         "-pipe",
         "-std=c++17",
         "-Iinclude",
-        "-Ibazel-out/k8-fastbuild/bin/include",
-        "-Ibazel-out/k8-fastbuild/bin/common/fbs",
+        "-I$(BINDIR)/include",
+        "-I$(BINDIR)/common/fbs",
         "-Wno-invalid-source-encoding",
     ],
     linkstatic = True,
