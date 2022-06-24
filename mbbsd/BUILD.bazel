@@ -252,6 +252,7 @@ cc_library(
         "//:pttbbsconf",
         "//common/fbs:verifydbfbs",
         "//common/fbs:registersmsfbs",
+        "//common/sys:commonsys",
     ],
     defines = [
         "BBSHOME='\"$(BBSHOME)\"'",
