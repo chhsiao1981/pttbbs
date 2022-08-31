@@ -228,6 +228,9 @@ void auto_backup(void);
 void restore_backup(void);
 const char *ask_tmpbuf(int y);
 
+/* email-challenge */
+int email_challenge(const char *email, const userec_t *user, const int y, const char *prompt, const char *ip, const char *filename, int *out_y);
+
 /* emaildb */
 #ifdef USE_EMAILDB
 int emaildb_check_email (const char *userid, const char *email);
@@ -580,7 +583,7 @@ void check_register(void);
 bool check_email_allow_reject_lists(
     char *email, const char **errmsg, const char **notice_file);
 void register_mail_complete_and_exit();
-int change_contact_email(bool skip_same_email_check);
+int change_contact_email(bool skip_same_email_check, bool two_factor_authentication);
 
 /* register_sms */
 void u_sms_verification();

@@ -1183,14 +1183,16 @@ check_register(void)
         pressanykey();
 
         // additional parentheses around "ret =" to please compiler
-        while ((ret = change_contact_email(0)));
+        // we don't do 2FA because the contact email is invalid.
+        while ((ret = change_contact_email(false, false)));
 #ifdef FORCE_UPDATE_CONTACT_EMAIL_LASTLOGIN
     } else if (last_login_time < FORCE_UPDATE_CONTACT_EMAIL_LASTLOGIN) {
         more("etc/forceupdatecontactemail", NA);
         pressanykey();
 
         // additional parentheses around "ret =" to please compiler
-        while ((ret = change_contact_email(1)));
+        // we don't do 2FA because we think that the contact email is invalid.
+        while ((ret = change_contact_email(true, false)));
 #endif //FORCE_UPDATE_CONTACT_EMAIL_LASTLOGIN
     }
 
@@ -1747,10 +1749,20 @@ static int notify_email_change(const char *userid, const char *email)
 // Return:
 //   int: 0: ok -1: err
 int
-change_contact_email(bool skip_same_email_check)
+change_contact_email(bool skip_same_email_check, bool two_factor_authentication)
 {
     char email[EMAILSZ] = {};
     memcpy(email, cuser.email, sizeof(email));
+
+#ifdef USE_2FA
+    if (two_factor_authentication && is_valid_email(cuser.email)) {
+        clear();
+        vs_hdr("雙重驗證");
+        if (!email_challenge(NULL, &cuser, 1, BBSNAME " - 聯絡信箱認證碼", fromhost, "etc/resetcontactmail", NULL)) {
+            return -1;
+        }
+    }
+#endif // USE_2FA
 
     email_input_t ein = {};
     ein.email = email;
