@@ -1120,6 +1120,26 @@ check_bad_clients(void) {
     vmsg("謝謝您的合作。如果您想提供更多資訊歡迎至" BN_BUGREPORT "報告");
 }
 
+static void check_country_change()
+{
+    char buf[STRLEN], logfn[PATHLEN];
+    int szlogfn = 0, szlogentry = 0;
+
+    // prepare log format
+    snprintf(buf, sizeof(buf), "%s %-15s\n",
+            Cdatelite(&login_start_time), fromhost);
+    szlogentry = strlen(buf);   // should be the same for all entries
+
+    setuserfile(logfn, FN_RECENTLOGIN);
+    szlogfn = dashs(logfn);
+    if (szlogfn > SZ_RECENTLOGIN) {
+        // rotate to 1/4 of SZ_RECENTLOGIN
+        delete_records(logfn, szlogentry, 1,
+                (szlogfn-(SZ_RECENTLOGIN/4)) / szlogentry);
+    }
+    log_file(logfn, LOG_CREAT, buf);
+}
+
 static void append_log_recent_login()
 {
     char buf[STRLEN], logfn[PATHLEN];
@@ -1240,6 +1260,7 @@ user_login(void)
 	clrtobot();
 	welcome_msg();
 
+        check_country_change();
 	append_log_recent_login();
 	check_bad_login();
 #ifdef USE_CHECK_BAD_CLIENTS

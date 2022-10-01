@@ -2580,6 +2580,23 @@ bsmtp(const char *fpath, const char *title, const char *rcpt, const char *from)
  * Simple wrapper to send password changed notification letter to
  * designated email address.
  */
+int notify_country_change(const char *userid, const char *orig_country, const char *new_country, const char *email)
+{
+    char subject[1024] = {};
+    int ret;
+
+    snprintf(subject, sizeof(subject), " %s - %s (%s) - 登錄國家改變 (%s -> %s)",
+             BBSNAME, userid, fromhost, orig_country, new_country);
+
+    ret = bsmtp("etc/countrychanged", subject, email, "non-exist");
+
+    return ret > 0 ? 0 : -1;
+}
+
+/*
+ * Simple wrapper to send password changed notification letter to
+ * designated email address.
+ */
 int notify_password_change(const char *userid, const char *email)
 {
     char subject[128];
@@ -2592,3 +2609,4 @@ int notify_password_change(const char *userid, const char *email)
 
     return ret > 0 ? 0 : -1;
 }
+
