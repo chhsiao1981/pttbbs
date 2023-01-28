@@ -1757,6 +1757,9 @@ int
 change_contact_email(bool skip_same_email_check, bool two_factor_authentication)
 {
     char email[EMAILSZ] = {};
+    if (pwcuReload()) {
+        return -1;
+    }
     memcpy(email, cuser.email, sizeof(email));
 
 #ifdef USE_2FA
