@@ -145,7 +145,7 @@ void AccountRecovery::EmailCodeChallenge() {
   const std::string filename = "etc/recovermail";
   const auto user = user_.value();
   int out_y = 0;
-  if (!emailchallenge::EmailChallenge(email_, user, y_, prompt, ip, filename, &out_y)) {
+  if (!emailchallenge::EmailChallenge(true, email_, user, y_, prompt, ip, filename, &out_y)) {
     assert(false);
     exit(1);
   }

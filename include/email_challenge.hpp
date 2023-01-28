@@ -4,7 +4,8 @@
 
 namespace emailchallenge {
 
-bool EmailChallenge(const std::string &input_email,
+bool EmailChallenge(const bool check_input_email,
+                    const std::string &input_email,
                     const userhandle::UserHandle &user,
                     const int y,
                     const std::string &prompt,

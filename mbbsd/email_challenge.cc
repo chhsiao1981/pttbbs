@@ -3,6 +3,12 @@ extern "C" {
 #include "daemons.h"
 }
 
+#ifdef USE_2FA
+# ifndef USE_VERIFYDB_ACCOUNT_RECOVERY
+#   error "USE_2FA requires USE_VERIFYDB_ACCOUNT_RECOVERY and USE_VERIFYDB"
+# endif // USE_VERIFYDB_ACCOUNT_RECOVERY
+#endif // USE_2FA
+
 #ifdef USE_VERIFYDB_ACCOUNT_RECOVERY
 
 # ifndef USE_VERIFYDB
@@ -47,6 +53,9 @@ static void UserErrorExit();
 // ref: AccountRecovery::EmailCodeChallenge
 //
 // params:
+//   check_input_email: whether to check input_email (AccountRecovery) or not (reset password / change contact email).
+//                      It's possible that input_email is "" even if we do want to check input email.
+//                      We can't put input_email as NULL to indicate that we want to skip checking input email.
 //   input_email: user-input-email
 //   user: user
 //   y: starting y onscreen
@@ -57,7 +66,8 @@ static void UserErrorExit();
 // return:
 //   bool: true: success / false: fail
 //   out_y: if not NULL: cursor-y after returning from the function.
-bool EmailChallenge(const std::string &input_email,
+bool EmailChallenge(const bool check_input_email,
+                    const std::string &input_email,
                     const userhandle::UserHandle &user,
                     const int y,
                     const std::string &prompt,
@@ -100,26 +110,38 @@ bool EmailChallenge(const std::string &input_email,
   //    so user can't guess email.
   /////
   bool email_matches = false;
-  for (const auto &each_email : all_emails) {
-    if (each_email == input_email) {
-      email_matches = true;
+  if (check_input_email) {
+    for (const auto &each_email : all_emails) {
+      if (each_email == input_email) {
+        email_matches = true;
+      }
     }
-  }
 
-  if (email_matches) {
-    // We only want to send email if the user input the matching address.
-    // Silently fail if email is not matching, so that user cannot guess other
-    // user's email address.
-    //
-    // normalized_email is guaranteed to be a valid email.
-    SendChallengeCode(input_email, code, prompt, ip, filename);
+    if (email_matches) {
+      // We only want to send email if the user input the matching address.
+      // Silently fail if email is not matching, so that user cannot guess other
+      // user's email address.
+      //
+      // normalized_email is guaranteed to be a valid email.
+      SendChallengeCode(input_email, code, prompt, ip, filename);
+    }
+  } else {
+    email_matches = true;
+    // We would like to send to all the valid user emails.
+    for (const auto &each_email : all_emails) {
+      SendChallengeCode(each_email, code, prompt, ip, filename);
+    }
   }
 
   /////
   // 4. Add a random 5-10s delay to prevent timing oracle.
   /////
   usleep(5000000 + random() % 5000000);
-  mvprints(y_++, 0, "若您輸入的資料正確，系統已將認證碼寄送至您的信箱。");
+  if (check_input_email) {
+    mvprints(y_++, 0, "若您輸入的資料正確，系統已將認證碼寄送至您的信箱。");
+  } else {
+    mvprints(y_++, 0, "系統已將認證碼寄送至您的信箱。");
+  }
 
   /////
   // 5. Input code.
@@ -266,5 +288,43 @@ static void UserErrorExit() {
 }
 
 } // namespace
+
+
+// email_challenge
+//
+// Challenge user by sending randomized-code to the user's email.
+//
+// Params:
+//   input_email: input email. NULL if directly sending to the contact email (user.email) without checking.
+//   user: user
+//   y: starting y onscreen
+//   prompt: prompt for the email title. (prompt[ code ]@ip)
+//   ip: ip for the email title.
+//   filename: filename for the email template.
+//
+// Return:
+//   int: non-zero: success, 0: failed
+//   out_y: if not NULL: cursor-y after returning from the function.
+int email_challenge(const char *input_email,
+                    const userec_t *user,
+                    const int y,
+                    const char *prompt,
+                    const char *ip,
+                    const char *filename,
+                    int *out_y) {
+  std::string input_email_str = {};
+  bool check_input_email = false;
+  if (input_email != NULL) {
+    input_email_str = std::string(input_email);
+    check_input_email = true;
+  }
+
+  userhandle::UserHandle user_handle = {};
+  if (!userhandle::InitUserHandle(user, user_handle)) {
+    return 0;
+  }
+
+  return emailchallenge::EmailChallenge(check_input_email, input_email_str, user_handle, y, prompt, ip, filename, out_y);
+}
 
 #endif // USE_VERIFYDB_ACCOUNT_RECOVERY
