@@ -5,6 +5,7 @@ union AnyMessage {
     PutReply,
     GetRequest,
     GetReply,
+    ListRequest,
 }
 
 table Message {
@@ -49,6 +50,11 @@ table GetReply {
     ok:bool;
     entry:[Entry];
     message:string;
+}
+
+table ListRequest {
+    offset:int;
+    limit:int;
 }
 
 root_type Message;

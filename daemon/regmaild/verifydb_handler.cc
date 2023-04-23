@@ -47,6 +47,10 @@ public:
     ret_ = sqlite3_bind_text(stmt_, pos, text, len, dtor);
     return ok();
   }
+  bool bind_int32(int pos, int num) {
+    ret_ = sqlite3_bind_int(stmt_, pos, num);
+    return ok();
+  }
   bool bind_int64(int pos, sqlite3_int64 num) {
     ret_ = sqlite3_bind_int64(stmt_, pos, num);
     return ok();
@@ -131,6 +135,55 @@ verifydb_message_get_request_handler(const VerifyDb::GetRequest *req) {
          stmt.bind_text(++idx, req_vkey, -1, SQLITE_STATIC);
   if (!ok)
     return make_get_reply_error(stmt.errmsg());
+
+  flatbuffers::FlatBufferBuilder fbb;
+  std::vector<flatbuffers::Offset<VerifyDb::Entry>> entries;
+
+  while (stmt.step() == SQLITE_ROW) {
+    const char *userid = StrOrEmpty((const char *)stmt.column_text(0));
+    const int64_t generation = stmt.column_int64(1);
+    const int32_t vmethod = stmt.column_int64(2);
+    const char *vkey = StrOrEmpty((const char *)stmt.column_text(3));
+    const int64_t timestamp = stmt.column_int64(4);
+
+    entries.push_back(VerifyDb::CreateEntryDirect(fbb, userid, generation,
+                                                  vmethod, vkey, timestamp));
+
+    fprintf(stderr,
+            "get-entry: userid [%s] generation [%ld] vmethod [%d] vkey [%s] "
+            "timestamp [%ld]\n",
+            userid, generation, vmethod, vkey, timestamp);
+  }
+
+  auto reply =
+      VerifyDb::CreateGetReply(fbb, true, fbb.CreateVector(entries), 0);
+  fbb.Finish(VerifyDb::CreateMessage(fbb, VerifyDb::AnyMessage_GetReply,
+                                     reply.Union()));
+  return fbb.Release();
+}
+
+flatbuffers::DetachedBuffer
+verifydb_message_list_request_handler(const VerifyDb::ListRequest *req) {
+  const int32_t offset = req->offset();
+  const int32_t limit = req->limit();
+
+  fprintf(stderr, "list: offset [%d] limit [%d]\n",
+          offset, limit);
+
+  std::set<VerifyDb::Field> match_fields;
+
+  std::string sql = "SELECT userid, generation, vmethod, vkey, timestamp FROM "
+                    "verifydb LIMIT (?) OFFSET (?)";
+  sql += " ORDER BY userid, generation, vmethod, timestamp";
+
+  SqliteStmt stmt(g_Db);
+  bool ok = stmt.prepare(sql.c_str());
+  int idx = 0;
+  ok = ok && stmt.bind_int32(++idx, offset);
+  ok = ok && stmt.bind_int32(++idx, limit);
+  if (!ok) {
+    return make_get_reply_error(stmt.errmsg());
+  }
 
   flatbuffers::FlatBufferBuilder fbb;
   std::vector<flatbuffers::Offset<VerifyDb::Entry>> entries;
@@ -249,6 +302,11 @@ void verifydb_message_handler(const verifydb_message_t *vm, int fd) {
   case VerifyDb::AnyMessage_PutRequest:
     write_message(fd, verifydb_message_put_request_handler(
                           message->message_as_PutRequest()));
+    break;
+
+  case VerifyDb::AnyMessage_ListRequest:
+    write_message(fd, verifydb_message_list_request_handler(
+                          message->message_as_ListRequest()));
     break;
 
   default:
