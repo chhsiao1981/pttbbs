@@ -23,17 +23,17 @@ CPROG_WITH_UTIL := \
 	tunepasswd	buildir		xchatd		\
 	uhash_loader	timecap_buildref showuser	removebm \
 	redir		permreport	setrole 	update_online \
-	munin		useractive_munin	chkfnlen	\
+	munin		useractive_munin	chkfnlen	initbbs	\
 	$(END)
 
 # 下面是 C++ 的程式
 CPP_WITH_UTIL := \
-	mergedir2	buildir2    \
+	mergedir2	buildir2	\
 	$(END)
 
 # 下面這些程式, 會直接被 compile
 CPROG_WITHOUT_UTIL := \
-	showboard	bbsrf		initbbs		merge_board	\
+	showboard	bbsrf		merge_board	\
 	bbsmail		\
 	$(END)
 

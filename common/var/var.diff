@@ -1,0 +1,42 @@
+--- ../../mbbsd/var.c	2026-10-21 05:39:59.871278025 +0000
++++ var.c	2026-10-22 21:30:56.872266597 +0000
+@@ -131,7 +131,7 @@
+ char            currBM[IDLEN * 3 + 10];
+ char            margs[64] = "\0";	/* main argv list */
+ pid_t           currpid;	/* current process ID */
+-time4_t         login_start_time, last_login_time;
++// time4_t         login_start_time, last_login_time;
+ time4_t         start_time;
+ userec_t        pwcuser;	/* current user structure */
+ unsigned int    currbrdattr;
+@@ -174,8 +174,8 @@
+ 
+ 
+ char           * const str_mail_address = "." BBSUSER "@" MYHOSTNAME;
+-char           * const str_reply = "Re:";
+-char           * const str_forward = "Fw:";
++// char           * const str_reply = "Re:";
++// char           * const str_forward = "Fw:";
+ char           * const str_legacy_forward = "[Âà¿ý]";
+ char           * const str_space = " \t\n\r";
+ char           * const str_sysop = "SYSOP";
+@@ -280,7 +280,7 @@
+ int             automargins = 1;
+ 
+ /* io.c */
+-time4_t         now;
++// time4_t         now;
+ int             KEY_ESC_arg;
+ int             watermode = -1;
+ int             wmofo = NOTREPLYING;
+@@ -303,8 +303,8 @@
+ 
+ 
+ /* cache.c */
+-SHM_t          *SHM;
+-boardheader_t  *bcache;
++// SHM_t          *SHM;
++// boardheader_t  *bcache;
+ userinfo_t     *currutmp;
+ 
+ /* read.c */

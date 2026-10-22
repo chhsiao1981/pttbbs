@@ -498,6 +498,7 @@ int search_aidu_in_bfile(const char *bfile, const aidu_t aidu)
   return (found ? pos : (lastpos ? lastpos : -1));
 }
 
+/*
 int search_aidu_in_board(SearchAIDResult_t *r, const char *bname, const aidu_t aidu)
 {
   int n = -1;
@@ -506,7 +507,9 @@ int search_aidu_in_board(SearchAIDResult_t *r, const char *bname, const aidu_t a
   if(r == NULL)
     return -1;
   r->n = -1;
+*/
   /* search bottom in boardheader_t.bottom[] */
+/*
   int bid = getbnum(bname);
   if (bid > 0) {
     const boardheader_t *bp = getbcache(bid);
@@ -522,7 +525,9 @@ int search_aidu_in_board(SearchAIDResult_t *r, const char *bname, const aidu_t a
       }
     }
   }
+*/
   /* else search board */
+/*
   if(r->n < 0)
   {
     setbfile(dirfile, bname, FN_DIR);
@@ -532,7 +537,9 @@ int search_aidu_in_board(SearchAIDResult_t *r, const char *bname, const aidu_t a
       r->n = n;
     }
   }
+*/
   /* else search digest */
+/*
   if(r->n < 0)
   {
     setbfile(dirfile, bname, fn_mandex);
@@ -635,4 +642,5 @@ int do_search_aid(SearchAIDResult_t *r)
     return r->n;
   }
 }
+*/
 #endif

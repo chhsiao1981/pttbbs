@@ -1,0 +1,354 @@
+#define INCLUDE_VAR_H
+#include "bbs.h"
+
+const char * const str_permid[] = {
+    "基本權力",			/* PERM_BASIC */
+    "進入聊天室",		/* PERM_CHAT */
+    "找人聊天",			/* PERM_PAGE */
+    "發表文章",			/* PERM_POST */
+    "註冊程序認證",		/* PERM_LOGINOK */
+    "信件無上限",		/* PERM_MAILLIMIT */
+    "隱身術",			/* PERM_CLOAK */
+    "看見忍者",			/* PERM_SEECLOAK */
+    "永久保留帳號",		/* PERM_XEMPT */
+    "站長隱身術",		/* PERM_DENYPOST */
+    "板主",			/* PERM_BM */
+    "帳號總管",			/* PERM_ACCOUNTS */
+    "聊天室總管",		/* PERM_CHATCLOAK */
+    "看板總管",			/* PERM_BOARD */
+    "站長",			/* PERM_SYSOP */
+    "BBSADM",			/* PERM_POSTMARK */
+    "不列入排行榜",		/* PERM_NOTOP */
+    "違法通緝中",		/* PERM_VIOLATELAW */
+    IS_ENABLED(CONFIG_ANGEL) ? "可擔任小天使" : "小天使(本站無效)", /* PERM_ANGEL */
+    "不允許認證碼註冊",	/* PERM_NOREGCODE */
+    "視覺站長",			/* PERM_VIEWSYSOP */
+    "觀察使用者行蹤",		/* PERM_LOGUSER */
+    "禠奪公權",		        /* PERM_NOCITIZEN */
+    "群組長",			/* PERM_SYSSUPERSUBOP */
+    "帳號審核組",		/* PERM_ACCTREG */
+    "程式組",			/* PERM_PRG */
+    "活動組",			/* PERM_ACTION */
+    "美工組",			/* PERM_PAINT */
+    "警察總管",			/* PERM_POLICE_MAN */
+    "小組長",			/* PERM_SYSSUBOP */
+    "退休站長",			/* PERM_OLDSYSOP */
+    "警察"			/* PERM_POLICE */
+};
+
+const char * const str_roleid[] = {
+    "(天使)品管帳號(CIA)",	/* 0x00000001 ROLE_ANGEL_CIA */
+    "(天使)活動用帳號",         /* 0x00000002 ROLE_ANGEL_ACTIVITY */
+    "",		                /* 0x00000004 */
+    "",		                /* 0x00000008 */
+    "",		                /* 0x00000010 */
+    "",		                /* 0x00000020 */
+    "",		                /* 0x00000040 */
+    "(天使)大天使",	        /* 0x00000080 ROLE_ANGEL_ARCHANGEL */
+    "(警察)匿名警察",           /* 0x00000100 ROLE_POLICE_ANONYMOUS */
+    "",		                /* 0x00000200 */
+    "",		                /* 0x00000400 */
+    "",		                /* 0x00000800 */
+    "",		                /* 0x00001000 */
+    "",		                /* 0x00002000 */
+    "",		                /* 0x00004000 */
+    "",	                        /* 0x00008000 */
+    "",		                /* 0x00010000 */
+    "",		                /* 0x00020000 */
+    "",		                /* 0x00040000 */
+    "",		                /* 0x00080000 */
+    "",		                /* 0x00100000 */
+    "",		                /* 0x00200000 */
+    "",		                /* 0x00400000 */
+    "",		                /* 0x00800000 */
+    "",		                /* 0x01000000 */
+    "",		                /* 0x02000000 */
+    "",		                /* 0x04000000 */
+    "",		                /* 0x08000000 */
+    "",		                /* 0x10000000 */
+    "",		                /* 0x20000000 */
+    "",		                /* 0x40000000 */
+    "",		                /* 0x80000000 */
+};
+
+const char * const str_permboard[] = {
+    "(無作用)",			/* deprecated: BRD_NOZAP */
+    "不列入統計",		/* BRD_NOCOUNT */
+    "(無作用)",			/* deprecated: BRD_NOTRAN */
+    "群組板",			/* BRD_GROUPBOARD */
+    "隱藏板",			/* BRD_HIDE */
+    "限制(不需設定)",		/* BRD_POSTMASK */
+    "匿名板",			/* BRD_ANONYMOUS */
+    "預設匿名板",		/* BRD_DEFAULTANONYMOUS */
+    "發文無獎勵",		/* BRD_NOCREDIT, was: BRD_BAD */
+    "連署專用看板",		/* BRD_VOTEBOARD */
+    "已警告要廢除",		/* BRD_WARNEL */
+    "熱門看板群組",		/* BRD_TOP */
+    "不可推薦",                 /* BRD_NORECOMMEND */
+    "小天使可匿名",		/* BRD_ANGELANONYMOUS */
+    "板主設定列入記錄",		/* BRD_BMCOUNT */
+    "連結看板",                 /* BRD_SYMBOLIC */
+    "不可噓",                   /* BRD_NOBOO */
+    "(無作用)",                 /* deprecated: BRD_LOCALSAVE */
+    "限看板會員發文",           /* BRD_RESTRICTEDPOST */
+    "Guest可以發表",            /* BRD_GUESTPOST */
+    "冷靜",			/* BRD_COOLDOWN */
+#ifdef USE_AUTOCPLOG
+    "自動留轉錄記錄",		/* BRD_CPLOG */
+#else
+    "轉錄記錄(本站無效)",	/* BRD_CPLOG */
+#endif
+    "禁止快速推文",		/* BRD_NOFASTRECMD */
+    "推文記錄 IP",		/* BRD_IPLOGRECMD */
+    "十八禁",			/* BRD_OVER18 */
+    "對齊式推文",		/* BRD_ALIGNEDCMT */
+    "不可自刪",                 /* BRD_NOSELFDELPOST */
+    "板主可刪特定文字",         /* BRD_BM_MASK_CONTENT */
+    "沒想到",
+    "沒想到",
+    "沒想到",
+    "沒想到",
+};
+
+/* modes.h */
+const char * const str_pager_modes[PAGER_MODES] =
+{
+    [PAGER_OFF]        = "關閉",
+    [PAGER_ON]         = "開啟",
+    [PAGER_DISABLE]    = "拔掉",
+    [PAGER_ANTIWB]     = "防水",
+    [PAGER_FRIENDONLY] = "好友",
+};
+
+int             usernum;
+int             currmode = 0;
+int             currsrmode = 0;
+int             currbid;
+char            quote_file[80] = "\0";
+char            quote_user[80] = "\0";
+char            currtitle[TTLEN + 1] = "\0";
+const char     *currboard = "\0";
+char            currBM[IDLEN * 3 + 10];
+char            margs[64] = "\0";	/* main argv list */
+pid_t           currpid;	/* current process ID */
+// time4_t         login_start_time, last_login_time;
+time4_t         start_time;
+userec_t        pwcuser;	/* current user structure */
+unsigned int    currbrdattr;
+unsigned int    currstat;
+
+/* global string variables */
+/* filename */
+
+const char * const fn_plans = "plans";
+const char * const fn_writelog = "writelog";
+const char * const fn_talklog = "talklog";
+const char * const fn_notes = "notes";
+const char * const fn_mandex = "/.Names";
+
+/* are descript in userec.loginview */
+
+char           * const loginview_file[NUMVIEWFILE][2] = {
+    {"", "(保留)"},
+    {FN_TOPSONG, "心情點播排行榜"},
+    {"etc/topusr", "十大排行榜"},
+    {"etc/topusr100", "百大排行榜"},
+    {"", "(保留)"},
+    {"", "(保留)"},
+    {"etc/day", "今日十大話題"},
+    {"etc/week", "一週五十大話題"},
+    {"etc/today", "今天上站人次"},
+    {"etc/yesterday", "昨日上站人次"},
+    {"etc/history", "歷史上的今天"},
+    {"etc/topboardman", "精華區排行榜"},
+    {"etc/topboard.tmp", "看板人氣排行榜"},
+    {NULL, NULL}
+};
+
+/* message */
+
+
+
+
+
+
+
+char           * const str_mail_address = "." BBSUSER "@" MYHOSTNAME;
+// char           * const str_reply = "Re:";
+// char           * const str_forward = "Fw:";
+char           * const str_legacy_forward = "[轉錄]";
+char           * const str_space = " \t\n\r";
+char           * const str_sysop = "SYSOP";
+
+/* MAX_MODES is defined in common.h */
+
+char           * const ModeTypeTable[MODE_MAX] = {
+    [IDLE]             = "發呆",
+    [MMENU]            = "主選單",
+    [ADMIN]            = "系統維護",
+    [MAIL]             = "郵件選單",
+    [TMENU]            = "交談選單",
+    [UMENU]            = "使用者選單",
+    [XMENU]            = "XYZ 選單",
+    [CLASS]            = "分類看板",
+    [PMENU]            = "Play選單",
+    [NMENU]            = "編特別名單",
+    [PSALE]            = BBSMNAME2 "量販店",
+    [POSTING]          = "發表文章",
+    [READBRD]          = "看板列表",
+    [READING]          = "閱讀文章",
+    [READNEW]          = "新文章列表",
+    [SELECT]           = "選擇看板",
+    [RMAIL]            = "讀信",
+    [SMAIL]            = "寫信",
+    [CHATING]          = "聊天室",
+    [XMODE]            = "其他",
+    [FRIEND]           = "尋找好友",
+    [LAUSERS]          = "上線使用者",
+    [LUSERS]           = "使用者名單",
+    [MONITOR]          = "追蹤站友",
+    [PAGE]             = "呼叫",
+    [TQUERY]           = "查詢",
+    [TALK]             = "交談",
+    [EDITPLAN]         = "編名片檔",
+    [EDITSIG]          = "編簽名檔",
+    [VOTING]           = "投票中",
+    [XINFO]            = "設定資料",
+    [MSYSOP]           = "寄給站長",
+    [REPLY]            = "回應",
+    [HIT]              = "被水球打中",
+    [DBACK]            = "水球準備中",
+    [NOTE]             = "筆記本",
+    [EDITING]          = "編輯文章",
+    [MAILALL]          = "發系統通告",
+    [MJ]               = "摸兩圈",
+    [P_FRIEND]         = "電腦擇友",
+    [LOGIN]            = "上站途中",
+    [DICT]             = "查字典",
+    [ARCHIE]           = "找檔案",
+    [GOPHER]           = "打地鼠",
+    [NEWS]             = "看News",
+    [LOVE]             = "情書產生器",
+    [EDITEXP]          = "編輯輔助器",
+    [IPREG]            = "申請IP位址",
+    [NADM]             = "網管辦公中",
+    [DRINK]            = "虛擬實業坊",
+    [CAL]              = "計算機",
+    [ANNOUNCE]         = "公佈欄",
+    [EDNOTE]           = "刻流言板",
+    [CDICT]            = "英漢翻譯機",
+    [LOBJ]             = "檢視自己物品",
+    [OSONG]            = "心情點播",
+    [CHICKEN]          = "與寵物同樂",
+    [TICKET]           = "玩彩券",
+    [AMUSE]            = "遊樂場",
+    [OTHELLO]          = "單人黑白棋",
+    [DICE]             = "玩骰子",
+    [VIOLATELAW]       = "繳罰單",
+    [M_FIVE]           = "五子棋",
+    [M_CONN6]          = "21點ing",
+    [SREG]             = "搜尋選單",
+    [CHC]              = "下象棋",
+    [DARK]             = "下暗棋",
+    [REEDIT]           = "重編文章",
+    [CHESSWATCHING]    = "看棋",
+    [UMODE_GO]         = "下圍棋",
+    [DEBUGSLEEPING]    = "[系統錯誤]",
+    [UMODE_CONN6]      = "連六棋",
+    [REVERSI]          = "黑白棋",
+    [UMODE_BBSLUA]     = "BBS-Lua",
+    [UMODE_ASCIIMOVIE] = "播放動畫",
+};
+
+/* term.c */
+int             t_columns = DEFAULT_TERM_COLS;
+int             t_lines = DEFAULT_TERM_ROWS;
+int             b_lines = DEFAULT_TERM_ROWS - 1; // bottom line of screen
+int             p_lines = DEFAULT_TERM_ROWS - 3 - 1; // 扣掉 header(3), footer(1), 畫面上可以顯示資料的行數
+
+/* refer to ansi.h for *len */
+char           * const strtstandout = ANSI_REVERSE;
+const int       strtstandoutlen = 4;
+char           * const endstandout = ANSI_RESET;
+const int        endstandoutlen = 3;
+char           * const clearbuf = ESC_STR "[H" ESC_STR "[J";
+const int        clearbuflen = 6;
+char           * const cleolbuf = ESC_STR "[K";
+const int        cleolbuflen = 3;
+char           * const scrollrev = ESC_STR "M";
+const int       scrollrevlen = 2;
+int             automargins = 1;
+
+/* io.c */
+// time4_t         now;
+int             KEY_ESC_arg;
+int             watermode = -1;
+int             wmofo = NOTREPLYING;
+/*
+ * PAGER_UI_IS(PAGER_UI_NEW):
+ * ????????????????????
+ * Ptt 水球回顧   (FIXME: guessed by scw)
+ * watermode = -1 沒在回水球
+ *           = 0   在回上一顆水球  (Ctrl-R)
+ *           > 0   在回前 n 顆水球 (Ctrl-R Ctrl-R)
+ *
+ * PAGER_UI_IS(PAGER_UI_OFO)  by in2
+ * wmofo     = NOTREPLYING     沒在回水球
+ *           = REPLYING        正在回水球
+ *           = RECVINREPLYING  回水球間又接到水球
+ *
+ * wmofo     >=0  時收到水球將只顯示, 不會到water[]裡,
+ *                待回完水球的時候一次寫入.
+ */
+
+
+/* cache.c */
+// SHM_t          *SHM;
+// boardheader_t  *bcache;
+userinfo_t     *currutmp;
+
+/* read.c */
+int		TagBoard = -1;		/* TagBoard = 0 : user's mailbox */
+                                        /* TagBoard > 0 : bid where last taged */
+char            currdirect[64];		/* XXX TODO change this to PATHLEN? */
+
+/* bbs.c */
+char            real_name[IDLEN + 1];
+
+/* mbbsd.c */
+char            fromhost[STRLEN] = "\0";
+char		fromhost_masked[32] = "\0"; // masked 'fromhost'
+char            from_cc[STRLEN] = "\0";
+char            water_usies = 0;
+char            is_first_login_of_today = 0;
+char            is_login_ready = 0;
+water_t         *water, *swater[WB_OFO_USER_NUM], *water_which;
+
+/* screen.c */
+#define SCR_COLS        ANSILINELEN
+screenline_t   *big_picture = NULL;
+char            roll = 0;
+char		msg_occupied = 0;
+
+/* gomo.c */
+const char     * const bw_chess[] = {"○", "●", "。", "‧"};
+
+/* friend.c */
+/* Ptt 各種特別名單的檔名 */
+const char     * const friend_file[8] = {
+    [FRIEND_OVERRIDE] = FN_OVERRIDES,
+    [FRIEND_REJECT] = FN_REJECT,
+    [FRIEND_ALOHA] = FN_ALOHAED,
+    [3] = "", /* deprecated: post list */
+    [FRIEND_SPECIAL] = "", /* may point to other filename */
+    [FRIEND_CANVOTE] = FN_CANVOTE,
+    [6] = FN_WATER, /* deprecated: board water ban */
+    [BOARD_VISABLE] = FN_VISABLE,
+};
+
+
+#ifdef PTTBBS_UTIL
+    #define COMMON_TIME (time(0))
+#else
+    #define COMMON_TIME (now)
+#endif

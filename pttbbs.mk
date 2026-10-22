@@ -62,7 +62,7 @@ PTT_LDFLAGS:=	-Wl,--as-needed
 ifeq ($(CLANG),1)
 PTT_CFLAGS+=	-Qunused-arguments -Wno-parentheses-equality \
 		-fcolor-diagnostics -Wno-invalid-source-encoding \
-		-Werror
+		-Werror -Wno-unused-value -Wno-unused-parameter -Wno-unused-variable -Wno-tautological-constant-out-of-range-compare -Wno-sign-compare
 PTT_CXXFLAGS+=	-Wno-invalid-source-encoding
 else
 PTT_CFLAGS+=	-Wno-format-truncation \

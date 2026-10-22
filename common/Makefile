@@ -1,7 +1,7 @@
 SRCROOT=        ..
 include $(SRCROOT)/pttbbs.mk
 
-SUBDIRS:=	bbs osdep sys
+SUBDIRS:=	bbs osdep sys var
 
 ifneq ($(strip $(USE_MBBSD_CXX)),)
 SUBDIRS+=	fbs
